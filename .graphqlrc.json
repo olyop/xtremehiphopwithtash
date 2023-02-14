@@ -1,0 +1,3 @@
+{
+	"schema": "book/src/main/resources/graphql/*.graphqls"
+}

@@ -1,0 +1,13 @@
+type Mutation {
+	createStudent(input: CreateStudent!): Student!
+	createLocation(input: CreateLocation!): Location!
+	createInstructor(input: CreateInstructor!): Instructor!
+	createCourse(input: CreateCourse!): Course!
+	createSession(input: CreateSession!): Session!
+	createBooking(input: CreateBooking!): Booking!
+
+	updateStudent(input: UpdateStudent!): Student!
+	updateInstructor(input: UpdateInstructor!): Instructor!
+	updateCourse(input: UpdateCourse!): Course!
+	updateSession(input: UpdateSession!): Session!
+}

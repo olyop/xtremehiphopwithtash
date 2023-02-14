@@ -1,0 +1,89 @@
+input GetSessions {
+	courseID: UUID
+	startTime: UnixTime!
+	endTime: UnixTime!
+}
+
+input CreateDetails {
+	firstName: String!
+	lastName: String!
+	nickName: String
+	gender: String!
+	mobilePhoneNumber: MobilePhoneNumber!
+}
+
+input CreateLocation {
+	name: String!
+	plusCode: String!
+}
+
+input CreateStudent {
+	# Foreign Key from Auth0
+	studentID: String!
+	details: CreateDetails!
+}
+
+input CreateInstructor {
+	photo: URL!
+	details: CreateDetails!
+}
+
+input CreateCourse {
+	name: String!
+	photo: URL!
+	description: String!
+	defaultPrice: Price!
+	defaultLocation: String!
+	defaultInstructorID: UUID!
+}
+
+input CreateSession {
+	title: String!
+	notes: String
+	startTime: UnixTime!
+	endTime: UnixTime!
+	location: String!
+	price: Price
+	courseID: UUID!
+	instructorIDs: [UUID!]!
+}
+
+input CreateBooking {
+	notes: String!
+	timeBooked: UnixTime!
+	sessionID: UUID!
+	studentID: UUID!
+}
+
+input UpdateStudent {
+	studentID: UUID!
+	details: CreateDetails!
+}
+
+input UpdateInstructor {
+	instructorID: UUID!
+	photo: URL!
+	details: CreateDetails!
+}
+
+input UpdateCourse {
+	courseID: UUID!
+	name: String!
+	photo: URL!
+	description: String!
+	defaultPrice: Price!
+	defaultLocation: String!
+	defaultInstructor: UUID!
+}
+
+input UpdateSession {
+	sessionID: UUID!
+	title: String!
+	notes: String!
+	startTime: UnixTime!
+	endTime: UnixTime!
+	location: String
+	price: Price
+	course: UUID!
+	instructors: [UUID!]!
+}

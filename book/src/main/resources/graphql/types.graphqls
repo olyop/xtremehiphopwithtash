@@ -1,0 +1,92 @@
+type Details {
+	detailsID: UUID!
+
+	firstName: String!
+	lastName: String!
+	nickName: String
+	gender: String!
+	mobilePhoneNumber: MobilePhoneNumber!
+	createdAt: UnixTime!
+}
+
+type Student {
+	studentID: String!
+
+	details: Details!
+	createdAt: UnixTime!
+
+	bookings: [Booking!]!
+	reviews: [Review!]!
+}
+
+type Instructor {
+	instructorID: UUID!
+
+	details: Details!
+	photo: URL!
+	createdAt: UnixTime!
+}
+
+type Location {
+	locationID: UUID!
+
+	name: String!
+	plusCode: String!
+	createdAt: UnixTime!
+}
+
+type Course {
+	courseID: UUID!
+
+	name: String!
+	photo: URL!
+	description: String!
+	defaultPrice: Price
+	defaultCapacity: PositiveInt!
+	defaultDuration: PositiveInt!
+	defaultLocation: Location!
+	createdAt: UnixTime!
+
+	defaultInstructors: [Instructor!]!
+	reviews: [Review!]!
+}
+
+type Session {
+	sessionID: UUID!
+
+	title: String!
+	notes: String
+	price: Price
+	location: Location!
+	startTime: UnixTime!
+	endTime: UnixTime!
+	capacity: PositiveInt!
+	createdAt: UnixTime!
+
+	course: Course!
+
+	instructors: [Instructor!]!
+	bookings: [Booking!]!
+}
+
+type Booking {
+	bookingID: UUID!
+
+	notes: String!
+	isBringingOwnEquipment: Boolean!
+	createdAt: UnixTime!
+
+	student: Student!
+	session: Session!
+}
+
+type Review {
+	reviewID: UUID!
+
+	score: LikertScale!
+	comment: String!
+	createdAt: Int!
+
+	course: Course!
+	student: Student!
+}

@@ -1,0 +1,30 @@
+{
+  "name": "natasha-class-booker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olyop/natasha-class-booker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olyop/natasha-class-booker/issues"
+  },
+  "homepage": "https://github.com/olyop/natasha-class-booker#readme",
+  "devDependencies": {
+    "@oly_op/cspell-dict": "^1.0.115",
+    "@oly_op/prettier-config": "^1.0.21",
+    "cspell": "^6.18.1",
+    "prettier": "^2.8.3"
+  },
+  "volta": {
+    "node": "19.4.0",
+    "npm": "9.3.0"
+  }
+}

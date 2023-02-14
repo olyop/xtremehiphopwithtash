@@ -1,0 +1,7 @@
+scalar URL
+scalar UUID
+scalar Price
+scalar UnixTime
+scalar PositiveInt
+scalar LikertScale
+scalar MobilePhoneNumber
