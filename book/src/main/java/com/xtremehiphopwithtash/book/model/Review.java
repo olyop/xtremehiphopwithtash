@@ -3,7 +3,7 @@ package com.xtremehiphopwithtash.book.model;
 import com.xtremehiphopwithtash.book.other.LikertScale;
 import java.util.UUID;
 
-public class Review extends BaseModel {
+public class Review extends Base {
 
 	private UUID reviewID;
 	private LikertScale score;

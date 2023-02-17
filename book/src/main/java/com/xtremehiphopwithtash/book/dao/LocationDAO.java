@@ -29,20 +29,21 @@ public class LocationDAO implements EntityDAO<Location, UUID> {
 	}
 
 	@Override
-	public Location insert(Location value) {
+	public Location insert(Location location) {
 		String sql = query.INSERT;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("name", value.getName());
-		paramSource.addValue("plusCode", value.getPlusCode());
+		paramSource.addValue("name", location.getName());
+		paramSource.addValue("plusCode", location.getPlusCode());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 
 	@Override
-	public Optional<Location> selectByID(UUID id) {
+	public Optional<Location> selectByID(UUID locationID) {
 		String sql = query.SELECT_BY_ID;
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("locationID", id);
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("locationID", locationID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper).stream().findFirst();
 	}
@@ -53,37 +54,37 @@ public class LocationDAO implements EntityDAO<Location, UUID> {
 	}
 
 	@Override
-	public boolean deleteByID(UUID id) {
+	public void deleteByID(UUID locationID) {
 		String sql = query.DELETE_BY_ID;
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("locationID", id);
 
-		int rowsAffected = jdbcTemplate.update(sql, paramSource);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("locationID", locationID);
 
-		return rowsAffected > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
-	public boolean existsByID(UUID id) {
-		return jdbcTemplate.queryForObject(
-			query.EXISTS_BY_ID,
-			new MapSqlParameterSource("locationID", id),
-			Boolean.class
-		);
+	public boolean existsByID(UUID locationID) {
+		String sql = query.EXISTS_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("locationID", locationID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
 	@Override
-	public Location updateByID(UUID id, Location value) {
+	public Location updateByID(UUID locationID, Location location) {
 		String sql = query.UPDATE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("locationID", id);
-		paramSource.addValue("name", value.getName());
-		paramSource.addValue("plusCode", value.getPlusCode());
+		paramSource.addValue("locationID", locationID);
+
+		paramSource.addValue("name", location.getName());
+		paramSource.addValue("plusCode", location.getPlusCode());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 
-	public boolean existsByNameAndPlusCode(String name, String plusCode) {
+	public boolean existsByNameOrPlusCode(String name, String plusCode) {
 		String sql = query.EXISTS_BY_NAME_OR_PLUS_CODE;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
@@ -94,10 +95,10 @@ public class LocationDAO implements EntityDAO<Location, UUID> {
 	}
 
 	public List<Location> selectLikeName(String name) {
-		return jdbcTemplate.query(
-			query.SELECT_LIKE_NAME,
-			new MapSqlParameterSource("name", name),
-			rowMapper
-		);
+		String sql = query.SELECT_BY_NAME;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("name", name);
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 }

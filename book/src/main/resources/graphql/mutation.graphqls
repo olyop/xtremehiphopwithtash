@@ -1,13 +1,21 @@
 type Mutation {
-	createStudent(input: CreateStudent!): Student!
-	createLocation(input: CreateLocation!): Location!
-	createInstructor(input: CreateInstructor!): Instructor!
-	createCourse(input: CreateCourse!): Course!
-	createSession(input: CreateSession!): Session!
-	createBooking(input: CreateBooking!): Booking!
+	createStudent(studentID: String!, input: DetailsInput!): Student!
+	createLocation(input: LocationInput!): Location!
+	createInstructor(input: InstructorInput!): Instructor!
+	createCourse(input: CourseInput!): Course!
+	createSession(input: SessionInput!): Session!
+	createBooking(input: BookingInput!): Booking!
 
-	updateStudent(input: UpdateStudent!): Student!
-	updateInstructor(input: UpdateInstructor!): Instructor!
-	updateCourse(input: UpdateCourse!): Course!
-	updateSession(input: UpdateSession!): Session!
+	deleteLocation(locationID: UUID!): UUID!
+	deleteInstructor(instructorID: UUID!): UUID!
+	deleteCourse(courseID: UUID!): UUID!
+	deleteSession(sessionID: UUID!): UUID!
+	deleteBooking(bookingID: UUID!): UUID!
+
+	updateStudent(studentID: String!, input: DetailsInput!): Student!
+	updateLocation(locationID: UUID!, input: LocationInput!): Location!
+	updateInstructor(instructorID: UUID!, input: InstructorInput!): Instructor!
+	updateCourse(courseID: UUID!, input: CourseInput!): Course!
+	updateSession(sessionID: UUID!, input: SessionInput!): Session!
+	updateBooking(bookingID: UUID!, input: BookingInput!): Booking!
 }

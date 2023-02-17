@@ -3,7 +3,7 @@ package com.xtremehiphopwithtash.book.model;
 import java.io.Serializable;
 import java.time.Instant;
 
-public abstract class BaseModel implements Serializable {
+abstract class Base implements Serializable {
 
 	private Instant createdAt;
 

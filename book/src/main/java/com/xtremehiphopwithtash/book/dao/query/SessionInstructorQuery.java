@@ -7,20 +7,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionInstructorQuery {
 
-	public final String SELECT = String.format(
-		"SELECT %s FROM session_instructor;",
-		SQLColumnNamesUtil.join(
-			SQLColumnNamesUtil.SESSION_INSTRUCTOR,
-			SQLTableNamesUtil.SESSION_INSTRUCTOR
-		)
+	private final String columnNames = SQLColumnNamesUtil.join(
+		SQLColumnNamesUtil.SESSION_INSTRUCTOR,
+		SQLTableNamesUtil.SESSION_INSTRUCTOR
 	);
+
+	public final String SELECT = String.format("SELECT %s FROM session_instructor;", columnNames);
 
 	public final String SELECT_BY_ID = String.format(
 		"SELECT %s FROM session_instructor WHERE session_id = :sessionID AND index = :index;",
-		SQLColumnNamesUtil.join(
-			SQLColumnNamesUtil.SESSION_INSTRUCTOR,
-			SQLTableNamesUtil.SESSION_INSTRUCTOR
-		)
+		columnNames
 	);
 
 	public final String INSERT = String.format(
@@ -32,10 +28,7 @@ public class SessionInstructorQuery {
 			RETURNING
 				%s
 		""",
-		SQLColumnNamesUtil.join(
-			SQLColumnNamesUtil.SESSION_INSTRUCTOR,
-			SQLTableNamesUtil.SESSION_INSTRUCTOR
-		)
+		columnNames
 	);
 
 	public final String DELETE_BY_ID =
@@ -43,4 +36,7 @@ public class SessionInstructorQuery {
 
 	public final String EXISTS_BY_ID =
 		"SELECT EXISTS (SELECT 1 FROM session_instructor WHERE session_id = :sessionID AND index = :index);";
+
+	public final String DELETE_BY_SESSION_ID =
+		"DELETE FROM session_instructor WHERE session_id = :sessionID;";
 }

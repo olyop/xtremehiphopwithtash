@@ -29,26 +29,27 @@ public class CourseDAO implements EntityDAO<Course, UUID> {
 	}
 
 	@Override
-	public Course insert(Course value) {
+	public Course insert(Course course) {
 		String sql = query.INSERT;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("name", value.getName());
-		paramSource.addValue("description", value.getDescription());
-		paramSource.addValue("photo", value.getPhoto());
-		paramSource.addValue("defaultPrice", value.getDefaultPrice());
-		paramSource.addValue("defaultCapacity", value.getDefaultCapacity());
-		paramSource.addValue("defaultDuration", value.getDefaultDuration());
-		paramSource.addValue("defaultLocationID", value.getDefaultLocationID());
+		paramSource.addValue("name", course.getName());
+		paramSource.addValue("description", course.getDescription());
+		paramSource.addValue("photo", course.getPhoto().toString());
+		paramSource.addValue("defaultPrice", course.getDefaultPrice());
+		paramSource.addValue("defaultDuration", course.getDefaultDuration());
+		paramSource.addValue("defaultCapacity", course.getDefaultCapacity());
+		paramSource.addValue("defaultEquipmentAvailable", course.getDefaultEquipmentAvailable());
+		paramSource.addValue("defaultLocationID", course.getDefaultLocationID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 
 	@Override
-	public Optional<Course> selectByID(UUID id) {
+	public Optional<Course> selectByID(UUID courseID) {
 		String sql = query.SELECT_BY_ID;
 
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("courseID", id);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("courseID", courseID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper).stream().findFirst();
 	}
@@ -59,38 +60,46 @@ public class CourseDAO implements EntityDAO<Course, UUID> {
 	}
 
 	@Override
-	public boolean deleteByID(UUID id) {
+	public void deleteByID(UUID courseID) {
 		String sql = query.DELETE_BY_ID;
 
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("courseID", id);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("courseID", courseID);
 
-		int result = jdbcTemplate.update(sql, paramSource);
-
-		return result > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
-	public boolean existsByID(UUID id) {
-		return jdbcTemplate.queryForObject(
-			query.EXISTS_BY_ID,
-			new MapSqlParameterSource("courseID", id),
-			Boolean.class
-		);
+	public boolean existsByID(UUID courseID) {
+		String sql = query.EXISTS_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("courseID", courseID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public boolean existsByName(String name) {
+		String sql = query.EXISTS_BY_NAME;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("name", name);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
 	@Override
-	public Course updateByID(UUID id, Course value) {
+	public Course updateByID(UUID courseID, Course course) {
 		String sql = query.UPDATE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("courseID", id);
-		paramSource.addValue("name", value.getName());
-		paramSource.addValue("description", value.getDescription());
-		paramSource.addValue("photo", value.getPhoto());
-		paramSource.addValue("defaultPrice", value.getDefaultPrice());
-		paramSource.addValue("defaultCapacity", value.getDefaultCapacity());
-		paramSource.addValue("defaultDuration", value.getDefaultDuration());
-		paramSource.addValue("defaultLocationID", value.getDefaultLocationID());
+		paramSource.addValue("courseID", courseID);
+
+		paramSource.addValue("name", course.getName());
+		paramSource.addValue("description", course.getDescription());
+		paramSource.addValue("photo", course.getPhoto().toString());
+		paramSource.addValue("defaultPrice", course.getDefaultPrice());
+		paramSource.addValue("defaultDuration", course.getDefaultDuration());
+		paramSource.addValue("defaultCapacity", course.getDefaultCapacity());
+		paramSource.addValue("defaultEquipmentAvailable", course.getDefaultEquipmentAvailable());
+		paramSource.addValue("defaultLocationID", course.getDefaultLocationID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}

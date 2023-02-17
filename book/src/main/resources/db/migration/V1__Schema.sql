@@ -1,7 +1,3 @@
--- ############################################################################################## --
--- ############################################################################################## --
--- ############################################################################################## --
-
 CREATE TYPE details_gender AS ENUM (
 	'MALE',
 	'FEMALE',
@@ -62,7 +58,9 @@ CREATE TABLE IF NOT EXISTS student (
 
 	CONSTRAINT student_fk_details_id
 		FOREIGN KEY (details_id)
-		REFERENCES details (details_id),
+		REFERENCES details (details_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 
 	CONSTRAINT student_check_created_at
 		CHECK (created_at <= get_now())
@@ -87,7 +85,8 @@ CREATE TABLE IF NOT EXISTS instructor (
 	CONSTRAINT instructor_fk_details_id
 		FOREIGN KEY (details_id)
 		REFERENCES details (details_id)
-		ON UPDATE CASCADE,
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 
 	CONSTRAINT instructor_check_created_at
 		CHECK (created_at <= get_now())
@@ -131,8 +130,9 @@ CREATE TABLE IF NOT EXISTS course (
 	description VARCHAR(1024) NOT NULL,
 	photo VARCHAR(1024) NOT NULL,
 	default_price SMALLINT,
-	default_capacity SMALLINT NOT NULL,
 	default_duration SMALLINT NOT NULL,
+	default_capacity SMALLINT NOT NULL,
+	default_equipment_available SMALLINT NOT NULL,
 	default_location_id UUID NOT NULL,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
@@ -143,11 +143,17 @@ CREATE TABLE IF NOT EXISTS course (
 	CONSTRAINT course_check_default_price
 		CHECK (default_price > 0),
 
+	CONSTRAINT course_check_default_duration
+		CHECK (default_duration > 0 AND default_duration <= 60 * 60 * 4),
+
 	CONSTRAINT course_check_default_capacity
 		CHECK (default_capacity > 0),
 
-	CONSTRAINT course_check_default_duration
-		CHECK (default_duration > 0),
+	CONSTRAINT course_check_default_equipment_available
+		CHECK (default_equipment_available >= 0),
+
+	CONSTRAINT course_check_default_capacity_and_equipment_available
+		CHECK (default_capacity <= default_equipment_available),
 
 	CONSTRAINT course_fk_default_location_id
 		FOREIGN KEY (default_location_id)
@@ -175,49 +181,20 @@ CREATE TABLE IF NOT EXISTS course_default_instructor (
 
 	CONSTRAINT course_default_instructor_fk_course_id
 		FOREIGN KEY (course_id)
-		REFERENCES course (course_id),
+		REFERENCES course (course_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 
 	CONSTRAINT course_default_instructor_fk_instructor_id
 		FOREIGN KEY (instructor_id)
-		REFERENCES instructor (instructor_id),
+		REFERENCES instructor (instructor_id)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
 
 	CONSTRAINT course_default_instructor_check_index
 		CHECK (index >= 0),
 
 	CONSTRAINT course_default_instructor_check_created_at
-		CHECK (created_at <= get_now())
-);
-
--- ############################################################################################## --
--- ############################################################################################## --
--- ############################################################################################## --
-
-CREATE TABLE IF NOT EXISTS review (
-
-	review_id UUID NOT NULL DEFAULT gen_random_uuid(),
-
-	score SMALLINT NOT NULL,
-	comment VARCHAR(1024) NOT NULL,
-	course_id UUID NOT NULL,
-	student_id VARCHAR(255) NOT NULL,
-
-	created_at INTEGER NOT NULL DEFAULT get_now(),
-
-	CONSTRAINT review_pk
-		PRIMARY KEY (review_id),
-
-	CONSTRAINT review_fk_course_id
-		FOREIGN KEY (course_id)
-		REFERENCES course (course_id),
-
-	CONSTRAINT review_fk_student_id
-		FOREIGN KEY (student_id)
-		REFERENCES student (student_id),
-
-	CONSTRAINT review_check_score
-		CHECK (score >= 1 AND score <= 5),
-
-	CONSTRAINT review_check_created_at
 		CHECK (created_at <= get_now())
 );
 
@@ -231,13 +208,13 @@ CREATE TABLE IF NOT EXISTS session (
 
 	title VARCHAR(255) NOT NULL,
 	notes VARCHAR(1024) NOT NULL,
-	location_id UUID NOT NULL,
 	price SMALLINT,
-	capacity SMALLINT NOT NULL,
 	start_time INTEGER NOT NULL,
 	end_time INTEGER NOT NULL,
-	course_id UUID NOT NULL,
+	capacity SMALLINT NOT NULL,
 	equipment_available SMALLINT NOT NULL,
+	course_id UUID NOT NULL,
+	location_id UUID NOT NULL,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
@@ -251,9 +228,6 @@ CREATE TABLE IF NOT EXISTS session (
 	CONSTRAINT session_check_price
 		CHECK (price > 0),
 
-	CONSTRAINT session_check_capacity
-		CHECK (capacity > 0),
-
 	CONSTRAINT session_check_start_time
 		CHECK (start_time > get_now()),
 
@@ -262,14 +236,21 @@ CREATE TABLE IF NOT EXISTS session (
 
 	-- check duration is less than 4 hours
 	CONSTRAINT session_check_duration
-		CHECK (end_time - start_time <= 14400),
+		CHECK (end_time - start_time <= 60 * 60 * 4),
+
+	CONSTRAINT session_check_equipment_available
+		CHECK (equipment_available >= 0),
+
+	CONSTRAINT session_check_capacity
+		CHECK (capacity > 0),
 
 	CONSTRAINT session_fk_course_id
 		FOREIGN KEY (course_id)
 		REFERENCES course (course_id),
 
-	CONSTRAINT session_check_equipment_available
-		CHECK (equipment_available >= 0),
+	CONSTRAINT session_fk_location_id
+		FOREIGN KEY (location_id)
+		REFERENCES location (location_id),
 
 	CONSTRAINT session_check_created_at
 		CHECK (created_at <= get_now())
@@ -335,3 +316,32 @@ CREATE TABLE IF NOT EXISTS booking (
 -- ############################################################################################## --
 -- ############################################################################################## --
 -- ############################################################################################## --
+
+CREATE TABLE IF NOT EXISTS review (
+
+	review_id UUID NOT NULL DEFAULT gen_random_uuid(),
+
+	score SMALLINT NOT NULL,
+	comment VARCHAR(1024) NOT NULL,
+	course_id UUID NOT NULL,
+	student_id VARCHAR(255) NOT NULL,
+
+	created_at INTEGER NOT NULL DEFAULT get_now(),
+
+	CONSTRAINT review_pk
+		PRIMARY KEY (review_id),
+
+	CONSTRAINT review_fk_course_id
+		FOREIGN KEY (course_id)
+		REFERENCES course (course_id),
+
+	CONSTRAINT review_fk_student_id
+		FOREIGN KEY (student_id)
+		REFERENCES student (student_id),
+
+	CONSTRAINT review_check_score
+		CHECK (score >= 1 AND score <= 5),
+
+	CONSTRAINT review_check_created_at
+		CHECK (created_at <= get_now())
+);

@@ -1,9 +1,10 @@
 package com.xtremehiphopwithtash.book.resolver.input;
 
+import java.net.URL;
 import org.springframework.data.web.ProjectedPayload;
 
 @ProjectedPayload
-public interface CreateLocationInput {
-	String getName();
-	String getPlusCode();
+public interface InstructorInput {
+	URL getPhoto();
+	DetailsInput getDetails();
 }

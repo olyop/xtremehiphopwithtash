@@ -7,14 +7,16 @@ import org.springframework.stereotype.Component;
 @Component
 public final class LocationQuery {
 
-	public final String SELECT = String.format(
-		"SELECT %s FROM location;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.LOCATION, SQLTableNamesUtil.LOCATION)
+	private final String columnNames = SQLColumnNamesUtil.join(
+		SQLColumnNamesUtil.LOCATION,
+		SQLTableNamesUtil.LOCATION
 	);
+
+	public final String SELECT = String.format("SELECT %s FROM location;", columnNames);
 
 	public final String SELECT_BY_ID = String.format(
 		"SELECT %s FROM location WHERE location_id = :locationID;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.LOCATION, SQLTableNamesUtil.LOCATION)
+		columnNames
 	);
 
 	public final String INSERT = String.format(
@@ -26,7 +28,7 @@ public final class LocationQuery {
 			RETURNING
 				%s;
 		""",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.LOCATION, SQLTableNamesUtil.LOCATION)
+		columnNames
 	);
 
 	public final String UPDATE_BY_ID = String.format(
@@ -41,7 +43,7 @@ public final class LocationQuery {
 			RETURNING
 				%s;
 		""",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.LOCATION, SQLTableNamesUtil.LOCATION)
+		columnNames
 	);
 
 	public final String EXISTS_BY_ID =
@@ -52,8 +54,13 @@ public final class LocationQuery {
 	public final String EXISTS_BY_NAME_OR_PLUS_CODE =
 		"SELECT EXISTS (SELECT 1 FROM location WHERE name = :name OR plus_code = :plusCode);";
 
-	public final String SELECT_LIKE_NAME = String.format(
-		"SELECT %s FROM location WHERE name LIKE :name;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.LOCATION, SQLTableNamesUtil.LOCATION)
+	public final String SELECT_BY_NAME = String.format(
+		"SELECT %s FROM location WHERE name = :name;",
+		columnNames
+	);
+
+	public final String SELECT_BY_PLUS_CODE = String.format(
+		"SELECT %s FROM location WHERE plus_code = :plusCode;",
+		columnNames
 	);
 }

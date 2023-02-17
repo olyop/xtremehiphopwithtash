@@ -57,23 +57,21 @@ public class DetailsDAO implements EntityDAO<Details, UUID> {
 	}
 
 	@Override
-	public boolean deleteByID(UUID id) {
+	public void deleteByID(UUID id) {
 		String sql = query.DELETE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("detailsID", id);
 
-		int result = jdbcTemplate.update(sql, paramSource);
-
-		return result > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
 	public boolean existsByID(UUID id) {
-		return jdbcTemplate.queryForObject(
-			query.EXISTS_BY_ID,
-			new MapSqlParameterSource("detailsID", id),
-			Boolean.class
-		);
+		String sql = query.EXISTS_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("detailsID", id);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
 	@Override
@@ -82,6 +80,7 @@ public class DetailsDAO implements EntityDAO<Details, UUID> {
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("detailsID", id);
+
 		paramSource.addValue("firstName", value.getFirstName());
 		paramSource.addValue("lastName", value.getLastName());
 		paramSource.addValue("nickName", value.getNickName());

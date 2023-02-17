@@ -7,28 +7,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class CourseDefaultInstructorQuery {
 
+	private final String columnNames = SQLColumnNamesUtil.join(
+		SQLColumnNamesUtil.COURSE_DEFAULT_INSTRUCTOR,
+		SQLTableNamesUtil.COURSE_DEFAULT_INSTRUCTOR
+	);
+
 	public final String SELECT = String.format(
 		"SELECT %s FROM course_default_instructor;",
-		SQLColumnNamesUtil.join(
-			SQLColumnNamesUtil.COURSE_DEFAULT_INSTRUCTOR,
-			SQLTableNamesUtil.COURSE_DEFAULT_INSTRUCTOR
-		)
+		columnNames
 	);
 
 	public final String SELECT_BY_ID = String.format(
 		"SELECT %s FROM course_default_instructor WHERE course_id = :courseID AND index = :index;",
-		SQLColumnNamesUtil.join(
-			SQLColumnNamesUtil.COURSE_DEFAULT_INSTRUCTOR,
-			SQLTableNamesUtil.COURSE_DEFAULT_INSTRUCTOR
-		)
+		columnNames
 	);
 
 	public final String INSERT = String.format(
 		"INSERT INTO course_default_instructor (course_id, index, instructor_id) VALUES (:courseID, :index, :instructorID) RETURNING %s;",
-		SQLColumnNamesUtil.join(
-			SQLColumnNamesUtil.COURSE_DEFAULT_INSTRUCTOR,
-			SQLTableNamesUtil.COURSE_DEFAULT_INSTRUCTOR
-		)
+		columnNames
 	);
 
 	public final String EXISTS_BY_ID =
@@ -36,4 +32,12 @@ public class CourseDefaultInstructorQuery {
 
 	public final String DELETE_BY_ID =
 		"DELETE FROM course_default_instructor WHERE course_id = :courseID AND index = :index;";
+
+	public final String DELETE_BY_COURSE_ID =
+		"DELETE FROM course_default_instructor WHERE course_id = :courseID";
+
+	public final String SELECT_BY_COURSE_ID = String.format(
+		"SELECT %s FROM course_default_instructor WHERE course_id = :courseID;",
+		columnNames
+	);
 }

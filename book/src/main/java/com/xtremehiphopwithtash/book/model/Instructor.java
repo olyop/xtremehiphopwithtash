@@ -3,7 +3,7 @@ package com.xtremehiphopwithtash.book.model;
 import java.net.URL;
 import java.util.UUID;
 
-public class Instructor extends BaseModel {
+public class Instructor extends Base {
 
 	private UUID instructorID;
 	private URL photo;

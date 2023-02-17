@@ -52,22 +52,20 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 	}
 
 	@Override
-	public boolean deleteByID(String id) {
+	public void deleteByID(String id) {
 		String sql = query.DELETE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", id);
 
-		int rowsAffected = jdbcTemplate.update(sql, paramSource);
-
-		return rowsAffected > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
 	public boolean existsByID(String id) {
-		return jdbcTemplate.queryForObject(
-			query.EXISTS_BY_ID,
-			new MapSqlParameterSource("studentID", id),
-			Boolean.class
-		);
+		String sql = query.EXISTS_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", id);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 }

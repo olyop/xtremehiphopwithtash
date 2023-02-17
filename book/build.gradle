@@ -21,7 +21,7 @@ dependencies {
 	implementation 'com.google.openlocationcode:openlocationcode:1.0.4'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 	implementation 'org.flywaydb:flyway-core'
-	compileOnly 'org.springframework.boot:spring-boot-devtools'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework:spring-webflux'

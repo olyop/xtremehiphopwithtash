@@ -57,16 +57,14 @@ public class SessionInstructorDAO implements EntityRelationshipDAO<SessionInstru
 	}
 
 	@Override
-	public boolean deleteByID(UUID id, Short index) {
+	public void deleteByID(UUID id, Short index) {
 		String sql = query.DELETE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("sessionID", id);
 		paramSource.addValue("index", index);
 
-		int result = jdbcTemplate.update(sql, paramSource);
-
-		return result > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
@@ -76,6 +74,14 @@ public class SessionInstructorDAO implements EntityRelationshipDAO<SessionInstru
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("sessionID", id);
 		paramSource.addValue("index", index);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public boolean deleteBySessionID(UUID id) {
+		String sql = query.DELETE_BY_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", id);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}

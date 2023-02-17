@@ -7,24 +7,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class InstructorQuery {
 
-	public final String SELECT = String.format(
-		"SELECT %s FROM instructor;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.INSTRUCTOR, SQLTableNamesUtil.INSTRUCTOR)
+	private final String columnNames = SQLColumnNamesUtil.join(
+		SQLColumnNamesUtil.INSTRUCTOR,
+		SQLTableNamesUtil.INSTRUCTOR
 	);
+
+	public final String SELECT = String.format("SELECT %s FROM instructor;", columnNames);
 
 	public final String SELECT_BY_ID = String.format(
 		"SELECT %s FROM instructor WHERE instructor_id = :instructorID;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.INSTRUCTOR, SQLTableNamesUtil.INSTRUCTOR)
+		columnNames
 	);
 
 	public final String INSERT = String.format(
 		"INSERT INTO instructor (details_id, photo) VALUES (:detailsID, :photo) RETURNING %s;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.INSTRUCTOR, SQLTableNamesUtil.INSTRUCTOR)
+		columnNames
 	);
 
 	public final String UPDATE_BY_ID = String.format(
 		"UPDATE instructor SET photo = :photo WHERE instructor_id = :instructorID RETURNING %s;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.INSTRUCTOR, SQLTableNamesUtil.INSTRUCTOR)
+		columnNames
 	);
 
 	public final String EXISTS_BY_ID =

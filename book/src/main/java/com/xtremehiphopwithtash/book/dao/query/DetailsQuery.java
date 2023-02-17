@@ -7,14 +7,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class DetailsQuery {
 
-	public final String SELECT = String.format(
-		"SELECT %s FROM details;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.DETAILS, SQLTableNamesUtil.DETAILS)
+	private final String columnNames = SQLColumnNamesUtil.join(
+		SQLColumnNamesUtil.DETAILS,
+		SQLTableNamesUtil.DETAILS
 	);
+
+	public final String SELECT = String.format("SELECT %s FROM details;", columnNames);
 
 	public final String SELECT_BY_ID = String.format(
 		"SELECT %s FROM details WHERE details_id = :detailsID;",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.DETAILS, SQLTableNamesUtil.DETAILS)
+		columnNames
 	);
 
 	public final String INSERT = String.format(
@@ -26,7 +28,7 @@ public class DetailsQuery {
 			RETURNING
 				%s;
 			""",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.DETAILS, SQLTableNamesUtil.DETAILS)
+		columnNames
 	);
 
 	public final String UPDATE_BY_ID = String.format(
@@ -44,7 +46,7 @@ public class DetailsQuery {
 			RETURNING
 				%s;
 			""",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.DETAILS, SQLTableNamesUtil.DETAILS)
+		columnNames
 	);
 
 	public final String EXISTS_BY_ID =
@@ -60,8 +62,7 @@ public class DetailsQuery {
 				FROM
 					details
 				WHERE
-					first_name = :firstName AND
-					last_name = :lastName AND
+					(first_name = :firstName AND last_name = :lastName) OR
 					nick_name = :nickName
 			);
 		""";

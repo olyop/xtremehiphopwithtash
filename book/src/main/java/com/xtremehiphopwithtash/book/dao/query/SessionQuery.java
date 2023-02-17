@@ -7,26 +7,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionQuery {
 
-	public final String SELECT = String.format(
-		"SELECT %s FROM session",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.SESSION, SQLTableNamesUtil.SESSION)
+	private final String columnNames = SQLColumnNamesUtil.join(
+		SQLColumnNamesUtil.SESSION,
+		SQLTableNamesUtil.SESSION
 	);
 
+	public final String SELECT = String.format("SELECT %s FROM session;", columnNames);
+
 	public final String SELECT_BY_ID = String.format(
-		"SELECT %s FROM session WHERE session_id = :sessionID",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.SESSION, SQLTableNamesUtil.SESSION)
+		"SELECT %s FROM session WHERE session_id = :sessionID;",
+		columnNames
 	);
 
 	public final String INSERT = String.format(
 		"""
 			INSERT INTO session
-				(title, notes, location_id, price, capacity, start_time, end_time, course_id, equipment_available)
+				(title, notes, price, start_time, end_time, capacity, equipment_available, course_id, location_id)
 			VALUES
-				(:title, :notes, :locationID, :price, :capacity, :startTime, :endTime, :courseID, :equipmentAvailable)
+				(:title, :notes, :price, :startTime, :endTime, :capacity, :equipmentAvailable, :courseID, :locationID)
 			RETURNING
 				%s;
 		""",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.SESSION, SQLTableNamesUtil.SESSION)
+		columnNames
 	);
 
 	public final String UPDATE_BY_ID = String.format(
@@ -36,23 +38,36 @@ public class SessionQuery {
 			SET
 				title = :title,
 				notes = :notes,
-				location_id = :locationID,
 				price = :price,
-				capacity = :capacity,
 				start_time = :startTime,
 				end_time = :endTime,
+				capacity = :capacity,
+				equipment_available = :equipmentAvailable,
 				course_id = :courseID,
-				equipment_available = :equipmentAvailable
+				location_id = :locationID
 			WHERE
 				session_id = :sessionID
 			RETURNING
 				%s;
 		""",
-		SQLColumnNamesUtil.join(SQLColumnNamesUtil.SESSION, SQLTableNamesUtil.SESSION)
+		columnNames
 	);
 
 	public final String EXISTS_BY_ID =
 		"SELECT EXISTS (SELECT 1 FROM session WHERE session_id = :sessionID);";
 
 	public final String DELETE_BY_ID = "DELETE FROM session WHERE session_id = :sessionID;";
+
+	public final String SELECT_SESSIONS_IN_PERIOD = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				session
+			WHERE
+				start_time <= :endTime AND
+				end_time >= :startTime;
+		""",
+		columnNames
+	);
 }

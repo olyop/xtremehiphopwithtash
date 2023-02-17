@@ -2,7 +2,7 @@ package com.xtremehiphopwithtash.book.model;
 
 import java.util.UUID;
 
-public class Location extends BaseModel {
+public class Location extends Base {
 
 	private UUID locationID;
 	private String name;

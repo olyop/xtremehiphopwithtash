@@ -4,8 +4,8 @@ import com.xtremehiphopwithtash.book.dao.DetailsDAO;
 import com.xtremehiphopwithtash.book.dao.InstructorDAO;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Instructor;
-import com.xtremehiphopwithtash.book.resolver.input.CreateInstructorInput;
-import com.xtremehiphopwithtash.book.util.ValidationUtil;
+import com.xtremehiphopwithtash.book.resolver.input.InstructorInput;
+import com.xtremehiphopwithtash.book.resolver.validator.InstructorValidator;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +21,16 @@ public class InstructorResolver {
 
 	private final InstructorDAO instructorDAO;
 	private final DetailsDAO detailsDAO;
+	private final InstructorValidator instructorValidator;
 
-	public InstructorResolver(InstructorDAO instructorDAO, DetailsDAO detailsDAO) {
+	public InstructorResolver(
+		InstructorDAO instructorDAO,
+		DetailsDAO detailsDAO,
+		InstructorValidator instructorValidator
+	) {
 		this.instructorDAO = instructorDAO;
 		this.detailsDAO = detailsDAO;
+		this.instructorValidator = instructorValidator;
 	}
 
 	@QueryMapping
@@ -33,8 +39,8 @@ public class InstructorResolver {
 	}
 
 	@QueryMapping
-	public Optional<Instructor> getInstructorByID(@Argument UUID id) {
-		return instructorDAO.selectByID(id);
+	public Optional<Instructor> getInstructorByID(@Argument UUID instructorID) {
+		return instructorDAO.selectByID(instructorID);
 	}
 
 	@SchemaMapping(typeName = "Instructor", field = "details")
@@ -43,36 +49,22 @@ public class InstructorResolver {
 	}
 
 	@MutationMapping
-	public Instructor createInstructor(@Argument CreateInstructorInput input) {
+	public Instructor createInstructor(@Argument InstructorInput input) {
 		URL photo = input.getPhoto();
 		String firstName = input.getDetails().getFirstName();
 		String lastName = input.getDetails().getLastName();
-		String nickName = input.getDetails().getNickName();
-		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
+		Optional<String> nickName = input.getDetails().getNickName();
 		String gender = input.getDetails().getGender();
+		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
 
-		if (!detailsDAO.selectGenders().contains(gender)) {
-			throw new IllegalArgumentException("Gender does not exist");
-		}
-
-		if (!mobilePhoneNumber.startsWith("04")) {
-			throw new IllegalArgumentException("Invalid mobile phone number");
-		}
-
-		if (!ValidationUtil.validateURL(photo)) {
-			throw new IllegalArgumentException("Invalid photo URL");
-		}
-
-		if (detailsDAO.existsByNames(firstName, lastName, nickName)) {
-			throw new IllegalArgumentException("Instructor with name already exists");
-		}
+		instructorValidator.validateInput(input);
 
 		Details details = new Details();
 		details.setFirstName(firstName);
 		details.setLastName(lastName);
-		details.setNickName(nickName);
-		details.setMobilePhoneNumber(mobilePhoneNumber);
+		details.setNickName(nickName.get());
 		details.setGender(gender);
+		details.setMobilePhoneNumber(mobilePhoneNumber);
 
 		Details savedDetails = detailsDAO.insert(details);
 
@@ -81,5 +73,45 @@ public class InstructorResolver {
 		instructor.setDetailsID(savedDetails.getDetailsID());
 
 		return instructorDAO.insert(instructor);
+	}
+
+	@MutationMapping
+	public UUID deleteInstructor(@Argument UUID instructorID) {
+		instructorValidator.validateID(instructorID);
+
+		Optional<Instructor> instructor = instructorDAO.selectByID(instructorID);
+
+		instructorDAO.deleteByID(instructorID);
+		detailsDAO.deleteByID(instructor.get().getDetailsID());
+
+		return instructorID;
+	}
+
+	@MutationMapping
+	public Instructor updateInstructor(@Argument UUID instructorID, @Argument InstructorInput input) {
+		URL photo = input.getPhoto();
+		String firstName = input.getDetails().getFirstName();
+		String lastName = input.getDetails().getLastName();
+		Optional<String> nickName = input.getDetails().getNickName();
+		String gender = input.getDetails().getGender();
+		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
+
+		instructorValidator.validateID(instructorID);
+		instructorValidator.validateInput(input);
+
+		Instructor instructor = instructorDAO.selectByID(instructorID).get();
+		instructor.setPhoto(photo);
+
+		Details details = new Details();
+		details.setFirstName(firstName);
+		details.setLastName(lastName);
+		details.setNickName(nickName.get());
+		details.setGender(gender);
+		details.setMobilePhoneNumber(mobilePhoneNumber);
+
+		instructorDAO.updateByID(instructorID, instructor);
+		detailsDAO.updateByID(instructor.getDetailsID(), details);
+
+		return instructor;
 	}
 }

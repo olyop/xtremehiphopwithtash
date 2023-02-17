@@ -17,7 +17,9 @@ public class SessionInstructorRowMapper implements RowMapper<SessionInstructor> 
 
 		sessionInstructor.setSessionID(MapRowUtil.mapToUUID(rs.getString("session_id")));
 		sessionInstructor.setIndex(rs.getShort("index"));
+
 		sessionInstructor.setInstructorID(MapRowUtil.mapToUUID(rs.getString("instructor_id")));
+
 		sessionInstructor.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 
 		return sessionInstructor;

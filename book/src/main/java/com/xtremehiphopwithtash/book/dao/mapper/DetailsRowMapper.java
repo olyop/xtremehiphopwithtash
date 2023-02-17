@@ -16,11 +16,13 @@ public class DetailsRowMapper implements RowMapper<Details> {
 		Details details = new Details();
 
 		details.setDetailsID(MapRowUtil.mapToUUID(rs.getString("details_id")));
+
 		details.setFirstName(rs.getString("first_name"));
 		details.setLastName(rs.getString("last_name"));
 		details.setNickName(rs.getString("nick_name"));
 		details.setGender(rs.getString("gender"));
 		details.setMobilePhoneNumber(rs.getString("mobile_phone_number"));
+
 		details.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 
 		return details;

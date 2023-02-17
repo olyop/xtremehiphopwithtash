@@ -36,8 +36,9 @@ public final class SQLColumnNamesUtil {
 		"description",
 		"photo",
 		"default_price",
-		"default_capacity",
 		"default_duration",
+		"default_capacity",
+		"default_equipment_available",
 		"default_location_id",
 		CREATED_AT
 	);
@@ -53,13 +54,13 @@ public final class SQLColumnNamesUtil {
 		"session_id",
 		"title",
 		"notes",
-		"location_id",
 		"price",
-		"capacity",
 		"start_time",
 		"end_time",
-		"course_id",
+		"capacity",
 		"equipment_available",
+		"course_id",
+		"location_id",
 		CREATED_AT
 	);
 
@@ -77,6 +78,15 @@ public final class SQLColumnNamesUtil {
 		"notes",
 		"is_bringing_own_equipment",
 		"session_id",
+		"student_id",
+		CREATED_AT
+	);
+
+	public static final List<String> REVIEW = List.of(
+		"review_id",
+		"score",
+		"comment",
+		"course_id",
 		"student_id",
 		CREATED_AT
 	);

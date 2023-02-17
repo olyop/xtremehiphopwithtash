@@ -17,7 +17,9 @@ public class CourseDefaultInstructorRowMapper implements RowMapper<CourseDefault
 
 		courseDefaultInstructor.setCourseID(MapRowUtil.mapToUUID(rs.getString("course_id")));
 		courseDefaultInstructor.setIndex(rs.getShort("index"));
+
 		courseDefaultInstructor.setInstructorID(MapRowUtil.mapToUUID(rs.getString("instructor_id")));
+
 		courseDefaultInstructor.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 
 		return courseDefaultInstructor;

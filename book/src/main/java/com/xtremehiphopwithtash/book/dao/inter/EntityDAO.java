@@ -1,5 +1,5 @@
 package com.xtremehiphopwithtash.book.dao.inter;
 
-public interface EntityDAO<Bean, ID> extends EntityBaseDAO<Bean, ID> {
-	public Bean updateByID(ID id, Bean value);
+public interface EntityDAO<Model, ID> extends EntityBaseDAO<Model, ID> {
+	public Model updateByID(ID id, Model value);
 }

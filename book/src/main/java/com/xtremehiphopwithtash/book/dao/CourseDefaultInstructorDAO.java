@@ -42,11 +42,11 @@ public class CourseDefaultInstructorDAO
 	}
 
 	@Override
-	public Optional<CourseDefaultInstructor> selectByID(UUID id, Short index) {
+	public Optional<CourseDefaultInstructor> selectByID(UUID courseID, Short index) {
 		String sql = query.SELECT_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("courseID", id);
+		paramSource.addValue("courseID", courseID);
 		paramSource.addValue("index", index);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper).stream().findFirst();
@@ -58,16 +58,14 @@ public class CourseDefaultInstructorDAO
 	}
 
 	@Override
-	public boolean deleteByID(UUID id, Short index) {
+	public void deleteByID(UUID id, Short index) {
 		String sql = query.DELETE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("courseID", id);
 		paramSource.addValue("index", index);
 
-		int result = jdbcTemplate.update(sql, paramSource);
-
-		return result > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
@@ -77,6 +75,23 @@ public class CourseDefaultInstructorDAO
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("courseID", id);
 		paramSource.addValue("index", index);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public List<CourseDefaultInstructor> selectByCourseID(UUID courseID) {
+		String sql = query.SELECT_BY_COURSE_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("courseID", courseID);
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
+	public boolean deleteByCourseID(UUID courseID) {
+		String sql = query.DELETE_BY_COURSE_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("courseID", courseID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}

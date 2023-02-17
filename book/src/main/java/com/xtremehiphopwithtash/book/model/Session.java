@@ -3,7 +3,7 @@ package com.xtremehiphopwithtash.book.model;
 import java.time.Instant;
 import java.util.UUID;
 
-public class Session extends BaseModel {
+public class Session extends Base {
 
 	private UUID sessionID;
 	private String title;

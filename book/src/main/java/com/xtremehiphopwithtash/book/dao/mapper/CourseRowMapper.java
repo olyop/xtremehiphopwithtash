@@ -16,13 +16,16 @@ public class CourseRowMapper implements RowMapper<Course> {
 		Course course = new Course();
 
 		course.setCourseID(MapRowUtil.mapToUUID(rs.getString("course_id")));
+
 		course.setName(rs.getString("name"));
 		course.setDescription(rs.getString("description"));
-		course.setPhoto(rs.getURL("photo"));
-		course.setDefaultPrice(rs.getShort("default_price"));
-		course.setDefaultCapacity(rs.getShort("default_capacity"));
+		course.setPhoto(MapRowUtil.mapToURL(rs.getString("photo")));
+		course.setDefaultPrice(MapRowUtil.mapToPrice(rs.getShort("default_price")));
 		course.setDefaultDuration(rs.getShort("default_duration"));
+		course.setDefaultCapacity(rs.getShort("default_capacity"));
+		course.setDefaultEquipmentAvailable(rs.getShort("default_equipment_available"));
 		course.setDefaultLocationID(MapRowUtil.mapToUUID(rs.getString("default_location_id")));
+
 		course.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 
 		return course;

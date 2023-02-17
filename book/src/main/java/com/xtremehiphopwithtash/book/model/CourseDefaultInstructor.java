@@ -2,13 +2,12 @@ package com.xtremehiphopwithtash.book.model;
 
 import java.util.UUID;
 
-public class CourseDefaultInstructor extends BaseModel {
+public class CourseDefaultInstructor extends Base {
 
 	private UUID courseID;
 	private Short index;
-	private UUID instructorID;
 
-	public CourseDefaultInstructor() {}
+	private UUID instructorID;
 
 	public UUID getCourseID() {
 		return courseID;

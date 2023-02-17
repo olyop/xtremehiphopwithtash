@@ -16,7 +16,9 @@ public class StudentRowMapper implements RowMapper<Student> {
 		Student student = new Student();
 
 		student.setStudentID(rs.getString("student_id"));
+
 		student.setDetailsID(MapRowUtil.mapToUUID(rs.getString("details_id")));
+
 		student.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 
 		return student;

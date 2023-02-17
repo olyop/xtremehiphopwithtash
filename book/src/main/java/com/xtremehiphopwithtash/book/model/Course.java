@@ -3,7 +3,7 @@ package com.xtremehiphopwithtash.book.model;
 import java.net.URL;
 import java.util.UUID;
 
-public class Course extends BaseModel {
+public class Course extends Base {
 
 	private UUID courseID;
 	private String name;
@@ -13,8 +13,7 @@ public class Course extends BaseModel {
 	private Short defaultCapacity;
 	private Short defaultDuration;
 	private UUID defaultLocationID;
-
-	public Course() {}
+	private Short defaultEquipmentAvailable;
 
 	public UUID getCourseID() {
 		return courseID;
@@ -78,5 +77,13 @@ public class Course extends BaseModel {
 
 	public void setDefaultLocationID(UUID defaultLocationID) {
 		this.defaultLocationID = defaultLocationID;
+	}
+
+	public Short getDefaultEquipmentAvailable() {
+		return defaultEquipmentAvailable;
+	}
+
+	public void setDefaultEquipmentAvailable(Short defaultEquipmentAvailable) {
+		this.defaultEquipmentAvailable = defaultEquipmentAvailable;
 	}
 }

@@ -1,12 +1,13 @@
 package com.xtremehiphopwithtash.book.resolver.input;
 
+import java.util.Optional;
 import org.springframework.data.web.ProjectedPayload;
 
 @ProjectedPayload
-public interface CreateDetailsInput {
+public interface DetailsInput {
 	String getFirstName();
 	String getLastName();
-	String getNickName();
+	Optional<String> getNickName();
 	String getMobilePhoneNumber();
 	String getGender();
 }

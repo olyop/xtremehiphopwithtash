@@ -1,89 +1,54 @@
-input GetSessions {
+input GetSessionsInput {
 	courseID: UUID
 	startTime: UnixTime!
 	endTime: UnixTime!
 }
 
-input CreateDetails {
+input DetailsInput {
 	firstName: String!
 	lastName: String!
 	nickName: String
 	gender: String!
-	mobilePhoneNumber: MobilePhoneNumber!
+	mobilePhoneNumber: String!
 }
 
-input CreateLocation {
+input LocationInput {
 	name: String!
 	plusCode: String!
 }
 
-input CreateStudent {
-	# Foreign Key from Auth0
-	studentID: String!
-	details: CreateDetails!
-}
-
-input CreateInstructor {
+input InstructorInput {
 	photo: URL!
-	details: CreateDetails!
+	details: DetailsInput!
 }
 
-input CreateCourse {
+input CourseInput {
 	name: String!
 	photo: URL!
 	description: String!
-	defaultPrice: Price!
-	defaultLocation: String!
-	defaultInstructorID: UUID!
+	defaultPrice: PositiveInt
+	defaultDuration: PositiveInt!
+	defaultCapacity: PositiveInt!
+	defaultEquipmentAvailable: PositiveInt
+	defaultLocationID: UUID!
+	defaultInstructorIDs: [UUID!]!
 }
 
-input CreateSession {
+input SessionInput {
 	title: String!
 	notes: String
 	startTime: UnixTime!
 	endTime: UnixTime!
-	location: String!
-	price: Price
+	locationID: UUID!
+	price: PositiveInt
 	courseID: UUID!
+	equipmentAvailable: PositiveInt
 	instructorIDs: [UUID!]!
 }
 
-input CreateBooking {
+input BookingInput {
 	notes: String!
 	timeBooked: UnixTime!
 	sessionID: UUID!
 	studentID: UUID!
-}
-
-input UpdateStudent {
-	studentID: UUID!
-	details: CreateDetails!
-}
-
-input UpdateInstructor {
-	instructorID: UUID!
-	photo: URL!
-	details: CreateDetails!
-}
-
-input UpdateCourse {
-	courseID: UUID!
-	name: String!
-	photo: URL!
-	description: String!
-	defaultPrice: Price!
-	defaultLocation: String!
-	defaultInstructor: UUID!
-}
-
-input UpdateSession {
-	sessionID: UUID!
-	title: String!
-	notes: String!
-	startTime: UnixTime!
-	endTime: UnixTime!
-	location: String
-	price: Price
-	course: UUID!
-	instructors: [UUID!]!
 }

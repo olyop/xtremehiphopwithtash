@@ -23,11 +23,6 @@ public class ApplicationConfiguration {
 		.aliasedScalar(ExtendedScalars.UUID)
 		.build();
 
-	private final GraphQLScalarType PriceScalar = ExtendedScalars
-		.newAliasedScalar("Price")
-		.aliasedScalar(ExtendedScalars.PositiveFloat)
-		.build();
-
 	private final GraphQLScalarType LikertScale = ExtendedScalars
 		.newRegexScalar("LikertScale")
 		.addPattern(Pattern.compile("^[1-5]$"))
@@ -39,22 +34,16 @@ public class ApplicationConfiguration {
 		.coercing(new InstantCoerce())
 		.build();
 
-	private final GraphQLScalarType MobilePhoneNumberScalar = ExtendedScalars
-		.newRegexScalar("MobilePhoneNumber")
-		.addPattern(Pattern.compile("^\\d{10}$"))
-		.build();
-
 	@Bean
 	public RuntimeWiringConfigurer runtimeWiringConfigurerGraphQL() {
 		return wiringBuilder ->
 			wiringBuilder
 				.scalar(URLScalar)
 				.scalar(UUIDScalar)
-				.scalar(PriceScalar)
 				.scalar(LikertScale)
 				.scalar(UnixTimeScalar)
-				.scalar(MobilePhoneNumberScalar)
-				.scalar(ExtendedScalars.PositiveInt);
+				.scalar(ExtendedScalars.PositiveInt)
+				.scalar(ExtendedScalars.NonNegativeInt);
 	}
 
 	@Bean

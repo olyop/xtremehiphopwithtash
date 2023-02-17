@@ -2,7 +2,7 @@ package com.xtremehiphopwithtash.book.model;
 
 import java.util.UUID;
 
-public class SessionInstructor extends BaseModel {
+public class SessionInstructor extends Base {
 
 	private UUID sessionID;
 	private Short index;

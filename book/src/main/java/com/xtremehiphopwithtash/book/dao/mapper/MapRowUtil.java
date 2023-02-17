@@ -31,4 +31,8 @@ public final class MapRowUtil {
 	public static LikertScale mapToLikertScale(Integer value) {
 		return new LikertScale(value);
 	}
+
+	public static Short mapToPrice(Short value) {
+		return value == 0 ? null : value;
+	}
 }

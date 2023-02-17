@@ -1,6 +1,6 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.InstructorRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.InstructorQuery;
 import com.xtremehiphopwithtash.book.model.Instructor;
@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class InstructorDAO implements EntityBaseDAO<Instructor, UUID> {
+public class InstructorDAO implements EntityDAO<Instructor, UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final InstructorQuery query;
@@ -40,11 +40,11 @@ public class InstructorDAO implements EntityBaseDAO<Instructor, UUID> {
 	}
 
 	@Override
-	public Optional<Instructor> selectByID(UUID id) {
+	public Optional<Instructor> selectByID(UUID instructorID) {
 		String sql = query.SELECT_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("instructorID", id);
+		paramSource.addValue("instructorID", instructorID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper).stream().findFirst();
 	}
@@ -55,21 +55,32 @@ public class InstructorDAO implements EntityBaseDAO<Instructor, UUID> {
 	}
 
 	@Override
-	public boolean deleteByID(UUID id) {
+	public void deleteByID(UUID instructorID) {
 		String sql = query.DELETE_BY_ID;
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("instructorID", id);
 
-		int rowsAffected = jdbcTemplate.update(sql, paramSource);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("instructorID", instructorID);
 
-		return rowsAffected > 0;
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override
-	public boolean existsByID(UUID id) {
-		return jdbcTemplate.queryForObject(
-			query.EXISTS_BY_ID,
-			new MapSqlParameterSource("instructorID", id),
-			Boolean.class
-		);
+	public boolean existsByID(UUID instructorID) {
+		String sql = query.EXISTS_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("instructorID", instructorID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	@Override
+	public Instructor updateByID(UUID instructorID, Instructor instructor) {
+		String sql = query.UPDATE_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("instructorID", instructorID);
+
+		paramSource.addValue("photo", instructor.getPhoto().toString());
+
+		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 }

@@ -16,8 +16,10 @@ public class InstructorRowMapper implements RowMapper<Instructor> {
 		Instructor instructor = new Instructor();
 
 		instructor.setInstructorID(MapRowUtil.mapToUUID(rs.getString("instructor_id")));
+
 		instructor.setDetailsID(MapRowUtil.mapToUUID(rs.getString("details_id")));
 		instructor.setPhoto(MapRowUtil.mapToURL(rs.getString("photo")));
+
 		instructor.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 
 		return instructor;

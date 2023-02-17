@@ -2,8 +2,6 @@ package com.xtremehiphopwithtash.book;
 
 import com.xtremehiphopwithtash.book.dao.DetailsDAO;
 import com.xtremehiphopwithtash.book.dao.InstructorDAO;
-import com.xtremehiphopwithtash.book.model.Details;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,15 +21,5 @@ public class BookApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
-		Details details = new Details();
-
-		details.setFirstName("Natasha");
-		details.setLastName("Brown");
-		details.setNickName("Tash");
-		details.setGender("FEMALE");
-		details.setMobilePhoneNumber("0123456789");
-
-		detailsDAO.updateByID(UUID.fromString("5593dae6-1dcf-46f0-846d-a68044df57dc"), details);
-	}
+	public void run(String... args) throws Exception {}
 }

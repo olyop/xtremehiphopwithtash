@@ -17,9 +17,8 @@ public class ReviewDAO implements EntityDAO<Review, UUID> {
 	}
 
 	@Override
-	public boolean deleteByID(UUID id) {
+	public void deleteByID(UUID id) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
