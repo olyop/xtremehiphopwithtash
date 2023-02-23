@@ -1,0 +1,14 @@
+query getInstructors {
+	getInstructors {
+		instructorID
+		photo
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+		}
+	}
+}

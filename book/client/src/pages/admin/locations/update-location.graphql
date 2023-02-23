@@ -1,0 +1,7 @@
+mutation updateLocation($locationID: UUID!, $input: LocationInput!) {
+	updateLocationByID(locationID: $locationID, input: $input) {
+		locationID
+		name
+		plusCode
+	}
+}

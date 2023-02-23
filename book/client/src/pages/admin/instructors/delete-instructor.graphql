@@ -1,0 +1,3 @@
+mutation deleteInstructor($instructorID: UUID!) {
+	deleteInstructorByID(instructorID: $instructorID)
+}

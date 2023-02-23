@@ -1,0 +1,38 @@
+overwrite: true
+emitLegacyCommonJSImports: false
+documents: book/client/src/**/*.graphql
+schema: book/server/src/main/resources/graphql/*.graphqls
+hooks:
+  afterAllFileWrite: prettier --write
+generates:
+  book/client/src/generated-types.ts:
+    config:
+      avoidOptionals: true
+      immutableTypes: true
+      useTypeImports: true
+      mergeFragmentTypes: true
+      nonOptionalTypename: true
+      useImplementingTypes: true
+      flattenGeneratedTypes: true
+      defaultScalarType: unknown
+      inlineFragmentTypes: combine
+      namingConvention:
+        enumValues: change-case#upperCase
+      scalars:
+        URL: string
+        UUID: string
+        UnixTime: number
+        PositiveInt: number
+        LikertScale: number
+        NonNegativeInt: number
+
+    plugins:
+      - typescript
+      - typescript-operations
+      - add:
+          content: |
+            /* eslint-disable @typescript-eslint/no-explicit-any */
+            /* eslint-disable unicorn/prevent-abbreviations */
+            /* eslint-disable import/newline-after-import */
+            /* eslint-disable @typescript-eslint/ban-types */
+            /* eslint-disable @typescript-eslint/no-invalid-void-type */

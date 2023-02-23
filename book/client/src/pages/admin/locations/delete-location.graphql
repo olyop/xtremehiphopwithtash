@@ -1,0 +1,3 @@
+mutation deleteLocation($locationID: UUID!) {
+	deleteLocationByID(locationID: $locationID)
+}

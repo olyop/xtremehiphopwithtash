@@ -1,3 +1,4 @@
 {
-	"schema": "book/src/main/resources/graphql/*.graphqls"
+	"schema": "book/server/src/main/resources/graphql/*.graphqls",
+	"documents": "book/client/src/**/*.graphql"
 }

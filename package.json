@@ -1,30 +1,67 @@
 {
-  "name": "natasha-class-booker",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/olyop/natasha-class-booker.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/olyop/natasha-class-booker/issues"
-  },
-  "homepage": "https://github.com/olyop/natasha-class-booker#readme",
-  "devDependencies": {
-    "@oly_op/cspell-dict": "^1.0.115",
-    "@oly_op/prettier-config": "^1.0.21",
-    "cspell": "^6.18.1",
-    "prettier": "^2.8.3"
-  },
-  "volta": {
-    "node": "19.4.0",
-    "npm": "9.3.0"
-  }
+	"name": "xtremehiphopwithtash",
+	"version": "1.0.0",
+	"description": "",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/olyop/xtremehiphopwithtash.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/olyop/xtremehiphopwithtash/issues"
+	},
+	"homepage": "https://github.com/olyop/xtremehiphopwithtash#readme",
+	"volta": {
+		"node": "19.4.0",
+		"npm": "9.3.0"
+	},
+	"scripts": {
+		"book-codegen": "graphql-codegen-esm -w",
+		"book-client": "cd book/client && npm run dev --  --force",
+		"book-server-build": "cd book/server && gradle build --continuous -x test",
+		"book-server-run": "cd book/server && gradle bootRun",
+		"book": "concurrently 'npm run book-client' 'npm run book-server-build' 'npm run book-server-run' 'npm run book-codegen'"
+	},
+	"devDependencies": {
+		"@graphql-codegen/add": "4.0.0",
+		"@graphql-codegen/cli": "3.0.0",
+		"@graphql-codegen/client-preset": "2.0.0",
+		"@graphql-codegen/near-operation-file-preset": "2.5.0",
+		"@graphql-codegen/typescript": "3.0.0",
+		"@graphql-codegen/typescript-resolvers": "3.0.0",
+		"@graphql-eslint/eslint-plugin": "3.16.0",
+		"@oly_op/cspell-dict": "^1.0.115",
+		"@oly_op/eslint-config": "6.0.18",
+		"@oly_op/eslint-config-graphql": "1.0.1",
+		"@oly_op/eslint-config-react": "3.1.2",
+		"@oly_op/prettier-config": "^1.0.21",
+		"@oly_op/stylelint-config": "2.2.0",
+		"@oly_op/tsconfig": "1.0.25",
+		"@types/eslint": "8.21.1",
+		"@typescript-eslint/eslint-plugin": "5.52.0",
+		"concurrently": "7.6.0",
+		"copy-and-watch": "0.1.6",
+		"cross-env": "7.0.3",
+		"cspell": "^6.18.1",
+		"del-cli": "5.0.0",
+		"eslint": "8.34.0",
+		"eslint-plugin-import": "2.27.5",
+		"eslint-plugin-json": "3.1.0",
+		"eslint-plugin-jsx-a11y": "6.7.1",
+		"eslint-plugin-node": "11.1.0",
+		"eslint-plugin-prefer-arrow-functions": "3.1.4",
+		"eslint-plugin-promise": "6.1.1",
+		"eslint-plugin-react": "7.32.2",
+		"eslint-plugin-react-hooks": "4.6.0",
+		"eslint-plugin-unicorn": "45.0.2",
+		"graphql": "16.6.0",
+		"npm-check-updates": "16.7.5",
+		"prettier": "^2.8.3",
+		"stylelint": "15.1.0",
+		"stylelint-config-standard-scss": "7.0.1",
+		"ts-node": "10.9.1",
+		"typescript": "4.9.5"
+	}
 }

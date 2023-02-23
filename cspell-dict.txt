@@ -1,8 +1,10 @@
 Embeddable
 fkey
 graphqls
+inmemory
 Likert
 Querydsl
 Tash
 unnest
+Xtreme
 xtremehiphopwithtash

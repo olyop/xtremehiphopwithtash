@@ -1,0 +1,23 @@
+{
+	"root": true,
+	"overrides": [
+		{
+			"files": ["*.ts", "*.tsx"],
+			"extends": ["@oly_op/eslint-config-react", "../../.eslintrc.json"],
+			"parserOptions": {
+				"project": "book/client/tsconfig.json"
+			},
+			"env": {
+				"browser": true
+			}
+		},
+		{
+			"files": ["*.graphql"],
+			"extends": ["plugin:@graphql-eslint/operations-all", "@oly_op/eslint-config-graphql"],
+			"parserOptions": {
+				"operations": "book/client/src/**/*.graphql",
+				"schema": "book/server/src/main/resources/graphql/*.graphqls"
+			}
+		}
+	]
+}

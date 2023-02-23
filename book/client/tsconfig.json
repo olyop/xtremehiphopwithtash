@@ -1,0 +1,16 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"useDefineForClassFields": true,
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"skipLibCheck": true,
+		"esModuleInterop": false,
+		"moduleResolution": "Node",
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react",
+		"jsxFactory": "createElement"
+	},
+	"include": ["src"],
+	"references": [{ "path": "./tsconfig.node.json" }]
+}

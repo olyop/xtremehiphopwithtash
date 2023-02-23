@@ -1,0 +1,16 @@
+mutation createInstructor($input: InstructorInput!) {
+	createInstructor(input: $input) {
+		instructorID
+		photo
+		createdAt
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+			createdAt
+		}
+	}
+}

@@ -1,0 +1,14 @@
+mutation updateInstructor($instructorID: UUID!, $input: InstructorInput!) {
+	updateInstructorByID(instructorID: $instructorID, input: $input) {
+		instructorID
+		photo
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+		}
+	}
+}

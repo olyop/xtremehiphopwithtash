@@ -1,0 +1,7 @@
+mutation createLocation($input: LocationInput!) {
+	createLocation(input: $input) {
+		locationID
+		name
+		plusCode
+	}
+}

@@ -1,0 +1,29 @@
+mutation createCourse($input: CourseInput!) {
+	createCourse(input: $input) {
+		courseID
+		name
+		description
+		photo
+		defaultPrice
+		defaultDuration
+		defaultCapacity
+		defaultEquipmentAvailable
+		defaultLocation {
+			locationID
+			name
+			plusCode
+		}
+		defaultInstructors {
+			instructorID
+			photo
+			details {
+				detailsID
+				firstName
+				lastName
+				nickName
+				gender
+				mobilePhoneNumber
+			}
+		}
+	}
+}
