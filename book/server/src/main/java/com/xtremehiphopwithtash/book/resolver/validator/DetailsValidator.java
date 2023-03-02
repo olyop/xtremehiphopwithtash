@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 public class DetailsValidator implements Validator<UUID, DetailsInput> {
 
 	private final DetailsDAO detailsDAO;
+	private final CommonValidator commonValidator;
 
-	public DetailsValidator(DetailsDAO detailsDAO) {
+	public DetailsValidator(DetailsDAO detailsDAO, CommonValidator commonValidator) {
 		this.detailsDAO = detailsDAO;
+		this.commonValidator = commonValidator;
 	}
 
 	public void validateID(UUID detailsID) {
@@ -28,9 +30,18 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 		String gender = input.getGender();
 		String mobilePhoneNumber = input.getMobilePhoneNumber();
 
+		validateLength(firstName, lastName, nickName);
 		validateNotEmpty(firstName, lastName, nickName);
 		validateGender(gender);
 		validateMobilePhoneNumber(mobilePhoneNumber);
+	}
+
+	private void validateLength(String firstName, String lastName, Optional<String> nickName) {
+		commonValidator.validateStringLength(lastName, "First Name", 255);
+		commonValidator.validateStringLength(lastName, "Last Name", 255);
+		nickName.ifPresent(nickNameValue ->
+			commonValidator.validateStringLength(nickNameValue, "Nick Name", 255)
+		);
 	}
 
 	private void validateNotEmpty(String firstName, String lastName, Optional<String> nickName) {

@@ -52,6 +52,7 @@ public class CourseValidator implements Validator<UUID, CourseInput> {
 		UUID defaultLocationID = input.getDefaultLocationID();
 		List<UUID> defaultInstructorIDs = input.getDefaultInstructorIDs();
 
+		validateLength(name, description);
 		validateNotEmpty(name, description);
 		commonValidator.validateURL(photo);
 		locationValidtor.validateID(defaultLocationID);
@@ -73,6 +74,11 @@ public class CourseValidator implements Validator<UUID, CourseInput> {
 		if (courseDAO.existsByName(name)) {
 			throw new ResolverException("Course with name already exists");
 		}
+	}
+
+	private void validateLength(String name, String description) {
+		commonValidator.validateStringLength(name, "Name", 255);
+		commonValidator.validateStringLength(description, "Description", 1024);
 	}
 
 	private void validateNotEmpty(String name, String description) {

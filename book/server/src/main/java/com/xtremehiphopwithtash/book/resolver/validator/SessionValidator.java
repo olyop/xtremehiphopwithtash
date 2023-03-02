@@ -59,6 +59,7 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		courseValidator.validateID(courseID);
 		locationValidator.validateID(locationID);
 		validateInstructorIDs(instructorIDs);
+		validateLength(title, notes);
 		validateNotEmpty(title, notes);
 		commonValidator.validatePrice(price);
 		validateStartAndEndTime(startTime, endTime);
@@ -81,6 +82,11 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		if (startTime.plusSeconds(fourWeeks).isBefore(endTime)) {
 			throw new ResolverException("Cannot get sessions for more than 4 weeks");
 		}
+	}
+
+	private void validateLength(String title, String notes) {
+		commonValidator.validateStringLength(title, "Title", 255);
+		commonValidator.validateStringLength(notes, "Notes", 1024);
 	}
 
 	private void validateNotEmpty(String title, String notes) {

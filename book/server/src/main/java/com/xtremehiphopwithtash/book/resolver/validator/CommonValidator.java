@@ -10,6 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 class CommonValidator {
 
+	public void validateStringLength(String string, String label, int maxLength) {
+		if (string.length() > maxLength) {
+			throw new ResolverException(String.format("%s length cannot be greater than %d", label, maxLength));
+		}
+	}
+
 	public void validateURL(URL url) {
 		if (!url.getProtocol().equalsIgnoreCase("https")) {
 			throw new ResolverException("Invalid URL - protocol must be HTTPS");

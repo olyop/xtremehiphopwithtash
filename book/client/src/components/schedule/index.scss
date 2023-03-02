@@ -1,20 +1,12 @@
 .Schedule {
-	&__day {
-		--border-color: #e5e7eb;
-		border-top: 1px solid var(--border-color);
-		border-bottom: 1px solid var(--border-color);
-		&:nth-child(-n + 2) {
-			border-top: #e5e7eb;
-		}
-		&:nth-child(odd) {
-			border-bottom: #e5e7eb;
-		}
-		&:nth-child(-n + 3) {
-			border-top: 0;
-		}
-		&:first-child,
-		&:nth-child(3n + 1) {
-			border-left: 0;
-		}
+	display: grid;
+	gap: 1rem;
+	align-items: start;
+	grid-template-columns: auto 2.25rem;
+	&__calendar {
+		display: grid;
+		gap: 1px;
+		grid-template-columns: repeat(7, 1fr);
+		grid-template-rows: auto repeat(4, 12rem);
 	}
 }

@@ -17,11 +17,18 @@ public class LocationValidtor implements Validator<UUID, LocationInput> {
 	private final LocationDAO locationDAO;
 	private final CourseDAO courseDAO;
 	private final SessionDAO sessionDAO;
+	private final CommonValidator commonValidator;
 
-	public LocationValidtor(LocationDAO locationDAO, CourseDAO courseDAO, SessionDAO sessionDAO) {
+	public LocationValidtor(
+		LocationDAO locationDAO,
+		CourseDAO courseDAO,
+		SessionDAO sessionDAO,
+		CommonValidator commonValidator
+	) {
 		this.locationDAO = locationDAO;
 		this.courseDAO = courseDAO;
 		this.sessionDAO = sessionDAO;
+		this.commonValidator = commonValidator;
 	}
 
 	@Override
@@ -36,6 +43,7 @@ public class LocationValidtor implements Validator<UUID, LocationInput> {
 		String name = input.getName();
 		String plusCode = input.getPlusCode();
 
+		commonValidator.validateStringLength(name, "Name", 255);
 		validateNotEmpty(name, plusCode);
 		validatePlusCode(plusCode);
 	}
