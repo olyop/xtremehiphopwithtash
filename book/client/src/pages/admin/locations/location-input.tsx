@@ -1,4 +1,4 @@
-import { FC, Fragment, createElement } from "react";
+import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import Input, { InputOnChange, InputType } from "../../../components/input";
 import { LocationInput as LocationInputType } from "../../../generated-types";
@@ -7,11 +7,12 @@ const LocationInput: FC<PropTypes> = ({ input, onChange }) => {
 	const handleChange =
 		(key: keyof LocationInputType): InputOnChange =>
 		value => {
-			onChange({
-				...input,
+			onChange(prevState => ({
+				...prevState,
 				[key]: value,
-			});
+			}));
 		};
+
 	return (
 		<Fragment>
 			<Input
@@ -38,7 +39,7 @@ const LocationInput: FC<PropTypes> = ({ input, onChange }) => {
 
 interface PropTypes {
 	input: LocationInputType;
-	onChange: (input: LocationInputType) => void;
+	onChange: Dispatch<SetStateAction<LocationInputType>>;
 }
 
 export default LocationInput;

@@ -26,7 +26,7 @@ public class SessionInstructorQuery {
 			VALUES
 				(:sessionID, :index, :instructorID)
 			RETURNING
-				%s
+							%s;
 		""",
 		columnNames
 	);

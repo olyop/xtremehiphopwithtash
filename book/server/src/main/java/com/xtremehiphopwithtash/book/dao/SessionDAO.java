@@ -64,8 +64,8 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 		paramSource.addValue("title", value.getTitle());
 		paramSource.addValue("notes", value.getNotes());
 		paramSource.addValue("price", value.getPrice());
-		paramSource.addValue("startTime", value.getStartTime());
-		paramSource.addValue("endTime", value.getEndTime());
+		paramSource.addValue("startTime", value.getStartTime().getEpochSecond());
+		paramSource.addValue("endTime", value.getEndTime().getEpochSecond());
 		paramSource.addValue("capacity", value.getCapacity());
 		paramSource.addValue("equipmentAvailable", value.getEquipmentAvailable());
 		paramSource.addValue("courseID", value.getCourseID());
@@ -89,8 +89,8 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 		paramSource.addValue("title", value.getTitle());
 		paramSource.addValue("notes", value.getNotes());
 		paramSource.addValue("price", value.getPrice());
-		paramSource.addValue("startTime", value.getStartTime());
-		paramSource.addValue("endTime", value.getEndTime());
+		paramSource.addValue("startTime", value.getStartTime().getEpochSecond());
+		paramSource.addValue("endTime", value.getEndTime().getEpochSecond());
 		paramSource.addValue("capacity", value.getCapacity());
 		paramSource.addValue("equipmentAvailable", value.getEquipmentAvailable());
 		paramSource.addValue("courseID", value.getCourseID());
@@ -111,8 +111,8 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("startTime", startTime);
-		paramSource.addValue("endTime", endTime);
+		paramSource.addValue("startTime", startTime.getEpochSecond());
+		paramSource.addValue("endTime", endTime.getEpochSecond());
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
@@ -125,8 +125,8 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_AND_COURSE_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("startTime", startTime);
-		paramSource.addValue("endTime", endTime);
+		paramSource.addValue("startTime", startTime.getEpochSecond());
+		paramSource.addValue("endTime", endTime.getEpochSecond());
 		paramSource.addValue("courseID", courseID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);

@@ -39,10 +39,11 @@ input SessionInput {
 	notes: String
 	startTime: UnixTime!
 	endTime: UnixTime!
-	locationID: UUID!
 	price: PositiveInt
-	courseID: UUID!
+	capacity: PositiveInt!
 	equipmentAvailable: PositiveInt
+	courseID: UUID!
+	locationID: UUID!
 	instructorIDs: [UUID!]!
 }
 

@@ -1,0 +1,19 @@
+query getSessionsInPeriod($input: GetSessionsInput!) {
+	getSessionsInPeriod(input: $input) {
+		sessionID
+		title
+		startTime
+		endTime
+		capacity
+		location {
+			locationID
+			name
+			plusCode
+		}
+		course {
+			courseID
+			name
+			photo
+		}
+	}
+}

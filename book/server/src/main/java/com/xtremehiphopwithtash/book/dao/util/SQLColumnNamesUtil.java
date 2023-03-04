@@ -65,7 +65,7 @@ public final class SQLColumnNamesUtil {
 	);
 
 	public static final List<String> SESSION_INSTRUCTOR = List.of(
-		"course_id",
+		"session_id",
 		"index",
 		"instructor_id",
 		CREATED_AT

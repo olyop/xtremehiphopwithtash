@@ -75,8 +75,9 @@ const Courses: FC = () => {
 					isUpdating={updateResult.loading}
 					isDeleting={deleteResult.loading}
 					onUpdate={handleUpdatecourse(course)}
-					updateModalError={updateResult.error}
 					onDelete={handleDeletecourse(course)}
+					updateModalError={updateResult.error}
+					deleteModalError={deleteResult.error}
 				/>
 			)}
 		/>

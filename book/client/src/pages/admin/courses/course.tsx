@@ -28,8 +28,8 @@ const Course: FC<PropTypes> = ({
 
 	const [input, setInput] = useState<CourseInputType>({
 		...courseInput,
-		defaultPrice: courseInput.defaultPrice || 0,
 		defaultLocationID: defaultLocation?.locationID,
+		defaultPrice: courseInput.defaultPrice === 0 ? null : courseInput.defaultPrice,
 		defaultInstructorIDs: defaultInstructors.map(({ instructorID }) => instructorID),
 	});
 

@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { FC, Fragment, createElement } from "react";
+import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import Input, { InputOnChange, InputType } from "../../../components/input";
 import { CourseInput as CourseInputType, Query } from "../../../generated-types";
@@ -13,17 +13,17 @@ const CourseInput: FC<PropTypes> = ({ input, onChange }) => {
 	const handleChange =
 		(key: keyof CourseInputType): InputOnChange =>
 		value => {
-			onChange({
-				...input,
+			onChange(prevState => ({
+				...prevState,
 				[key]: value,
-			});
+			}));
 		};
 
 	const handleDefaultInstructorDelete = (instructorID: string) => () => {
-		onChange({
-			...input,
+		onChange(prevState => ({
+			...prevState,
 			defaultInstructorIDs: input.defaultInstructorIDs.filter(id => id !== instructorID),
-		});
+		}));
 	};
 
 	return (
@@ -59,7 +59,7 @@ const CourseInput: FC<PropTypes> = ({ input, onChange }) => {
 				id="defaultPrice"
 				name="Default Price"
 				value={input.defaultPrice || 0}
-				type={InputType.INTEGER}
+				type={InputType.PRICE}
 				onChange={handleChange("defaultPrice")}
 				placeHolder="Default Price"
 				autoComplete="off"
@@ -99,12 +99,12 @@ const CourseInput: FC<PropTypes> = ({ input, onChange }) => {
 				onChange={handleChange("defaultLocationID")}
 				placeHolder="Default Location"
 				selectOptions={
-					locationsData?.getLocations.map(location => [location.locationID, location.name]) || []
+					locationsData?.getLocations.map(location => [location.locationID, location.name]) ?? []
 				}
 				autoComplete="off"
 			/>
 			<Input
-				id="locationID"
+				id="defaultInstructorIDs"
 				name="Default Instructors"
 				value={input.defaultInstructorIDs}
 				type={InputType.LIST}
@@ -143,7 +143,7 @@ type GetInstructorsData = Pick<Query, "getInstructors">;
 
 interface PropTypes {
 	input: CourseInputType;
-	onChange: (input: CourseInputType) => void;
+	onChange: Dispatch<SetStateAction<CourseInputType>>;
 }
 
 export default CourseInput;

@@ -6,6 +6,7 @@ const iconClassName = "h-6 w-6 mt-0.5 select-none";
 
 const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	title,
+	subTitle,
 	icon,
 	isOpen,
 	buttons,
@@ -44,7 +45,10 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 				>
 					<div className="flex gap-2 items-center pb-2 border-b border-b-gray-200">
 						{icon(iconClassName)}
-						<h1 className="text-2xl">{title}</h1>
+						<div>
+							<h1 className="text-2xl">{title}</h1>
+							{subTitle && <h2 className="text-gray-500 text-sm">{subTitle}</h2>}
+						</div>
 					</div>
 					<div className={contentClassName}>{children}</div>
 					<div className="flex gap-2">{buttons}</div>
@@ -57,6 +61,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 interface ModalPropTypes {
 	isOpen: boolean;
 	title: string;
+	subTitle?: string;
 	icon: (className: string) => ReactNode;
 	onClose: () => void;
 	buttons: ReactNode;

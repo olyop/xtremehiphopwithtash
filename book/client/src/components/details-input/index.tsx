@@ -7,7 +7,7 @@ import GET_GENDERS from "./get-genders.graphql";
 import { mapGendersToSelect } from "./map-genders-to-select";
 
 const DetailsInput: FC<PropTypes> = ({ input, onChange }) => {
-	const { data: getGendersData } = useQuery<Pick<Query, "getGenders">>(GET_GENDERS);
+	const { data } = useQuery<Pick<Query, "getGenders">>(GET_GENDERS);
 
 	const handleChange =
 		(key: keyof DetailsInputType): InputOnChange =>
@@ -55,7 +55,7 @@ const DetailsInput: FC<PropTypes> = ({ input, onChange }) => {
 				value={input.gender}
 				type={InputType.SELECT}
 				onChange={handleChange("gender")}
-				selectOptions={mapGendersToSelect(getGendersData?.getGenders)}
+				selectOptions={mapGendersToSelect(data?.getGenders)}
 			/>
 			<Input
 				id="mobilePhoneNumber"
@@ -72,7 +72,7 @@ const DetailsInput: FC<PropTypes> = ({ input, onChange }) => {
 
 interface PropTypes {
 	input: DetailsInputType;
-	onChange: (detailsInput: DetailsInputType) => void;
+	onChange: (input: DetailsInputType) => void;
 }
 
 export default DetailsInput;

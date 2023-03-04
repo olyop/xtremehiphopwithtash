@@ -78,11 +78,11 @@ public class SessionInstructorDAO implements EntityRelationshipDAO<SessionInstru
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
-	public boolean deleteBySessionID(UUID id) {
+	public void deleteBySessionID(UUID sessionID) {
 		String sql = query.DELETE_BY_SESSION_ID;
 
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", id);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
 
-		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+		jdbcTemplate.update(sql, paramSource);
 	}
 }

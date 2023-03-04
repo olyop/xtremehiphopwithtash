@@ -100,7 +100,7 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 	}
 
 	private void validateEquipmentAndCapacity(Short capacity, Short equipmentAvailable) {
-		if (capacity >= equipmentAvailable) {
+		if (equipmentAvailable > capacity) {
 			throw new ResolverException("Cannot add more equipment than capacity");
 		}
 	}
@@ -117,8 +117,8 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 
 	private void validateStartAndEndTime(Instant startTime, Instant endTime) {
 		Instant now = Instant.now();
-		Instant nowInThirtyMinutes = now.plusSeconds(thirtyMinutes);
-		Instant nowInFourHours = now.plusSeconds(fourHours);
+		Instant startTimeInThirtyMinutes = startTime.plusSeconds(thirtyMinutes);
+		Instant startTimeInFourHours = startTime.plusSeconds(fourHours);
 
 		if (startTime.isBefore(now)) {
 			throw new ResolverException("Start time must be in the future");
@@ -128,11 +128,11 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 			throw new ResolverException("Start time must be before end time");
 		}
 
-		if (endTime.isBefore(nowInThirtyMinutes)) {
+		if (endTime.isBefore(startTimeInThirtyMinutes)) {
 			throw new ResolverException("The session must be at least 30 minutes long");
 		}
 
-		if (endTime.isAfter(nowInFourHours)) {
+		if (endTime.isAfter(startTimeInFourHours)) {
 			throw new ResolverException("The session cannot be over 4 hours");
 		}
 

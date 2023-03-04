@@ -1,4 +1,6 @@
+import { Session } from "../../generated-types";
 import { isToday } from "./helpers";
+import { Day, Schedule } from "./types";
 
 const thisYearDateFormatter = new Intl.DateTimeFormat(undefined, {
 	day: "2-digit",
@@ -16,7 +18,7 @@ const MILLISECONDS_IN_DAY = 86_400_000;
 
 const now = new Date();
 
-export const generateSchedule = (baseTime: number): Schedule => {
+export const generateSchedule = (baseTime: number, sessions: Session[]): Schedule => {
 	const days: Day[] = [];
 
 	const startingDate = new Date(baseTime - (baseTime % MILLISECONDS_IN_DAY));
@@ -31,9 +33,16 @@ export const generateSchedule = (baseTime: number): Schedule => {
 
 		day.setDate(day.getDate() + index);
 
+		const daySessions = sessions.filter(
+			session =>
+				session.startTime >= day.getTime() &&
+				session.endTime <= day.getTime() + MILLISECONDS_IN_DAY,
+		);
+
 		days.push({
 			unix: day.getTime(),
 			isToday: isToday(day),
+			sessions: daySessions.length > 0 ? daySessions : null,
 			label:
 				day.getFullYear() === now.getFullYear()
 					? thisYearDateFormatter.format(day)
@@ -46,14 +55,3 @@ export const generateSchedule = (baseTime: number): Schedule => {
 		startingTime: startingDate.getTime(),
 	};
 };
-
-export interface Day {
-	unix: number;
-	isToday: boolean;
-	label: string;
-}
-
-export interface Schedule {
-	startingTime: number;
-	days: Day[];
-}

@@ -35,6 +35,16 @@ public class InstantCoerce implements Coercing<Instant, Integer> {
 			return null;
 		}
 
+		if (input instanceof Integer intValue) {
+			try {
+				return Instant.ofEpochSecond(intValue);
+			} catch (DateTimeException dte) {
+				throw new CoercingParseValueException(
+					"Expected a valid epoch second value but was '" + intValue + "'."
+				);
+			}
+		}
+
 		if (input instanceof IntValue intValue) {
 			try {
 				return Instant.ofEpochSecond(intValue.getValue().intValue());
@@ -54,6 +64,16 @@ public class InstantCoerce implements Coercing<Instant, Integer> {
 	public Instant parseLiteral(Object input) throws CoercingParseLiteralException {
 		if (input == null) {
 			return null;
+		}
+
+		if (input instanceof Integer intValue) {
+			try {
+				return Instant.ofEpochSecond(intValue);
+			} catch (DateTimeException dte) {
+				throw new CoercingParseValueException(
+					"Expected a valid epoch second value but was '" + intValue + "'."
+				);
+			}
 		}
 
 		if (input instanceof IntValue intValue) {

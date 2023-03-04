@@ -1,9 +1,13 @@
 package com.xtremehiphopwithtash.book.resolver;
 
+import com.xtremehiphopwithtash.book.dao.CourseDAO;
 import com.xtremehiphopwithtash.book.dao.InstructorDAO;
+import com.xtremehiphopwithtash.book.dao.LocationDAO;
 import com.xtremehiphopwithtash.book.dao.SessionDAO;
 import com.xtremehiphopwithtash.book.dao.SessionInstructorDAO;
+import com.xtremehiphopwithtash.book.model.Course;
 import com.xtremehiphopwithtash.book.model.Instructor;
+import com.xtremehiphopwithtash.book.model.Location;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.SessionInstructor;
 import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
@@ -27,17 +31,23 @@ public class SessionResolver {
 	private final SessionInstructorDAO sessionInstructorDAO;
 	private final InstructorDAO instructorDAO;
 	private final SessionValidator sessionValidator;
+	private final CourseDAO courseDAO;
+	private final LocationDAO locationDAO;
 
 	public SessionResolver(
 		SessionDAO sessionDAO,
 		SessionInstructorDAO sessionInstructorDAO,
 		InstructorDAO instructorDAO,
-		SessionValidator sessionValidator
+		SessionValidator sessionValidator,
+		CourseDAO courseDAO,
+		LocationDAO locationDAO
 	) {
 		this.sessionDAO = sessionDAO;
 		this.sessionInstructorDAO = sessionInstructorDAO;
 		this.instructorDAO = instructorDAO;
 		this.sessionValidator = sessionValidator;
+		this.courseDAO = courseDAO;
+		this.locationDAO = locationDAO;
 	}
 
 	@QueryMapping
@@ -50,8 +60,18 @@ public class SessionResolver {
 		return sessionDAO.selectByID(sessionID);
 	}
 
+	@SchemaMapping(typeName = "Session", field = "course")
+	public Course getCourse(Session session) {
+		return courseDAO.selectByID(session.getCourseID()).get();
+	}
+
+	@SchemaMapping(typeName = "Session", field = "location")
+	public Location getLocation(Session session) {
+		return locationDAO.selectByID(session.getLocationID()).get();
+	}
+
 	@SchemaMapping(typeName = "Session", field = "instructors")
-	public List<Instructor> getDefaultInstructors(Session session) {
+	public List<Instructor> getInstructors(Session session) {
 		return instructorDAO.selectsSessionInstructors(session.getSessionID());
 	}
 
@@ -73,7 +93,7 @@ public class SessionResolver {
 		Session session = new Session();
 		session.setTitle(title);
 		session.setNotes(notes);
-		session.setPrice(price.get());
+		session.setPrice(price.orElse(null));
 		session.setStartTime(startTime);
 		session.setEndTime(endTime);
 		session.setCapacity(capacity);
@@ -106,7 +126,7 @@ public class SessionResolver {
 		Session session = new Session();
 		session.setTitle(title);
 		session.setNotes(notes);
-		session.setPrice(price.get());
+		session.setPrice(price.orElse(null));
 		session.setStartTime(startTime);
 		session.setEndTime(endTime);
 		session.setCapacity(capacity);
@@ -115,7 +135,7 @@ public class SessionResolver {
 		session.setLocationID(locationID);
 
 		Session updatedSession = sessionDAO.updateByID(sessionID, session);
-		handleInstructors(instructorIDs, sessionID);
+		handleInstructors(instructorIDs, updatedSession.getSessionID());
 
 		return updatedSession;
 	}

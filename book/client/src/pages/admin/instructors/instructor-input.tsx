@@ -1,4 +1,4 @@
-import { FC, Fragment, createElement } from "react";
+import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import DetailsInput from "../../../components/details-input";
 import Input, { InputOnChange, InputType } from "../../../components/input";
@@ -11,17 +11,17 @@ const InstructorInput: FC<PropTypes> = ({ input, onChange }) => {
 	const handleChange =
 		(key: keyof InstructorInputType): InputOnChange =>
 		value => {
-			onChange({
-				...input,
+			onChange(prevState => ({
+				...prevState,
 				[key]: value,
-			});
+			}));
 		};
 
 	const handleDetailsChange = (details: DetailsInputType) => {
-		onChange({
-			...input,
+		onChange(prevState => ({
+			...prevState,
 			details,
-		});
+		}));
 	};
 
 	return (
@@ -42,7 +42,7 @@ const InstructorInput: FC<PropTypes> = ({ input, onChange }) => {
 
 interface PropTypes {
 	input: InstructorInputType;
-	onChange: (input: InstructorInputType) => void;
+	onChange: Dispatch<SetStateAction<InstructorInputType>>;
 }
 
 export default InstructorInput;
