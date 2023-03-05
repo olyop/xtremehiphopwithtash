@@ -1,10 +1,20 @@
-import { Session } from "../../generated-types";
-import { isToday } from "./helpers";
+import { ApolloClient } from "@apollo/client";
+
+import { secondsToMilliseconds } from "../../utils";
+import {
+	addOneMonth,
+	getEndOfDay,
+	getMonday,
+	getSessions,
+	getStartOfDay,
+	isToday,
+	minusOneWeek,
+} from "./helpers";
 import { Day, Schedule } from "./types";
 
 const thisYearDateFormatter = new Intl.DateTimeFormat(undefined, {
-	day: "2-digit",
-	month: "2-digit",
+	day: "numeric",
+	month: "short",
 });
 
 const otherYearDateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -13,45 +23,46 @@ const otherYearDateFormatter = new Intl.DateTimeFormat(undefined, {
 	year: "numeric",
 });
 
-const NUMBER_OF_DAYS = 7 * 4;
-const MILLISECONDS_IN_DAY = 86_400_000;
-
 const now = new Date();
 
-export const generateSchedule = (baseTime: number, sessions: Session[]): Schedule => {
-	const days: Day[] = [];
+export const generateSchedule =
+	(apollo: ApolloClient<unknown>) =>
+	async (baseTime: number): Promise<Schedule> => {
+		const days: Day[] = [];
 
-	const startingDate = new Date(baseTime - (baseTime % MILLISECONDS_IN_DAY));
-	startingDate.setDate(startingDate.getDate() - 7);
+		const baseDate = getStartOfDay(new Date(baseTime));
+		const startOfWeek = getMonday(baseDate);
 
-	if (startingDate.getDay() !== 0) {
-		startingDate.setDate(startingDate.getDate() - startingDate.getDay() + 1);
-	}
+		const startingDate = minusOneWeek(startOfWeek);
+		const endingDate = addOneMonth(startingDate);
 
-	for (let index = 0; index < NUMBER_OF_DAYS; index += 1) {
-		const day = new Date(startingDate);
+		const sessions = await getSessions(apollo)(startingDate, endingDate);
 
-		day.setDate(day.getDate() + index);
+		for (let index = 0; index < 28; index += 1) {
+			const day = new Date(startingDate);
 
-		const daySessions = sessions.filter(
-			session =>
-				session.startTime >= day.getTime() &&
-				session.endTime <= day.getTime() + MILLISECONDS_IN_DAY,
-		);
+			day.setDate(day.getDate() + index);
 
-		days.push({
-			unix: day.getTime(),
-			isToday: isToday(day),
-			sessions: daySessions.length > 0 ? daySessions : null,
-			label:
-				day.getFullYear() === now.getFullYear()
-					? thisYearDateFormatter.format(day)
-					: otherYearDateFormatter.format(day),
-		});
-	}
+			const daySessions = sessions.filter(
+				session =>
+					secondsToMilliseconds(session.startTime) >= day.getTime() &&
+					secondsToMilliseconds(session.endTime) <= getEndOfDay(day).getTime(),
+			);
 
-	return {
-		days,
-		startingTime: startingDate.getTime(),
+			days.push({
+				unix: day.getTime(),
+				isToday: isToday(day),
+				dayName: day.toLocaleDateString(undefined, { weekday: "long" }),
+				sessions: daySessions.length > 0 ? daySessions : null,
+				label:
+					day.getFullYear() === now.getFullYear()
+						? thisYearDateFormatter.format(day)
+						: otherYearDateFormatter.format(day),
+			});
+		}
+
+		return {
+			days,
+			startingTime: startingDate.getTime(),
+		};
 	};
-};

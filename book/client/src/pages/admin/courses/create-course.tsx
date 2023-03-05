@@ -1,6 +1,5 @@
 import { useMutation } from "@apollo/client";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
-import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
@@ -76,23 +75,13 @@ const AddCourse: FC = () => {
 					</Fragment>
 				}
 				buttons={
-					<Fragment>
-						<Button
-							onClick={handleSubmit}
-							className="self-start"
-							leftIcon={className => <PlusIcon className={className} />}
-							text={loading ? "Adding course..." : "Add course"}
-							ariaLabel={loading ? "Adding course now" : "Click to add course"}
-						/>
-						<Button
-							transparent
-							text="Close"
-							ariaLabel="Close Add course"
-							onClick={closeModal}
-							disabled={loading}
-							leftIcon={className => <XMarkIcon className={className} />}
-						/>
-					</Fragment>
+					<Button
+						onClick={handleSubmit}
+						className="self-start"
+						leftIcon={className => <PlusIcon className={className} />}
+						text={loading ? "Adding course..." : "Add course"}
+						ariaLabel={loading ? "Adding course now" : "Click to add course"}
+					/>
 				}
 			/>
 		</Fragment>

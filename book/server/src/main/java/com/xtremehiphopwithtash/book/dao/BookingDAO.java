@@ -88,6 +88,14 @@ public class BookingDAO implements EntityDAO<Booking, UUID> {
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 
+	public List<Booking> selectBySessionID(UUID sessionID) {
+		String sql = query.SELECT_BY_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
 	public Short selectCountBySessionID(UUID sessionID) {
 		String sql = query.SELECT_COUNT_BY_SESSION_ID;
 

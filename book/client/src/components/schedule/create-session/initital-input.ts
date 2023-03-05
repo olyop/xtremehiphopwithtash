@@ -19,9 +19,13 @@ export const initialCourseDefaultInput: Pick<
 	instructorIDs: [],
 };
 
-export const initialInput: SessionInput = {
-	notes: "",
-	...initialCourseDefaultInput,
-	startTime: Date.now(),
-	endTime: Date.now(),
+export const initialInput = ({ startTime }: Pick<SessionInput, "startTime">): SessionInput => {
+	const startTimeDate = new Date(startTime);
+	startTimeDate.setHours(10, 0, 0, 0);
+	return {
+		notes: "",
+		...initialCourseDefaultInput,
+		startTime: startTimeDate.getTime(),
+		endTime: startTimeDate.getTime(),
+	};
 };

@@ -78,7 +78,7 @@ public class SessionResolver {
 	@MutationMapping
 	public Session createSession(@Argument SessionInput input) {
 		String title = CommonTransformer.transformName(input.getTitle());
-		String notes = input.getNotes();
+		Optional<String> notes = input.getNotes();
 		Optional<Short> price = input.getPrice();
 		Instant startTime = input.getStartTime();
 		Instant endTime = input.getEndTime();
@@ -92,7 +92,7 @@ public class SessionResolver {
 
 		Session session = new Session();
 		session.setTitle(title);
-		session.setNotes(notes);
+		session.setNotes(notes.orElse(null));
 		session.setPrice(price.orElse(null));
 		session.setStartTime(startTime);
 		session.setEndTime(endTime);
@@ -110,7 +110,7 @@ public class SessionResolver {
 	@MutationMapping
 	public Session updateSessionByID(@Argument UUID sessionID, @Argument SessionInput input) {
 		String title = input.getTitle();
-		String notes = input.getNotes();
+		Optional<String> notes = input.getNotes();
 		Optional<Short> price = input.getPrice();
 		Instant startTime = input.getStartTime();
 		Instant endTime = input.getEndTime();
@@ -125,7 +125,7 @@ public class SessionResolver {
 
 		Session session = new Session();
 		session.setTitle(title);
-		session.setNotes(notes);
+		session.setNotes(notes.orElse(null));
 		session.setPrice(price.orElse(null));
 		session.setStartTime(startTime);
 		session.setEndTime(endTime);
@@ -143,6 +143,7 @@ public class SessionResolver {
 	@MutationMapping
 	public UUID deleteSessionByID(@Argument UUID sessionID) {
 		sessionValidator.validateID(sessionID);
+		sessionValidator.canDelete(sessionID);
 
 		sessionInstructorDAO.deleteBySessionID(sessionID);
 		sessionDAO.deleteByID(sessionID);

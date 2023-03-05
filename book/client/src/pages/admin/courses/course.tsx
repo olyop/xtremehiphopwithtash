@@ -49,7 +49,7 @@ const Course: FC<PropTypes> = ({
 				<Fragment>
 					{course.name}
 					<Fragment> </Fragment>
-					<span className="text-gray-400">
+					<span className="text-gray-500">
 						<Fragment>(</Fragment>
 						{course.defaultPrice ? currencyFormatter.format(course.defaultPrice) : "Free"}
 						<Fragment>)</Fragment>
@@ -57,7 +57,7 @@ const Course: FC<PropTypes> = ({
 				</Fragment>
 			}
 			description={
-				<span className="text-gray-400">
+				<span className="text-gray-500">
 					{instructorsFormatter.format(
 						defaultInstructors.map(
 							({ details: { firstName, lastName } }) => `${firstName} ${lastName}`,

@@ -1,46 +1,49 @@
 import { useApolloClient } from "@apollo/client";
-import { FC, createElement, useRef, useState } from "react";
+import { FC, Fragment, createElement, useEffect, useRef, useState } from "react";
 
 import Buttons from "./buttons";
 import Days from "./days";
 import { generateSchedule } from "./generate-days";
+import { addOneWeek, minusOneWeek } from "./helpers";
 import { Schedule as ScheduleType } from "./types";
 import WeekDays from "./week-days";
 
 const Schedule: FC = () => {
 	const apollo = useApolloClient();
 
-	const relativeNow = useRef(Date.now());
-	const [schedule, setSchedule] = useState<ScheduleType>(generateSchedule(relativeNow.current, []));
+	const relativeDate = useRef(Date.now());
+	const [schedule, setSchedule] = useState<ScheduleType>({ startingTime: Date.now(), days: [] });
+
+	const getSchedule = async (date: Date) => {
+		const unixTime = date.getTime();
+		relativeDate.current = unixTime;
+		setSchedule(await generateSchedule(apollo)(unixTime));
+	};
 
 	const handleResetClick = () => {
-		relativeNow.current = Date.now();
-		setSchedule(generateSchedule(Date.now(), []));
+		const now = new Date();
+		void getSchedule(now);
 	};
 
 	const handleBackOneWeekClick = () => {
-		const date = new Date(relativeNow.current);
-
-		if (date.getDay() !== 0) {
-			date.setDate(date.getDate() - 7);
-		}
-
-		relativeNow.current = date.getTime();
-
-		setSchedule(generateSchedule(date.getTime(), []));
+		const date = minusOneWeek(new Date(relativeDate.current));
+		void getSchedule(date);
 	};
 
 	const handleForwardOneWeekClick = () => {
-		const date = new Date(relativeNow.current);
-
-		if (date.getDay() !== 0) {
-			date.setDate(date.getDate() + 7);
-		}
-
-		relativeNow.current = date.getTime();
-
-		setSchedule(generateSchedule(date.getTime(), []));
+		const date = addOneWeek(new Date(relativeDate.current));
+		void getSchedule(date);
 	};
+
+	const handleSessionCreate = () => {
+		const date = new Date(relativeDate.current);
+		void getSchedule(date);
+	};
+
+	useEffect(() => {
+		const now = new Date();
+		void getSchedule(now);
+	}, []);
 
 	return (
 		<div
@@ -48,8 +51,14 @@ const Schedule: FC = () => {
 			className="w-full h-full grid items-start gap-4 grid-cols-[auto_2.25rem]"
 		>
 			<div>
-				<WeekDays />
-				<Days schedule={schedule} />
+				{schedule.days.length > 0 ? (
+					<Fragment>
+						<WeekDays />
+						<Days schedule={schedule} onCreateSession={handleSessionCreate} />
+					</Fragment>
+				) : (
+					<p>Loading...</p>
+				)}
 			</div>
 			<Buttons
 				onReset={handleResetClick}

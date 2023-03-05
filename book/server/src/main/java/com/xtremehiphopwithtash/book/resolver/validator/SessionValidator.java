@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.resolver.validator;
 
+import com.xtremehiphopwithtash.book.dao.BookingDAO;
 import com.xtremehiphopwithtash.book.dao.SessionDAO;
+import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
 import java.time.Instant;
@@ -12,24 +14,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionValidator implements Validator<UUID, SessionInput> {
 
+	private final Integer thirtyMinutes = 60 * 30;
+	private final Integer fourHours = 60 * 60 * 4;
+
 	private final SessionDAO sessionDAO;
+	private final BookingDAO bookingDAO;
 	private final CommonValidator commonValidator;
 	private final CourseValidator courseValidator;
 	private final LocationValidtor locationValidator;
 	private final InstructorValidator instructorValidator;
 
-	private final Integer thirtyMinutes = 60 * 30;
-	private final Integer fourHours = 60 * 60 * 4;
-	private final Integer fourWeeks = 60 * 60 * 24 * 7 * 4;
-
 	public SessionValidator(
 		SessionDAO sessionDAO,
+		BookingDAO bookingDAO,
 		CommonValidator commonValidator,
 		CourseValidator courseValidator,
 		LocationValidtor locationValidator,
 		InstructorValidator instructorValidator
 	) {
 		this.sessionDAO = sessionDAO;
+		this.bookingDAO = bookingDAO;
 		this.commonValidator = commonValidator;
 		this.courseValidator = courseValidator;
 		this.locationValidator = locationValidator;
@@ -46,7 +50,7 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 	@Override
 	public void validateInput(SessionInput input) {
 		String title = input.getTitle();
-		String notes = input.getNotes();
+		Optional<String> notes = input.getNotes();
 		Optional<Short> price = input.getPrice();
 		Instant startTime = input.getStartTime();
 		Instant endTime = input.getEndTime();
@@ -66,6 +70,14 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		validateEquipmentAndCapacity(capacity, equipmentAvailable);
 	}
 
+	public void canDelete(UUID sessionID) {
+		List<Booking> bookings = bookingDAO.selectBySessionID(sessionID);
+
+		if (!bookings.isEmpty()) {
+			throw new ResolverException("Cannot delete session with bookings");
+		}
+	}
+
 	public void validateGetSessionsInput(GetSessionsInput input) {
 		Optional<UUID> courseID = input.getCourseID();
 		Instant startTime = input.getStartTime();
@@ -78,23 +90,19 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		if (startTime.isAfter(endTime)) {
 			throw new ResolverException("Start time must be before end time");
 		}
-
-		if (startTime.plusSeconds(fourWeeks).isBefore(endTime)) {
-			throw new ResolverException("Cannot get sessions for more than 4 weeks");
-		}
 	}
 
-	private void validateLength(String title, String notes) {
+	private void validateLength(String title, Optional<String> notes) {
 		commonValidator.validateStringLength(title, "Title", 255);
 		commonValidator.validateStringLength(notes, "Notes", 1024);
 	}
 
-	private void validateNotEmpty(String title, String notes) {
+	private void validateNotEmpty(String title, Optional<String> notes) {
 		if (title.isEmpty()) {
 			throw new ResolverException("Title cannot be empty");
 		}
 
-		if (notes.isEmpty()) {
+		if (notes.isPresent() && notes.get().isEmpty() && !notes.get().isBlank()) {
 			throw new ResolverException("Notes cannot be empty");
 		}
 	}
@@ -121,7 +129,11 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		Instant startTimeInFourHours = startTime.plusSeconds(fourHours);
 
 		if (startTime.isBefore(now)) {
-			throw new ResolverException("Start time must be in the future");
+			throw new ResolverException("Session cannot start in the past");
+		}
+
+		if (startTime.equals(endTime)) {
+			throw new ResolverException("Start time and end time cannot be the same");
 		}
 
 		if (startTime.isAfter(endTime)) {

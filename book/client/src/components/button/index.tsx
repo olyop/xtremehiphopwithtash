@@ -14,7 +14,7 @@ const Button: FC<ButtonPropTypes> = ({
 }) => (
 	<button
 		type="button"
-		title={text}
+		title={text ?? ariaLabel}
 		disabled={disabled}
 		aria-label={ariaLabel}
 		onClick={onClick}

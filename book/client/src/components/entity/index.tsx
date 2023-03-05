@@ -70,6 +70,7 @@ const Entity: FC<EntityPropTypes> = ({
 				/>
 				<Modal
 					title={`Edit ${typeName}`}
+					subTitle={text}
 					icon={className => <PencilIcon className={className} />}
 					isOpen={isEditModalOpen}
 					onClose={closeEditModal}
@@ -87,13 +88,6 @@ const Entity: FC<EntityPropTypes> = ({
 								onClick={handleOnEdit}
 								ariaLabel={`Edit ${typeName}`}
 								leftIcon={className => <PencilIcon className={className} />}
-							/>
-							<Button
-								transparent
-								text="Cancel"
-								onClick={closeEditModal}
-								ariaLabel={`Cancel editing ${typeName}`}
-								leftIcon={className => <XMarkIcon className={className} />}
 							/>
 						</Fragment>
 					}

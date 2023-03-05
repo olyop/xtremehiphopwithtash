@@ -14,18 +14,48 @@ export enum InputType {
 	PRICE,
 	URL,
 	SELECT,
-	ITEM,
 	LIST,
+	TIME,
 	DATE,
 }
 
 const className =
 	"border cursor-pointer outline-none w-full border-gray-200 hover:border-gray-400 transition-all rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700";
 
-const convertUnixTimeToDateTimeLocalInput = (unixTime: number) => {
+const convertUnixTimeToTimeInput = (unixTime: number) => {
+	const date = new Date(unixTime);
+	date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+	return date.toISOString().slice(11, 16);
+};
+
+const convertTimeInputToUnixTime = (value: number, timeInput: string) => {
+	const date = new Date(value);
+	const hours = Number.parseInt(timeInput.slice(0, 2), 10);
+	const minutes = Number.parseInt(timeInput.slice(3, 5), 10);
+	date.setHours(hours);
+	date.setMinutes(minutes);
+	return date.getTime();
+};
+
+const convertUnixTimeToDateTimeInput = (unixTime: number) => {
 	const date = new Date(unixTime);
 	date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 	return date.toISOString().slice(0, 16);
+};
+
+const convertDateTimeInputToUnixTime = (value: number, dateTimeInput: string) => {
+	const date = new Date(value);
+	const year = Number.parseInt(dateTimeInput.slice(0, 4), 10);
+	const month = Number.parseInt(dateTimeInput.slice(5, 7), 10);
+	const day = Number.parseInt(dateTimeInput.slice(8, 10), 10);
+	const hours = Number.parseInt(dateTimeInput.slice(11, 13), 10);
+	const minutes = Number.parseInt(dateTimeInput.slice(14, 16), 10);
+	date.setFullYear(year);
+	date.setMonth(month - 1);
+	date.setDate(day);
+	date.setHours(hours);
+	date.setMinutes(minutes);
+	return date.getTime();
 };
 
 const Input: FC<InputPropTypes> = ({
@@ -46,11 +76,13 @@ const Input: FC<InputPropTypes> = ({
 			if (event.target.value.length === 0 || !value.includes(event.target.value)) {
 				onChange([...(value as string[]), event.target.value]);
 			}
-		} else if (type === InputType.DATE) {
-			onChange(new Date(event.target.value).getTime());
+		} else if (type === InputType.TIME && typeof value === "number") {
+			onChange(convertTimeInputToUnixTime(value, event.target.value));
+		} else if (type === InputType.DATE && typeof value === "number") {
+			onChange(convertDateTimeInputToUnixTime(value, event.target.value));
 		} else if (type === InputType.INTEGER || type === InputType.PRICE) {
 			onChange(Number.parseInt(event.target.value, 10));
-		} else {
+		} else if (type === InputType.TEXT || type === InputType.URL || type === InputType.SELECT) {
 			onChange(event.target.value);
 		}
 	};
@@ -112,8 +144,10 @@ const Input: FC<InputPropTypes> = ({
 					value={
 						value === undefined || value === null
 							? ""
+							: type === InputType.TIME
+							? convertUnixTimeToTimeInput(value as number)
 							: type === InputType.DATE
-							? convertUnixTimeToDateTimeLocalInput(value as number)
+							? convertUnixTimeToDateTimeInput(value as number)
 							: value
 					}
 					className={`${className} ${
@@ -130,7 +164,11 @@ const Input: FC<InputPropTypes> = ({
 							? "number"
 							: type === InputType.URL
 							? "url"
-							: "datetime-local"
+							: type === InputType.DATE
+							? "datetime-local"
+							: type === InputType.TIME
+							? "time"
+							: "text"
 					}
 				/>
 			)}

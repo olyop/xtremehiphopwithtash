@@ -157,7 +157,8 @@ CREATE TABLE IF NOT EXISTS course (
 
 	CONSTRAINT course_fk_default_location_id
 		FOREIGN KEY (default_location_id)
-		REFERENCES location (location_id),
+		REFERENCES location (location_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT course_check_created_at
 		CHECK (created_at <= get_now())
@@ -182,14 +183,12 @@ CREATE TABLE IF NOT EXISTS course_default_instructor (
 	CONSTRAINT course_default_instructor_fk_course_id
 		FOREIGN KEY (course_id)
 		REFERENCES course (course_id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
 
 	CONSTRAINT course_default_instructor_fk_instructor_id
 		FOREIGN KEY (instructor_id)
 		REFERENCES instructor (instructor_id)
-		ON UPDATE CASCADE
-		ON DELETE CASCADE,
+		ON UPDATE CASCADE,
 
 	CONSTRAINT course_default_instructor_check_index
 		CHECK (index >= 0),
@@ -207,7 +206,7 @@ CREATE TABLE IF NOT EXISTS session (
 	session_id UUID NOT NULL DEFAULT gen_random_uuid(),
 
 	title VARCHAR(255) NOT NULL,
-	notes VARCHAR(1024) NOT NULL,
+	notes VARCHAR(1024),
 	price SMALLINT,
 	start_time INTEGER NOT NULL,
 	end_time INTEGER NOT NULL,
@@ -246,11 +245,13 @@ CREATE TABLE IF NOT EXISTS session (
 
 	CONSTRAINT session_fk_course_id
 		FOREIGN KEY (course_id)
-		REFERENCES course (course_id),
+		REFERENCES course (course_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT session_fk_location_id
 		FOREIGN KEY (location_id)
-		REFERENCES location (location_id),
+		REFERENCES location (location_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT session_check_created_at
 		CHECK (created_at <= get_now())
@@ -275,10 +276,12 @@ CREATE TABLE IF NOT EXISTS session_instructor (
 	CONSTRAINT session_instructor_fk_session_id
 		FOREIGN KEY (session_id)
 		REFERENCES session (session_id),
+		ON UPDATE CASCADE,
 
 	CONSTRAINT session_instructor_fk_instructor_id
 		FOREIGN KEY (instructor_id)
-		REFERENCES instructor (instructor_id),
+		REFERENCES instructor (instructor_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT session_instructor_check_index
 		CHECK (index >= 0),
@@ -307,7 +310,8 @@ CREATE TABLE IF NOT EXISTS booking (
 
 	CONSTRAINT booking_fk_session_id
 		FOREIGN KEY (session_id)
-		REFERENCES session (session_id),
+		REFERENCES session (session_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT booking_check_created_at
 		CHECK (created_at <= get_now())
@@ -333,11 +337,13 @@ CREATE TABLE IF NOT EXISTS review (
 
 	CONSTRAINT review_fk_course_id
 		FOREIGN KEY (course_id)
-		REFERENCES course (course_id),
+		REFERENCES course (course_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT review_fk_student_id
 		FOREIGN KEY (student_id)
-		REFERENCES student (student_id),
+		REFERENCES student (student_id)
+		ON UPDATE CASCADE,
 
 	CONSTRAINT review_check_score
 		CHECK (score >= 1 AND score <= 5),

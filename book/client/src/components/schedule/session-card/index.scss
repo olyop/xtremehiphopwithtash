@@ -1,0 +1,10 @@
+.SessionCard {
+	&:hover &__blur {
+		opacity: 0.4;
+		visibility: visible;
+	}
+	&:hover &__buttons {
+		opacity: 1;
+		visibility: visible;
+	}
+}

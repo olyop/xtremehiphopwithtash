@@ -1,13 +1,10 @@
-query getSessionsInPeriod($input: GetSessionsInput!) {
-	getSessionsInPeriod(input: $input) {
+mutation updateSession($sessionID: UUID!, $input: SessionInput!) {
+	updateSessionByID(sessionID: $sessionID, input: $input) {
 		sessionID
 		title
-		notes
 		startTime
 		endTime
 		capacity
-		price
-		equipmentAvailable
 		location {
 			locationID
 			name

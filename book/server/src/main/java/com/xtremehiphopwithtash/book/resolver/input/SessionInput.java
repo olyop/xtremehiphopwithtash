@@ -9,7 +9,7 @@ import org.springframework.data.web.ProjectedPayload;
 @ProjectedPayload
 public interface SessionInput {
 	String getTitle();
-	String getNotes();
+	Optional<String> getNotes();
 	UUID getLocationID();
 	Optional<Short> getPrice();
 	Short getCapacity();

@@ -16,7 +16,7 @@ public final class CommonTransformer {
 		if (name.isEmpty() || name.isBlank()) {
 			return null;
 		} else {
-			return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+			return name.substring(0, 1).toUpperCase() + name.substring(1);
 		}
 	}
 }

@@ -1,8 +1,8 @@
+import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, PropsWithChildren, ReactNode, createElement, useEffect } from "react";
 
 import { useKeyPress } from "../../hooks";
-
-const iconClassName = "h-6 w-6 mt-0.5 select-none";
+import Button from "../button";
 
 const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	title,
@@ -26,7 +26,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 
 	return (
 		<div
-			className={`inset-0 w-screen h-screen absolute z-10 transition-opacity ${
+			className={`inset-0 w-screen h-screen absolute z-10 transition-opacity overflow-hidden ${
 				isOpen ? "opacity-100 visible" : "opacity-0 invisible"
 			} ${className || ""}`}
 		>
@@ -39,15 +39,25 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-6 flex-col shadow-lg rounded-md p-4 overflow-hidden top-1/2 left-1/2 z-20 absolute w-96 -translate-x-1/2 -translate-y-1/2 bg-white ${
+					className={`flex gap-6 flex-col shadow-lg rounded-md p-4 top-1/2 left-1/2 z-20 absolute w-96 -translate-x-1/2 -translate-y-1/2 bg-white ${
 						modalClassName || ""
 					}`}
 				>
-					<div className="flex gap-2 items-center pb-2 border-b border-b-gray-200">
-						{icon(iconClassName)}
+					<Button
+						leftIcon={c => <XMarkIcon className={c} />}
+						ariaLabel={`Close ${title}`}
+						onClick={onClose}
+						className="absolute -top-4 -right-4"
+					/>
+					<div
+						className={`flex gap-2 ${
+							subTitle === undefined ? "items-center" : "items-start"
+						} pb-2 border-b border-b-gray-200`}
+					>
+						{icon(`h-5 w-5 ${subTitle === undefined ? "mt-0.5" : "mt-1.5"} select-none`)}
 						<div>
 							<h1 className="text-2xl">{title}</h1>
-							{subTitle && <h2 className="text-gray-500 text-sm">{subTitle}</h2>}
+							{subTitle && <h2 className="text-sm text-gray-500">{subTitle}</h2>}
 						</div>
 					</div>
 					<div className={contentClassName}>{children}</div>
@@ -61,7 +71,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 interface ModalPropTypes {
 	isOpen: boolean;
 	title: string;
-	subTitle?: string;
+	subTitle?: ReactNode;
 	icon: (className: string) => ReactNode;
 	onClose: () => void;
 	buttons: ReactNode;

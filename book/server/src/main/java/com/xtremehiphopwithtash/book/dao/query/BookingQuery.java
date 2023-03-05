@@ -68,4 +68,16 @@ public class BookingQuery {
 				session_id = :sessionID
 				AND is_bringing_own_equipment = TRUE;
 		""";
+
+	public final String SELECT_BY_SESSION_ID = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				booking
+			WHERE
+				session_id = :sessionID;
+		""",
+		columnNames
+	);
 }

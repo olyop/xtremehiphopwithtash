@@ -1,42 +1,34 @@
-import { FC, Fragment, createElement } from "react";
+import { FC, createElement } from "react";
 
-import { useModal } from "../../hooks";
 import CreateSession from "./create-session";
+import SessionCard from "./session-card";
 import { Day as DayType } from "./types";
 
-const Day: FC<PropTypes> = ({ day }) => {
-	const [createSessionModal, openCreateSessionModal, closeCreateSessionModal] = useModal();
-	return (
-		<Fragment>
-			<div
-				aria-hidden="true"
-				data-unix={day.unix}
-				onClick={openCreateSessionModal}
-				className={`bg-white p-1 cursor-pointer transition-colors hover:bg-gray-100 ${
-					day.isToday ? "!bg-gray-200 hover:!bg-gray-300" : ""
-				}`}
-			>
-				<p className="text-sm text-center select-none">{day.label}</p>
-				{day.sessions && day.sessions.length > 0 && (
-					<div className="flex flex-col gap-1">
-						{day.sessions.map(session => (
-							<div
-								key={session.sessionID}
-								className="flex items-center justify-between p-1 bg-gray-100 rounded"
-							>
-								<p className="text-sm">{session.title}</p>
-							</div>
-						))}
-					</div>
-				)}
+const Day: FC<PropTypes> = ({ day, onCreateSession }) => (
+	<div
+		data-unix={day.unix}
+		className={`bg-white p-1 transition-colors flex flex-col gap-1 ${
+			day.isToday ? "!bg-gray-200" : ""
+		}`}
+	>
+		<div className="flex justify-between">
+			<p className="text-sm select-none justify-self-center">{day.label}</p>
+
+			<CreateSession day={day} onSubmit={onCreateSession} />
+		</div>
+		{day.sessions && (
+			<div className="grid grid-rows-2 gap-1">
+				{day.sessions.slice(0, 2).map(session => (
+					<SessionCard key={session.sessionID} day={day} session={session} />
+				))}
 			</div>
-			<CreateSession day={day} isOpen={createSessionModal} onClose={closeCreateSessionModal} />
-		</Fragment>
-	);
-};
+		)}
+	</div>
+);
 
 interface PropTypes {
 	day: DayType;
+	onCreateSession: () => void;
 }
 
 export default Day;

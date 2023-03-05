@@ -4,6 +4,7 @@ export interface Day {
 	unix: number;
 	isToday: boolean;
 	label: string;
+	dayName: string;
 	sessions: Session[] | null;
 }
 

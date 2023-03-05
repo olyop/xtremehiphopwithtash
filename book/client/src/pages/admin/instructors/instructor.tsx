@@ -35,7 +35,7 @@ const Instructor: FC<PropTypes> = ({
 					{instructor.details.firstName} {instructor.details.lastName}
 					<span> </span>
 					{instructor.details.nickName && (
-						<span className="text-gray-400">{instructor.details.nickName}</span>
+						<span className="text-gray-500">({instructor.details.nickName})</span>
 					)}
 				</Fragment>
 			}

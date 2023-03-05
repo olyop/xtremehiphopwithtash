@@ -70,33 +70,6 @@ public class SessionQuery {
 		columnNames
 	);
 
-	public final String SELECT_SESSIONS_IN_TIME_PERIOD = String.format(
-		"""
-			SELECT
-				%s
-			FROM
-				session
-			WHERE
-				start_time <= :endTime AND
-				end_time >= :startTime;
-		""",
-		columnNames
-	);
-
-	public final String SELECT_SESSIONS_IN_TIME_PERIOD_AND_COURSE_ID = String.format(
-		"""
-			SELECT
-				%s
-			FROM
-				session
-			WHERE
-				start_time <= :endTime AND
-				end_time >= :startTime AND
-				course_id = :courseID;
-		""",
-		columnNames
-	);
-
 	public final String SELECT_BY_INSTRUCTOR_ID = String.format(
 		"""
 			SELECT
@@ -120,6 +93,33 @@ public class SessionQuery {
 				session
 			WHERE
 				location_id = :locationID;
+		""",
+		columnNames
+	);
+
+	public final String SELECT_SESSIONS_IN_TIME_PERIOD = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				session
+			WHERE
+				start_time < :endTime AND
+				end_time > :startTime;
+		""",
+		columnNames
+	);
+
+	public final String SELECT_SESSIONS_IN_TIME_PERIOD_AND_COURSE_ID = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				session
+			WHERE
+				start_time < :endTime AND
+				end_time > :startTime AND
+				course_id = :courseID;
 		""",
 		columnNames
 	);
