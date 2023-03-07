@@ -8,6 +8,7 @@ import {
 	SessionInput as SessionInputType,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
+import { millisecondsToSeconds } from "../../../utils";
 import Button from "../../button";
 import FormError from "../../form-error";
 import Modal from "../../modal";
@@ -29,8 +30,8 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 					...input,
 					notes: input.notes === "" ? null : input.notes,
 					price: input.price === 0 ? null : input.price,
-					startTime: Math.floor(input.startTime / 1000),
-					endTime: Math.floor(input.endTime / 1000),
+					startTime: millisecondsToSeconds(input.startTime),
+					endTime: millisecondsToSeconds(input.endTime),
 				},
 			},
 		});
@@ -41,6 +42,11 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 			...prevState,
 			...initialCourseDefaultInput,
 		}));
+	};
+
+	const handleCloseModal = () => {
+		setInput(initialInput({ startTime: day.unix }));
+		closeModal();
 	};
 
 	useEffect(() => {
@@ -64,7 +70,7 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 				subTitle={`${day.dayName} - ${day.label}`}
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
-				onClose={closeModal}
+				onClose={handleCloseModal}
 				contentClassName="flex flex-col gap-4"
 				children={
 					<Fragment>

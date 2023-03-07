@@ -3,6 +3,7 @@ package com.xtremehiphopwithtash.book.resolver.validator;
 import com.xtremehiphopwithtash.book.dao.BookingDAO;
 import com.xtremehiphopwithtash.book.dao.SessionDAO;
 import com.xtremehiphopwithtash.book.model.Booking;
+import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
 import java.time.Instant;
@@ -78,6 +79,12 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		}
 	}
 
+	public void validateSessionInPeriodExists(Instant startTime, Instant endTime) {
+		if (!sessionDAO.selectInTimePeriod(startTime, endTime).isEmpty()) {
+			throw new ResolverException("Session already exists in time period");
+		}
+	}
+
 	public void validateGetSessionsInput(GetSessionsInput input) {
 		Optional<UUID> courseID = input.getCourseID();
 		Instant startTime = input.getStartTime();
@@ -89,6 +96,28 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 
 		if (startTime.isAfter(endTime)) {
 			throw new ResolverException("Start time must be before end time");
+		}
+	}
+
+	public void validateIsNotInPast(Instant startTime) {
+		Instant now = Instant.now();
+
+		if (startTime.isBefore(now)) {
+			throw new ResolverException("Session cannot start in the past");
+		}
+	}
+
+	public void validateStartAndEndTimeHaveNotChanged(
+		UUID sessionID,
+		Instant startTime,
+		Instant endTime
+	) {
+		Session session = sessionDAO.selectByID(sessionID).get();
+		Instant originalStartTime = session.getStartTime();
+		Instant originalEndTime = session.getEndTime();
+
+		if (!originalStartTime.equals(startTime) || !originalEndTime.equals(endTime)) {
+			throw new ResolverException("Cannot change start and end time after session has started");
 		}
 	}
 
@@ -124,13 +153,8 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 	}
 
 	private void validateStartAndEndTime(Instant startTime, Instant endTime) {
-		Instant now = Instant.now();
 		Instant startTimeInThirtyMinutes = startTime.plusSeconds(thirtyMinutes);
 		Instant startTimeInFourHours = startTime.plusSeconds(fourHours);
-
-		if (startTime.isBefore(now)) {
-			throw new ResolverException("Session cannot start in the past");
-		}
 
 		if (startTime.equals(endTime)) {
 			throw new ResolverException("Start time and end time cannot be the same");
@@ -146,10 +170,6 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 
 		if (endTime.isAfter(startTimeInFourHours)) {
 			throw new ResolverException("The session cannot be over 4 hours");
-		}
-
-		if (!sessionDAO.selectInTimePeriod(startTime, endTime).isEmpty()) {
-			throw new ResolverException("Session already exists in time period");
 		}
 	}
 }

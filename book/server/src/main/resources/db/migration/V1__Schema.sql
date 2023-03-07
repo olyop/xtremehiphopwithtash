@@ -227,9 +227,6 @@ CREATE TABLE IF NOT EXISTS session (
 	CONSTRAINT session_check_price
 		CHECK (price > 0),
 
-	CONSTRAINT session_check_start_time
-		CHECK (start_time > get_now()),
-
 	CONSTRAINT session_check_end_time
 		CHECK (end_time > start_time),
 

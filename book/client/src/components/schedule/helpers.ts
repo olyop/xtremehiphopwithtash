@@ -60,7 +60,7 @@ export const addOneMonth = (date: Date): Date => {
 
 export const getSessions =
 	(apollo: ApolloClient<unknown>) =>
-	async (startTime: Date, endTime: Date): Promise<readonly Session[]> => {
+	async (startTime: Date, endTime: Date): Promise<Session[]> => {
 		const { data } = await apollo.query<Data, Vars>({
 			query: GET_SESSIONS_IN_PERIOD,
 			fetchPolicy: "network-only",
@@ -73,7 +73,7 @@ export const getSessions =
 			},
 		});
 
-		return data?.getSessionsInPeriod ?? [];
+		return (data?.getSessionsInPeriod as Session[]) ?? [];
 	};
 
 type Data = Pick<Query, "getSessionsInPeriod">;

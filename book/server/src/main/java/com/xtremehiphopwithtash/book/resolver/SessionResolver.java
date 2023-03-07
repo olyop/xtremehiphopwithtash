@@ -89,6 +89,8 @@ public class SessionResolver {
 		List<UUID> instructorIDs = input.getInstructorIDs();
 
 		sessionValidator.validateInput(input);
+		sessionValidator.validateIsNotInPast(startTime);
+		sessionValidator.validateSessionInPeriodExists(startTime, endTime);
 
 		Session session = new Session();
 		session.setTitle(title);
@@ -122,6 +124,7 @@ public class SessionResolver {
 
 		sessionValidator.validateID(sessionID);
 		sessionValidator.validateInput(input);
+		sessionValidator.validateStartAndEndTimeHaveNotChanged(sessionID, startTime, endTime);
 
 		Session session = new Session();
 		session.setTitle(title);

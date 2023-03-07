@@ -173,7 +173,7 @@ const Input: FC<InputPropTypes> = ({
 				/>
 			)}
 			{typeof value === "number" && type === InputType.PRICE && (
-				<p className="absolute top-1/2 -translate-y-1/2 mt-[1px] left-3">
+				<p className="absolute top-1/2 -translate-y-1/2 left-3">
 					{value === 0 ? "Free" : currencyFormatter.format(value).slice(0, 2)}
 				</p>
 			)}

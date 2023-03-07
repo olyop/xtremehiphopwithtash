@@ -39,7 +39,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-6 flex-col shadow-lg rounded-md p-4 top-1/2 left-1/2 z-20 absolute w-96 -translate-x-1/2 -translate-y-1/2 bg-white ${
+					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-1/2 left-1/2 z-20 absolute w-96 -translate-x-1/2 -translate-y-1/2 bg-white ${
 						modalClassName || ""
 					}`}
 				>

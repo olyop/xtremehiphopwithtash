@@ -4,7 +4,7 @@ import CreateSession from "./create-session";
 import SessionCard from "./session-card";
 import { Day as DayType } from "./types";
 
-const Day: FC<PropTypes> = ({ day, onCreateSession }) => (
+const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => (
 	<div
 		data-unix={day.unix}
 		className={`bg-white p-1 transition-colors flex flex-col gap-1 ${
@@ -14,12 +14,17 @@ const Day: FC<PropTypes> = ({ day, onCreateSession }) => (
 		<div className="flex justify-between">
 			<p className="text-sm select-none justify-self-center">{day.label}</p>
 
-			<CreateSession day={day} onSubmit={onCreateSession} />
+			<CreateSession day={day} onSubmit={onSessionUpdate} />
 		</div>
 		{day.sessions && (
 			<div className="grid grid-rows-2 gap-1">
 				{day.sessions.slice(0, 2).map(session => (
-					<SessionCard key={session.sessionID} day={day} session={session} />
+					<SessionCard
+						key={session.sessionID}
+						day={day}
+						session={session}
+						onSessionUpdate={onSessionUpdate}
+					/>
 				))}
 			</div>
 		)}
@@ -28,7 +33,7 @@ const Day: FC<PropTypes> = ({ day, onCreateSession }) => (
 
 interface PropTypes {
 	day: DayType;
-	onCreateSession: () => void;
+	onSessionUpdate: () => void;
 }
 
 export default Day;

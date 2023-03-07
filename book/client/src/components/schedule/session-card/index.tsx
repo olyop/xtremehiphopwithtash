@@ -2,9 +2,11 @@ import { useMutation } from "@apollo/client";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
-import { FC, Fragment, ReactNode, createElement, useState } from "react";
+import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
+import { FC, Fragment, ReactNode, createElement, useEffect, useState } from "react";
 
 import {
+	DeleteSessionMutation,
 	DeleteSessionMutationVariables,
 	Session,
 	SessionInput as SessionInputType,
@@ -12,29 +14,36 @@ import {
 	UpdateSessionMutationVariables,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
-import { secondsToMilliseconds } from "../../../utils";
+import { millisecondsToSeconds, secondsToMilliseconds } from "../../../utils";
 import Button from "../../button";
 import FormError from "../../form-error";
 import Modal from "../../modal";
 import { timeFormatter } from "../helpers";
 import SessionInput from "../session-input";
 import { Day } from "../types";
+import DELETE_SESSION from "./delete-session.graphql";
 import "./index.scss";
 import { sessionToInput } from "./session-to-input";
 import UPDATE_SESSION from "./update-session.graphql";
 
-const SessionCard: FC<PropTypes> = ({ session, day }) => {
+const SessionCard: FC<PropTypes> = ({ session, day, onSessionUpdate }) => {
 	const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
+	const [isDeleteModalOpen, openDeleteModal, closeDeleteModal] = useModal();
+
 	const [input, setInput] = useState<SessionInputType>(sessionToInput(session));
 
-	const [updateSession, { error }] = useMutation<Data, Vars>(UPDATE_SESSION);
-	const [deleteSession] = useMutation<unknown, DeleteSessionMutationVariables>(UPDATE_SESSION);
+	const [updateSession, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_SESSION);
+	const [deleteSession, deleteResult] = useMutation<DeleteData, DeleteVars>(DELETE_SESSION);
 
 	const handleSubmit = () => {
 		void updateSession({
 			variables: {
-				input,
 				sessionID: session.sessionID,
+				input: {
+					...input,
+					startTime: millisecondsToSeconds(input.startTime),
+					endTime: millisecondsToSeconds(input.endTime),
+				},
 			},
 		});
 	};
@@ -57,6 +66,20 @@ const SessionCard: FC<PropTypes> = ({ session, day }) => {
 		</Fragment>
 	);
 
+	useEffect(() => {
+		if (updateResult.data) {
+			closeEditModal();
+			onSessionUpdate();
+		}
+	}, [updateResult.data]);
+
+	useEffect(() => {
+		if (deleteResult.data) {
+			closeDeleteModal();
+			onSessionUpdate();
+		}
+	}, [deleteResult.data]);
+
 	return (
 		<Fragment>
 			<div
@@ -66,7 +89,6 @@ const SessionCard: FC<PropTypes> = ({ session, day }) => {
 				<div className="absolute inset-0 z-10 invisible transition-opacity bg-gray-400 rounded-lg opacity-0 SessionCard__blur" />
 				<div className="absolute inset-0 z-20 flex items-center justify-center invisible gap-2 transition-opacity opacity-0 SessionCard__buttons">
 					<Button
-						text="Edit"
 						ariaLabel="Edit session"
 						onClick={openEditModal}
 						leftIcon={className => <PencilIcon className={className} />}
@@ -79,7 +101,7 @@ const SessionCard: FC<PropTypes> = ({ session, day }) => {
 					/>
 					<Button
 						ariaLabel="Delete"
-						onClick={handleDelete}
+						onClick={openDeleteModal}
 						leftIcon={className => <TrashIcon className={className} />}
 					/>
 				</div>
@@ -119,28 +141,69 @@ const SessionCard: FC<PropTypes> = ({ session, day }) => {
 				children={
 					<Fragment>
 						<SessionInput input={input} onChange={setInput} />
-						<FormError error={error} />
+						<FormError error={updateResult.error} />
 					</Fragment>
 				}
 				buttons={
 					<Button
-						text="Submit"
-						ariaLabel="Submit"
+						text={updateResult.loading ? "Updating..." : "Submit"}
 						onClick={handleSubmit}
+						ariaLabel={updateResult.loading ? "Updating session" : "Submit"}
 						leftIcon={className => <PencilIcon className={className} />}
 					/>
+				}
+			/>
+			<Modal
+				title="Delete Session"
+				className="z-30"
+				subTitle={
+					<Fragment>
+						{sessionStartAndEndTime}
+						<Fragment> on </Fragment>
+						{new Date(day.unix).toLocaleDateString()}
+					</Fragment>
+				}
+				icon={className => <TrashIcon className={className} />}
+				isOpen={isDeleteModalOpen}
+				onClose={closeDeleteModal}
+				contentClassName="flex flex-col gap-4"
+				children={
+					<Fragment>
+						<p>Are you sure?</p>
+						<FormError error={deleteResult.error} />
+					</Fragment>
+				}
+				buttons={
+					<Fragment>
+						<Button
+							text="Delete"
+							ariaLabel="Delete"
+							onClick={handleDelete}
+							leftIcon={className => <TrashIcon className={className} />}
+						/>
+						<Button
+							transparent
+							text="No"
+							ariaLabel="Cancel"
+							onClick={closeDeleteModal}
+							leftIcon={className => <XMarkIcon className={className} />}
+						/>
+					</Fragment>
 				}
 			/>
 		</Fragment>
 	);
 };
 
-type Data = UpdateSessionMutation;
-type Vars = UpdateSessionMutationVariables;
+type UpdateData = UpdateSessionMutation;
+type UpdateVars = UpdateSessionMutationVariables;
+type DeleteData = DeleteSessionMutation;
+type DeleteVars = DeleteSessionMutationVariables;
 
 interface PropTypes {
 	session: Session;
 	day: Day;
+	onSessionUpdate: () => void;
 }
 
 export default SessionCard;

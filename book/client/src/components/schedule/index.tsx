@@ -35,7 +35,7 @@ const Schedule: FC = () => {
 		void getSchedule(date);
 	};
 
-	const handleSessionCreate = () => {
+	const handleSessionsUpdate = () => {
 		const date = new Date(relativeDate.current);
 		void getSchedule(date);
 	};
@@ -54,7 +54,7 @@ const Schedule: FC = () => {
 				{schedule.days.length > 0 ? (
 					<Fragment>
 						<WeekDays />
-						<Days schedule={schedule} onCreateSession={handleSessionCreate} />
+						<Days schedule={schedule} onSessionUpdate={handleSessionsUpdate} />
 					</Fragment>
 				) : (
 					<p>Loading...</p>

@@ -2,7 +2,7 @@ import { Session, SessionInput } from "../../../generated-types";
 import { secondsToMilliseconds } from "../../../utils";
 
 export const sessionToInput = (session: Session): SessionInput => {
-	const { sessionID, createdAt, course, location, instructors, ...sessionInput } = session;
+	const { sessionID, __typename, createdAt, course, location, instructors, ...sessionInput } = session;
 	return {
 		...sessionInput,
 		startTime: secondsToMilliseconds(sessionInput.startTime),

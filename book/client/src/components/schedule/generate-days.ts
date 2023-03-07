@@ -1,5 +1,6 @@
 import { ApolloClient } from "@apollo/client";
 
+import { Session } from "../../generated-types";
 import { secondsToMilliseconds } from "../../utils";
 import {
 	addOneMonth,
@@ -36,7 +37,12 @@ export const generateSchedule =
 		const startingDate = minusOneWeek(startOfWeek);
 		const endingDate = addOneMonth(startingDate);
 
-		const sessions = await getSessions(apollo)(startingDate, endingDate);
+		let sessions: Session[];
+		try {
+			sessions = await getSessions(apollo)(startingDate, endingDate);
+		} catch {
+			sessions = [];
+		}
 
 		for (let index = 0; index < 28; index += 1) {
 			const day = new Date(startingDate);
