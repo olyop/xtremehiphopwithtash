@@ -4,6 +4,7 @@ import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
+import LocationInput from "../../../components/entity-inputs/location-input";
 import FormError from "../../../components/form-error";
 import Modal from "../../../components/modal";
 import {
@@ -15,7 +16,6 @@ import { useModal } from "../../../hooks";
 import CREATE_LOCATION from "./create-location.graphql";
 import GET_LOCATIONS from "./get-locations.graphql";
 import { initialInput } from "./initial-input";
-import LocationInput from "./location-input";
 
 const AddLocation: FC = () => {
 	const [input, setInput] = useState<LocationInputType>(initialInput);

@@ -2,7 +2,7 @@ import { FC, createElement } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { ApolloProvider } from "./apollo";
-import Header from "./components/header";
+import Header from "./layouts/header";
 import Routes from "./routes";
 
 const Application: FC = () => (

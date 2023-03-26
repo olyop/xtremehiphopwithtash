@@ -3,13 +3,14 @@ import { FC, createElement } from "react";
 
 import { OnEditAndUpdate } from "../../../components/entity";
 import {
+	GetInstructorsQuery,
 	InstructorInput,
 	Instructor as InstructorType,
 	Mutation,
 	MutationDeleteInstructorByIdArgs,
 	MutationUpdateInstructorByIdArgs,
-	Query,
 } from "../../../generated-types";
+import { ArrayElement } from "../../../utils";
 import Section from "../section";
 import CreateInstructor from "./create-instructor";
 import DELETE_INSTRUCTOR from "./delete-instructor.graphql";
@@ -18,7 +19,7 @@ import Instructor from "./instructor";
 import UPDATE_INSTRUCTOR from "./update-instructor.graphql";
 
 const Instructors: FC = () => {
-	const { data } = useQuery<Pick<Query, "getInstructors">>(GET_INSTRUCTORS);
+	const { data } = useQuery<GetInstructorsQuery>(GET_INSTRUCTORS);
 
 	const [updateInstructor, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_INSTRUCTOR);
 	const [deleteInstructor, deleteResult] = useMutation<DeleteData, DeleteVars>(DELETE_INSTRUCTOR);
@@ -63,7 +64,7 @@ const Instructors: FC = () => {
 		};
 
 	return (
-		<Section<InstructorType>
+		<Section<ArrayElement<GetInstructorsQuery["getInstructors"]>>
 			title="Instructors"
 			items={data?.getInstructors}
 			create={<CreateInstructor />}

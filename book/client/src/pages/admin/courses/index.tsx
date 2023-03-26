@@ -5,11 +5,12 @@ import { OnEditAndUpdate } from "../../../components/entity";
 import {
 	CourseInput as CourseInputType,
 	Course as CourseType,
+	GetCoursesQuery,
 	Mutation,
 	MutationDeleteCourseByIdArgs,
 	MutationUpdateCourseByIdArgs,
-	Query,
 } from "../../../generated-types";
+import { ArrayElement } from "../../../utils";
 import Section from "../section";
 import Course from "./course";
 import CreateInstructor from "./create-course";
@@ -18,7 +19,7 @@ import GET_COURSES from "./get-courses.graphql";
 import UPDATE_COURSE from "./update-course.graphql";
 
 const Courses: FC = () => {
-	const { data } = useQuery<Pick<Query, "getCourses">>(GET_COURSES);
+	const { data } = useQuery<GetCoursesQuery>(GET_COURSES);
 
 	const [updateCourse, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_COURSE);
 	const [deleteCourse, deleteResult] = useMutation<DeleteData, DeleteVars>(DELETE_COURSE);
@@ -64,7 +65,7 @@ const Courses: FC = () => {
 		};
 
 	return (
-		<Section<CourseType>
+		<Section<ArrayElement<GetCoursesQuery["getCourses"]>>
 			title="Courses"
 			items={data?.getCourses}
 			create={<CreateInstructor />}

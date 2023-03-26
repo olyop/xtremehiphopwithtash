@@ -3,13 +3,14 @@ import { FC, createElement } from "react";
 
 import { OnEditAndUpdate } from "../../../components/entity";
 import {
+	GetLocationsQuery,
 	LocationInput,
 	Location as LocationType,
 	Mutation,
 	MutationDeleteLocationByIdArgs,
 	MutationUpdateLocationByIdArgs,
-	Query,
 } from "../../../generated-types";
+import { ArrayElement } from "../../../utils";
 import Section from "../section";
 import CreateInstructor from "./create-location";
 import DELETE_LOCATION from "./delete-location.graphql";
@@ -18,7 +19,7 @@ import Location from "./location";
 import UPDATE_LOCATION from "./update-location.graphql";
 
 const Locations: FC = () => {
-	const { data } = useQuery<Pick<Query, "getLocations">>(GET_LOCATIONS);
+	const { data } = useQuery<GetLocationsQuery>(GET_LOCATIONS);
 
 	const [updateLocation, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_LOCATION);
 	const [deleteLocation, deleteResult] = useMutation<DeleteData, DeleteVars>(DELETE_LOCATION);
@@ -57,7 +58,7 @@ const Locations: FC = () => {
 		};
 
 	return (
-		<Section<LocationType>
+		<Section<ArrayElement<GetLocationsQuery["getLocations"]>>
 			title="Locations"
 			items={data?.getLocations}
 			create={<CreateInstructor />}

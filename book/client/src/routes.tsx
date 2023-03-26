@@ -3,6 +3,7 @@ import { RouteObject, useRoutes } from "react-router-dom";
 
 import Admin from "./pages/admin";
 import Home from "./pages/home";
+import SessionPage from "./pages/session";
 
 const routes: RouteObject[] = [
 	{
@@ -13,12 +14,16 @@ const routes: RouteObject[] = [
 		path: "admin",
 		element: <Admin />,
 	},
+	{
+		path: "session/:sessionID",
+		element: <SessionPage />,
+	},
 ];
 
 const Routes: FC = () => {
 	const routesElement = useRoutes(routes);
 	return (
-		<div className="h-content-height p-4 overflow-y-scroll overflow-x-hidden bg-stone-150">
+		<div className="overflow-x-hidden overflow-y-scroll h-content-height bg-stone-150">
 			{routesElement}
 		</div>
 	);

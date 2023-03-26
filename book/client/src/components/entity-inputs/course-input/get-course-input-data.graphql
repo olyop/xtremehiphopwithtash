@@ -1,0 +1,19 @@
+query getCourseInputData {
+	getInstructors {
+		instructorID
+		photo
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+		}
+	}
+	getLocations {
+		locationID
+		name
+		plusCode
+	}
+}

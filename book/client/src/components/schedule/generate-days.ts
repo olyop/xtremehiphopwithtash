@@ -1,15 +1,21 @@
 import { ApolloClient } from "@apollo/client";
 
 import { Session } from "../../generated-types";
+import { Breakpoint } from "../../hooks";
 import { secondsToMilliseconds } from "../../utils";
 import {
+	addNineDays,
 	addOneMonth,
+	addSixDays,
 	getEndOfDay,
 	getMonday,
 	getSessions,
 	getStartOfDay,
+	isInPast,
 	isToday,
 	minusOneWeek,
+	minusThreeDays,
+	minusTwoDays,
 } from "./helpers";
 import { Day, Schedule } from "./types";
 
@@ -18,24 +24,58 @@ const thisYearDateFormatter = new Intl.DateTimeFormat(undefined, {
 	month: "short",
 });
 
-const otherYearDateFormatter = new Intl.DateTimeFormat(undefined, {
+const fullYearDateFormatter = new Intl.DateTimeFormat(undefined, {
 	day: "2-digit",
 	month: "2-digit",
 	year: "numeric",
 });
 
-const now = new Date();
+const determineLabel = (day: Date, now: Date) =>
+	day.getFullYear() === now.getFullYear()
+		? thisYearDateFormatter.format(day)
+		: fullYearDateFormatter.format(day);
+
+const determineStartAndEndDate = (startOfDay: Date, breakpoint: Breakpoint) => {
+	let startingDate: Date;
+	let endingDate: Date;
+
+	if (breakpoint === Breakpoint.SMALL) {
+		startingDate = minusTwoDays(startOfDay);
+		endingDate = addSixDays(startOfDay);
+	} else if (breakpoint === Breakpoint.MEDIUM) {
+		startingDate = minusThreeDays(startOfDay);
+		endingDate = addNineDays(startOfDay);
+	} else if (breakpoint === Breakpoint.LARGE) {
+		const mondayOfWeek = getMonday(startOfDay);
+		startingDate = minusOneWeek(mondayOfWeek);
+		endingDate = addOneMonth(startingDate);
+	} else {
+		throw new Error("Invalid breakpoint");
+	}
+
+	return { startingDate, endingDate };
+};
+
+const determineNumberOfDays = (breakpoint: Breakpoint) => {
+	if (breakpoint === Breakpoint.SMALL) {
+		return 8;
+	} else if (breakpoint === Breakpoint.MEDIUM) {
+		return 12;
+	} else if (breakpoint === Breakpoint.LARGE) {
+		return 28;
+	} else {
+		throw new Error("Invalid breakpoint");
+	}
+};
 
 export const generateSchedule =
 	(apollo: ApolloClient<unknown>) =>
-	async (baseTime: number): Promise<Schedule> => {
+	async (baseTime: number, breakpoint: Breakpoint): Promise<Schedule> => {
 		const days: Day[] = [];
+		const now = new Date();
 
-		const baseDate = getStartOfDay(new Date(baseTime));
-		const startOfWeek = getMonday(baseDate);
-
-		const startingDate = minusOneWeek(startOfWeek);
-		const endingDate = addOneMonth(startingDate);
+		const startOfDay = getStartOfDay(new Date(baseTime));
+		const { startingDate, endingDate } = determineStartAndEndDate(startOfDay, breakpoint);
 
 		let sessions: Session[];
 		try {
@@ -44,7 +84,9 @@ export const generateSchedule =
 			sessions = [];
 		}
 
-		for (let index = 0; index < 28; index += 1) {
+		const numberOfDays = determineNumberOfDays(breakpoint);
+
+		for (let index = 0; index < numberOfDays; index += 1) {
 			const day = new Date(startingDate);
 
 			day.setDate(day.getDate() + index);
@@ -58,12 +100,11 @@ export const generateSchedule =
 			days.push({
 				unix: day.getTime(),
 				isToday: isToday(day),
-				dayName: day.toLocaleDateString(undefined, { weekday: "long" }),
+				isInPast: isInPast(day),
+				label: determineLabel(day, now),
+				dayNameShort: day.toLocaleDateString(undefined, { weekday: "short" }),
+				dayNameLong: day.toLocaleDateString(undefined, { weekday: "long" }),
 				sessions: daySessions.length > 0 ? daySessions : null,
-				label:
-					day.getFullYear() === now.getFullYear()
-						? thisYearDateFormatter.format(day)
-						: otherYearDateFormatter.format(day),
 			});
 		}
 

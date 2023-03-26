@@ -3,6 +3,7 @@ import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
+import CourseInput from "../../../components/entity-inputs/course-input";
 import FormError from "../../../components/form-error";
 import Modal from "../../../components/modal";
 import {
@@ -11,7 +12,6 @@ import {
 	MutationCreateCourseArgs,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
-import CourseInput from "./course-input";
 import CREATE_LOCATION from "./create-course.graphql";
 import GET_LOCATIONS from "./get-courses.graphql";
 import { initialInput } from "./initial-input";

@@ -49,7 +49,7 @@ input SessionInput {
 
 input BookingInput {
 	notes: String!
-	timeBooked: UnixTime!
 	sessionID: UUID!
 	studentID: UUID!
+	isBringingOwnEquipment: Boolean!
 }

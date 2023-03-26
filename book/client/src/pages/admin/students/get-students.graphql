@@ -1,0 +1,13 @@
+query getStudents {
+	getStudents {
+		studentID
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+		}
+	}
+}

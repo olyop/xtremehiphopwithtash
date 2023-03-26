@@ -3,6 +3,7 @@ fkey
 graphqls
 inmemory
 Likert
+Nord
 Querydsl
 Tash
 unnest

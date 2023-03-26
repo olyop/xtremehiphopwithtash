@@ -2,11 +2,12 @@ import { MutationResult } from "@apollo/client";
 import { FC, Fragment, createElement, useState } from "react";
 
 import Entity, { OnEditAndUpdate } from "../../../components/entity";
+import InstructorInput from "../../../components/entity-inputs/instructor-input";
 import {
+	GetInstructorsQuery,
 	InstructorInput as InstructorInputType,
-	Instructor as InstructorType,
 } from "../../../generated-types";
-import InstructorInput from "./instructor-input";
+import { ArrayElement } from "../../../utils";
 
 const Instructor: FC<PropTypes> = ({
 	instructor,
@@ -45,7 +46,7 @@ const Instructor: FC<PropTypes> = ({
 };
 
 interface PropTypes {
-	instructor: InstructorType;
+	instructor: ArrayElement<GetInstructorsQuery["getInstructors"]>;
 	onUpdate: (input: InstructorInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;
 	isUpdating: boolean;

@@ -19,7 +19,7 @@
 	},
 	"scripts": {
 		"book-codegen": "graphql-codegen-esm -w",
-		"book-client": "cd book/client && npm run dev --  --force",
+		"book-client": "cd book/client && concurrently 'tsc --watch --noEmit' 'npm run dev --  --force'",
 		"book-server-build": "cd book/server && gradle build --continuous -x test",
 		"book-server-run": "cd book/server && gradle bootRun",
 		"book": "concurrently 'npm run book-client' 'npm run book-server-build' 'npm run book-server-run' 'npm run book-codegen'"

@@ -80,4 +80,11 @@ public class BookingQuery {
 		""",
 		columnNames
 	);
+
+	public final String SELECT_CAPACITY_BY_SESSION_ID =
+		"""
+			SELECT
+				(SELECT capacity FROM session WHERE session_id = :sessionID) -
+				(SELECT count(*) FROM booking	WHERE session_id = :sessionID) AS capacity_available
+		""";
 }

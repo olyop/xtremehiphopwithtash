@@ -23,7 +23,7 @@ interface PropTypes<T> {
 	title: string;
 	items: readonly T[] | undefined;
 	renderItem: (item: T) => ReactNode;
-	create: ReactNode;
+	create?: ReactNode;
 }
 
 export default Section;

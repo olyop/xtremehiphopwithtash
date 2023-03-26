@@ -3,18 +3,21 @@ module.exports = {
 	important: false,
 	content: ["./index.html", "./src/**/*.{ts,tsx}"],
 	theme: {
+		fontFamily: {
+			"sans": ["La Nord", "sans-serif"],
+		},
 		extend: {
 			colors: {
-				primary: "#ef4444",
-				"primary-light": "#f87171",
-				"primary-dark": "#b91c1c",
+				primary: "#ff0000",
+				"primary-light": "#ff4040",
+				"primary-dark": "#bf0000",
 			},
 			height: {
 				"header-height": "5rem",
 				"content-height": "calc(100vh - 5rem)",
 			},
-			gridTemplateRows: {
-				// "7": "repeat(7, minmax(0, 1fr))",
+			width: {
+				"booking-modal": "30rem",
 			},
 		},
 	},

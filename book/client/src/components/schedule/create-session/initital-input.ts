@@ -23,8 +23,8 @@ export const initialInput = ({ startTime }: Pick<SessionInput, "startTime">): Se
 	const startTimeDate = new Date(startTime);
 	startTimeDate.setHours(10, 0, 0, 0);
 	return {
-		notes: "",
 		...initialCourseDefaultInput,
+		notes: "",
 		startTime: startTimeDate.getTime(),
 		endTime: startTimeDate.getTime(),
 	};

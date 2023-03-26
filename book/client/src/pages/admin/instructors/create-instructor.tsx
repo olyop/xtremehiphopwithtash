@@ -3,6 +3,7 @@ import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
+import InstructorInput from "../../../components/entity-inputs/instructor-input";
 import FormError from "../../../components/form-error";
 import Modal from "../../../components/modal";
 import {
@@ -14,12 +15,17 @@ import { useModal } from "../../../hooks";
 import CREATE_INSTRUCTOR from "./create-instructor.graphql";
 import GET_INSTRUCTORS from "./get-instructors.graphql";
 import { initialInput } from "./initial-input";
-import InstructorInput from "./instructor-input";
 
 const AddInstructor: FC = () => {
 	const [input, setInput] = useState<InstructorInputType>(initialInput);
 
 	const [createInstructor, { data, loading, error }] = useMutation<Data, Vars>(CREATE_INSTRUCTOR);
+
+	const handleFormReset = () => {
+		setInput(initialInput);
+	};
+
+	const [isOpen, openModal, closeModal] = useModal(handleFormReset);
 
 	const handleSubmit = () => {
 		if (!data) {
@@ -31,12 +37,6 @@ const AddInstructor: FC = () => {
 			});
 		}
 	};
-
-	const handleFormReset = () => {
-		setInput(initialInput);
-	};
-
-	const [isOpen, openModal, closeModal] = useModal(handleFormReset);
 
 	useEffect(() => {
 		if (data) {

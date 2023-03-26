@@ -2,8 +2,9 @@ import { MutationResult } from "@apollo/client";
 import { FC, Fragment, createElement, useState } from "react";
 
 import Entity, { OnEditAndUpdate } from "../../../components/entity";
-import { CourseInput as CourseInputType, Course as CourseType } from "../../../generated-types";
-import CourseInput from "./course-input";
+import CourseInput from "../../../components/entity-inputs/course-input";
+import { CourseInput as CourseInputType, GetCoursesQuery } from "../../../generated-types";
+import { ArrayElement } from "../../../utils";
 
 const currencyFormatter = new Intl.NumberFormat(undefined, {
 	style: "currency",
@@ -24,7 +25,7 @@ const Course: FC<PropTypes> = ({
 	updateModalError,
 	deleteModalError,
 }) => {
-	const { defaultInstructors, defaultLocation, reviews, ...courseInput } = course;
+	const { defaultInstructors, defaultLocation, ...courseInput } = course;
 
 	const [input, setInput] = useState<CourseInputType>({
 		...courseInput,
@@ -59,9 +60,7 @@ const Course: FC<PropTypes> = ({
 			description={
 				<span className="text-gray-500">
 					{instructorsFormatter.format(
-						defaultInstructors.map(
-							({ details: { firstName, lastName } }) => `${firstName} ${lastName}`,
-						),
+						defaultInstructors.map(({ details: { firstName, nickName } }) => nickName ?? firstName),
 					)}
 				</span>
 			}
@@ -70,13 +69,13 @@ const Course: FC<PropTypes> = ({
 };
 
 interface PropTypes {
-	course: CourseType;
+	course: ArrayElement<GetCoursesQuery["getCourses"]>;
 	onUpdate: (input: CourseInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;
 	isUpdating: boolean;
 	isDeleting: boolean;
-	updateModalError: MutationResult["error"];
-	deleteModalError: MutationResult["error"];
+	updateModalError: MutationResult["error"] | undefined;
+	deleteModalError: MutationResult["error"] | undefined;
 }
 
 export default Course;

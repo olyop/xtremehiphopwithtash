@@ -8,6 +8,7 @@ query getSessionsInPeriod($input: GetSessionsInput!) {
 		capacity
 		price
 		equipmentAvailable
+		capacityRemaining
 		location {
 			locationID
 			name

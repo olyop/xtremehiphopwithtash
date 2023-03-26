@@ -1,0 +1,36 @@
+query getSessionPage($sessionID: UUID!) {
+	getSessionByID(sessionID: $sessionID) {
+		sessionID
+		title
+		notes
+		startTime
+		endTime
+		price
+		capacity
+		equipmentAvailable
+		capacityRemaining
+		createdAt
+		location {
+			locationID
+			name
+			plusCode
+		}
+		course {
+			courseID
+			name
+			photo
+		}
+		instructors {
+			instructorID
+			photo
+			details {
+				detailsID
+				firstName
+				lastName
+				nickName
+				mobilePhoneNumber
+				gender
+			}
+		}
+	}
+}

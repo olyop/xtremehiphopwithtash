@@ -1,0 +1,38 @@
+query getSessionInputData {
+	getCourses {
+		courseID
+		name
+		photo
+		defaultPrice
+		defaultDuration
+		defaultCapacity
+		defaultEquipmentAvailable
+		defaultLocation {
+			locationID
+			name
+		}
+		defaultInstructors {
+			instructorID
+			details {
+				detailsID
+				firstName
+				lastName
+				nickName
+			}
+		}
+	}
+	getLocations {
+		locationID
+		name
+	}
+	getInstructors {
+		instructorID
+		photo
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+		}
+	}
+}

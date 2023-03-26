@@ -1,5 +1,6 @@
 package com.xtremehiphopwithtash.book.resolver;
 
+import com.xtremehiphopwithtash.book.dao.BookingDAO;
 import com.xtremehiphopwithtash.book.dao.CourseDAO;
 import com.xtremehiphopwithtash.book.dao.InstructorDAO;
 import com.xtremehiphopwithtash.book.dao.LocationDAO;
@@ -33,6 +34,7 @@ public class SessionResolver {
 	private final SessionValidator sessionValidator;
 	private final CourseDAO courseDAO;
 	private final LocationDAO locationDAO;
+	private final BookingDAO bookingDAO;
 
 	public SessionResolver(
 		SessionDAO sessionDAO,
@@ -40,7 +42,8 @@ public class SessionResolver {
 		InstructorDAO instructorDAO,
 		SessionValidator sessionValidator,
 		CourseDAO courseDAO,
-		LocationDAO locationDAO
+		LocationDAO locationDAO,
+		BookingDAO bookingDAO
 	) {
 		this.sessionDAO = sessionDAO;
 		this.sessionInstructorDAO = sessionInstructorDAO;
@@ -48,6 +51,7 @@ public class SessionResolver {
 		this.sessionValidator = sessionValidator;
 		this.courseDAO = courseDAO;
 		this.locationDAO = locationDAO;
+		this.bookingDAO = bookingDAO;
 	}
 
 	@QueryMapping
@@ -56,7 +60,7 @@ public class SessionResolver {
 	}
 
 	@QueryMapping
-	public Optional<Session> getSessionByID(UUID sessionID) {
+	public Optional<Session> getSessionByID(@Argument UUID sessionID) {
 		return sessionDAO.selectByID(sessionID);
 	}
 
@@ -167,6 +171,11 @@ public class SessionResolver {
 		} else {
 			return sessionDAO.selectInTimePeriod(startTime, endTime);
 		}
+	}
+
+	@SchemaMapping(typeName = "Session", field = "capacityRemaining")
+	public Short getCapacityRemaining(Session session) {
+		return bookingDAO.selectCapacityRemaning(session.getSessionID());
 	}
 
 	private void handleInstructors(List<UUID> instructorIDs, UUID sessionID) {

@@ -1,5 +1,6 @@
 import { useMutation } from "@apollo/client";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
+import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import {
@@ -10,9 +11,9 @@ import {
 import { useModal } from "../../../hooks";
 import { millisecondsToSeconds } from "../../../utils";
 import Button from "../../button";
+import SessionInput from "../../entity-inputs/session-input";
 import FormError from "../../form-error";
 import Modal from "../../modal";
-import SessionInput from "../session-input";
 import { Day } from "../types";
 import CREATE_SESSION from "./create-session.graphql";
 import { initialCourseDefaultInput, initialInput } from "./initital-input";
@@ -56,18 +57,20 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 		}
 	}, [data]);
 
+	useEffect(() => () => setInput(initialInput({ startTime: day.unix })), []);
+
 	return (
 		<Fragment>
 			<Button
 				transparent
 				ariaLabel="Add new session"
-				className="!w-6 !h-6 !p-1"
+				className="!w-5 !h-5 !p-1 -mt-0.5 -mr-0.5"
 				leftIcon={className => <PlusIcon className={className} />}
 				onClick={openModal}
 			/>
 			<Modal
 				title="Create Session"
-				subTitle={`${day.dayName} - ${day.label}`}
+				subTitle={`${day.dayNameLong} - ${day.label}`}
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
 				onClose={handleCloseModal}
@@ -79,12 +82,23 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 					</Fragment>
 				}
 				buttons={
-					<Button
-						text="Submit"
-						ariaLabel="Submit"
-						onClick={handleSubmit}
-						leftIcon={className => <PlusIcon className={className} />}
-					/>
+					input.courseID === "" ? undefined : (
+						<Fragment>
+							<Button
+								text="Submit"
+								ariaLabel="Submit"
+								onClick={handleSubmit}
+								leftIcon={className => <PlusIcon className={className} />}
+							/>
+							<Button
+								transparent
+								text="Cancel"
+								ariaLabel="Cancel"
+								onClick={handleCloseModal}
+								leftIcon={className => <XMarkIcon className={className} />}
+							/>
+						</Fragment>
+					)
 				}
 			/>
 		</Fragment>

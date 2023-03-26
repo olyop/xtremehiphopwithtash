@@ -2,9 +2,11 @@ import { Session } from "../../generated-types";
 
 export interface Day {
 	unix: number;
+	isInPast: boolean;
 	isToday: boolean;
 	label: string;
-	dayName: string;
+	dayNameShort: string;
+	dayNameLong: string;
 	sessions: Session[] | null;
 }
 

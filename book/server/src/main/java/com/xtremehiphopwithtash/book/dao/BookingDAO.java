@@ -111,4 +111,12 @@ public class BookingDAO implements EntityDAO<Booking, UUID> {
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
 	}
+
+	public Short selectCapacityRemaning(UUID sessionID) {
+		String sql = query.SELECT_CAPACITY_BY_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+	}
 }

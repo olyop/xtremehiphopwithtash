@@ -8,23 +8,32 @@
 		"build": "tsc && vite build",
 		"preview": "vite preview"
 	},
+	"engines": {
+		"npm": ">=8.18",
+		"node": ">=16.7"
+	},
+	"volta": {
+		"npm": "9.4.1",
+		"node": "19.6.0"
+	},
 	"dependencies": {
-		"@apollo/client": "3.7.8",
+		"@apollo/client": "3.7.10",
+		"@auth0/auth0-react": "2.0.1",
 		"@heroicons/react": "2.0.16",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-router-dom": "6.8.1"
+		"react-router-dom": "6.9.0"
 	},
 	"devDependencies": {
-		"@types/react": "^18.0.27",
-		"@types/react-dom": "^18.0.10",
-		"@vitejs/plugin-react-swc": "^3.0.0",
-		"autoprefixer": "10.4.13",
+		"@types/react": "^18.0.28",
+		"@types/react-dom": "^18.0.11",
+		"@vitejs/plugin-react-swc": "^3.2.0",
+		"autoprefixer": "10.4.14",
 		"postcss": "8.4.21",
-		"sass": "1.58.3",
+		"sass": "1.59.3",
 		"tailwindcss": "3.2.7",
-		"typescript": "^4.9.3",
-		"vite": "^4.1.0",
+		"typescript": "^5.0.2",
+		"vite": "^4.2.1",
 		"vite-plugin-eslint": "1.8.1",
 		"vite-plugin-simple-gql": "0.5.0"
 	}

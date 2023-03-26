@@ -69,6 +69,7 @@ type Session {
 
 	instructors: [Instructor!]!
 	bookings: [Booking!]!
+	capacityRemaining: NonNegativeInt!
 }
 
 type Booking {
