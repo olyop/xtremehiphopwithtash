@@ -29,8 +29,9 @@ CREATE TABLE IF NOT EXISTS details (
 	first_name VARCHAR(255) NOT NULL,
 	last_name VARCHAR(255) NOT NULL,
 	nick_name VARCHAR(255),
-	gender details_gender NOT NULL,
+	gender details_gender,
 	mobile_phone_number VARCHAR(14) NOT NULL,
+	instagram_username VARCHAR(255),
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
@@ -102,6 +103,7 @@ CREATE TABLE IF NOT EXISTS location (
 
 	name VARCHAR(255) NOT NULL,
 	plus_code VARCHAR(15) NOT NULL,
+	address VARCHAR(1024) NOT NULL,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
@@ -113,6 +115,9 @@ CREATE TABLE IF NOT EXISTS location (
 
 	CONSTRAINT location_unique_plus_code
 		UNIQUE (plus_code),
+
+	CONSTRAINT location_unique_address
+		UNIQUE (address),
 
 	CONSTRAINT location_check_created_at
 		CHECK (created_at <= get_now())
@@ -130,9 +135,10 @@ CREATE TABLE IF NOT EXISTS course (
 	description VARCHAR(1024) NOT NULL,
 	photo VARCHAR(1024) NOT NULL,
 	default_price SMALLINT,
+	default_equipment_fee SMALLINT,
 	default_duration SMALLINT NOT NULL,
 	default_capacity SMALLINT NOT NULL,
-	default_equipment_available SMALLINT NOT NULL,
+	default_equipment_available SMALLINT,
 	default_location_id UUID NOT NULL,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
@@ -142,6 +148,9 @@ CREATE TABLE IF NOT EXISTS course (
 
 	CONSTRAINT course_check_default_price
 		CHECK (default_price > 0),
+
+	CONSTRAINT course_check_default_equipment_fee
+		CHECK (default_equipment_fee > 0),
 
 	CONSTRAINT course_check_default_duration
 		CHECK (default_duration > 0 AND default_duration <= 60 * 60 * 4),
@@ -208,10 +217,11 @@ CREATE TABLE IF NOT EXISTS session (
 	title VARCHAR(255) NOT NULL,
 	notes VARCHAR(1024),
 	price SMALLINT,
+	equipment_fee SMALLINT,
 	start_time INTEGER NOT NULL,
 	end_time INTEGER NOT NULL,
 	capacity SMALLINT NOT NULL,
-	equipment_available SMALLINT NOT NULL,
+	equipment_available SMALLINT,
 	course_id UUID NOT NULL,
 	location_id UUID NOT NULL,
 
@@ -227,10 +237,12 @@ CREATE TABLE IF NOT EXISTS session (
 	CONSTRAINT session_check_price
 		CHECK (price > 0),
 
+	CONSTRAINT session_check_equipment_fee
+		CHECK (equipment_fee > 0),
+
 	CONSTRAINT session_check_end_time
 		CHECK (end_time > start_time),
 
-	-- check duration is less than 4 hours
 	CONSTRAINT session_check_duration
 		CHECK (end_time - start_time <= 60 * 60 * 4),
 
@@ -295,7 +307,7 @@ CREATE TABLE IF NOT EXISTS booking (
 
 	booking_id UUID NOT NULL DEFAULT gen_random_uuid(),
 
-	notes VARCHAR(1024) NOT NULL,
+	notes VARCHAR(1024),
 	is_bringing_own_equipment BOOLEAN NOT NULL,
 	session_id UUID NOT NULL,
 	student_id VARCHAR(255) NOT NULL,
@@ -311,6 +323,35 @@ CREATE TABLE IF NOT EXISTS booking (
 		ON UPDATE CASCADE,
 
 	CONSTRAINT booking_check_created_at
+		CHECK (created_at <= get_now())
+);
+
+-- ############################################################################################## --
+-- ############################################################################################## --
+-- ############################################################################################## --
+
+CREATE TABLE IF NOT EXISTS referral_code (
+
+	referral_code_id UUID NOT NULL DEFAULT gen_random_uuid(),
+
+	code VARCHAR(9) NOT NULL,
+	used_at INTEGER,
+
+	created_at INTEGER NOT NULL DEFAULT get_now(),
+
+	CONSTRAINT referral_code_pk
+		PRIMARY KEY (referral_code_id),
+
+	CONSTRAINT referral_code_check_code
+		CHECK (code ~ '^[A-Z0-9]{9}$'),
+
+	CONSTRAINT referral_code_check_code_unique
+		UNIQUE (code),
+
+	CONSTRAINT referral_code_check_used_at
+		CHECK (used_at IS NULL OR used_at >= created_at),
+
+	CONSTRAINT referral_code_check_created_at
 		CHECK (created_at <= get_now())
 );
 

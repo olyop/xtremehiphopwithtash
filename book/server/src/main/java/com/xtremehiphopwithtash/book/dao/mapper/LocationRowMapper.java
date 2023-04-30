@@ -17,6 +17,7 @@ public class LocationRowMapper implements RowMapper<Location> {
 
 		location.setName(rs.getString("name"));
 		location.setPlusCode(rs.getString("plus_code"));
+		location.setAddress(rs.getString("address"));
 
 		location.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 

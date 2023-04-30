@@ -1,0 +1,21 @@
+query getSessionBookings($sessionID: UUID!) {
+	getSessionByID(sessionID: $sessionID) {
+		sessionID
+		bookings {
+			bookingID
+			notes
+			isBringingOwnEquipment
+			createdAt
+			student {
+				studentID
+				details {
+					detailsID
+					firstName
+					lastName
+					nickName
+					mobilePhoneNumber
+				}
+			}
+		}
+	}
+}

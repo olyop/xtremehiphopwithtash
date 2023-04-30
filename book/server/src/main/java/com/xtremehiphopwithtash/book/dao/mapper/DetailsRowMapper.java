@@ -22,6 +22,7 @@ public class DetailsRowMapper implements RowMapper<Details> {
 		details.setNickName(rs.getString("nick_name"));
 		details.setGender(rs.getString("gender"));
 		details.setMobilePhoneNumber(rs.getString("mobile_phone_number"));
+		details.setInstagramUsername(rs.getString("instagram_username"));
 
 		details.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
 

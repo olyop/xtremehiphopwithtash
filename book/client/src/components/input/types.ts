@@ -11,7 +11,7 @@ export enum InputType {
 	CHECKBOX,
 }
 
-export type InputValue = readonly string[] | string | number | boolean | null | undefined;
+export type InputValue = readonly string[] | string | number | boolean | null;
 
 export type InputOnChange = (value: InputValue) => void;
 

@@ -4,8 +4,10 @@ type Details {
 	firstName: String!
 	lastName: String!
 	nickName: String
-	gender: String!
+	gender: String
 	mobilePhoneNumber: String!
+	instagramUsername: String
+
 	createdAt: UnixTime!
 }
 
@@ -13,10 +15,12 @@ type Student {
 	studentID: String!
 
 	details: Details!
-	createdAt: UnixTime!
+	isAdministrator: Boolean!
 
 	bookings: [Booking!]!
 	reviews: [Review!]!
+
+	createdAt: UnixTime!
 }
 
 type Instructor {
@@ -24,7 +28,19 @@ type Instructor {
 
 	details: Details!
 	photo: URL!
+
 	createdAt: UnixTime!
+}
+
+type Coordinates {
+	latitude: Float!
+	longitude: Float!
+}
+
+type Place {
+	address: String!
+	plusCode: String!
+	coordinates: Coordinates!
 }
 
 type Location {
@@ -32,6 +48,9 @@ type Location {
 
 	name: String!
 	plusCode: String!
+	address: String!
+	coordinates: Coordinates!
+
 	createdAt: UnixTime!
 }
 
@@ -42,14 +61,16 @@ type Course {
 	photo: URL!
 	description: String!
 	defaultPrice: PositiveInt
+	defaultEquipmentFee: PositiveInt
 	defaultCapacity: PositiveInt!
 	defaultDuration: PositiveInt!
 	defaultLocation: Location!
 	defaultEquipmentAvailable: PositiveInt
-	createdAt: UnixTime!
 
 	defaultInstructors: [Instructor!]!
 	reviews: [Review!]!
+
+	createdAt: UnixTime!
 }
 
 type Session {
@@ -58,29 +79,31 @@ type Session {
 	title: String!
 	notes: String
 	price: PositiveInt
+	equipmentFee: PositiveInt
 	location: Location!
 	startTime: UnixTime!
 	endTime: UnixTime!
 	capacity: PositiveInt!
 	equipmentAvailable: NonNegativeInt!
-	createdAt: UnixTime!
 
 	course: Course!
-
 	instructors: [Instructor!]!
 	bookings: [Booking!]!
-	capacityRemaining: NonNegativeInt!
+	capacityRemaining: NonNegativeInt
+
+	createdAt: UnixTime!
 }
 
 type Booking {
 	bookingID: UUID!
 
-	notes: String!
+	notes: String
 	isBringingOwnEquipment: Boolean!
-	createdAt: UnixTime!
 
 	student: Student!
 	session: Session!
+
+	createdAt: UnixTime!
 }
 
 type Review {
@@ -88,8 +111,9 @@ type Review {
 
 	score: LikertScale!
 	comment: String!
-	createdAt: Int!
 
 	course: Course!
 	student: Student!
+
+	createdAt: Int!
 }

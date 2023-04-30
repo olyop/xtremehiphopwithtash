@@ -10,6 +10,7 @@ public class Session extends Base {
 	private String notes;
 	private UUID locationID;
 	private Short price;
+	private Short equipmentFee;
 	private Short capacity;
 	private Instant startTime;
 	private Instant endTime;
@@ -56,6 +57,14 @@ public class Session extends Base {
 
 	public void setPrice(Short price) {
 		this.price = price;
+	}
+
+	public Short getEquipmentFee() {
+		return equipmentFee;
+	}
+
+	public void setEquipmentFee(Short equipmentFee) {
+		this.equipmentFee = equipmentFee;
 	}
 
 	public Short getCapacity() {

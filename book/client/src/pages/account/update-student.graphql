@@ -1,0 +1,15 @@
+mutation updateStudent($studentID: String!, $detailsInput: DetailsInput!) {
+	updateStudentByID(studentID: $studentID, input: $detailsInput) {
+		studentID
+		createdAt
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+			instagramUsername
+		}
+	}
+}

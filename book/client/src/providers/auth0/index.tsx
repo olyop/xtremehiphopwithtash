@@ -3,10 +3,11 @@ import { FC, PropsWithChildren, createElement } from "react";
 
 const Auth0: FC<PropsWithChildren> = ({ children }) => (
 	<Auth0Provider
-		domain="xtremehiphopwithtash.au.auth0.com"
-		clientId="YLgZlPPyOtSo1gsIr8fSG7seYkELf5Pg"
+		cacheLocation="localstorage"
+		domain={import.meta.env.VITE_AUTH0_DOMAIN}
+		clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
 		authorizationParams={{
-			redirect_uri: "http://localhost:5173",
+			redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URL,
 		}}
 	>
 		{children}

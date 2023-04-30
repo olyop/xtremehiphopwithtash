@@ -8,6 +8,7 @@ public interface DetailsInput {
 	String getFirstName();
 	String getLastName();
 	Optional<String> getNickName();
+	Optional<String> getGender();
 	String getMobilePhoneNumber();
-	String getGender();
+	Optional<String> getInstagramUsername();
 }

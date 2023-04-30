@@ -1,16 +1,12 @@
 package com.xtremehiphopwithtash.book.dao.query;
 
 import com.xtremehiphopwithtash.book.dao.util.SQLColumnNamesUtil;
-import com.xtremehiphopwithtash.book.dao.util.SQLTableNamesUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BookingQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(
-		SQLColumnNamesUtil.BOOKING,
-		SQLTableNamesUtil.BOOKING
-	);
+	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.BOOKING, "booking");
 
 	public final String SELECT = String.format("SELECT %s FROM booking;", columnNames);
 
@@ -24,7 +20,7 @@ public class BookingQuery {
 			INSERT INTO booking
 				(notes, is_bringing_own_equipment, session_id, student_id)
 			VALUES
-				(:notes, :isBringingOwnEquipment, sessionID, studentID)
+				(:notes, :isBringingOwnEquipment, :sessionID, :studentID)
 			RETURNING
 				%s;
 		""",
@@ -86,5 +82,30 @@ public class BookingQuery {
 			SELECT
 				(SELECT capacity FROM session WHERE session_id = :sessionID) -
 				(SELECT count(*) FROM booking	WHERE session_id = :sessionID) AS capacity_available
+					""";
+
+	public final String SELECT_BOOKINGS_BY_STUDENT_ID = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				booking
+			WHERE
+				student_id = :studentID;
+		""",
+		columnNames
+	);
+
+	public final String EXISTS_BY_STUDENT_AND_SESSION =
+		"""
+			SELECT exists (
+				SELECT
+					1
+				FROM
+					booking
+				WHERE
+					student_id = :studentID AND
+					session_id = :sessionID
+			);
 		""";
 }

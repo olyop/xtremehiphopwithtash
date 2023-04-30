@@ -1,116 +1,45 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
-import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
-import ChevronRightIcon from "@heroicons/react/24/solid/ChevronRightIcon";
-import MapPinIcon from "@heroicons/react/24/solid/MapPinIcon";
-import TrashIcon from "@heroicons/react/24/solid/TrashIcon";
-import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
-import { FC, Fragment, createElement, useEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
+import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
+import { FC, Fragment, createElement, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import Button from "../../components/button";
 import Chip from "../../components/chip";
-import BookingInput from "../../components/entity-inputs/booking-input";
-import SessionInput from "../../components/entity-inputs/session-input";
-import FormError from "../../components/form-error";
-import Modal from "../../components/modal";
+import InstructorsChip from "../../components/instructors-chip";
+import LocationChip from "../../components/location-chip";
 import SessionStartTime from "../../components/session-start-end-time";
+import { IsAdministratorContext } from "../../contexts/is-administrator";
 import {
-	BookingInput as BookingInputType,
-	DeleteSessionMutation,
-	DeleteSessionMutationVariables,
 	GetSessionPageQuery,
 	GetSessionPageQueryVariables,
+	Instructor,
+	Location,
 	Session,
-	SessionInput as SessionInputType,
-	UpdateSessionMutation,
-	UpdateSessionMutationVariables,
 } from "../../generated-types";
-import { useModal } from "../../hooks";
-import { millisecondsToSeconds } from "../../utils";
-import BookingModalTitleContent from "./booking-modal-title-content";
-import DELETE_SESSION from "./delete-session.graphql";
+import { determineSessionDateLabel } from "../../helpers";
+import BookingForm from "./book-session";
+import SessionBookings from "./bookings";
+import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
-import SessionSubtitle from "./session-subtitle";
-import { sessionToInput } from "./session-to-input";
-import UPDATE_SESSION from "./update-session.graphql";
-
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
-	day: "numeric",
-	month: "long",
-	weekday: "long",
-});
+import { isSessionInPast } from "./helpers";
+import ShareButton from "./share-button";
+import UpdateSession from "./update-session";
 
 const SessionPage: FC = () => {
-	const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
-	const [isBookModalOpen, openBookModal, closeBookModal] = useModal();
-	const [isDeleteModalOpen, openDeleteModal, closeDeleteModal] = useModal();
-
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
+	const { isAdministrator } = useContext(IsAdministratorContext);
 
 	const [getQuery, result] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
 		GET_SESSION_PAGE,
 	);
 
-	const [bookingInput, setBookingInput] = useState<BookingInputType>({
-		notes: "",
-		isBringingOwnEquipment: false,
-		sessionID: "",
-		studentID: "",
-	});
-
-	const [updateInput, setUpdateInput] = useState<SessionInputType>({
-		title: "",
-		notes: "",
-		startTime: 0,
-		endTime: 0,
-		capacity: 0,
-		equipmentAvailable: 0,
-		courseID: "",
-		instructorIDs: [],
-		locationID: "",
-		price: 0,
-	});
-
-	const [updateSession, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_SESSION);
-	const [deleteSession, deleteResult] = useMutation<DeleteData, DeleteVars>(DELETE_SESSION);
-
-	const handleUpdateSubmit = () => {
-		if (sessionID && updateInput) {
-			void updateSession({
-				variables: {
-					sessionID,
-					input: {
-						...updateInput,
-						startTime: millisecondsToSeconds(updateInput.startTime),
-						endTime: millisecondsToSeconds(updateInput.endTime),
-					},
-				},
-			});
-		}
-	};
-
-	const handleDelete = () => {
+	const handleRefetch = () => {
 		if (sessionID) {
-			void deleteSession({
-				variables: {
-					sessionID,
-				},
+			void result.refetch({
+				sessionID,
 			});
 		}
 	};
-
-	useEffect(() => {
-		if (updateResult.data) {
-			closeEditModal();
-		}
-	}, [updateResult.data]);
-
-	useEffect(() => {
-		if (deleteResult.data) {
-			closeDeleteModal();
-		}
-	}, [deleteResult.data]);
 
 	useEffect(() => {
 		if (sessionID) {
@@ -119,13 +48,6 @@ const SessionPage: FC = () => {
 			});
 		}
 	}, []);
-
-	useEffect(() => {
-		if (result.data && sessionID) {
-			setUpdateInput(sessionToInput(result.data.getSessionByID));
-			setBookingInput(prevState => ({ ...prevState, sessionID }));
-		}
-	}, [result]);
 
 	if (sessionID === undefined) {
 		return <div>Session ID not provided</div>;
@@ -137,196 +59,104 @@ const SessionPage: FC = () => {
 
 	const { getSessionByID: session } = result.data;
 
+	const isFree = session.price === null;
+	const isInPast = isSessionInPast(session);
+
+	console.log(session.capacityRemaining);
+
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="flex flex-col pb-52">
+			<div
+				className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-amber-500"}`}
+			>
+				{isFree ? (
+					<CheckCircleIcon className="w-6 h-6 text-white" />
+				) : (
+					<InformationCircleIcon className="w-6 h-6 text-white" />
+				)}
+				<p className="pb-0.5 text-xl font-bold text-white">
+					{isFree ? "Free session" : `Price: $A${session.price}`}
+				</p>
+			</div>
 			<img
 				src={session.course.photo}
 				alt={session.course.name}
 				className="object-cover w-full shadow-lg h-96"
 			/>
-			<div className="flex flex-col justify-items-start gap-3 p-4 pt-0">
-				<h1 className="text-3xl">{session.title}</h1>
-				<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">
-					<p className="text-l text-gray-500 justify-self-end leading-none pr-2">with</p>
-					<div className="flex gap-2 self-end">
-						{session.instructors.map(instructor => (
-							<Chip
-								key={instructor.instructorID}
-								chip={{
-									chipID: instructor.instructorID,
-									text: instructor.details.nickName ?? instructor.details.firstName,
-									photo: instructor.photo,
-								}}
-							/>
-						))}
-					</div>
-					<p className="text-l text-gray-500 justify-self-end leading-none pr-2">at</p>
-					<Chip
-						key={session.location.locationID}
-						chip={{
-							chipID: session.location.locationID,
-							text: session.location.name,
-							icon: iconClassName => <MapPinIcon className={iconClassName} />,
-						}}
-					/>
-					<p className="text-l text-gray-500 justify-self-end leading-none pr-2">on</p>
-					<p className="text-l pl-0.5">
-						<Fragment>{dateFormatter.format(session.startTime)}</Fragment>
-						<span className="text-gray-500"> from </span>
-						<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
-					</p>
-					<div />
-					<div className="flex gap-4 pt-3">
-						<Button
-							text="Book Now"
-							ariaLabel="Book session"
-							onClick={openBookModal}
-							textClassName="!text-xl"
-							className="h-14 px-6 shadow-xl hover:shadow-xl rounded-xl"
-							leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
+			<div className="flex flex-col gap-8 p-4 justify-items-start">
+				<div className="flex flex-col gap-4">
+					<h1 className="text-3xl font-bold">{session.title}</h1>
+					<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">class</p>
+						<Chip
+							chip={{
+								chipID: session.course.courseID,
+								text: session.course.name,
+								photo: session.course.photo,
+							}}
 						/>
-						<Button
-							ariaLabel="Edit session"
-							onClick={openEditModal}
-							className="h-14 w-14 items-center justify-center"
-							leftIcon={className => <PencilIcon className={`${className} h-7 w-7`} />}
-						/>
-						<Button
-							ariaLabel="Delete"
-							onClick={openDeleteModal}
-							className="h-14 w-14 items-center justify-center"
-							leftIcon={className => <TrashIcon className={`${className} h-7 w-7`} />}
-						/>
-						{updateInput && session && (
-							<Fragment>
-								<Modal
-									title="Update Session"
-									className="z-30"
-									subTitle={
-										<SessionSubtitle
-											startTime={session.startTime}
-											endTime={session.endTime}
-											label={dateFormatter.format(session.startTime)}
-										/>
-									}
-									icon={className => <PencilIcon className={className} />}
-									isOpen={isEditModalOpen}
-									onClose={closeEditModal}
-									contentClassName="flex flex-col gap-4"
-									children={
-										<Fragment>
-											<SessionInput input={updateInput} onChange={setUpdateInput} />
-											<FormError error={updateResult.error} />
-										</Fragment>
-									}
-									buttons={
-										<Fragment>
-											<Button
-												text={updateResult.loading ? "Updating..." : "Submit"}
-												onClick={handleUpdateSubmit}
-												ariaLabel={updateResult.loading ? "Updating session" : "Submit"}
-												leftIcon={className => <PencilIcon className={className} />}
-											/>
-											<Button
-												transparent
-												text="Cancel"
-												ariaLabel="Cancel"
-												onClick={closeEditModal}
-												leftIcon={className => <XMarkIcon className={className} />}
-											/>
-										</Fragment>
-									}
-								/>
-								<Modal
-									title={`Book ${session.title}`}
-									disableCloseOnEscape
-									icon={className => <CalendarIcon className={className} />}
-									isOpen={isBookModalOpen}
-									className="z-30"
-									isBookingModal
-									onClose={closeBookModal}
-									contentClassName="flex flex-col gap-4"
-									titleContent={<BookingModalTitleContent session={session as Session} />}
-									subTitle={
-										<SessionSubtitle
-											startTime={session.startTime}
-											endTime={session.endTime}
-											label=""
-										/>
-									}
-									children={
-										<Fragment>
-											<BookingInput input={bookingInput} onChange={setBookingInput} />
-											<FormError error={undefined} />
-										</Fragment>
-									}
-									buttons={
-										<Fragment>
-											<Button
-												text="Next"
-												ariaLabel="Next"
-												rightIcon={className => <ChevronRightIcon className={className} />}
-											/>
-											<Button
-												transparent
-												text="Cancel"
-												ariaLabel="Cancel"
-												onClick={closeBookModal}
-												leftIcon={className => <XMarkIcon className={className} />}
-											/>
-										</Fragment>
-									}
-								/>
-								<Modal
-									title="Delete Session"
-									className="z-30"
-									subTitle={
-										<SessionSubtitle
-											startTime={session.startTime}
-											endTime={session.endTime}
-											label=""
-										/>
-									}
-									icon={className => <TrashIcon className={className} />}
-									isOpen={isDeleteModalOpen}
-									onClose={closeDeleteModal}
-									contentClassName="flex flex-col gap-4"
-									children={
-										<Fragment>
-											<p>Are you sure?</p>
-											<FormError error={deleteResult.error} />
-										</Fragment>
-									}
-									buttons={
-										<Fragment>
-											<Button
-												text="Delete"
-												ariaLabel="Delete"
-												onClick={handleDelete}
-												leftIcon={className => <TrashIcon className={className} />}
-											/>
-											<Button
-												transparent
-												text="No"
-												ariaLabel="Cancel"
-												onClick={closeDeleteModal}
-												leftIcon={className => <XMarkIcon className={className} />}
-											/>
-										</Fragment>
-									}
-								/>
-							</Fragment>
-						)}
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">with</p>
+						<InstructorsChip instructors={session.instructors as Instructor[]} />
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">at</p>
+						<LocationChip location={session.location as Location} />
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">on</p>
+						<p className="text-l pl-0.5">
+							<Fragment>{determineSessionDateLabel(session)}</Fragment>
+						</p>
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">from</p>
+						<p>
+							<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
+						</p>
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
+						<p>
+							{session.capacityRemaining ? (
+								<Fragment>
+									{session.capacityRemaining} / {session.capacity}
+								</Fragment>
+							) : (
+								"Fully booked"
+							)}
+						</p>
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">steps</p>
+						<p>
+							{session.equipmentAvailable}
+							<Fragment> available</Fragment>
+						</p>
+						<div />
+						<div className="flex flex-col gap-8 pt-3">
+							<div className="flex flex-col gap-4">
+								<div className="flex gap-4">
+									<BookingForm session={session as Session} isSessionInPast={isInPast} />
+									<ShareButton url={location.href} isSessionInPast={isInPast} />
+								</div>
+								{isAdministrator && (
+									<div className="flex gap-4">
+										{session && (
+											<Fragment>
+												<UpdateSession session={session as Session} onEdit={handleRefetch} />
+												{!isInPast && <DeleteSession session={session as Session} />}
+											</Fragment>
+										)}
+									</div>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
+				{session.notes && (
+					<div className="px-4 py-3 border border-yellow-500 rounded bg-yellow-50 flex gap-2">
+						<InformationCircleIcon className="h-6 w-6" />
+						<p>{session.notes}</p>
+					</div>
+				)}
+				<div className="flex flex-col gap-1">
+					<h3>Course Description</h3>
+					<p className="text-gray-500">{session.course.description}</p>
+				</div>
+				{isAdministrator && <SessionBookings session={session as Session} />}
 			</div>
 		</div>
 	);
 };
-
-type UpdateData = UpdateSessionMutation;
-type UpdateVars = UpdateSessionMutationVariables;
-type DeleteData = DeleteSessionMutation;
-type DeleteVars = DeleteSessionMutationVariables;
 
 export default SessionPage;

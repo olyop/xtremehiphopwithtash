@@ -1,0 +1,5 @@
+mutation createBookingFree($input: BookingInput!) {
+	createBookingFree(input: $input) {
+		bookingID
+	}
+}

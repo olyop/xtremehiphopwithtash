@@ -1,82 +1,86 @@
 import { useApolloClient } from "@apollo/client";
-import { FC, Fragment, createElement, useEffect, useRef, useState } from "react";
+import { FC, createElement, useEffect, useRef, useState } from "react";
 
-import { useBreakpoint } from "../../hooks";
+import { useBreakpoint, useHasMounted } from "../../hooks";
 import Controls from "./controls";
 import Days from "./days";
-import { generateSchedule } from "./generate-days";
+import { determineStartAndEndDate, generateDays, generateDaysWithSessions } from "./generate";
 import {
 	determineDecrementAction,
 	determineIncrementAction,
 	getStartingTime,
 	setStartingTime,
 } from "./helpers";
-import { Schedule as ScheduleType } from "./types";
+import { Day as DayType } from "./types";
 import WeekDays from "./week-days";
 
 const Schedule: FC = () => {
+	const loading = useRef(false);
 	const apollo = useApolloClient();
-
 	const breakpoint = useBreakpoint();
+	const hasMounted = useHasMounted();
 	const relativeDate = useRef(Date.now());
 
-	const [schedule, setSchedule] = useState<ScheduleType>({
-		startingTime: getStartingTime(),
-		days: [],
+	const [days, setDays] = useState<DayType[]>(() => {
+		const [startingDate, endingDate] = determineStartAndEndDate(
+			new Date(getStartingTime()),
+			breakpoint,
+		);
+
+		return generateDays(breakpoint, startingDate, endingDate, []);
 	});
 
-	const getSchedule = async (date: Date) => {
+	const handleSchedule = async (date: Date) => {
+		loading.current = true;
 		const unixTime = date.getTime();
 		relativeDate.current = unixTime;
 		setStartingTime(unixTime);
-		setSchedule(await generateSchedule(apollo)(unixTime, breakpoint));
+		const schedule = await generateDaysWithSessions(apollo)(unixTime, breakpoint);
+		setDays(schedule);
+		loading.current = false;
 	};
 
 	const handleResetClick = () => {
-		const now = new Date();
-
-		setStartingTime(now.getTime());
-
-		void getSchedule(now);
+		const date = new Date();
+		void handleSchedule(date);
 	};
 
 	const handleBackOneWeekClick = () => {
-		const date = determineDecrementAction(breakpoint)(new Date(relativeDate.current));
-		void getSchedule(date);
+		const date = new Date(relativeDate.current);
+		const newDate = determineDecrementAction(breakpoint)(date);
+		void handleSchedule(newDate);
 	};
 
 	const handleForwardOneWeekClick = () => {
-		const date = determineIncrementAction(breakpoint)(new Date(relativeDate.current));
-		void getSchedule(date);
+		const date = new Date(relativeDate.current);
+		const newDate = determineIncrementAction(breakpoint)(date);
+		void handleSchedule(newDate);
 	};
 
 	const handleSessionsUpdate = () => {
-		const date = new Date(relativeDate.current);
-		void getSchedule(date);
+		const date = new Date(getStartingTime());
+		void handleSchedule(date);
 	};
 
 	useEffect(() => {
-		void getSchedule(new Date(getStartingTime()));
+		if (hasMounted) {
+			const date = new Date(getStartingTime());
+			void handleSchedule(date);
+		}
 	}, [breakpoint]);
 
+	useEffect(() => {
+		if (!loading.current) {
+			const date = new Date(getStartingTime());
+			void handleSchedule(date);
+		}
+	}, []);
+
 	return (
-		<div
-			data-starting={schedule.startingTime}
-			className="w-full h-full flex flex-col-reverse justify-end gap-4 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[1fr_2.25rem] grid-rows-[100%]"
-		>
-			<div className="h-full grid lg:grid-rows-[2.25rem,_auto]">
-				{schedule.days.length > 0 ? (
-					<Fragment>
-						<WeekDays />
-						<Days
-							schedule={schedule}
-							breakpoint={breakpoint}
-							onSessionUpdate={handleSessionsUpdate}
-						/>
-					</Fragment>
-				) : (
-					<p>Loading...</p>
-				)}
+		<div className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
+			<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
+				<WeekDays />
+				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
 			</div>
 			<Controls
 				breakpoint={breakpoint}

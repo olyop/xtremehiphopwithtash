@@ -1,5 +1,4 @@
 import { GetSessionPageQuery, SessionInput } from "../../generated-types";
-import { secondsToMilliseconds } from "../../utils";
 
 export const sessionToInput = (session: GetSessionPageQuery["getSessionByID"]): SessionInput => {
 	const {
@@ -14,8 +13,8 @@ export const sessionToInput = (session: GetSessionPageQuery["getSessionByID"]): 
 	} = session;
 	return {
 		...sessionInput,
-		startTime: secondsToMilliseconds(sessionInput.startTime),
-		endTime: secondsToMilliseconds(sessionInput.endTime),
+		startTime: sessionInput.startTime,
+		endTime: sessionInput.endTime,
 		courseID: course.courseID,
 		locationID: location.locationID,
 		instructorIDs: instructors.map(({ instructorID }) => instructorID),

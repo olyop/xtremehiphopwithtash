@@ -32,16 +32,17 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 		String sql = query.INSERT;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("studentID", value.getStudentID());
 		paramSource.addValue("detailsID", value.getDetailsID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 
 	@Override
-	public Optional<Student> selectByID(String id) {
+	public Optional<Student> selectByID(String studentID) {
 		String sql = query.SELECT_BY_ID;
 
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", id);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper).stream().findFirst();
 	}
@@ -52,19 +53,10 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 	}
 
 	@Override
-	public void deleteByID(String id) {
-		String sql = query.DELETE_BY_ID;
-
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", id);
-
-		jdbcTemplate.update(sql, paramSource);
-	}
-
-	@Override
-	public boolean existsByID(String id) {
+	public boolean existsByID(String studentID) {
 		String sql = query.EXISTS_BY_ID;
 
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", id);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}

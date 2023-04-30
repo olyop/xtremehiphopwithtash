@@ -6,6 +6,7 @@ import com.xtremehiphopwithtash.book.dao.InstructorDAO;
 import com.xtremehiphopwithtash.book.dao.LocationDAO;
 import com.xtremehiphopwithtash.book.dao.SessionDAO;
 import com.xtremehiphopwithtash.book.dao.SessionInstructorDAO;
+import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Course;
 import com.xtremehiphopwithtash.book.model.Instructor;
 import com.xtremehiphopwithtash.book.model.Location;
@@ -13,7 +14,8 @@ import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.SessionInstructor;
 import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
-import com.xtremehiphopwithtash.book.resolver.transformer.CommonTransformer;
+import com.xtremehiphopwithtash.book.resolver.mapper.SessionInputMapper;
+import com.xtremehiphopwithtash.book.resolver.transform.CommonTransform;
 import com.xtremehiphopwithtash.book.resolver.validator.SessionValidator;
 import java.time.Instant;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class SessionResolver {
 
+	private SessionInputMapper sessionInputMapper;
 	private final SessionDAO sessionDAO;
 	private final SessionInstructorDAO sessionInstructorDAO;
 	private final InstructorDAO instructorDAO;
@@ -37,6 +40,7 @@ public class SessionResolver {
 	private final BookingDAO bookingDAO;
 
 	public SessionResolver(
+		SessionInputMapper sessionInputMapper,
 		SessionDAO sessionDAO,
 		SessionInstructorDAO sessionInstructorDAO,
 		InstructorDAO instructorDAO,
@@ -45,6 +49,7 @@ public class SessionResolver {
 		LocationDAO locationDAO,
 		BookingDAO bookingDAO
 	) {
+		this.sessionInputMapper = sessionInputMapper;
 		this.sessionDAO = sessionDAO;
 		this.sessionInstructorDAO = sessionInstructorDAO;
 		this.instructorDAO = instructorDAO;
@@ -79,78 +84,51 @@ public class SessionResolver {
 		return instructorDAO.selectsSessionInstructors(session.getSessionID());
 	}
 
+	@SchemaMapping(typeName = "Session", field = "bookings")
+	public List<Booking> getBookings(Session session) {
+		return bookingDAO.selectBySessionID(session.getSessionID());
+	}
+
+	@SchemaMapping(typeName = "Session", field = "capacityRemaining")
+	public Short getCapacityRemaining(Session session) {
+		Short capacityRemaning = bookingDAO.selectCapacityRemaning(session.getSessionID());
+
+		if (capacityRemaning == 0) {
+			return null;
+		}
+
+		return capacityRemaning;
+	}
+
 	@MutationMapping
 	public Session createSession(@Argument SessionInput input) {
-		String title = CommonTransformer.transformName(input.getTitle());
-		Optional<String> notes = input.getNotes();
-		Optional<Short> price = input.getPrice();
-		Instant startTime = input.getStartTime();
-		Instant endTime = input.getEndTime();
-		Short capacity = input.getCapacity();
-		Short equipmentAvailable = input.getEquipmentAvailable();
-		UUID courseID = input.getCourseID();
-		UUID locationID = input.getLocationID();
-		List<UUID> instructorIDs = input.getInstructorIDs();
+		sessionValidator.validateCreate(input);
 
-		sessionValidator.validateInput(input);
-		sessionValidator.validateIsNotInPast(startTime);
-		sessionValidator.validateSessionInPeriodExists(startTime, endTime);
+		Session session = sessionInputMapper.map(input);
 
-		Session session = new Session();
-		session.setTitle(title);
-		session.setNotes(notes.orElse(null));
-		session.setPrice(price.orElse(null));
-		session.setStartTime(startTime);
-		session.setEndTime(endTime);
-		session.setCapacity(capacity);
-		session.setEquipmentAvailable(equipmentAvailable);
-		session.setCourseID(courseID);
-		session.setLocationID(locationID);
+		Session createdSession = sessionDAO.insert(session);
 
-		Session savedSession = sessionDAO.insert(session);
-		handleInstructors(instructorIDs, savedSession.getSessionID());
+		handleInstructorsChange(input.instructorIDs(), createdSession.getSessionID());
 
-		return savedSession;
+		return createdSession;
 	}
 
 	@MutationMapping
 	public Session updateSessionByID(@Argument UUID sessionID, @Argument SessionInput input) {
-		String title = input.getTitle();
-		Optional<String> notes = input.getNotes();
-		Optional<Short> price = input.getPrice();
-		Instant startTime = input.getStartTime();
-		Instant endTime = input.getEndTime();
-		Short capacity = input.getCapacity();
-		Short equipmentAvailable = input.getEquipmentAvailable();
-		UUID courseID = input.getCourseID();
-		UUID locationID = input.getLocationID();
-		List<UUID> instructorIDs = input.getInstructorIDs();
+		sessionValidator.validateUpdate(sessionID, input);
 
-		sessionValidator.validateID(sessionID);
-		sessionValidator.validateInput(input);
-		sessionValidator.validateStartAndEndTimeHaveNotChanged(sessionID, startTime, endTime);
-
-		Session session = new Session();
-		session.setTitle(title);
-		session.setNotes(notes.orElse(null));
-		session.setPrice(price.orElse(null));
-		session.setStartTime(startTime);
-		session.setEndTime(endTime);
-		session.setCapacity(capacity);
-		session.setEquipmentAvailable(equipmentAvailable);
-		session.setCourseID(courseID);
-		session.setLocationID(locationID);
+		Session session = sessionInputMapper.map(input);
 
 		Session updatedSession = sessionDAO.updateByID(sessionID, session);
-		handleInstructors(instructorIDs, updatedSession.getSessionID());
+
+		handleInstructorsChange(input.instructorIDs(), updatedSession.getSessionID());
 
 		return updatedSession;
 	}
 
 	@MutationMapping
 	public UUID deleteSessionByID(@Argument UUID sessionID) {
-		sessionValidator.validateID(sessionID);
-		sessionValidator.canDelete(sessionID);
+		sessionValidator.validateDelete(sessionID);
 
 		sessionInstructorDAO.deleteBySessionID(sessionID);
 		sessionDAO.deleteByID(sessionID);
@@ -173,17 +151,19 @@ public class SessionResolver {
 		}
 	}
 
-	@SchemaMapping(typeName = "Session", field = "capacityRemaining")
-	public Short getCapacityRemaining(Session session) {
-		return bookingDAO.selectCapacityRemaning(session.getSessionID());
+	@QueryMapping
+	public boolean doesSessionExist(@Argument UUID sessionID) {
+		return sessionDAO.existsByID(sessionID);
 	}
 
-	private void handleInstructors(List<UUID> instructorIDs, UUID sessionID) {
+	private void handleInstructorsChange(List<UUID> instructorIDs, UUID sessionID) {
 		sessionInstructorDAO.deleteBySessionID(sessionID);
 
 		short instructorIndex = 0;
+
 		for (UUID instructorID : instructorIDs) {
 			SessionInstructor sessionInstructor = new SessionInstructor();
+
 			sessionInstructor.setSessionID(sessionID);
 			sessionInstructor.setIndex(instructorIndex++);
 			sessionInstructor.setInstructorID(instructorID);

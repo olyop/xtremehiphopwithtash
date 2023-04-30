@@ -1,13 +1,13 @@
 import { MutationResult } from "@apollo/client";
 import { FC, Fragment, createElement, useState } from "react";
 
-import Entity, { OnEditAndUpdate } from "../../../components/entity";
-import InstructorInput from "../../../components/entity-inputs/instructor-input";
+import InstructorInput from "../../../components/forms/instructor-form";
 import {
 	GetInstructorsQuery,
 	InstructorInput as InstructorInputType,
 } from "../../../generated-types";
 import { ArrayElement } from "../../../utils";
+import AdminEntity, { OnEditAndUpdate } from "../entity";
 
 const Instructor: FC<PropTypes> = ({
 	instructor,
@@ -20,7 +20,7 @@ const Instructor: FC<PropTypes> = ({
 }) => {
 	const [input, setInput] = useState<InstructorInputType>(instructor);
 	return (
-		<Entity
+		<AdminEntity
 			id={instructor.instructorID}
 			photo={instructor.photo}
 			typeName={instructor.__typename}

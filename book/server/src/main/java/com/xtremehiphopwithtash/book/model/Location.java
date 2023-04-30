@@ -7,6 +7,7 @@ public class Location extends Base {
 	private UUID locationID;
 	private String name;
 	private String plusCode;
+	private String address;
 
 	public Location() {}
 
@@ -32,5 +33,13 @@ public class Location extends Base {
 
 	public void setPlusCode(String plusCode) {
 		this.plusCode = plusCode;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

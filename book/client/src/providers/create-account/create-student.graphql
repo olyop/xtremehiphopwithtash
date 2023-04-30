@@ -1,0 +1,5 @@
+mutation createStudent($studentID: String!, $input: DetailsInput!) {
+	createStudent(studentID: $studentID, input: $input) {
+		studentID
+	}
+}

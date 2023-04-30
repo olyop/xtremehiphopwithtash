@@ -5,7 +5,7 @@ import com.xtremehiphopwithtash.book.dao.InstructorDAO;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Instructor;
 import com.xtremehiphopwithtash.book.resolver.input.InstructorInput;
-import com.xtremehiphopwithtash.book.resolver.transformer.CommonTransformer;
+import com.xtremehiphopwithtash.book.resolver.transform.CommonTransform;
 import com.xtremehiphopwithtash.book.resolver.validator.DetailsValidator;
 import com.xtremehiphopwithtash.book.resolver.validator.InstructorValidator;
 import java.net.URL;
@@ -56,11 +56,12 @@ public class InstructorResolver {
 	@MutationMapping
 	public Instructor createInstructor(@Argument InstructorInput input) {
 		URL photo = input.getPhoto();
-		String firstName = CommonTransformer.transformName(input.getDetails().getFirstName());
-		String lastName = CommonTransformer.transformName(input.getDetails().getLastName());
-		Optional<String> nickName = CommonTransformer.transformName(input.getDetails().getNickName());
-		String gender = input.getDetails().getGender();
+		String firstName = CommonTransform.transformName(input.getDetails().getFirstName());
+		String lastName = CommonTransform.transformName(input.getDetails().getLastName());
+		Optional<String> nickName = CommonTransform.transformName(input.getDetails().getNickName());
+		Optional<String> gender = input.getDetails().getGender();
 		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
+		Optional<String> instgramUsername = input.getDetails().getInstagramUsername();
 
 		instructorValidator.validateInput(input);
 		detailsValidator.validateNameIsUnique(input.getDetails());
@@ -69,8 +70,9 @@ public class InstructorResolver {
 		details.setFirstName(firstName);
 		details.setLastName(lastName);
 		details.setNickName(nickName.orElse(null));
-		details.setGender(gender);
+		details.setGender(gender.orElse(null));
 		details.setMobilePhoneNumber(mobilePhoneNumber);
+		details.setInstagramUsername(instgramUsername.orElse(null));
 
 		Details savedDetails = detailsDAO.insert(details);
 
@@ -100,11 +102,12 @@ public class InstructorResolver {
 		@Argument InstructorInput input
 	) {
 		URL photo = input.getPhoto();
-		String firstName = CommonTransformer.transformName(input.getDetails().getFirstName());
-		String lastName = CommonTransformer.transformName(input.getDetails().getLastName());
-		Optional<String> nickName = CommonTransformer.transformName(input.getDetails().getNickName());
-		String gender = input.getDetails().getGender();
+		String firstName = CommonTransform.transformName(input.getDetails().getFirstName());
+		String lastName = CommonTransform.transformName(input.getDetails().getLastName());
+		Optional<String> nickName = CommonTransform.transformName(input.getDetails().getNickName());
+		Optional<String> gender = input.getDetails().getGender();
 		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
+		Optional<String> instgramUsername = input.getDetails().getInstagramUsername();
 
 		instructorValidator.validateID(instructorID);
 		instructorValidator.validateInput(input);
@@ -116,8 +119,9 @@ public class InstructorResolver {
 		details.setFirstName(firstName);
 		details.setLastName(lastName);
 		details.setNickName(nickName.orElse(null));
-		details.setGender(gender);
+		details.setGender(gender.orElse(null));
 		details.setMobilePhoneNumber(mobilePhoneNumber);
+		details.setInstagramUsername(instgramUsername.orElse(null));
 
 		instructorDAO.updateByID(instructorID, instructor);
 		detailsDAO.updateByID(instructor.getDetailsID(), details);

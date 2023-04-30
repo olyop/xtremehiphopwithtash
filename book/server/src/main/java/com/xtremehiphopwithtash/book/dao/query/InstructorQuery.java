@@ -1,7 +1,6 @@
 package com.xtremehiphopwithtash.book.dao.query;
 
 import com.xtremehiphopwithtash.book.dao.util.SQLColumnNamesUtil;
-import com.xtremehiphopwithtash.book.dao.util.SQLTableNamesUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,7 +8,7 @@ public class InstructorQuery {
 
 	private final String columnNames = SQLColumnNamesUtil.join(
 		SQLColumnNamesUtil.INSTRUCTOR,
-		SQLTableNamesUtil.INSTRUCTOR
+		"instructor"
 	);
 
 	public final String SELECT = String.format(

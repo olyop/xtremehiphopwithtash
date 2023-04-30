@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDeleteDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.SessionRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.SessionQuery;
 import com.xtremehiphopwithtash.book.model.Session;
@@ -13,7 +15,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class SessionDAO implements EntityDAO<Session, UUID> {
+public class SessionDAO
+	implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO<Session, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final SessionQuery query;
@@ -57,19 +60,20 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 	}
 
 	@Override
-	public Session insert(Session value) {
+	public Session insert(Session session) {
 		String sql = query.INSERT;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("title", value.getTitle());
-		paramSource.addValue("notes", value.getNotes());
-		paramSource.addValue("price", value.getPrice());
-		paramSource.addValue("startTime", value.getStartTime().getEpochSecond());
-		paramSource.addValue("endTime", value.getEndTime().getEpochSecond());
-		paramSource.addValue("capacity", value.getCapacity());
-		paramSource.addValue("equipmentAvailable", value.getEquipmentAvailable());
-		paramSource.addValue("courseID", value.getCourseID());
-		paramSource.addValue("locationID", value.getLocationID());
+		paramSource.addValue("title", session.getTitle());
+		paramSource.addValue("notes", session.getNotes());
+		paramSource.addValue("price", session.getPrice());
+		paramSource.addValue("equipmentFee", session.getEquipmentFee());
+		paramSource.addValue("startTime", session.getStartTime().getEpochSecond());
+		paramSource.addValue("endTime", session.getEndTime().getEpochSecond());
+		paramSource.addValue("capacity", session.getCapacity());
+		paramSource.addValue("equipmentAvailable", session.getEquipmentAvailable());
+		paramSource.addValue("courseID", session.getCourseID());
+		paramSource.addValue("locationID", session.getLocationID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -80,21 +84,22 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 	}
 
 	@Override
-	public Session updateByID(UUID id, Session value) {
+	public Session updateByID(UUID id, Session session) {
 		String sql = query.UPDATE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("sessionID", id);
 
-		paramSource.addValue("title", value.getTitle());
-		paramSource.addValue("notes", value.getNotes());
-		paramSource.addValue("price", value.getPrice());
-		paramSource.addValue("startTime", value.getStartTime().getEpochSecond());
-		paramSource.addValue("endTime", value.getEndTime().getEpochSecond());
-		paramSource.addValue("capacity", value.getCapacity());
-		paramSource.addValue("equipmentAvailable", value.getEquipmentAvailable());
-		paramSource.addValue("courseID", value.getCourseID());
-		paramSource.addValue("locationID", value.getLocationID());
+		paramSource.addValue("title", session.getTitle());
+		paramSource.addValue("notes", session.getNotes());
+		paramSource.addValue("price", session.getPrice());
+		paramSource.addValue("equipmentFee", session.getEquipmentFee());
+		paramSource.addValue("startTime", session.getStartTime().getEpochSecond());
+		paramSource.addValue("endTime", session.getEndTime().getEpochSecond());
+		paramSource.addValue("capacity", session.getCapacity());
+		paramSource.addValue("equipmentAvailable", session.getEquipmentAvailable());
+		paramSource.addValue("courseID", session.getCourseID());
+		paramSource.addValue("locationID", session.getLocationID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -113,6 +118,21 @@ public class SessionDAO implements EntityDAO<Session, UUID> {
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("startTime", startTime.getEpochSecond());
 		paramSource.addValue("endTime", endTime.getEpochSecond());
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
+	public List<Session> selectInTimePeriodExcludeSession(
+		Instant startTime,
+		Instant endTime,
+		UUID sessionID
+	) {
+		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_EXCLUDE_SESSION;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("startTime", startTime.getEpochSecond());
+		paramSource.addValue("endTime", endTime.getEpochSecond());
+		paramSource.addValue("sessionID", sessionID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}

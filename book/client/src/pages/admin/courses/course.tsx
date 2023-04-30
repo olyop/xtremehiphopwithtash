@@ -1,20 +1,11 @@
 import { MutationResult } from "@apollo/client";
 import { FC, Fragment, createElement, useState } from "react";
 
-import Entity, { OnEditAndUpdate } from "../../../components/entity";
-import CourseInput from "../../../components/entity-inputs/course-input";
+import CourseInput from "../../../components/forms/course-form";
 import { CourseInput as CourseInputType, GetCoursesQuery } from "../../../generated-types";
+import { currencyFormatter, listFormatter } from "../../../intl";
 import { ArrayElement } from "../../../utils";
-
-const currencyFormatter = new Intl.NumberFormat(undefined, {
-	style: "currency",
-	currency: "AUD",
-});
-
-const instructorsFormatter = new Intl.ListFormat(undefined, {
-	style: "narrow",
-	type: "conjunction",
-});
+import AdminEntity, { OnEditAndUpdate } from "../entity";
 
 const Course: FC<PropTypes> = ({
 	course,
@@ -31,11 +22,13 @@ const Course: FC<PropTypes> = ({
 		...courseInput,
 		defaultLocationID: defaultLocation?.locationID,
 		defaultPrice: courseInput.defaultPrice === 0 ? null : courseInput.defaultPrice,
+		defaultEquipmentFee:
+			courseInput.defaultEquipmentFee === 0 ? null : courseInput.defaultEquipmentFee,
 		defaultInstructorIDs: defaultInstructors.map(({ instructorID }) => instructorID),
 	});
 
 	return (
-		<Entity
+		<AdminEntity
 			id={course.courseID}
 			photo={course.photo}
 			typeName={course.__typename}
@@ -59,7 +52,7 @@ const Course: FC<PropTypes> = ({
 			}
 			description={
 				<span className="text-gray-500">
-					{instructorsFormatter.format(
+					{listFormatter.format(
 						defaultInstructors.map(({ details: { firstName, nickName } }) => nickName ?? firstName),
 					)}
 				</span>

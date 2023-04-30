@@ -4,18 +4,17 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.web.ProjectedPayload;
 
-@ProjectedPayload
-public interface SessionInput {
-	String getTitle();
-	Optional<String> getNotes();
-	UUID getLocationID();
-	Optional<Short> getPrice();
-	Short getCapacity();
-	Instant getStartTime();
-	Instant getEndTime();
-	UUID getCourseID();
-	Short getEquipmentAvailable();
-	List<UUID> getInstructorIDs();
-}
+public record SessionInput(
+	String title,
+	Optional<String> notes,
+	UUID locationID,
+	Optional<Short> price,
+	Optional<Short> equipmentFee,
+	Short capacity,
+	Instant startTime,
+	Instant endTime,
+	UUID courseID,
+	Optional<Short> equipmentAvailable,
+	List<UUID> instructorIDs
+) {}

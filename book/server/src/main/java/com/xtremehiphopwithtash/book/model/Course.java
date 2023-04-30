@@ -10,10 +10,13 @@ public class Course extends Base {
 	private String description;
 	private URL photo;
 	private Short defaultPrice;
+	private Short defaultEquipmentFee;
 	private Short defaultCapacity;
 	private Short defaultDuration;
 	private UUID defaultLocationID;
 	private Short defaultEquipmentAvailable;
+
+	public Course() {}
 
 	public UUID getCourseID() {
 		return courseID;
@@ -55,6 +58,14 @@ public class Course extends Base {
 		this.defaultPrice = defaultPrice;
 	}
 
+	public Short getDefaultEquipmentFee() {
+		return defaultEquipmentFee;
+	}
+
+	public void setDefaultEquipmentFee(Short defaultEquipmentFee) {
+		this.defaultEquipmentFee = defaultEquipmentFee;
+	}
+
 	public Short getDefaultCapacity() {
 		return defaultCapacity;
 	}
@@ -85,30 +96,5 @@ public class Course extends Base {
 
 	public void setDefaultEquipmentAvailable(Short defaultEquipmentAvailable) {
 		this.defaultEquipmentAvailable = defaultEquipmentAvailable;
-	}
-
-	@Override
-	public String toString() {
-		return (
-			"Course [courseID=" +
-			courseID +
-			", name=" +
-			name +
-			", description=" +
-			description +
-			", photo=" +
-			photo +
-			", defaultPrice=" +
-			defaultPrice +
-			", defaultCapacity=" +
-			defaultCapacity +
-			", defaultDuration=" +
-			defaultDuration +
-			", defaultLocationID=" +
-			defaultLocationID +
-			", defaultEquipmentAvailable=" +
-			defaultEquipmentAvailable +
-			"]"
-		);
 	}
 }

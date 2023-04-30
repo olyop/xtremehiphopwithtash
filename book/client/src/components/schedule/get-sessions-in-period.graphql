@@ -2,32 +2,18 @@ query getSessionsInPeriod($input: GetSessionsInput!) {
 	getSessionsInPeriod(input: $input) {
 		sessionID
 		title
-		notes
 		startTime
 		endTime
-		capacity
 		price
-		equipmentAvailable
 		capacityRemaining
 		location {
 			locationID
 			name
-			plusCode
 		}
 		course {
 			courseID
 			name
 			photo
-		}
-		instructors {
-			instructorID
-			photo
-			details {
-				detailsID
-				firstName
-				lastName
-				nickName
-			}
 		}
 	}
 }

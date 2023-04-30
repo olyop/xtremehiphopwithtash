@@ -1,13 +1,19 @@
 import { FC, Fragment, createElement } from "react";
 
-import Entity from "../../../components/entity";
 import { Student as StudentType } from "../../../generated-types";
+import AdminEntity from "../entity";
 
 const Student: FC<PropTypes> = ({ student }) => (
-	<Entity
+	<AdminEntity
 		id={student.studentID}
 		typeName={student.__typename}
-		description={student.details.mobilePhoneNumber}
+		description={
+			<Fragment>
+				{student.details.mobilePhoneNumber}
+				<Fragment> - </Fragment>
+				<span className="text-gray-500">{student.studentID.split("|")[0]}</span>
+			</Fragment>
+		}
 		text={
 			<Fragment>
 				{student.details.firstName} {student.details.lastName}

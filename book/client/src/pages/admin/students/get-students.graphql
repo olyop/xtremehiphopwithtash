@@ -8,6 +8,7 @@ query getStudents {
 			nickName
 			gender
 			mobilePhoneNumber
+			instagramUsername
 		}
 	}
 }

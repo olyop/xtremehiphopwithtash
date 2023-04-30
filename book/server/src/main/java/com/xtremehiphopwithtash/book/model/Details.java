@@ -10,6 +10,7 @@ public class Details extends Base {
 	private String nickName;
 	private String gender;
 	private String mobilePhoneNumber;
+	private String instagramUsername;
 
 	public Details() {}
 
@@ -61,6 +62,14 @@ public class Details extends Base {
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
+	public String getInstagramUsername() {
+		return instagramUsername;
+	}
+
+	public void setInstagramUsername(String instagramUsername) {
+		this.instagramUsername = instagramUsername;
+	}
+
 	@Override
 	public String toString() {
 		return (
@@ -76,6 +85,8 @@ public class Details extends Base {
 			gender +
 			", mobilePhoneNumber=" +
 			mobilePhoneNumber +
+			", instgramUsername=" +
+			instagramUsername +
 			"]"
 		);
 	}

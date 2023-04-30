@@ -3,5 +3,10 @@ query getLocations {
 		locationID
 		name
 		plusCode
+		address
+		coordinates {
+			latitude
+			longitude
+		}
 	}
 }

@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { FC, createElement } from "react";
 
-import { OnEditAndUpdate } from "../../../components/entity";
 import {
 	CourseInput as CourseInputType,
 	Course as CourseType,
@@ -11,6 +10,7 @@ import {
 	MutationUpdateCourseByIdArgs,
 } from "../../../generated-types";
 import { ArrayElement } from "../../../utils";
+import { OnEditAndUpdate } from "../entity";
 import Section from "../section";
 import Course from "./course";
 import CreateInstructor from "./create-course";
@@ -37,6 +37,7 @@ const Courses: FC = () => {
 						description: input.description,
 						photo: input.photo,
 						defaultPrice: input.defaultPrice === 0 ? null : input.defaultPrice,
+						defaultEquipmentFee: input.defaultEquipmentFee === 0 ? null : input.defaultEquipmentFee,
 						defaultDuration: input.defaultDuration,
 						defaultCapacity: input.defaultCapacity,
 						defaultEquipmentAvailable: input.defaultEquipmentAvailable,

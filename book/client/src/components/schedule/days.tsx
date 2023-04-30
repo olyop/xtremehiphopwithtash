@@ -1,20 +1,18 @@
 import { FC, createElement } from "react";
 
-import { Breakpoint } from "../../hooks";
 import Day from "./day";
-import { Schedule } from "./types";
+import { Day as DayType } from "./types";
 
-const Days: FC<PropTypes> = ({ schedule, breakpoint, onSessionUpdate }) => (
-	<div className="h-full border border-gray-300 grid gap-px grid-cols-2 grid-rows-4 md:grid-cols-3 md:grid-rows-4 bg-gray-300 lg:border-t-0 lg:grid-cols-7 lg:grid-rows-4">
-		{schedule.days.map(day => (
-			<Day key={day.unix} day={day} breakpoint={breakpoint} onSessionUpdate={onSessionUpdate} />
+const Days: FC<PropTypes> = ({ days, onSessionUpdate }) => (
+	<div className="grid gap-px grid-cols-2 border-t lg:border-r border-gray-300 grid-rows-3 md:grid-cols-3 md:grid-rows-4 bg-gray-300 lg:border-b-0 lg:grid-cols-7 lg:grid-rows-4 h-[calc(100vh_-_5rem_-_3.25rem)] lg:h-[calc(100vh_-_5rem_-_2.25rem)]">
+		{days.map(day => (
+			<Day key={day.unix} day={day} onSessionUpdate={onSessionUpdate} />
 		))}
 	</div>
 );
 
 interface PropTypes {
-	schedule: Schedule;
-	breakpoint: Breakpoint;
+	days: DayType[];
 	onSessionUpdate: () => void;
 }
 

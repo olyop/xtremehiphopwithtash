@@ -4,6 +4,7 @@ import com.xtremehiphopwithtash.book.dao.BookingDAO;
 import com.xtremehiphopwithtash.book.dao.SessionDAO;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +13,15 @@ public class BookingValidator implements Validator<UUID, BookingInput> {
 
 	private final BookingDAO bookingDAO;
 	private final SessionValidator sessionValidator;
-	private final StudentValidator studentValidator;
 	private final SessionDAO sessionDAO;
 
 	public BookingValidator(
 		BookingDAO bookingDAO,
 		SessionValidator sessionValidator,
-		StudentValidator studentValidator,
 		SessionDAO sessionDAO
 	) {
 		this.bookingDAO = bookingDAO;
 		this.sessionValidator = sessionValidator;
-		this.studentValidator = studentValidator;
 		this.sessionDAO = sessionDAO;
 	}
 
@@ -36,20 +34,30 @@ public class BookingValidator implements Validator<UUID, BookingInput> {
 
 	@Override
 	public void validateInput(BookingInput input) {
-		String notes = input.getNotes();
-		Boolean isBringingOwnEquipment = input.isBringingOwnEquipment();
+		Optional<String> notes = input.getNotes();
+		Boolean isBringingOwnEquipment = input.getIsBringingOwnEquipment();
 		UUID sessionID = input.getSessionID();
-		String studentID = input.getStudentID();
 
 		validateNotes(notes);
 		sessionValidator.validateID(sessionID);
-		studentValidator.validateID(studentID);
 		checkThereIsCapacity(sessionID);
 		checkThereIsEquipmentAvailable(isBringingOwnEquipment, sessionID);
 	}
 
-	private void validateNotes(String notes) {
-		if (notes.isEmpty()) {
+	public void checkStudentHasNotBookedSession(String studentID, UUID sessionID) {
+		if (bookingDAO.existsByStudentAndSession(studentID, sessionID)) {
+			throw new ResolverException("You have already booked for this session");
+		}
+	}
+
+	public void checkThereIsEquipmentAvailable(Boolean isBringingOwnEquipment, UUID sessionID) {
+		if (isBringingOwnEquipment && !isEquipmentAvailable(sessionID)) {
+			throw new ResolverException("No equipment available");
+		}
+	}
+
+	private void validateNotes(Optional<String> notes) {
+		if (notes.isPresent() && notes.isEmpty()) {
 			throw new ResolverException("Notes cannot be empty");
 		}
 	}
@@ -64,15 +72,11 @@ public class BookingValidator implements Validator<UUID, BookingInput> {
 		}
 	}
 
-	private void checkThereIsEquipmentAvailable(Boolean isBringingOwnEquipment, UUID sessionID) {
-		if (isBringingOwnEquipment) {
-			Session session = sessionDAO.selectByID(sessionID).get();
-			Short equipmentAvailable = session.getEquipmentAvailable();
-			Short equipmentUsed = bookingDAO.selectCountBySessionIDAndBringingOwnEquipment(sessionID);
+	public boolean isEquipmentAvailable(UUID sessionID) {
+		Session session = sessionDAO.selectByID(sessionID).get();
+		Short equipmentAvailable = session.getEquipmentAvailable();
+		Short equipmentUsed = bookingDAO.selectCountBySessionIDAndBringingOwnEquipment(sessionID);
 
-			if ((equipmentAvailable - equipmentUsed) <= 0) {
-				throw new ResolverException("No equipment available");
-			}
-		}
+		return (equipmentAvailable - equipmentUsed) > 0;
 	}
 }

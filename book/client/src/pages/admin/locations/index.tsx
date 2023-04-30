@@ -1,16 +1,17 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { FC, createElement } from "react";
 
-import { OnEditAndUpdate } from "../../../components/entity";
 import {
+	DeleteLocationMutation,
 	GetLocationsQuery,
 	LocationInput,
 	Location as LocationType,
-	Mutation,
 	MutationDeleteLocationByIdArgs,
 	MutationUpdateLocationByIdArgs,
+	UpdateLocationMutation,
 } from "../../../generated-types";
 import { ArrayElement } from "../../../utils";
+import { OnEditAndUpdate } from "../entity";
 import Section from "../section";
 import CreateInstructor from "./create-location";
 import DELETE_LOCATION from "./delete-location.graphql";
@@ -34,6 +35,7 @@ const Locations: FC = () => {
 					locationID,
 					input: {
 						name: input.name,
+						address: input.address,
 						plusCode: input.plusCode,
 					},
 				},
@@ -78,8 +80,8 @@ const Locations: FC = () => {
 	);
 };
 
-type UpdateData = Pick<Mutation, "updateLocationByID">;
-type DeleteData = Pick<Mutation, "deleteLocationByID">;
+type UpdateData = UpdateLocationMutation;
+type DeleteData = DeleteLocationMutation;
 type UpdateVars = MutationUpdateLocationByIdArgs;
 type DeleteVars = MutationDeleteLocationByIdArgs;
 

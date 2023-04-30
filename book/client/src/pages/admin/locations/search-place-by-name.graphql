@@ -1,0 +1,10 @@
+query searchPlaceByName($name: String!) {
+	searchPlaceByName(name: $name) {
+		address
+		plusCode
+		coordinates {
+			latitude
+			longitude
+		}
+	}
+}

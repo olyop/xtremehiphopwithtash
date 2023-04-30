@@ -13,4 +13,13 @@ type Query {
 	getLocationByID(locationID: UUID!): Location!
 	getSessionByID(sessionID: UUID!): Session!
 	getBookingByID(bookingID: UUID!): Booking!
+
+	doesStudentExist(studentID: String!): Boolean!
+	doesSessionExist(sessionID: UUID!): Boolean!
+	verifyReferralCode(code: String!): Boolean!
+	isStudentAdministator(studentID: String!): Boolean!
+
+	decodePlusCode(plusCode: String!): Coordinates!
+	searchPlaceByName(name: String!): Place
+	isEquipmentAvailable(sessionID: UUID!): Boolean!
 }

@@ -1,10 +1,12 @@
 import { MutationResult } from "@apollo/client";
 import { FC, createElement, useState } from "react";
 
-import Entity, { OnEditAndUpdate } from "../../../components/entity";
-import LocationInput from "../../../components/entity-inputs/location-input";
-import { GetLocationsQuery, LocationInput as LocationInputType } from "../../../generated-types";
-import { ArrayElement } from "../../../utils";
+import LocationInput from "../../../components/forms/location-form";
+import {
+	LocationInput as LocationInputType,
+	Location as LocationType,
+} from "../../../generated-types";
+import AdminEntity, { OnEditAndUpdate } from "../entity";
 
 const Location: FC<PropTypes> = ({
 	location,
@@ -15,14 +17,21 @@ const Location: FC<PropTypes> = ({
 	updateModalError,
 	deleteModalError,
 }) => {
-	const [input, setInput] = useState<LocationInputType>(location);
+	const [input, setInput] = useState<LocationInputType>({
+		name: location.name,
+		plusCode: location.plusCode,
+		address: location.address,
+	});
 	return (
-		<Entity
+		<AdminEntity
 			id={location.locationID}
 			text={location.name}
-			description={location.plusCode}
+			description={location.address}
 			typeName={location.__typename}
-			editModalContent={<LocationInput input={input} onChange={setInput} />}
+			isLargeEditModal
+			editModalContent={
+				<LocationInput input={input} onChange={setInput} coordinates={location.coordinates} />
+			}
 			onEdit={onUpdate(input)}
 			onDelete={onDelete}
 			isUpdating={isUpdating}
@@ -34,7 +43,10 @@ const Location: FC<PropTypes> = ({
 };
 
 interface PropTypes {
-	location: ArrayElement<GetLocationsQuery["getLocations"]>;
+	location: Pick<
+		LocationType,
+		"locationID" | "__typename" | "name" | "plusCode" | "address" | "coordinates"
+	>;
 	onUpdate: (input: LocationInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;
 	isUpdating: boolean;

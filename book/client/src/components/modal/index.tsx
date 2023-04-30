@@ -16,58 +16,68 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	className,
 	modalClassName,
 	contentClassName,
-	isBookingModal = false,
+	buttonClassName,
+	isLarge = false,
+	hideTitle = false,
+	centerTitle = false,
+	hideCloseButton = false,
 	disableCloseOnEscape = false,
 }) => {
 	const escapePress = useKeyPress("Escape");
 
 	useEffect(() => {
-		if (escapePress) {
+		if (escapePress && onClose) {
 			onClose();
 		}
 	}, [escapePress]);
 
 	return (
 		<div
-			className={`inset-0 w-screen h-screen absolute z-20 transition-opacity overflow-hidden ${
+			className={`inset-0 w-screen h-screen fixed z-[100] transition-opacity overflow-hidden ${
 				isOpen ? "opacity-100 visible" : "opacity-0 invisible"
 			} ${className || ""}`}
 		>
 			<div
 				aria-hidden
 				onClick={disableCloseOnEscape ? undefined : onClose}
-				className={`inset-0 cursor-pointer absolute z-30 bg-gray-900 transition-opacity ${
-					isOpen ? "opacity-20 visible" : "opacity-0 invisible"
+				className={`inset-0 cursor-pointer absolute z-[110] bg-gray-900 transition-opacity ${
+					isOpen ? "opacity-50 visible" : "opacity-0 invisible"
 				}`}
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 pt-3 top-1/2 left-1/2 z-40 absolute ${
-						isBookingModal ? "w-booking-modal" : "w-96"
-					} -translate-x-1/2 -translate-y-1/2 bg-white ${modalClassName || ""}`}
+					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-1/2 left-1/2 z-[120] absolute ${
+						isLarge ? "md:w-booking-modal lg:w-booking-modal" : "md:w-96 lg:w-96"
+					} w-[calc(100vw_-_2.5rem)] -translate-x-1/2 -translate-y-1/2 bg-white ${
+						modalClassName || ""
+					}`}
 				>
-					{disableCloseOnEscape || (
+					{!disableCloseOnEscape && !hideCloseButton && onClose && (
 						<Button
-							leftIcon={c => <XMarkIcon className={c} />}
-							ariaLabel={`Close ${title}`}
 							onClick={onClose}
+							ariaLabel={`Close ${title}`}
 							className="absolute -top-4 -right-4"
+							leftIcon={c => <XMarkIcon className={c} />}
 						/>
 					)}
-					<div
-						className={`flex gap-2 ${
-							subTitle === undefined ? "items-center" : "items-start"
-						} pb-2 border-b border-b-gray-200`}
-					>
-						{icon(`h-5 w-5 ${subTitle === undefined ? "mt-0.5" : "mt-1.5"} select-none`)}
-						<div className="flex gap-1 flex-col">
-							<h1 className="text-2xl">{title}</h1>
-							{titleContent}
-							{subTitle && <h2 className="text-sm text-gray-500">{subTitle}</h2>}
+					{hideTitle || (
+						<div
+							className={`flex gap-2 -mt-1 ${
+								subTitle === undefined ? "items-center" : "items-start"
+							} ${
+								centerTitle ? "justify-center" : "justify-start"
+							} pb-2 border-b border-b-gray-200`}
+						>
+							{icon(`h-5 w-5 ${subTitle === undefined ? "mt-0.5" : "mt-1.5"} select-none`)}
+							<div className="flex flex-col gap-1">
+								<h1 className="text-xl md:text-2xl">{title}</h1>
+								{titleContent}
+								{subTitle && <h2 className="text-sm text-gray-500">{subTitle}</h2>}
+							</div>
 						</div>
-					</div>
+					)}
 					<div className={contentClassName}>{children}</div>
-					{buttons && <div className="flex gap-2">{buttons}</div>}
+					{buttons && <div className={`flex gap-2 ${buttonClassName ?? ""}`}>{buttons}</div>}
 				</div>
 			)}
 		</div>
@@ -80,13 +90,17 @@ interface ModalPropTypes {
 	titleContent?: ReactNode;
 	subTitle?: ReactNode;
 	icon: (className: string) => ReactNode;
-	onClose: () => void;
+	onClose?: () => void;
 	buttons?: ReactNode;
 	className?: string;
 	modalClassName?: string;
 	contentClassName?: string;
+	buttonClassName?: string;
+	hideTitle?: boolean;
+	centerTitle?: boolean;
 	disableCloseOnEscape?: boolean;
-	isBookingModal?: boolean;
+	isLarge?: boolean;
+	hideCloseButton?: boolean;
 }
 
 export default Modal;

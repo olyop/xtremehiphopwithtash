@@ -1,0 +1,3 @@
+query verifyReferralCode($code: String!) {
+	verifyReferralCode(code: $code)
+}

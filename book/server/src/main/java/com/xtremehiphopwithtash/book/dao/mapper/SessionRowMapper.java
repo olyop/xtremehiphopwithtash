@@ -18,7 +18,8 @@ public class SessionRowMapper implements RowMapper<Session> {
 		session.setSessionID(MapRowUtil.mapToUUID(rs.getString("session_id")));
 		session.setTitle(rs.getString("title"));
 		session.setNotes(rs.getString("notes"));
-		session.setPrice(rs.getShort("price") == 0 ? null : rs.getShort("price"));
+		session.setPrice(MapRowUtil.mapToShort(rs.getShort("price")));
+		session.setEquipmentFee(MapRowUtil.mapToShort(rs.getShort("equipment_fee")));
 		session.setStartTime(MapRowUtil.mapToInstant(rs.getInt("start_time")));
 		session.setEndTime(MapRowUtil.mapToInstant(rs.getInt("end_time")));
 		session.setCapacity(rs.getShort("capacity"));

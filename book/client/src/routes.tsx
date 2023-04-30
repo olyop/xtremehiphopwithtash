@@ -1,29 +1,44 @@
 import { FC, createElement } from "react";
-import { RouteObject, useRoutes } from "react-router-dom";
+import { RouteObject, useLocation, useRoutes } from "react-router-dom";
 
-import Admin from "./pages/admin";
-import Home from "./pages/home";
+import Schedule from "./components/schedule";
+import AccountPage from "./pages/account";
+import AdminPage from "./pages/admin";
+import PaymentPage from "./pages/payment";
 import SessionPage from "./pages/session";
 
 const routes: RouteObject[] = [
 	{
 		path: "/",
-		element: <Home />,
+		element: <Schedule />,
 	},
 	{
 		path: "admin",
-		element: <Admin />,
+		element: <AdminPage />,
 	},
 	{
 		path: "session/:sessionID",
 		element: <SessionPage />,
 	},
+	{
+		path: "account",
+		element: <AccountPage />,
+	},
+	{
+		path: "payment",
+		element: <PaymentPage />,
+	},
 ];
 
 const Routes: FC = () => {
+	const location = useLocation();
 	const routesElement = useRoutes(routes);
 	return (
-		<div className="overflow-x-hidden overflow-y-scroll h-content-height bg-stone-150">
+		<div
+			className={`h-content-height w-full bg-stone-150 ${
+				location.pathname === "/" ? "overflow-hidden" : "overflow-x-hidden overflow-y-scroll"
+			}`}
+		>
 			{routesElement}
 		</div>
 	);

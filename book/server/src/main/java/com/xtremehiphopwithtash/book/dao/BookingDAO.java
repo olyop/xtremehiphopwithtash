@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDeleteDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.BookingRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.BookingQuery;
 import com.xtremehiphopwithtash.book.model.Booking;
@@ -12,7 +14,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BookingDAO implements EntityDAO<Booking, UUID> {
+public class BookingDAO
+	implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO<Booking, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final BookingQuery query;
@@ -47,10 +50,10 @@ public class BookingDAO implements EntityDAO<Booking, UUID> {
 	}
 
 	@Override
-	public boolean existsByID(UUID id) {
+	public boolean existsByID(UUID bookingID) {
 		String sql = query.EXISTS_BY_ID;
 
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("bookingID", id);
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("bookingID", bookingID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
@@ -61,9 +64,9 @@ public class BookingDAO implements EntityDAO<Booking, UUID> {
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("notes", value.getNotes());
-		paramSource.addValue("is_bringing_own_equipment", value.getIsBringingOwnEquipment());
-		paramSource.addValue("session_id", value.getSessionID());
-		paramSource.addValue("student_id", value.getStudentID());
+		paramSource.addValue("isBringingOwnEquipment", value.getIsBringingOwnEquipment());
+		paramSource.addValue("sessionID", value.getSessionID());
+		paramSource.addValue("studentID", value.getStudentID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -78,12 +81,12 @@ public class BookingDAO implements EntityDAO<Booking, UUID> {
 		String sql = query.UPDATE_BY_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("booking_id", bookingID);
+		paramSource.addValue("bookingID", bookingID);
 
 		paramSource.addValue("notes", value.getNotes());
-		paramSource.addValue("is_bringing_own_equipment", value.getIsBringingOwnEquipment());
-		paramSource.addValue("session_id", value.getSessionID());
-		paramSource.addValue("student_id", value.getStudentID());
+		paramSource.addValue("isBringingOwnEquipment", value.getIsBringingOwnEquipment());
+		paramSource.addValue("sessionID", value.getSessionID());
+		paramSource.addValue("studentID", value.getStudentID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -118,5 +121,23 @@ public class BookingDAO implements EntityDAO<Booking, UUID> {
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+	}
+
+	public List<Booking> selectByStudentID(String studentID) {
+		String sql = query.SELECT_BOOKINGS_BY_STUDENT_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
+	public boolean existsByStudentAndSession(String studentID, UUID sessionID) {
+		String sql = query.EXISTS_BY_STUDENT_AND_SESSION;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("studentID", studentID);
+		paramSource.addValue("sessionID", sessionID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 }

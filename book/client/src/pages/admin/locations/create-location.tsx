@@ -1,24 +1,31 @@
-import { useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
-import LocationInput from "../../../components/entity-inputs/location-input";
 import FormError from "../../../components/form-error";
+import LocationForm from "../../../components/forms/location-form";
 import Modal from "../../../components/modal";
 import {
-	LocationInput as LocationInputType,
-	Mutation,
+	Coordinates,
+	CreateLocationMutation,
+	LocationInput,
 	MutationCreateLocationArgs,
+	QuerySearchPlaceByNameArgs,
+	SearchPlaceByNameQuery,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import CREATE_LOCATION from "./create-location.graphql";
 import GET_LOCATIONS from "./get-locations.graphql";
 import { initialInput } from "./initial-input";
+import SEARCH_PLACE_BY_NAME from "./search-place-by-name.graphql";
 
 const AddLocation: FC = () => {
-	const [input, setInput] = useState<LocationInputType>(initialInput);
+	const apollo = useApolloClient();
+
+	const [input, setInput] = useState<LocationInput>(initialInput);
+	const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
 
 	const [createLocation, { data, loading, error }] = useMutation<Data, Vars>(CREATE_LOCATION);
 
@@ -37,6 +44,35 @@ const AddLocation: FC = () => {
 		setInput(initialInput);
 	};
 
+	const handlePlusCodeChange = (plusCode: string) => {
+		setInput(prevState => ({
+			...prevState,
+			plusCode,
+		}));
+	};
+
+	const handleAddressChange = (address: string) => {
+		setInput(prevState => ({
+			...prevState,
+			address,
+		}));
+	};
+
+	const guessPlaceFromName = async (name: string) => {
+		const result = await apollo.query<SearchPlaceByNameQuery, QuerySearchPlaceByNameArgs>({
+			query: SEARCH_PLACE_BY_NAME,
+			variables: {
+				name,
+			},
+		});
+
+		if (result.data.searchPlaceByName) {
+			setCoordinates(result.data.searchPlaceByName.coordinates);
+			handleAddressChange(result.data.searchPlaceByName.address);
+			handlePlusCodeChange(result.data.searchPlaceByName.plusCode);
+		}
+	};
+
 	const [isOpen, openModal, closeModal] = useModal(handleFormReset);
 
 	useEffect(() => {
@@ -44,6 +80,15 @@ const AddLocation: FC = () => {
 			closeModal();
 		}
 	}, [data]);
+
+	useEffect(() => {
+		if (input.name.length === 0) {
+			handleAddressChange("");
+			handlePlusCodeChange("");
+		} else {
+			void guessPlaceFromName(input.name);
+		}
+	}, [input.name]);
 
 	return (
 		<Fragment>
@@ -54,6 +99,7 @@ const AddLocation: FC = () => {
 				leftIcon={className => <PlusIcon className={className} />}
 			/>
 			<Modal
+				isLarge
 				title="Add Location"
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
@@ -61,7 +107,7 @@ const AddLocation: FC = () => {
 				contentClassName="flex flex-col gap-4"
 				children={
 					<Fragment>
-						<LocationInput input={input} onChange={setInput} />
+						<LocationForm input={input} onChange={setInput} coordinates={coordinates} />
 						<FormError error={error} />
 					</Fragment>
 				}
@@ -89,7 +135,7 @@ const AddLocation: FC = () => {
 	);
 };
 
-type Data = Pick<Mutation, "createLocation">;
+type Data = CreateLocationMutation;
 type Vars = MutationCreateLocationArgs;
 
 export default AddLocation;

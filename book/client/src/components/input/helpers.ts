@@ -46,9 +46,9 @@ export const determineInputValue = (
 	type: InputType,
 	value: InputValue,
 	selectOptions: InputSelectOptions | undefined,
-): string | number | undefined => {
+): string | number => {
 	if (value === undefined || value === null) {
-		return "";
+		return type === InputType.PRICE || type === InputType.INTEGER ? 0 : "";
 	} else if (type === InputType.TIME && typeof value === "number") {
 		return convertUnixTimeToTimeInput(value);
 	} else if (type === InputType.DATE && typeof value === "number") {
@@ -58,7 +58,7 @@ export const determineInputValue = (
 	} else if (type === InputType.PRICE && typeof value === "number") {
 		return value;
 	} else if (type === InputType.CHECKBOX && typeof value === "boolean") {
-		return value ? "true" : "false";
+		return String(value);
 	} else if (type === InputType.SELECT && typeof value === "string") {
 		return selectOptions?.find(option => option.optionID === value)?.optionID ?? "";
 	} else if (type === InputType.TEXT && typeof value === "string") {

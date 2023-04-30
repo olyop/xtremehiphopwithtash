@@ -1,6 +1,8 @@
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
-import { ChangeEventHandler, FC, Fragment, createElement } from "react";
+import { ChangeEventHandler, FC, Fragment, ReactNode, createElement } from "react";
 
+import { currencyFormatter } from "../../intl";
+import { capitalizeFirstLetter } from "../../utils";
 import Chip, { ChipInput } from "../chip";
 import {
 	convertDateTimeInputToUnixTime,
@@ -13,23 +15,26 @@ import {
 } from "./helpers";
 import { InputOnChange, InputSelectOptions, InputType, InputValue, SelectOption } from "./types";
 
-const currencyFormatter = new Intl.NumberFormat(undefined, {
-	style: "currency",
-	currency: "AUD",
-});
-
-const className = (type: InputType, value: InputValue) =>
+const createClassName = (type: InputType, value: InputValue, className: string | undefined) =>
 	`border cursor-pointer outline-none ${
 		type === InputType.CHECKBOX ? "mt-[1px] ml-[1px]" : "w-full"
 	} border-gray-200 hover:border-gray-400 transition-all rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
-		type === InputType.PRICE ? (value === 0 ? "pl-12" : "pl-8") : ""
-	} ${type === InputType.TEXTAREA ? "resize-none" : ""}`;
+		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-8") : ""
+	} ${type === InputType.TEXTAREA ? "resize-none h-[7rem]" : ""} ${className ?? ""}`;
 
 const Input: FC<InputPropTypes> = ({
 	id,
 	type,
 	name,
+	note,
 	value,
+	nullable = false,
+	disabled = false,
+	optional = false,
+	maxLength = 1024,
+	className,
+	noteClassName,
+	labelClassName,
 	autoComplete,
 	placeHolder,
 	selectOptions,
@@ -42,9 +47,10 @@ const Input: FC<InputPropTypes> = ({
 		} else if (type === InputType.DATE && typeof value === "number") {
 			onChange(convertDateTimeInputToUnixTime(value, event.target.value));
 		} else if (type === InputType.INTEGER || type === InputType.PRICE) {
-			onChange(Number.parseInt(event.target.value, 10));
+			const valueInt = Number.parseInt(event.target.value, 10);
+			onChange(nullable ? (valueInt === 0 ? null : valueInt) : valueInt);
 		} else if (type === InputType.TEXT || type === InputType.URL || type === InputType.TEXTAREA) {
-			onChange(event.target.value);
+			onChange(nullable && event.target.value.length === 0 ? null : event.target.value);
 		} else if (type === InputType.CHECKBOX) {
 			onChange(event.target.checked);
 		} else {
@@ -79,25 +85,27 @@ const Input: FC<InputPropTypes> = ({
 		<div
 			className={`relative ${
 				type === InputType.CHECKBOX ? "flex gap-2 flex-row-reverse justify-end" : ""
-			}`}
+			} ${type === InputType.TEXTAREA ? "h-[7rem]" : ""} ${className ?? ""}`}
 		>
 			<label
-				children={name}
+				children={optional ? `${name} (optional)` : name}
 				htmlFor={type === InputType.LIST ? `${id}-select` : id}
 				className={`${
 					type === InputType.CHECKBOX
 						? "text-base"
 						: "uppercase font-bold text-xs absolute -top-1.5"
-				} cursor-pointer left-3 bg-white z-50 select-none`}
+				} cursor-pointer left-3 bg-white z-50 select-none ${disabled ? "text-gray-400" : ""} ${
+					labelClassName ?? ""
+				}`}
 			/>
 			{type === InputType.LIST && items && selectOptions && (
-				<div className="absolute flex items-center gap-1 top-7 left-2 -translate-y-1/2">
+				<div className="absolute flex items-center gap-1 top-[1.65rem] left-2 -translate-y-1/2 w-1/2 bg-white">
 					{items.map(item => item && <Chip key={item?.text} chip={item} className="bg-white" />)}
 				</div>
 			)}
-			{type === InputType.PRICE && typeof value === "number" && (
+			{type === InputType.PRICE && (value === null || typeof value === "number") && (
 				<p className="absolute top-1/2 -translate-y-1/2 left-3">
-					{value === 0 ? "Free" : currencyFormatter.format(value).slice(0, 2)}
+					{value === null ? "Free" : currencyFormatter.format(value).slice(0, 2)}
 				</p>
 			)}
 			{type === InputType.LIST && Array.isArray(value) ? (
@@ -108,7 +116,7 @@ const Input: FC<InputPropTypes> = ({
 						id={`${id}-select`}
 						placeholder={placeHolder}
 						onChange={handleSelectChange}
-						className={`${className(type, value)} appearance-none`}
+						className={`${createClassName(type, value, className)} appearance-none`}
 					>
 						{selectOptions === null ? (
 							<option value="">None found</option>
@@ -137,7 +145,7 @@ const Input: FC<InputPropTypes> = ({
 						placeholder={placeHolder}
 						onChange={handleSelectChange}
 						value={determineInputValue(type, value, selectOptions)}
-						className={`${className(type, value)} appearance-none`}
+						className={`${createClassName(type, value, className)} appearance-none`}
 					>
 						{selectOptions === null ? (
 							<option value="">None found</option>
@@ -148,7 +156,7 @@ const Input: FC<InputPropTypes> = ({
 								<option value="">Please choose</option>
 								{selectOptions.map(({ optionID, description }) => (
 									<option key={optionID} value={optionID}>
-										{description}
+										{capitalizeFirstLetter(description)}
 									</option>
 								))}
 							</Fragment>
@@ -161,27 +169,32 @@ const Input: FC<InputPropTypes> = ({
 					id={id}
 					name={name}
 					rows={5}
-					maxLength={1024}
+					maxLength={maxLength}
 					placeholder={placeHolder}
 					autoComplete={autoComplete}
 					onChange={handleTextAreaChange}
-					className={className(type, value)}
+					className={createClassName(type, value, className)}
 					value={determineInputValue(type, value, selectOptions)}
 				/>
 			) : (
 				<input
 					id={id}
 					name={name}
+					maxLength={maxLength}
+					disabled={disabled}
 					placeholder={placeHolder}
 					autoComplete={autoComplete}
 					onChange={handleInputChange}
 					type={determineInputType(type)}
-					className={className(type, value)}
+					step={type === InputType.INTEGER ? 1 : undefined}
+					className={createClassName(type, value, className)}
 					value={determineInputValue(type, value, selectOptions)}
-					maxLength={1024}
 					min={type === InputType.INTEGER || type === InputType.PRICE ? 0 : undefined}
 					checked={type === InputType.CHECKBOX && typeof value === "boolean" ? value : undefined}
 				/>
+			)}
+			{note && type !== InputType.CHECKBOX && (
+				<div className={`text-gray-500 text-sm px-3 pb-1 ${noteClassName ?? ""}`}>{note}</div>
 			)}
 		</div>
 	);
@@ -190,8 +203,16 @@ const Input: FC<InputPropTypes> = ({
 interface InputPropTypes {
 	id: string;
 	name: string;
+	note?: ReactNode;
+	nullable?: boolean;
+	disabled?: boolean;
+	className?: string;
+	maxLength?: number;
+	noteClassName?: string;
+	labelClassName?: string;
 	value: InputValue;
-	placeHolder: string;
+	placeHolder?: string;
+	optional?: boolean;
 	autoComplete?: string;
 	type: InputType;
 	onChange: InputOnChange;

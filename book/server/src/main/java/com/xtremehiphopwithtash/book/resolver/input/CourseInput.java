@@ -4,17 +4,16 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.web.ProjectedPayload;
 
-@ProjectedPayload
-public interface CourseInput {
-	String getName();
-	String getDescription();
-	URL getPhoto();
-	Optional<Short> getDefaultPrice();
-	Short getDefaultDuration();
-	Short getDefaultCapacity();
-	Short getDefaultEquipmentAvailable();
-	UUID getDefaultLocationID();
-	List<UUID> getDefaultInstructorIDs();
-}
+public record CourseInput(
+	String name,
+	String description,
+	URL photo,
+	Optional<Short> defaultPrice,
+	Optional<Short> defaultEquipmentFee,
+	Short defaultDuration,
+	Short defaultCapacity,
+	Optional<Short> defaultEquipmentAvailable,
+	UUID defaultLocationID,
+	List<UUID> defaultInstructorIDs
+) {}

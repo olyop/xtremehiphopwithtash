@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDeleteDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.LocationRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.LocationQuery;
 import com.xtremehiphopwithtash.book.model.Location;
@@ -12,7 +14,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class LocationDAO implements EntityDAO<Location, UUID> {
+public class LocationDAO
+	implements EntityBaseDAO<Location, UUID>, EntityUpdateDAO<Location, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final LocationQuery query;
@@ -35,6 +38,7 @@ public class LocationDAO implements EntityDAO<Location, UUID> {
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("name", location.getName());
 		paramSource.addValue("plusCode", location.getPlusCode());
+		paramSource.addValue("address", location.getAddress());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -77,19 +81,20 @@ public class LocationDAO implements EntityDAO<Location, UUID> {
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("locationID", locationID);
-
 		paramSource.addValue("name", location.getName());
 		paramSource.addValue("plusCode", location.getPlusCode());
+		paramSource.addValue("address", location.getAddress());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
 
-	public boolean existsByNameOrPlusCode(String name, String plusCode) {
-		String sql = query.EXISTS_BY_NAME_OR_PLUS_CODE;
+	public boolean checkForDuplicate(String name, String plusCode, String address) {
+		String sql = query.EXISTS_CHECK_FOR_DUPLICATE;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("name", name);
 		paramSource.addValue("plusCode", plusCode);
+		paramSource.addValue("address", address);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}

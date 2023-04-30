@@ -1,0 +1,5 @@
+mutation updateSession($sessionID: UUID!, $input: SessionInput!) {
+	updateSessionByID(sessionID: $sessionID, input: $input) {
+		sessionID
+	}
+}

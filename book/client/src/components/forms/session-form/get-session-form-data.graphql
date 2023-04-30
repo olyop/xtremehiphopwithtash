@@ -1,0 +1,44 @@
+query getSessionFormData {
+	getCourses {
+		courseID
+		name
+		photo
+		defaultPrice
+		defaultEquipmentFee
+		defaultDuration
+		defaultCapacity
+		defaultEquipmentAvailable
+		defaultLocation {
+			locationID
+			name
+			plusCode
+			coordinates {
+				latitude
+				longitude
+			}
+		}
+		defaultInstructors {
+			instructorID
+			details {
+				detailsID
+				firstName
+				lastName
+				nickName
+			}
+		}
+	}
+	getLocations {
+		locationID
+		name
+	}
+	getInstructors {
+		instructorID
+		photo
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+		}
+	}
+}

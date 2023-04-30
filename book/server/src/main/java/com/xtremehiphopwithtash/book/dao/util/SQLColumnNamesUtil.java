@@ -13,6 +13,7 @@ public final class SQLColumnNamesUtil {
 		"nick_name",
 		"gender",
 		"mobile_phone_number",
+		"instagram_username",
 		CREATED_AT
 	);
 
@@ -27,6 +28,7 @@ public final class SQLColumnNamesUtil {
 		"location_id",
 		"name",
 		"plus_code",
+		"address",
 		CREATED_AT
 	);
 
@@ -36,6 +38,7 @@ public final class SQLColumnNamesUtil {
 		"description",
 		"photo",
 		"default_price",
+		"default_equipment_fee",
 		"default_duration",
 		"default_capacity",
 		"default_equipment_available",
@@ -55,6 +58,7 @@ public final class SQLColumnNamesUtil {
 		"title",
 		"notes",
 		"price",
+		"equipment_fee",
 		"start_time",
 		"end_time",
 		"capacity",
@@ -79,6 +83,13 @@ public final class SQLColumnNamesUtil {
 		"is_bringing_own_equipment",
 		"session_id",
 		"student_id",
+		CREATED_AT
+	);
+
+	public static final List<String> REFERRAL_CODE = List.of(
+		"referral_code_id",
+		"code",
+		"used_at",
 		CREATED_AT
 	);
 

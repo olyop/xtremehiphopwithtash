@@ -1,0 +1,39 @@
+query getPaymentScreenSession($sessionID: UUID!) {
+	getSessionByID(sessionID: $sessionID) {
+		sessionID
+		title
+		price
+		equipmentFee
+		startTime
+		endTime
+		capacityRemaining
+		location {
+			locationID
+			name
+			plusCode
+			address
+			coordinates {
+				latitude
+				longitude
+			}
+		}
+		course {
+			courseID
+			name
+			photo
+		}
+		instructors {
+			instructorID
+			photo
+			details {
+				detailsID
+				firstName
+				lastName
+				nickName
+				gender
+				mobilePhoneNumber
+				instagramUsername
+			}
+		}
+	}
+}

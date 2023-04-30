@@ -27,24 +27,29 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 		String firstName = input.getFirstName();
 		String lastName = input.getLastName();
 		Optional<String> nickName = input.getNickName();
-		String gender = input.getGender();
+		Optional<String> gender = input.getGender();
 		String mobilePhoneNumber = input.getMobilePhoneNumber();
 
 		validateLength(firstName, lastName, nickName);
-		validateNotEmpty(firstName, lastName, nickName);
+		validateNotEmpty(firstName, lastName, nickName, mobilePhoneNumber);
 		validateGender(gender);
 		validateMobilePhoneNumber(mobilePhoneNumber);
 	}
 
 	private void validateLength(String firstName, String lastName, Optional<String> nickName) {
-		commonValidator.validateStringLength(lastName, "First Name", 255);
-		commonValidator.validateStringLength(lastName, "Last Name", 255);
+		commonValidator.validateTextLength(lastName, "First Name", 255);
+		commonValidator.validateTextLength(lastName, "Last Name", 255);
 		nickName.ifPresent(nickNameValue ->
-			commonValidator.validateStringLength(nickNameValue, "Nick Name", 255)
+			commonValidator.validateTextLength(nickNameValue, "Nick Name", 255)
 		);
 	}
 
-	private void validateNotEmpty(String firstName, String lastName, Optional<String> nickName) {
+	private void validateNotEmpty(
+		String firstName,
+		String lastName,
+		Optional<String> nickName,
+		String mobilePhoneNumber
+	) {
 		if (firstName.isEmpty()) {
 			throw new ResolverException("First name cannot be empty");
 		}
@@ -56,10 +61,14 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 		if (nickName.isPresent() && nickName.get().isEmpty()) {
 			throw new ResolverException("Nick name cannot be empty");
 		}
+
+		if (mobilePhoneNumber.isEmpty()) {
+			throw new ResolverException("Mobile phone number cannot be empty");
+		}
 	}
 
-	private void validateGender(String gender) {
-		if (!detailsDAO.selectGenders().contains(gender)) {
+	private void validateGender(Optional<String> gender) {
+		if (gender.isPresent() && !detailsDAO.selectGenders().contains(gender.get())) {
 			throw new ResolverException("Gender does not exist");
 		}
 	}

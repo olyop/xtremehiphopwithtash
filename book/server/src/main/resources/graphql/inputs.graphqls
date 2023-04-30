@@ -6,15 +6,17 @@ input GetSessionsInput {
 
 input DetailsInput {
 	firstName: String!
-	lastName: String!
 	nickName: String
-	gender: String!
+	lastName: String!
+	gender: String
 	mobilePhoneNumber: String!
+	instagramUsername: String
 }
 
 input LocationInput {
 	name: String!
 	plusCode: String!
+	address: String!
 }
 
 input InstructorInput {
@@ -27,6 +29,7 @@ input CourseInput {
 	photo: URL!
 	description: String!
 	defaultPrice: PositiveInt
+	defaultEquipmentFee: PositiveInt
 	defaultDuration: PositiveInt!
 	defaultCapacity: PositiveInt!
 	defaultEquipmentAvailable: PositiveInt
@@ -40,6 +43,7 @@ input SessionInput {
 	startTime: UnixTime!
 	endTime: UnixTime!
 	price: PositiveInt
+	equipmentFee: PositiveInt
 	capacity: PositiveInt!
 	equipmentAvailable: PositiveInt
 	courseID: UUID!
@@ -48,8 +52,7 @@ input SessionInput {
 }
 
 input BookingInput {
-	notes: String!
+	notes: String
 	sessionID: UUID!
-	studentID: UUID!
 	isBringingOwnEquipment: Boolean!
 }

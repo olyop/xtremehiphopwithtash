@@ -5,6 +5,7 @@ module.exports = {
 	theme: {
 		fontFamily: {
 			"sans": ["La Nord", "sans-serif"],
+			"mono": ["monospace"],
 		},
 		extend: {
 			colors: {

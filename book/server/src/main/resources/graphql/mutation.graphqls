@@ -4,7 +4,6 @@ type Mutation {
 	createInstructor(input: InstructorInput!): Instructor!
 	createCourse(input: CourseInput!): Course!
 	createSession(input: SessionInput!): Session!
-	createBooking(input: BookingInput!): Booking!
 
 	deleteLocationByID(locationID: UUID!): UUID!
 	deleteInstructorByID(instructorID: UUID!): UUID!
@@ -18,4 +17,9 @@ type Mutation {
 	updateCourseByID(courseID: UUID!, input: CourseInput!): Course!
 	updateSessionByID(sessionID: UUID!, input: SessionInput!): Session!
 	updateBookingByID(bookingID: UUID!, input: BookingInput!): Booking!
+
+	generateReferralCode: String!
+
+	createBookingFree(input: BookingInput!): Booking!
+	createBookingReferralCode(input: BookingInput!, code: String!): Booking!
 }

@@ -1,16 +1,12 @@
 package com.xtremehiphopwithtash.book.dao.query;
 
 import com.xtremehiphopwithtash.book.dao.util.SQLColumnNamesUtil;
-import com.xtremehiphopwithtash.book.dao.util.SQLTableNamesUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CourseQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(
-		SQLColumnNamesUtil.COURSE,
-		SQLTableNamesUtil.COURSE
-	);
+	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.COURSE, "course");
 
 	public final String SELECT = String.format("SELECT %s FROM course;", columnNames);
 
@@ -22,9 +18,9 @@ public class CourseQuery {
 	public final String INSERT = String.format(
 		"""
 			INSERT INTO course
-				(name, description, photo, default_price, default_duration, default_capacity, default_equipment_available, default_location_id)
+				(name, description, photo, default_price, default_equipment_fee, default_duration, default_capacity, default_equipment_available, default_location_id)
 			VALUES
-				(:name, :description, :photo, :defaultPrice, :defaultDuration, :defaultCapacity, :defaultEquipmentAvailable, :defaultLocationID)
+				(:name, :description, :photo, :defaultPrice, :defaultEquipmentFee, :defaultDuration, :defaultCapacity, :defaultEquipmentAvailable, :defaultLocationID)
 			RETURNING
 				%s;
 		""",
@@ -40,6 +36,7 @@ public class CourseQuery {
 				description = :description,
 				photo = :photo,
 				default_price = :defaultPrice,
+				default_equipment_fee = :defaultEquipmentFee,
 				default_duration = :defaultDuration,
 				default_capacity = :defaultCapacity,
 				default_equipment_available = :defaultEquipmentAvailable,

@@ -20,7 +20,8 @@ public class CourseRowMapper implements RowMapper<Course> {
 		course.setName(rs.getString("name"));
 		course.setDescription(rs.getString("description"));
 		course.setPhoto(MapRowUtil.mapToURL(rs.getString("photo")));
-		course.setDefaultPrice(MapRowUtil.mapToPrice(rs.getShort("default_price")));
+		course.setDefaultPrice(MapRowUtil.mapToShort(rs.getShort("default_price")));
+		course.setDefaultEquipmentFee(MapRowUtil.mapToShort(rs.getShort("default_equipment_fee")));
 		course.setDefaultDuration(rs.getShort("default_duration"));
 		course.setDefaultCapacity(rs.getShort("default_capacity"));
 		course.setDefaultEquipmentAvailable(rs.getShort("default_equipment_available"));

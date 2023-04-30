@@ -5,6 +5,7 @@ mutation updateCourse($courseID: UUID!, $input: CourseInput!) {
 		description
 		photo
 		defaultPrice
+		defaultEquipmentFee
 		defaultDuration
 		defaultCapacity
 		defaultEquipmentAvailable
@@ -12,6 +13,10 @@ mutation updateCourse($courseID: UUID!, $input: CourseInput!) {
 			locationID
 			name
 			plusCode
+			coordinates {
+				latitude
+				longitude
+			}
 		}
 		defaultInstructors {
 			instructorID

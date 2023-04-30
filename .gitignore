@@ -1,3 +1,8 @@
 node_modules
 book/server/build
+book/server/.gradle
+book/client/.env.local
+book/client/.env.development
+book/client/node_modules
+book/server/src/main/resources/application-development.properties
 book/client/node_modules

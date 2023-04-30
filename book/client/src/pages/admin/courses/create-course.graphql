@@ -5,13 +5,13 @@ mutation createCourse($input: CourseInput!) {
 		description
 		photo
 		defaultPrice
+		defaultEquipmentFee
 		defaultDuration
 		defaultCapacity
 		defaultEquipmentAvailable
 		defaultLocation {
 			locationID
 			name
-			plusCode
 		}
 		defaultInstructors {
 			instructorID

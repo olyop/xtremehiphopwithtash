@@ -4,9 +4,7 @@ import com.xtremehiphopwithtash.book.dao.CourseDAO;
 import com.xtremehiphopwithtash.book.dao.SessionDAO;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.resolver.input.CourseInput;
-import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +14,14 @@ public class CourseValidator implements Validator<UUID, CourseInput> {
 	private final CourseDAO courseDAO;
 	private final SessionDAO sessionDAO;
 	private final CommonValidator commonValidator;
-	private final LocationValidtor locationValidtor;
+	private final LocationValidator locationValidtor;
 	private final InstructorValidator instructorValidator;
 
 	public CourseValidator(
 		CourseDAO courseDAO,
 		SessionDAO sessionDAO,
 		CommonValidator commonValidator,
-		LocationValidtor locationValidtor,
+		LocationValidator locationValidtor,
 		InstructorValidator instructorValidator
 	) {
 		this.courseDAO = courseDAO;
@@ -34,35 +32,21 @@ public class CourseValidator implements Validator<UUID, CourseInput> {
 	}
 
 	@Override
-	public void validateID(UUID id) {
-		if (!courseDAO.existsByID(id)) {
-			throw new ResolverException("Course does not exist");
-		}
+	public void validateCreate(CourseInput input) {
+		validateInput(input);
+		validateCourseName(input);
 	}
 
 	@Override
-	public void validateInput(CourseInput input) {
-		String name = input.getName();
-		String description = input.getDescription();
-		URL photo = input.getPhoto();
-		Optional<Short> defaultPrice = input.getDefaultPrice();
-		Short defaultDuration = input.getDefaultDuration();
-		Short defaultCapacity = input.getDefaultCapacity();
-		Short defaultEquipmentAvailable = input.getDefaultEquipmentAvailable();
-		UUID defaultLocationID = input.getDefaultLocationID();
-		List<UUID> defaultInstructorIDs = input.getDefaultInstructorIDs();
-
-		validateLength(name, description);
-		validateNotEmpty(name, description);
-		commonValidator.validateURL(photo);
-		locationValidtor.validateID(defaultLocationID);
-		validateDefaultInstructorIDs(defaultInstructorIDs);
-		commonValidator.validatePrice(defaultPrice);
-		validateEquipmentAndCapacity(defaultCapacity, defaultEquipmentAvailable);
-		validateDuration(defaultDuration);
+	public void validateUpdate(UUID courseID, CourseInput input) {
+		validateID(courseID);
+		validateInput(input);
 	}
 
-	public void canDelete(UUID courseID) {
+	@Override
+	public void validateDelete(UUID courseID) {
+		validateID(courseID);
+
 		List<Session> sessions = sessionDAO.selectByCourseID(courseID);
 
 		if (!sessions.isEmpty()) {
@@ -70,29 +54,36 @@ public class CourseValidator implements Validator<UUID, CourseInput> {
 		}
 	}
 
-	public void validateCourseName(String name) {
-		if (courseDAO.existsByName(name)) {
+	@Override
+	public void validateID(UUID courseID) {
+		if (!courseDAO.existsByID(courseID)) {
+			throw new ResolverException("Course does not exist");
+		}
+	}
+
+	@Override
+	public void validateInput(CourseInput input) {
+		commonValidator.validateText(input.name(), "Name", 255);
+		commonValidator.validateText(input.description(), "Description", 1024);
+		commonValidator.validateURL(input.photo(), "Photo");
+		commonValidator.validatePrice(input.defaultPrice(), "Default price");
+		commonValidator.validatePrice(input.defaultEquipmentFee(), "Default equipment fee");
+		locationValidtor.validateID(input.defaultLocationID());
+
+		validateEquipmentAndCapacity(input);
+		validateDuration(input.defaultDuration());
+		validateDefaultInstructorIDs(input.defaultInstructorIDs());
+	}
+
+	public void validateCourseName(CourseInput input) {
+		if (courseDAO.existsByName(input.name())) {
 			throw new ResolverException("Course with name already exists");
-		}
-	}
-
-	private void validateLength(String name, String description) {
-		commonValidator.validateStringLength(name, "Name", 255);
-		commonValidator.validateStringLength(description, "Description", 1024);
-	}
-
-	private void validateNotEmpty(String name, String description) {
-		if (name.isEmpty()) {
-			throw new ResolverException("Name cannot be empty");
-		}
-		if (description.isEmpty()) {
-			throw new ResolverException("Description cannot be empty");
 		}
 	}
 
 	private void validateDefaultInstructorIDs(List<UUID> defaultInstructorIDs) {
 		if (defaultInstructorIDs.isEmpty()) {
-			throw new ResolverException("Default instructor IDs cannot be empty");
+			throw new ResolverException("At least one default instructor must be set");
 		}
 
 		for (UUID defaultInstructorID : defaultInstructorIDs) {
@@ -100,18 +91,18 @@ public class CourseValidator implements Validator<UUID, CourseInput> {
 		}
 	}
 
-	private void validateEquipmentAndCapacity(
-		Short defaultCapacity,
-		Short defaultEquipmentAvailable
-	) {
-		if (defaultCapacity < defaultEquipmentAvailable) {
+	private void validateEquipmentAndCapacity(CourseInput input) {
+		if (
+			input.defaultEquipmentAvailable().isPresent() &&
+			input.defaultEquipmentAvailable().get() > input.defaultCapacity()
+		) {
 			throw new ResolverException("Cannot add more equipment than capacity");
 		}
 	}
 
 	private void validateDuration(Short defaultDuration) {
 		if (defaultDuration > 60 * 60 * 4) {
-			throw new ResolverException("Duration cannot be greater than 4 hours");
+			throw new ResolverException("Default duration cannot be greater than 4 hours");
 		}
 	}
 }

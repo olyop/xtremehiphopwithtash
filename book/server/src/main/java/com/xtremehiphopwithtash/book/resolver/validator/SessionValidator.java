@@ -15,22 +15,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionValidator implements Validator<UUID, SessionInput> {
 
-	private final Integer thirtyMinutes = 60 * 30;
-	private final Integer fourHours = 60 * 60 * 4;
-
 	private final SessionDAO sessionDAO;
 	private final BookingDAO bookingDAO;
 	private final CommonValidator commonValidator;
 	private final CourseValidator courseValidator;
-	private final LocationValidtor locationValidator;
+	private final LocationValidator locationValidator;
 	private final InstructorValidator instructorValidator;
+
+	private final int thirtyMinutes = 60 * 30;
+	private final int fourHours = 60 * 60 * 4;
 
 	public SessionValidator(
 		SessionDAO sessionDAO,
 		BookingDAO bookingDAO,
 		CommonValidator commonValidator,
 		CourseValidator courseValidator,
-		LocationValidtor locationValidator,
+		LocationValidator locationValidator,
 		InstructorValidator instructorValidator
 	) {
 		this.sessionDAO = sessionDAO;
@@ -42,6 +42,31 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 	}
 
 	@Override
+	public void validateCreate(SessionInput input) {
+		validateInput(input);
+		validateIsNotInPast(input);
+		validateSessionInPeriod(input);
+	}
+
+	@Override
+	public void validateUpdate(UUID sessionID, SessionInput input) {
+		validateID(sessionID);
+		validateSessionInPeriodExcludeSession(sessionID, input);
+		validateInput(input);
+	}
+
+	@Override
+	public void validateDelete(UUID sessionID) {
+		validateID(sessionID);
+
+		List<Booking> bookings = bookingDAO.selectBySessionID(sessionID);
+
+		if (!bookings.isEmpty()) {
+			throw new ResolverException("Cannot delete session with bookings");
+		}
+	}
+
+	@Override
 	public void validateID(UUID sessionID) {
 		if (!sessionDAO.existsByID(sessionID)) {
 			throw new ResolverException("Session does not exist");
@@ -50,37 +75,35 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 
 	@Override
 	public void validateInput(SessionInput input) {
-		String title = input.getTitle();
-		Optional<String> notes = input.getNotes();
-		Optional<Short> price = input.getPrice();
-		Instant startTime = input.getStartTime();
-		Instant endTime = input.getEndTime();
-		Short capacity = input.getCapacity();
-		Short equipmentAvailable = input.getEquipmentAvailable();
-		UUID courseID = input.getCourseID();
-		UUID locationID = input.getLocationID();
-		List<UUID> instructorIDs = input.getInstructorIDs();
-
-		courseValidator.validateID(courseID);
-		locationValidator.validateID(locationID);
-		validateInstructorIDs(instructorIDs);
-		validateLength(title, notes);
-		validateNotEmpty(title, notes);
-		commonValidator.validatePrice(price);
-		validateStartAndEndTime(startTime, endTime);
-		validateEquipmentAndCapacity(capacity, equipmentAvailable);
+		commonValidator.validateText(input.title(), "Title", 255);
+		commonValidator.validateText(input.notes(), "Notes", 1024);
+		commonValidator.validatePrice(input.price(), "Price");
+		commonValidator.validatePrice(input.equipmentFee(), "Equipment fee");
+		commonValidator.validateNonZeroInteger(input.capacity(), "Capacity");
+		commonValidator.validateNonZeroInteger(input.equipmentAvailable(), "Equipment available");
+		courseValidator.validateID(input.courseID());
+		locationValidator.validateID(input.locationID());
+		validateStartAndEndTime(input);
+		validateInstructorIDs(input);
+		validateEquipmentAndCapacity(input);
 	}
 
-	public void canDelete(UUID sessionID) {
-		List<Booking> bookings = bookingDAO.selectBySessionID(sessionID);
+	private void validateSessionInPeriod(SessionInput input) {
+		List<Session> sessions = sessionDAO.selectInTimePeriod(input.startTime(), input.endTime());
 
-		if (!bookings.isEmpty()) {
-			throw new ResolverException("Cannot delete session with bookings");
+		if (!sessions.isEmpty()) {
+			throw new ResolverException("Session already exists in time period");
 		}
 	}
 
-	public void validateSessionInPeriodExists(Instant startTime, Instant endTime) {
-		if (!sessionDAO.selectInTimePeriod(startTime, endTime).isEmpty()) {
+	private void validateSessionInPeriodExcludeSession(UUID sessionID, SessionInput input) {
+		List<Session> sessions = sessionDAO.selectInTimePeriodExcludeSession(
+			input.startTime(),
+			input.endTime(),
+			sessionID
+		);
+
+		if (!sessions.isEmpty()) {
 			throw new ResolverException("Session already exists in time period");
 		}
 	}
@@ -99,60 +122,36 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		}
 	}
 
-	public void validateIsNotInPast(Instant startTime) {
+	public void validateIsNotInPast(SessionInput input) {
 		Instant now = Instant.now();
 
-		if (startTime.isBefore(now)) {
+		if (input.startTime().isBefore(now)) {
 			throw new ResolverException("Session cannot start in the past");
 		}
 	}
 
-	public void validateStartAndEndTimeHaveNotChanged(
-		UUID sessionID,
-		Instant startTime,
-		Instant endTime
-	) {
-		Session session = sessionDAO.selectByID(sessionID).get();
-		Instant originalStartTime = session.getStartTime();
-		Instant originalEndTime = session.getEndTime();
-
-		if (!originalStartTime.equals(startTime) || !originalEndTime.equals(endTime)) {
-			throw new ResolverException("Cannot change start and end time after session has started");
+	private void validateEquipmentAndCapacity(SessionInput input) {
+		if (input.equipmentAvailable().isPresent()) {
+			if (input.equipmentAvailable().get() > input.capacity()) {
+				throw new ResolverException("Cannot add more equipment than capacity");
+			}
 		}
 	}
 
-	private void validateLength(String title, Optional<String> notes) {
-		commonValidator.validateStringLength(title, "Title", 255);
-		commonValidator.validateStringLength(notes, "Notes", 1024);
-	}
-
-	private void validateNotEmpty(String title, Optional<String> notes) {
-		if (title.isEmpty()) {
-			throw new ResolverException("Title cannot be empty");
-		}
-
-		if (notes.isPresent() && notes.get().isEmpty() && !notes.get().isBlank()) {
-			throw new ResolverException("Notes cannot be empty");
-		}
-	}
-
-	private void validateEquipmentAndCapacity(Short capacity, Short equipmentAvailable) {
-		if (equipmentAvailable > capacity) {
-			throw new ResolverException("Cannot add more equipment than capacity");
-		}
-	}
-
-	private void validateInstructorIDs(List<UUID> instructorIDs) {
-		if (instructorIDs.isEmpty()) {
+	private void validateInstructorIDs(SessionInput input) {
+		if (input.instructorIDs().isEmpty()) {
 			throw new ResolverException("Default instructor IDs cannot be empty");
 		}
 
-		for (UUID instructorID : instructorIDs) {
+		for (UUID instructorID : input.instructorIDs()) {
 			instructorValidator.validateID(instructorID);
 		}
 	}
 
-	private void validateStartAndEndTime(Instant startTime, Instant endTime) {
+	private void validateStartAndEndTime(SessionInput input) {
+		Instant startTime = input.startTime();
+		Instant endTime = input.endTime();
+
 		Instant startTimeInThirtyMinutes = startTime.plusSeconds(thirtyMinutes);
 		Instant startTimeInFourHours = startTime.plusSeconds(fourHours);
 

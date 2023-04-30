@@ -6,6 +6,7 @@ query getSessionPage($sessionID: UUID!) {
 		startTime
 		endTime
 		price
+		equipmentFee
 		capacity
 		equipmentAvailable
 		capacityRemaining
@@ -14,11 +15,17 @@ query getSessionPage($sessionID: UUID!) {
 			locationID
 			name
 			plusCode
+			address
+			coordinates {
+				latitude
+				longitude
+			}
 		}
 		course {
 			courseID
 			name
 			photo
+			description
 		}
 		instructors {
 			instructorID
@@ -28,8 +35,10 @@ query getSessionPage($sessionID: UUID!) {
 				firstName
 				lastName
 				nickName
-				mobilePhoneNumber
 				gender
+				mobilePhoneNumber
+				instagramUsername
+				createdAt
 			}
 		}
 	}

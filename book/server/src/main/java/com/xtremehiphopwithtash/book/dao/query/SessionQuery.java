@@ -1,16 +1,12 @@
 package com.xtremehiphopwithtash.book.dao.query;
 
 import com.xtremehiphopwithtash.book.dao.util.SQLColumnNamesUtil;
-import com.xtremehiphopwithtash.book.dao.util.SQLTableNamesUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SessionQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(
-		SQLColumnNamesUtil.SESSION,
-		SQLTableNamesUtil.SESSION
-	);
+	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.SESSION, "session");
 
 	public final String SELECT = String.format("SELECT %s FROM session;", columnNames);
 
@@ -22,9 +18,9 @@ public class SessionQuery {
 	public final String INSERT = String.format(
 		"""
 			INSERT INTO session
-				(title, notes, price, start_time, end_time, capacity, equipment_available, course_id, location_id)
+				(title, notes, price, equipment_fee, start_time, end_time, capacity, equipment_available, course_id, location_id)
 			VALUES
-				(:title, :notes, :price, :startTime, :endTime, :capacity, :equipmentAvailable, :courseID, :locationID)
+				(:title, :notes, :price, :equipmentFee, :startTime, :endTime, :capacity, :equipmentAvailable, :courseID, :locationID)
 			RETURNING
 				%s;
 		""",
@@ -39,6 +35,7 @@ public class SessionQuery {
 				title = :title,
 				notes = :notes,
 				price = :price,
+				equipment_fee = :equipmentFee,
 				start_time = :startTime,
 				end_time = :endTime,
 				capacity = :capacity,
@@ -78,7 +75,7 @@ public class SessionQuery {
 				session
 			JOIN
 				session_instructor
-					ON session.session_id = session_instructor.course_id
+					ON session.session_id = session_instructor.session_id
 			WHERE
 				session_instructor.instructor_id = :instructorID;
 		""",
@@ -105,7 +102,25 @@ public class SessionQuery {
 				session
 			WHERE
 				start_time < :endTime AND
-				end_time > :startTime;
+				end_time > :startTime
+			ORDER BY
+				start_time ASC;
+		""",
+		columnNames
+	);
+
+	public final String SELECT_SESSIONS_IN_TIME_PERIOD_EXCLUDE_SESSION = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				session
+			WHERE
+				start_time < :endTime AND
+				end_time > :startTime AND
+				session_id != :sessionID
+			ORDER BY
+				start_time ASC;
 		""",
 		columnNames
 	);
@@ -119,7 +134,9 @@ public class SessionQuery {
 			WHERE
 				start_time < :endTime AND
 				end_time > :startTime AND
-				course_id = :courseID;
+				course_id = :courseID
+			ORDER BY
+				start_time ASC;
 		""",
 		columnNames
 	);

@@ -1,6 +1,6 @@
 import { FC, ReactNode, createElement } from "react";
 
-const iconClassName = "h-5 w-5";
+const baseIconClassName = "h-5 w-5";
 
 const Button: FC<ButtonPropTypes> = ({
 	id,
@@ -11,8 +11,10 @@ const Button: FC<ButtonPropTypes> = ({
 	rightIcon,
 	onClick,
 	className,
+	iconClassName,
 	textClassName,
 	disabled,
+	childrenNode,
 }) => (
 	<button
 		id={id}
@@ -29,15 +31,16 @@ const Button: FC<ButtonPropTypes> = ({
 			transparent
 				? "text-black bg-transparent hover:bg-gray-200"
 				: disabled
-				? "cursor-not-allowed text-gray-400 bg-gray-200"
+				? "cursor-not-allowed text-gray-500 bg-gray-200 !shadow-none"
 				: "cursor-pointer text-white bg-primary hover:bg-primary-dark"
-		} text-sm uppercase flex gap-2 ${transparent ? "" : "shadow-sm"} ${
+		} text-sm uppercase flex items-center justify-center gap-2 ${transparent ? "" : "shadow-sm"} ${
 			disabled ? "" : "hover:shadow-md"
 		} select-none transition-all items-center ${className ?? ""}`}
 	>
-		{leftIcon && leftIcon(iconClassName)}
+		{leftIcon && leftIcon(`${baseIconClassName} ${iconClassName ?? ""}`)}
 		{textClassName ? <span className={textClassName}>{text}</span> : text}
-		{rightIcon && rightIcon(iconClassName)}
+		{rightIcon && rightIcon(`${baseIconClassName} ${iconClassName ?? ""}`)}
+		{childrenNode}
 	</button>
 );
 
@@ -47,9 +50,11 @@ export interface ButtonPropTypes {
 	leftIcon?: (className: string) => ReactNode;
 	text?: string | undefined;
 	ariaLabel: string;
+	childrenNode?: ReactNode;
 	rightIcon?: (className: string) => ReactNode;
 	onClick?: () => void;
 	className?: string;
+	iconClassName?: string;
 	textClassName?: string;
 	disabled?: boolean;
 }

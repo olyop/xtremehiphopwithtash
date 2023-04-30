@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDeleteDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.InstructorRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.InstructorQuery;
 import com.xtremehiphopwithtash.book.model.Instructor;
@@ -12,16 +14,19 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class InstructorDAO implements EntityDAO<Instructor, UUID> {
+public class InstructorDAO
+	implements
+		EntityBaseDAO<Instructor, UUID>, EntityUpdateDAO<Instructor, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final InstructorQuery query;
 	private final InstructorRowMapper rowMapper;
 
 	public InstructorDAO(
-			NamedParameterJdbcTemplate jdbcTemplate,
-			InstructorQuery query,
-			InstructorRowMapper rowMapper) {
+		NamedParameterJdbcTemplate jdbcTemplate,
+		InstructorQuery query,
+		InstructorRowMapper rowMapper
+	) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;

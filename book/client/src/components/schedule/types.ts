@@ -5,14 +5,7 @@ export interface Day {
 	isInPast: boolean;
 	isToday: boolean;
 	label: string;
-	dayNameShort: string;
-	dayNameLong: string;
 	sessions: Session[] | null;
-}
-
-export interface Schedule {
-	startingTime: number;
-	days: Day[];
 }
 
 export type OnDayClick = (unixTime: number) => () => void;

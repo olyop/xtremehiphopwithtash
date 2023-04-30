@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDeleteDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.DetailsRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.DetailsQuery;
 import com.xtremehiphopwithtash.book.model.Details;
@@ -12,7 +14,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DetailsDAO implements EntityDAO<Details, UUID> {
+public class DetailsDAO
+	implements EntityBaseDAO<Details, UUID>, EntityUpdateDAO<Details, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final DetailsQuery query;
@@ -38,6 +41,7 @@ public class DetailsDAO implements EntityDAO<Details, UUID> {
 		paramSource.addValue("nickName", value.getNickName());
 		paramSource.addValue("gender", value.getGender());
 		paramSource.addValue("mobilePhoneNumber", value.getMobilePhoneNumber());
+		paramSource.addValue("instagramUsername", value.getInstagramUsername());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -86,6 +90,7 @@ public class DetailsDAO implements EntityDAO<Details, UUID> {
 		paramSource.addValue("nickName", value.getNickName());
 		paramSource.addValue("gender", value.getGender());
 		paramSource.addValue("mobilePhoneNumber", value.getMobilePhoneNumber());
+		paramSource.addValue("instagramUsername", value.getInstagramUsername());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}

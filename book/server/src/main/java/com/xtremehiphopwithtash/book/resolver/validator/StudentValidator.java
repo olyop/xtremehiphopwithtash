@@ -26,4 +26,10 @@ public class StudentValidator implements Validator<String, DetailsInput> {
 	public void validateInput(DetailsInput input) {
 		detailsValidator.validateInput(input);
 	}
+
+	public void validateIDDoesNotExist(String studentID) {
+		if (studentDAO.existsByID(studentID)) {
+			throw new ResolverException("Student already exists");
+		}
+	}
 }

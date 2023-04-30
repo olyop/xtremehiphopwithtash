@@ -3,11 +3,16 @@ import { FC, ReactNode, createElement } from "react";
 
 import Button from "../button";
 
-const Chip: FC<PropTypes> = ({ chip: { icon, photo, text, onRemove }, className }) => (
+const Chip: FC<PropTypes> = ({ chip: { icon, photo, text, onRemove }, onClick, className }) => (
 	<div
+		onClick={onClick}
+		role={onClick ? "button" : undefined}
+		onKeyDown={onClick ? () => {} : undefined}
 		className={`flex items-center justify-center gap-1.5 h-8 rounded-2xl text-gray-700 p-1 ${
 			photo ? "" : "pl-2"
-		} ${onRemove ? "pr-1" : "pr-3"} border ${className || ""}`}
+		} ${onRemove ? "pr-1" : "pr-3"} border ${className || ""} ${
+			onClick ? "cursor-pointer transition-colors hover:bg-gray-200" : ""
+		}`}
 	>
 		{icon && icon("h-6 w-6 rounded-2xl select-none")}
 		{photo && <img src={photo} alt={text} className="h-6 w-6 rounded-2xl select-none" />}
@@ -34,6 +39,7 @@ export interface ChipInput {
 
 interface PropTypes {
 	chip: ChipInput;
+	onClick?: () => void;
 	className?: string;
 }
 

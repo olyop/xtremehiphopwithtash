@@ -3,5 +3,10 @@ mutation updateLocation($locationID: UUID!, $input: LocationInput!) {
 		locationID
 		name
 		plusCode
+		address
+		coordinates {
+			latitude
+			longitude
+		}
 	}
 }

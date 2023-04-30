@@ -1,0 +1,63 @@
+query getAccountPage($studentID: String!) {
+	getStudentByID(studentID: $studentID) {
+		studentID
+		createdAt
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			gender
+			mobilePhoneNumber
+			instagramUsername
+		}
+		bookings {
+			bookingID
+			notes
+			isBringingOwnEquipment
+			createdAt
+			session {
+				sessionID
+				title
+				startTime
+				endTime
+				course {
+					courseID
+					name
+				}
+				location {
+					locationID
+					name
+					coordinates {
+						latitude
+						longitude
+					}
+				}
+				instructors {
+					instructorID
+					details {
+						detailsID
+						firstName
+						lastName
+						nickName
+						gender
+						mobilePhoneNumber
+						instagramUsername
+					}
+				}
+			}
+			student {
+				studentID
+				details {
+					detailsID
+					firstName
+					lastName
+					nickName
+					gender
+					mobilePhoneNumber
+					instagramUsername
+				}
+			}
+		}
+	}
+}

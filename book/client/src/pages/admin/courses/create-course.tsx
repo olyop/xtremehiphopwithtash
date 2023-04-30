@@ -1,14 +1,15 @@
 import { useMutation } from "@apollo/client";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
+import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
-import CourseInput from "../../../components/entity-inputs/course-input";
 import FormError from "../../../components/form-error";
+import CourseForm from "../../../components/forms/course-form";
 import Modal from "../../../components/modal";
 import {
-	CourseInput as CourseInputType,
-	Mutation,
+	CourseInput,
+	CreateCourseMutation,
 	MutationCreateCourseArgs,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
@@ -17,7 +18,7 @@ import GET_LOCATIONS from "./get-courses.graphql";
 import { initialInput } from "./initial-input";
 
 const AddCourse: FC = () => {
-	const [input, setInput] = useState<CourseInputType>(initialInput);
+	const [input, setInput] = useState<CourseInput>(initialInput);
 
 	const [createCourse, { data, loading, error }] = useMutation<Data, Vars>(CREATE_LOCATION);
 
@@ -31,6 +32,7 @@ const AddCourse: FC = () => {
 						description: input.description,
 						photo: input.photo,
 						defaultPrice: input.defaultPrice === 0 ? null : input.defaultPrice,
+						defaultEquipmentFee: input.defaultEquipmentFee === 0 ? null : input.defaultEquipmentFee,
 						defaultDuration: input.defaultDuration,
 						defaultCapacity: input.defaultCapacity,
 						defaultEquipmentAvailable: input.defaultEquipmentAvailable,
@@ -70,25 +72,35 @@ const AddCourse: FC = () => {
 				contentClassName="flex flex-col gap-4"
 				children={
 					<Fragment>
-						<CourseInput input={input} onChange={setInput} />
+						<CourseForm input={input} onChange={setInput} />
 						<FormError error={error} />
 					</Fragment>
 				}
 				buttons={
-					<Button
-						onClick={handleSubmit}
-						className="self-start"
-						leftIcon={className => <PlusIcon className={className} />}
-						text={loading ? "Adding course..." : "Add course"}
-						ariaLabel={loading ? "Adding course now" : "Click to add course"}
-					/>
+					<Fragment>
+						<Button
+							onClick={handleSubmit}
+							className="self-start"
+							leftIcon={className => <PlusIcon className={className} />}
+							text={loading ? "Adding course..." : "Add course"}
+							ariaLabel={loading ? "Adding course now" : "Click to add course"}
+						/>
+						<Button
+							transparent
+							text="Close"
+							ariaLabel="Close Add Course"
+							onClick={closeModal}
+							disabled={loading}
+							leftIcon={className => <XMarkIcon className={className} />}
+						/>
+					</Fragment>
 				}
 			/>
 		</Fragment>
 	);
 };
 
-type Data = Pick<Mutation, "createCourse">;
+type Data = CreateCourseMutation;
 type Vars = MutationCreateCourseArgs;
 
 export default AddCourse;

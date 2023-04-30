@@ -1,6 +1,8 @@
 package com.xtremehiphopwithtash.book.dao;
 
-import com.xtremehiphopwithtash.book.dao.inter.EntityDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityDeleteDAO;
+import com.xtremehiphopwithtash.book.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.dao.mapper.CourseRowMapper;
 import com.xtremehiphopwithtash.book.dao.query.CourseQuery;
 import com.xtremehiphopwithtash.book.model.Course;
@@ -12,7 +14,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CourseDAO implements EntityDAO<Course, UUID> {
+public class CourseDAO
+	implements EntityBaseDAO<Course, UUID>, EntityUpdateDAO<Course, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final CourseQuery query;
@@ -37,6 +40,7 @@ public class CourseDAO implements EntityDAO<Course, UUID> {
 		paramSource.addValue("description", course.getDescription());
 		paramSource.addValue("photo", course.getPhoto().toString());
 		paramSource.addValue("defaultPrice", course.getDefaultPrice());
+		paramSource.addValue("defaultEquipmentFee", course.getDefaultEquipmentFee());
 		paramSource.addValue("defaultDuration", course.getDefaultDuration());
 		paramSource.addValue("defaultCapacity", course.getDefaultCapacity());
 		paramSource.addValue("defaultEquipmentAvailable", course.getDefaultEquipmentAvailable());
@@ -96,6 +100,7 @@ public class CourseDAO implements EntityDAO<Course, UUID> {
 		paramSource.addValue("description", course.getDescription());
 		paramSource.addValue("photo", course.getPhoto().toString());
 		paramSource.addValue("defaultPrice", course.getDefaultPrice());
+		paramSource.addValue("defaultEquipmentFee", course.getDefaultEquipmentFee());
 		paramSource.addValue("defaultDuration", course.getDefaultDuration());
 		paramSource.addValue("defaultCapacity", course.getDefaultCapacity());
 		paramSource.addValue("defaultEquipmentAvailable", course.getDefaultEquipmentAvailable());

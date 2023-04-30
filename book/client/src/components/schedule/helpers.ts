@@ -8,15 +8,6 @@ import {
 import { Breakpoint } from "../../hooks";
 import GET_SESSIONS_IN_PERIOD from "./get-sessions-in-period.graphql";
 
-export const timeFormatter = new Intl.DateTimeFormat(undefined, {
-	hour: "numeric",
-	minute: "numeric",
-	hourCycle: "h12",
-});
-
-export const isBeforeMidday = (date: Date): boolean => date.getHours() < 12;
-export const isAfterMidday = (date: Date): boolean => date.getHours() >= 12;
-
 export const isToday = (date: Date): boolean => {
 	const today = new Date();
 	return (
@@ -99,6 +90,12 @@ export const addSixDays = (date: Date): Date => {
 	return newDate;
 };
 
+export const addOneDay = (date: Date): Date => {
+	const newDate = new Date(date);
+	newDate.setDate(newDate.getDate() + 1);
+	return newDate;
+};
+
 export const isInPast = (date: Date): boolean => {
 	const now = new Date();
 	return date.getTime() < now.getTime();
@@ -130,15 +127,15 @@ export const determineIncrementAction = (breakpoint: Breakpoint) => {
 
 export const getSessions =
 	(apollo: ApolloClient<unknown>) =>
-	async (startTime: Date, endTime: Date): Promise<Session[]> => {
+	async (startDate: Date, endDate: Date): Promise<Session[]> => {
 		const { data } = await apollo.query<GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs>({
 			query: GET_SESSIONS_IN_PERIOD,
 			fetchPolicy: "network-only",
 			variables: {
 				input: {
 					courseID: null,
-					startTime: Math.floor(startTime.getTime() / 1000),
-					endTime: Math.floor(endTime.getTime() / 1000),
+					startTime: Math.floor(startDate.getTime() / 1000),
+					endTime: Math.floor(endDate.getTime() / 1000),
 				},
 			},
 		});

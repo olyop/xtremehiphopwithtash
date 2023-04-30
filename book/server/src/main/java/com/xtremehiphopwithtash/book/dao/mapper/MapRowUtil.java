@@ -12,7 +12,11 @@ import org.springframework.stereotype.Component;
 class MapRowUtil {
 
 	public static final UUID mapToUUID(String value) {
-		return UUID.fromString(value);
+		if (value == null) {
+			return null;
+		} else {
+			return UUID.fromString(value);
+		}
 	}
 
 	public static final URL mapToURL(String value) throws SQLException {
@@ -25,14 +29,18 @@ class MapRowUtil {
 	}
 
 	public static final Instant mapToInstant(Integer value) {
-		return Instant.ofEpochSecond(value);
+		if (value == 0) {
+			return null;
+		} else {
+			return Instant.ofEpochSecond(value);
+		}
 	}
 
 	public static final LikertScale mapToLikertScale(Integer value) {
 		return new LikertScale(value);
 	}
 
-	public static final Short mapToPrice(Short value) {
+	public static final Short mapToShort(Short value) {
 		return value == 0 ? null : value;
 	}
 }

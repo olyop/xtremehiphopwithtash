@@ -1,16 +1,17 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { FC, createElement } from "react";
 
-import { OnEditAndUpdate } from "../../../components/entity";
 import {
+	DeleteInstructorMutation,
 	GetInstructorsQuery,
 	InstructorInput,
 	Instructor as InstructorType,
-	Mutation,
 	MutationDeleteInstructorByIdArgs,
 	MutationUpdateInstructorByIdArgs,
+	UpdateInstructorMutation,
 } from "../../../generated-types";
 import { ArrayElement } from "../../../utils";
+import { OnEditAndUpdate } from "../entity";
 import Section from "../section";
 import CreateInstructor from "./create-instructor";
 import DELETE_INSTRUCTOR from "./delete-instructor.graphql";
@@ -32,16 +33,7 @@ const Instructors: FC = () => {
 				refetchQueries: [{ query: GET_INSTRUCTORS }],
 				variables: {
 					instructorID,
-					input: {
-						photo: input.photo,
-						details: {
-							firstName: input.details.firstName,
-							lastName: input.details.lastName,
-							nickName: input.details.nickName === "" ? null : input.details.nickName,
-							gender: input.details.gender,
-							mobilePhoneNumber: input.details.mobilePhoneNumber,
-						},
-					},
+					input,
 				},
 			});
 
@@ -84,8 +76,8 @@ const Instructors: FC = () => {
 	);
 };
 
-type UpdateData = Pick<Mutation, "updateInstructorByID">;
-type DeleteData = Pick<Mutation, "deleteInstructorByID">;
+type UpdateData = UpdateInstructorMutation;
+type DeleteData = DeleteInstructorMutation;
 type UpdateVars = MutationUpdateInstructorByIdArgs;
 type DeleteVars = MutationDeleteInstructorByIdArgs;
 

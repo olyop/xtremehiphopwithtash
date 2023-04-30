@@ -1,11 +1,17 @@
+atcb
+daddr
+dirflg
 Embeddable
 fkey
 graphqls
+grecaptcha
 inmemory
 Likert
 Nord
 Querydsl
+saddr
 Tash
 unnest
+VITE
 Xtreme
 xtremehiphopwithtash

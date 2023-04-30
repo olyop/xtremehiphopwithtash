@@ -10,13 +10,24 @@ import org.springframework.stereotype.Component;
 @Component
 class CommonValidator {
 
-	public void validateStringLength(Optional<String> string, String label, int maxLength) {
-		if (string.isPresent()) {
-			validateStringLength(string.get(), label, maxLength);
+	public void validateText(Optional<String> text, String label, int maxLength) {
+		if (text.isPresent()) {
+			validateText(text.get(), label, maxLength);
 		}
 	}
 
-	public void validateStringLength(String string, String label, int maxLength) {
+	public void validateText(String text, String label, int maxLength) {
+		validateTextIsNotEmpty(text, label);
+		validateTextLength(text, label, maxLength);
+	}
+
+	private void validateTextIsNotEmpty(String text, String label) {
+		if (text.isEmpty() || text.isBlank()) {
+			throw new ResolverException(String.format("%s cannot be empty", label));
+		}
+	}
+
+	private void validateTextLength(String string, String label, int maxLength) {
 		if (string.length() > maxLength) {
 			throw new ResolverException(
 				String.format("%s length cannot be greater than %d", label, maxLength)
@@ -24,21 +35,33 @@ class CommonValidator {
 		}
 	}
 
-	public void validateURL(URL url) {
+	public void validateURL(URL url, String label) {
 		if (!url.getProtocol().equalsIgnoreCase("https")) {
-			throw new ResolverException("Invalid URL - protocol must be HTTPS");
+			throw new ResolverException(String.format("%s must use https", label));
 		}
 
 		try (Socket socket = new Socket()) {
 			socket.connect(new InetSocketAddress(url.getHost(), 443), 500);
 		} catch (IOException e) {
-			throw new ResolverException(String.format("Invalid URL - %s", e.getMessage()));
+			throw new ResolverException(String.format("%s is not reachable", label));
 		}
 	}
 
-	public void validatePrice(Optional<Short> price) {
-		if (price.isPresent() && price.get() > 100) {
-			throw new ResolverException("Price cannot be greater than $100");
+	public void validatePrice(Optional<Short> price, String label) {
+		if (price.isPresent() && price.get() >= 0 && price.get() <= 50) {
+			throw new ResolverException(String.format("%s cannot be greater than A$50", label));
+		}
+	}
+
+	public void validateNonZeroInteger(Optional<Short> integer, String label) {
+		if (integer.isPresent()) {
+			validateNonZeroInteger(integer.get(), label);
+		}
+	}
+
+	public void validateNonZeroInteger(Short integer, String label) {
+		if (integer <= 0) {
+			throw new ResolverException(String.format("%s cannot be less than or equal to 0", label));
 		}
 	}
 }

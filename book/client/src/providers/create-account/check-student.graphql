@@ -1,0 +1,4 @@
+query checkStudent($studentID: String!) {
+	doesStudentExist(studentID: $studentID)
+	isStudentAdministator(studentID: $studentID)
+}

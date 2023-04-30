@@ -11,8 +11,8 @@ import {
 import { useModal } from "../../../hooks";
 import { millisecondsToSeconds } from "../../../utils";
 import Button from "../../button";
-import SessionInput from "../../entity-inputs/session-input";
 import FormError from "../../form-error";
+import SessionInput from "../../forms/session-form";
 import Modal from "../../modal";
 import { Day } from "../types";
 import CREATE_SESSION from "./create-session.graphql";
@@ -29,8 +29,6 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 			variables: {
 				input: {
 					...input,
-					notes: input.notes === "" ? null : input.notes,
-					price: input.price === 0 ? null : input.price,
 					startTime: millisecondsToSeconds(input.startTime),
 					endTime: millisecondsToSeconds(input.endTime),
 				},
@@ -70,7 +68,7 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 			/>
 			<Modal
 				title="Create Session"
-				subTitle={`${day.dayNameLong} - ${day.label}`}
+				subTitle={day.label}
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
 				onClose={handleCloseModal}

@@ -1,16 +1,12 @@
 package com.xtremehiphopwithtash.book.dao.query;
 
 import com.xtremehiphopwithtash.book.dao.util.SQLColumnNamesUtil;
-import com.xtremehiphopwithtash.book.dao.util.SQLTableNamesUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StudentQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(
-		SQLColumnNamesUtil.STUDENT,
-		SQLTableNamesUtil.STUDENT
-	);
+	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.STUDENT, "student");
 
 	public final String SELECT = String.format("SELECT %s FROM student;", columnNames);
 
@@ -20,7 +16,7 @@ public class StudentQuery {
 	);
 
 	public final String INSERT = String.format(
-		"INSERT INTO student (details_id) VALUES (:detailsID) RETURNING %s;",
+		"INSERT INTO student (student_id, details_id) VALUES (:studentID, :detailsID) RETURNING %s;",
 		columnNames
 	);
 

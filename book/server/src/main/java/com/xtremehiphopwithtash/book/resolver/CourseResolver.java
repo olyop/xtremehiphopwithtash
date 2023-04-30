@@ -9,9 +9,8 @@ import com.xtremehiphopwithtash.book.model.CourseDefaultInstructor;
 import com.xtremehiphopwithtash.book.model.Instructor;
 import com.xtremehiphopwithtash.book.model.Location;
 import com.xtremehiphopwithtash.book.resolver.input.CourseInput;
-import com.xtremehiphopwithtash.book.resolver.transformer.CommonTransformer;
+import com.xtremehiphopwithtash.book.resolver.mapper.CourseInputMapper;
 import com.xtremehiphopwithtash.book.resolver.validator.CourseValidator;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class CourseResolver {
 
+	private final CourseInputMapper courseInputMapper;
 	private final CourseDAO courseDAO;
 	private final CourseDefaultInstructorDAO courseDefaultInstructorDAO;
 	private final LocationDAO locationDAO;
@@ -31,16 +31,18 @@ public class CourseResolver {
 	private final CourseValidator courseValidator;
 
 	public CourseResolver(
+		CourseInputMapper courseInputMapper,
 		CourseDAO courseDAO,
-		CourseDefaultInstructorDAO courseDefaultInstructorDAO,
 		LocationDAO locationDAO,
 		InstructorDAO instructorDAO,
+		CourseDefaultInstructorDAO courseDefaultInstructorDAO,
 		CourseValidator courseValidator
 	) {
+		this.courseInputMapper = courseInputMapper;
 		this.courseDAO = courseDAO;
-		this.courseDefaultInstructorDAO = courseDefaultInstructorDAO;
 		this.locationDAO = locationDAO;
 		this.instructorDAO = instructorDAO;
+		this.courseDefaultInstructorDAO = courseDefaultInstructorDAO;
 		this.courseValidator = courseValidator;
 	}
 
@@ -66,72 +68,33 @@ public class CourseResolver {
 
 	@MutationMapping
 	public Course createCourse(@Argument CourseInput input) {
-		String name = CommonTransformer.transformName(input.getName());
-		String description = input.getDescription();
-		URL photo = input.getPhoto();
-		Optional<Short> defaultPrice = input.getDefaultPrice();
-		Short defaultDuration = input.getDefaultDuration();
-		Short defaultCapacity = input.getDefaultCapacity();
-		Short defaultEquipmentAvailable = input.getDefaultEquipmentAvailable();
-		UUID defaultLocationID = input.getDefaultLocationID();
-		List<UUID> defaultInstructorIDs = input.getDefaultInstructorIDs();
+		courseValidator.validateCreate(input);
 
-		courseValidator.validateInput(input);
-		courseValidator.validateCourseName(name);
+		Course course = courseInputMapper.map(input);
 
-		Course course = new Course();
-		course.setName(name);
-		course.setDescription(description);
-		course.setPhoto(photo);
-		course.setDefaultPrice(defaultPrice.orElse(null));
-		course.setDefaultDuration(defaultDuration);
-		course.setDefaultCapacity(defaultCapacity);
-		course.setDefaultEquipmentAvailable(defaultEquipmentAvailable);
-		course.setDefaultLocationID(defaultLocationID);
+		Course createdCourse = courseDAO.insert(course);
 
-		Course courseSaved = courseDAO.insert(course);
+		handleDefaultInstructors(input.defaultInstructorIDs(), createdCourse.getCourseID());
 
-		handleDefaultInstructors(defaultInstructorIDs, courseSaved.getCourseID());
-
-		return courseSaved;
+		return createdCourse;
 	}
 
 	@MutationMapping
 	public Course updateCourseByID(@Argument UUID courseID, @Argument CourseInput input) {
-		String name = CommonTransformer.transformName(input.getName());
-		String description = input.getDescription();
-		URL photo = input.getPhoto();
-		Optional<Short> defaultPrice = input.getDefaultPrice();
-		Short defaultDuration = input.getDefaultDuration();
-		Short defaultCapacity = input.getDefaultCapacity();
-		Short defaultEquipmentAvailable = input.getDefaultEquipmentAvailable();
-		UUID defaultLocationID = input.getDefaultLocationID();
-		List<UUID> defaultInstructorIDs = input.getDefaultInstructorIDs();
+		courseValidator.validateUpdate(courseID, input);
 
-		courseValidator.validateID(courseID);
-		courseValidator.validateInput(input);
+		Course course = courseInputMapper.map(input);
 
-		Course course = new Course();
-		course.setName(name);
-		course.setDescription(description);
-		course.setPhoto(photo);
-		course.setDefaultPrice(defaultPrice.orElse(null));
-		course.setDefaultDuration(defaultDuration);
-		course.setDefaultCapacity(defaultCapacity);
-		course.setDefaultEquipmentAvailable(defaultEquipmentAvailable);
-		course.setDefaultLocationID(defaultLocationID);
+		Course updateCourse = courseDAO.updateByID(courseID, course);
 
-		Course courseUpdated = courseDAO.updateByID(courseID, course);
+		handleDefaultInstructors(input.defaultInstructorIDs(), courseID);
 
-		handleDefaultInstructors(defaultInstructorIDs, courseID);
-
-		return courseUpdated;
+		return updateCourse;
 	}
 
 	@MutationMapping
 	public UUID deleteCourseByID(@Argument UUID courseID) {
-		courseValidator.validateID(courseID);
-		courseValidator.canDelete(courseID);
+		courseValidator.validateDelete(courseID);
 
 		courseDefaultInstructorDAO.deleteByCourseID(courseID);
 		courseDAO.deleteByID(courseID);
@@ -143,8 +106,10 @@ public class CourseResolver {
 		courseDefaultInstructorDAO.deleteByCourseID(courseID);
 
 		Short index = 0;
+
 		for (UUID instructorID : defaultInstructorsIDs) {
 			CourseDefaultInstructor courseDefaultInstructor = new CourseDefaultInstructor();
+
 			courseDefaultInstructor.setCourseID(courseID);
 			courseDefaultInstructor.setIndex(index++);
 			courseDefaultInstructor.setInstructorID(instructorID);
