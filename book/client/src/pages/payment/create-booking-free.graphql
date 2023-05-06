@@ -1,5 +1,5 @@
-mutation createBookingFree($input: BookingInput!) {
-	createBookingFree(input: $input) {
+mutation createBookingFree($input: BookingInput!, $studentID: String!) {
+	createBookingFree(input: $input, studentID: $studentID) {
 		bookingID
 	}
 }

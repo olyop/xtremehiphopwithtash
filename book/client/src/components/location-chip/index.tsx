@@ -1,3 +1,4 @@
+import ArrowTopRightOnSquareIcon from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
 import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
 import MapIcon from "@heroicons/react/24/solid/MapIcon";
 import MapPinIcon from "@heroicons/react/24/solid/MapPinIcon";
@@ -16,7 +17,7 @@ import { createGoogleMapsDirectionsURL, createOpenInGoogleMapsURL, getLocation }
 const LocationChip: FC<PropTypes> = ({ location }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 	const [directionsLoading, setDirectionsLoading] = useState(false);
-	const [directionsButtonLabel, setDirectionsButtonLabel] = useState("Get Directions");
+	const [directionsButtonLabel, setDirectionsButtonLabel] = useState("Directions");
 
 	const lat = location.coordinates.latitude;
 	const lng = location.coordinates.longitude;
@@ -62,6 +63,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 				}}
 			/>
 			<Modal
+				isLarge
 				isOpen={isOpen}
 				icon={iconClassName => <MapPinIcon className={iconClassName} />}
 				title={location.name}
@@ -71,7 +73,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 					<Fragment>
 						<div className="flex flex-col items-start gap-1.5">
 							<div className="flex gap-1 items-center">
-								<p>
+								<p className="whitespace-nowrap">
 									Plus Code: <span className="text-gray-500">{location.plusCode}</span>
 								</p>
 								<CopyButton
@@ -84,7 +86,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 							<Chip
 								chip={{
 									chipID: location.locationID,
-									text: "Tip: Paste this code into Google Maps",
+									text: "Paste this code into Maps",
 									icon: iconClassName => <InformationCircleIcon className={iconClassName} />,
 								}}
 							/>
@@ -123,24 +125,25 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 									</Map>
 								</GoogleMaps>
 							</div>
-							<div className="flex gap-2">
-								<Button
-									text="Open"
-									leftIcon={iconClassName => <MapIcon className={iconClassName} />}
-									ariaLabel="Open In Google Maps"
-									onClick={handleOpenInGoogleMaps}
-								/>
-								<Button
-									text={directionsButtonLabel}
-									leftIcon={iconClassName => <MapIcon className={iconClassName} />}
-									ariaLabel={directionsButtonLabel}
-									onClick={handleGetDirections}
-								/>
-							</div>
 						</div>
 					</Fragment>
 				}
-				isLarge
+				buttons={
+					<Fragment>
+						<Button
+							text="Open"
+							leftIcon={iconClassName => <MapIcon className={iconClassName} />}
+							ariaLabel="Open In Google Maps"
+							onClick={handleOpenInGoogleMaps}
+						/>
+						<Button
+							text={directionsButtonLabel}
+							leftIcon={iconClassName => <ArrowTopRightOnSquareIcon className={iconClassName} />}
+							ariaLabel={directionsButtonLabel}
+							onClick={handleGetDirections}
+						/>
+					</Fragment>
+				}
 			/>
 		</Fragment>
 	);

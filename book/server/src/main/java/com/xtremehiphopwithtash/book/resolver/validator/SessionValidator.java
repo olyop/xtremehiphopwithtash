@@ -8,12 +8,11 @@ import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SessionValidator implements Validator<UUID, SessionInput> {
+public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 
 	private final SessionDAO sessionDAO;
 	private final BookingDAO bookingDAO;
@@ -44,7 +43,7 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 	@Override
 	public void validateCreate(SessionInput input) {
 		validateInput(input);
-		validateIsNotInPast(input);
+		validateIsNotInPast(input.startTime());
 		validateSessionInPeriod(input);
 	}
 
@@ -53,6 +52,7 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 		validateID(sessionID);
 		validateSessionInPeriodExcludeSession(sessionID, input);
 		validateInput(input);
+		validateCapacityIsNotLessThanBookings(sessionID, input);
 	}
 
 	@Override
@@ -109,23 +109,19 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 	}
 
 	public void validateGetSessionsInput(GetSessionsInput input) {
-		Optional<UUID> courseID = input.getCourseID();
-		Instant startTime = input.getStartTime();
-		Instant endTime = input.getEndTime();
-
-		if (courseID.isPresent()) {
-			courseValidator.validateID(courseID.get());
+		if (input.courseID().isPresent()) {
+			courseValidator.validateID(input.courseID().get());
 		}
 
-		if (startTime.isAfter(endTime)) {
+		if (input.startTime().isAfter(input.endTime())) {
 			throw new ResolverException("Start time must be before end time");
 		}
 	}
 
-	public void validateIsNotInPast(SessionInput input) {
+	public void validateIsNotInPast(Instant startTime) {
 		Instant now = Instant.now();
 
-		if (input.startTime().isBefore(now)) {
+		if (startTime.isBefore(now)) {
 			throw new ResolverException("Session cannot start in the past");
 		}
 	}
@@ -135,6 +131,14 @@ public class SessionValidator implements Validator<UUID, SessionInput> {
 			if (input.equipmentAvailable().get() > input.capacity()) {
 				throw new ResolverException("Cannot add more equipment than capacity");
 			}
+		}
+	}
+
+	private void validateCapacityIsNotLessThanBookings(UUID sessionID, SessionInput input) {
+		short bookingsTotal = bookingDAO.selectCountBySessionID(sessionID);
+
+		if (input.capacity() < bookingsTotal) {
+			throw new ResolverException("Cannot reduce capacity below number of bookings");
 		}
 	}
 

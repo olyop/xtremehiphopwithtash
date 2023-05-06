@@ -1,4 +1,5 @@
 import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
+import { useAuth0 } from "@auth0/auth0-react";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import { FC, createElement, useCallback, useEffect, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -32,6 +33,7 @@ import { verifyReferralCode } from "./verify-referral-code";
 const PaymentPage: FC = () => {
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
+	const { isAuthenticated, user } = useAuth0();
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const [searchParams, setSearchParams] = useSearchParams();
 
@@ -157,20 +159,26 @@ const PaymentPage: FC = () => {
 	}
 
 	const handleCouponSubmit = () => {
-		void bookCoupon({
-			variables: {
-				input: bookingInput,
-				code: referralCode,
-			},
-		});
+		if (user?.sub) {
+			void bookCoupon({
+				variables: {
+					input: bookingInput,
+					studentID: user.sub,
+					code: referralCode,
+				},
+			});
+		}
 	};
 
 	const handleFreeSubmit = () => {
-		void bookFree({
-			variables: {
-				input: bookingInput,
-			},
-		});
+		if (user?.sub) {
+			void bookFree({
+				variables: {
+					input: bookingInput,
+					studentID: user.sub,
+				},
+			});
+		}
 	};
 
 	const calculatedPrice = isBringingOwnEquipment
@@ -180,7 +188,7 @@ const PaymentPage: FC = () => {
 	const price = calculatedPrice === 0 ? null : calculatedPrice;
 
 	const handleSubmit = () => {
-		if (sessionID && sessionResult) {
+		if (isAuthenticated && sessionID && sessionResult) {
 			if (price) {
 				if (paymentMethod === PaymentMethod.COUPON) {
 					handleCouponSubmit();

@@ -15,9 +15,7 @@ import com.xtremehiphopwithtash.book.model.SessionInstructor;
 import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
 import com.xtremehiphopwithtash.book.resolver.mapper.SessionInputMapper;
-import com.xtremehiphopwithtash.book.resolver.transform.CommonTransform;
 import com.xtremehiphopwithtash.book.resolver.validator.SessionValidator;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -89,15 +87,37 @@ public class SessionResolver {
 		return bookingDAO.selectBySessionID(session.getSessionID());
 	}
 
+	@SchemaMapping(typeName = "Session", field = "bookingsTotal")
+	public Short getBookingsTotal(Session session) {
+		short count = bookingDAO.selectCountBySessionID(session.getSessionID());
+
+		if (count == 0) {
+			return null;
+		}
+
+		return count;
+	}
+
 	@SchemaMapping(typeName = "Session", field = "capacityRemaining")
 	public Short getCapacityRemaining(Session session) {
-		Short capacityRemaning = bookingDAO.selectCapacityRemaning(session.getSessionID());
+		short capacityRemaning = bookingDAO.selectCapacityRemaning(session.getSessionID());
 
 		if (capacityRemaning == 0) {
 			return null;
 		}
 
 		return capacityRemaning;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "equipmentLeft")
+	public Short getEquipmentLeft(Session session) {
+		short equipmentLeft = sessionDAO.selectEquipmentLeftBySessionID(session.getSessionID());
+
+		if (equipmentLeft == 0) {
+			return null;
+		}
+
+		return equipmentLeft;
 	}
 
 	@MutationMapping
@@ -138,16 +158,16 @@ public class SessionResolver {
 
 	@QueryMapping
 	public List<Session> getSessionsInPeriod(@Argument GetSessionsInput input) {
-		Optional<UUID> courseID = input.getCourseID();
-		Instant startTime = input.getStartTime();
-		Instant endTime = input.getEndTime();
-
 		sessionValidator.validateGetSessionsInput(input);
 
-		if (courseID.isPresent()) {
-			return sessionDAO.selectInTimePeriodAndCourseID(startTime, endTime, courseID.get());
+		if (input.courseID().isPresent()) {
+			return sessionDAO.selectInTimePeriodAndCourseID(
+				input.startTime(),
+				input.endTime(),
+				input.courseID().get()
+			);
 		} else {
-			return sessionDAO.selectInTimePeriod(startTime, endTime);
+			return sessionDAO.selectInTimePeriod(input.startTime(), input.endTime());
 		}
 	}
 

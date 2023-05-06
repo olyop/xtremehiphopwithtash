@@ -9,6 +9,7 @@ import com.xtremehiphopwithtash.book.model.ReferralCode;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
+import com.xtremehiphopwithtash.book.resolver.mapper.BookingInputMapper;
 import com.xtremehiphopwithtash.book.resolver.validator.BookingValidator;
 import com.xtremehiphopwithtash.book.resolver.validator.ReferralCodeValidator;
 import com.xtremehiphopwithtash.book.resolver.validator.SessionValidator;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BookingResolver {
 
+	private final BookingInputMapper bookingInputMapper;
 	private final BookingDAO bookingDAO;
 	private final SessionDAO sessionDAO;
 	private final StudentDAO studentDAO;
@@ -34,6 +36,7 @@ public class BookingResolver {
 	private final ReferralCodeValidator referralCodeValidator;
 
 	public BookingResolver(
+		BookingInputMapper bookingInputMapper,
 		BookingDAO bookingDAO,
 		SessionDAO sessionDAO,
 		StudentDAO studentDAO,
@@ -42,6 +45,7 @@ public class BookingResolver {
 		SessionValidator sessionValidator,
 		ReferralCodeValidator referralCodeValidator
 	) {
+		this.bookingInputMapper = bookingInputMapper;
 		this.bookingDAO = bookingDAO;
 		this.sessionDAO = sessionDAO;
 		this.studentDAO = studentDAO;
@@ -95,78 +99,42 @@ public class BookingResolver {
 		return studentDAO.selectByID(booking.getStudentID()).get();
 	}
 
-	private final String studentID = "facebook|5800638673389425";
-
 	@MutationMapping
-	public Booking createBookingReferralCode(@Argument BookingInput input, @Argument String code) {
-		UUID sessionID = input.getSessionID();
-		Optional<String> notes = input.getNotes();
-		Boolean isBringingOwnEquipment = input.getIsBringingOwnEquipment();
+	public Booking createBookingReferralCode(
+		@Argument BookingInput input,
+		@Argument String studentID,
+		@Argument String code
+	) {
+		bookingValidator.validateCreateWithReferralCode(input, studentID, code);
 
-		sessionValidator.validateID(sessionID);
-		bookingValidator.validateInput(input);
-		bookingValidator.checkStudentHasNotBookedSession(studentID, sessionID);
-
-		referralCodeValidator.validateNotEmpty(code);
-		referralCodeValidator.validateID(code);
-		referralCodeValidator.validateCodeNotUsed(code);
-
-		Booking booking = new Booking();
-		booking.setSessionID(sessionID);
+		Booking booking = bookingInputMapper.map(input);
 		booking.setStudentID(studentID);
-		booking.setNotes(notes.orElse(null));
-		booking.setIsBringingOwnEquipment(isBringingOwnEquipment);
 
-		Booking newBooking = bookingDAO.insert(booking);
+		Booking savedBooking = bookingDAO.insert(booking);
 
 		ReferralCode referralCode = new ReferralCode();
 		referralCode.setUsedAt(Instant.now());
 
 		referralCodeDAO.updateByID(code, referralCode);
 
-		return newBooking;
+		return savedBooking;
 	}
 
 	@MutationMapping
-	public Booking createBookingFree(@Argument BookingInput input) {
-		UUID sessionID = input.getSessionID();
-		Optional<String> notes = input.getNotes();
-		Boolean isBringingOwnEquipment = input.getIsBringingOwnEquipment();
+	public Booking createBookingFree(@Argument BookingInput input, @Argument String studentID) {
+		bookingValidator.validateCreateFree(input, studentID);
 
-		sessionValidator.validateID(sessionID);
-		bookingValidator.validateInput(input);
-		bookingValidator.checkStudentHasNotBookedSession(studentID, sessionID);
-
-		Booking booking = new Booking();
-		booking.setSessionID(sessionID);
+		Booking booking = bookingInputMapper.map(input);
 		booking.setStudentID(studentID);
-		booking.setNotes(notes.orElse(null));
-		booking.setIsBringingOwnEquipment(isBringingOwnEquipment);
 
 		return bookingDAO.insert(booking);
 	}
 
 	@MutationMapping
-	Booking updateBookingByID(@Argument UUID bookingID, @Argument BookingInput input) {
-		UUID sessionID = input.getSessionID();
-		Optional<String> notes = input.getNotes();
-		Boolean isBringingOwnEquipment = input.getIsBringingOwnEquipment();
+	public Booking updateBookingByID(@Argument UUID bookingID, @Argument BookingInput input) {
+		bookingValidator.validateUpdate(bookingID, input);
 
-		bookingValidator.validateID(bookingID);
-		bookingValidator.validateInput(input);
-		sessionValidator.validateID(sessionID);
-		sessionValidator.validateIsNotInPast(
-			sessionDAO
-				.selectByID(bookingDAO.selectByID(bookingID).get().getSessionID())
-				.get()
-				.getStartTime()
-		);
-
-		Booking booking = new Booking();
-		booking.setSessionID(sessionID);
-		booking.setStudentID(studentID);
-		booking.setNotes(notes.orElse(null));
-		booking.setIsBringingOwnEquipment(isBringingOwnEquipment);
+		Booking booking = bookingInputMapper.map(input);
 
 		return bookingDAO.updateByID(bookingID, booking);
 	}

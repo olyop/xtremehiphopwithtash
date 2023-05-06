@@ -23,9 +23,13 @@ export const useBreakpoint = () => {
 		const handleResize = () => {
 			const breakpoint = determineBreakpoint();
 
-			if (breakpoint !== value) {
-				setValue(breakpoint);
-			}
+			setValue(prevState => {
+				if (prevState === breakpoint) {
+					return breakpoint;
+				} else {
+					return breakpoint;
+				}
+			});
 		};
 
 		// Add event listener

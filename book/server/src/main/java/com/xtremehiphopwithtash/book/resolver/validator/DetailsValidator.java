@@ -17,6 +17,7 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 		this.commonValidator = commonValidator;
 	}
 
+	@Override
 	public void validateID(UUID detailsID) {
 		if (!detailsDAO.existsByID(detailsID)) {
 			throw new ResolverException("Details does not exist");
@@ -24,56 +25,25 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 	}
 
 	public void validateInput(DetailsInput input) {
-		String firstName = input.getFirstName();
-		String lastName = input.getLastName();
-		Optional<String> nickName = input.getNickName();
-		Optional<String> gender = input.getGender();
-		String mobilePhoneNumber = input.getMobilePhoneNumber();
-
-		validateLength(firstName, lastName, nickName);
-		validateNotEmpty(firstName, lastName, nickName, mobilePhoneNumber);
-		validateGender(gender);
-		validateMobilePhoneNumber(mobilePhoneNumber);
+		commonValidator.validateText(input.firstName(), "First Name", 255);
+		commonValidator.validateText(input.lastName(), "Last Name", 255);
+		commonValidator.validateText(input.nickName(), "Nick Name", 255);
+		commonValidator.validateText(input.instagramUsername(), "Instagram Username", 255);
+		validateGender(input);
+		validateMobilePhoneNumber(input);
 	}
 
-	private void validateLength(String firstName, String lastName, Optional<String> nickName) {
-		commonValidator.validateTextLength(lastName, "First Name", 255);
-		commonValidator.validateTextLength(lastName, "Last Name", 255);
-		nickName.ifPresent(nickNameValue ->
-			commonValidator.validateTextLength(nickNameValue, "Nick Name", 255)
-		);
-	}
-
-	private void validateNotEmpty(
-		String firstName,
-		String lastName,
-		Optional<String> nickName,
-		String mobilePhoneNumber
-	) {
-		if (firstName.isEmpty()) {
-			throw new ResolverException("First name cannot be empty");
-		}
-
-		if (lastName.isEmpty()) {
-			throw new ResolverException("Last name cannot be empty");
-		}
-
-		if (nickName.isPresent() && nickName.get().isEmpty()) {
-			throw new ResolverException("Nick name cannot be empty");
-		}
-
-		if (mobilePhoneNumber.isEmpty()) {
-			throw new ResolverException("Mobile phone number cannot be empty");
+	private void validateGender(DetailsInput input) {
+		if (input.gender().isPresent()) {
+			if (!detailsDAO.selectGenders().contains(input.gender().get())) {
+				throw new ResolverException("Gender does not exist");
+			}
 		}
 	}
 
-	private void validateGender(Optional<String> gender) {
-		if (gender.isPresent() && !detailsDAO.selectGenders().contains(gender.get())) {
-			throw new ResolverException("Gender does not exist");
-		}
-	}
+	private void validateMobilePhoneNumber(DetailsInput input) {
+		String mobilePhoneNumber = input.mobilePhoneNumber();
 
-	private void validateMobilePhoneNumber(String mobilePhoneNumber) {
 		if (mobilePhoneNumber.length() == 10) {
 			if (!mobilePhoneNumber.startsWith("04")) {
 				throw new ResolverException("Invalid phone number - must be a mobile phone number");
@@ -101,11 +71,11 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 	}
 
 	public void validateNameIsUnique(DetailsInput input) {
-		String firstName = input.getFirstName();
-		String lastName = input.getLastName();
-		Optional<String> nickName = input.getNickName();
+		String firstName = input.firstName();
+		String lastName = input.lastName();
+		Optional<String> nickName = input.nickName();
 
-		if (nickName.isPresent()) {
+		if (input.nickName().isPresent()) {
 			if (detailsDAO.existsByFirstLastNickName(firstName, lastName, nickName.get())) {
 				throw new ResolverException("Details already exists");
 			}

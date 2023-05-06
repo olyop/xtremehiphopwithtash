@@ -38,6 +38,7 @@ const SessionBookings: FC<PropTypes> = ({ session }) => {
 								<SessionPageBooking
 									session={session}
 									hideAddToCalendar
+									hideEquipmentFee
 									booking={booking as Booking}
 									key={booking.bookingID}
 									onBookingUpdated={handleRefetch}

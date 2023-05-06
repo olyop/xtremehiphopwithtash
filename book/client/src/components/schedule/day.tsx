@@ -10,7 +10,7 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 	return (
 		<div
 			data-unix={day.unix}
-			className={`bg-white p-1 overflow-x-auto transition-colors grid grid-rows-[1.25rem,_1fr] gap-0.5 ${
+			className={`bg-white p-1 overflow-y-auto overflow-x-hidden transition-colors grid grid-rows-[1.25rem,_1fr] grid-cols-[calc((100vw_/_2)_-_0.5rem)] md:grid-cols-1 gap-0.5 ${
 				day.isToday ? "!bg-gray-200" : day.isInPast ? "opacity-60" : ""
 			}`}
 		>

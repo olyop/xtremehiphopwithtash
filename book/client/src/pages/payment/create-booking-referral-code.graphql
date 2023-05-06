@@ -1,5 +1,5 @@
-mutation createBookingReferralCode($input: BookingInput!, $code: String!) {
-	createBookingReferralCode(input: $input, code: $code) {
+mutation createBookingReferralCode($input: BookingInput!, $studentID: String!, $code: String!) {
+	createBookingReferralCode(input: $input, studentID: $studentID, code: $code) {
 		bookingID
 	}
 }

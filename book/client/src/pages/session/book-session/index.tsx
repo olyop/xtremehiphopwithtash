@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import ChevronDoubleRightIcon from "@heroicons/react/24/solid/ChevronDoubleRightIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
-import { FC, Fragment, createElement, useState } from "react";
+import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../../../components/button";
@@ -17,6 +17,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	const navigate = useNavigate();
 	const { isAuthenticated, user, isLoading } = useAuth0();
 	const [isModalOpen, openModal, closeModal] = useModal();
+	const [showBookButtonLogIn, setShowBookButtonLogIn] = useState(false);
 
 	const [input, setInput] = useState<BookingInput>({
 		notes: "",
@@ -24,11 +25,20 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 		sessionID: session.sessionID,
 	});
 
-	const canBook = !isSessionInPast && isAuthenticated && user;
+	const isLoggedIn = isAuthenticated && user;
+
+	const areSpotsAvailable = !!session.capacityRemaining;
+
+	const canBook = !isSessionInPast && areSpotsAvailable;
 
 	const handleBookClick = () => {
-		if (canBook) {
-			openModal();
+		if (isLoggedIn) {
+			setShowBookButtonLogIn(false);
+			if (canBook) {
+				openModal();
+			}
+		} else {
+			setShowBookButtonLogIn(true);
 		}
 	};
 
@@ -50,18 +60,35 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 		}
 	};
 
+	useEffect(() => {
+		if (showBookButtonLogIn) {
+			setTimeout(() => {
+				setShowBookButtonLogIn(false);
+			}, 2000);
+		}
+	}, [showBookButtonLogIn]);
+
+	const bookButtonText = isSessionInPast
+		? "Elapsed"
+		: areSpotsAvailable
+		? showBookButtonLogIn
+			? "Please Log In"
+			: "Book Now"
+		: "Fully Booked";
+
 	return (
 		<Fragment>
 			<Button
-				onClick={handleBookClick}
 				textClassName="!text-xl"
+				text={bookButtonText}
+				onClick={handleBookClick}
+				transparent={showBookButtonLogIn}
+				ariaLabel={bookButtonText}
 				disabled={!isLoading && !canBook}
-				className="!h-14 px-6 shadow-xl hover:shadow-xl rounded-xl"
+				className={`!h-14 px-6 shadow-xl hover:shadow-xl rounded-xl ${
+					showBookButtonLogIn ? "!bg-amber-500" : ""
+				}`}
 				leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
-				text={isSessionInPast ? "Elapsed" : isLoading || canBook ? "Book Now" : "Log In to book"}
-				ariaLabel={
-					isSessionInPast ? "Elapsed" : isLoading || canBook ? "Book Now" : "Log In to book"
-				}
 			/>
 			<Modal
 				isLarge

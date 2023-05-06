@@ -4,7 +4,6 @@ import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
-import FormError from "../../../components/form-error";
 import SessionForm from "../../../components/forms/session-form";
 import Modal from "../../../components/modal";
 import {
@@ -62,6 +61,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 		<Fragment>
 			<Button
 				transparent
+				text="Edit"
 				ariaLabel="Edit session"
 				onClick={openModal}
 				leftIcon={className => <PencilIcon className={className} />}
@@ -80,12 +80,8 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 				isOpen={isModalOpen}
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
-				children={
-					<Fragment>
-						<SessionForm input={updateInput} onChange={setUpdateInput} />
-						<FormError error={error} />
-					</Fragment>
-				}
+				error={error}
+				children={<SessionForm input={updateInput} onChange={setUpdateInput} />}
 				buttons={
 					<Fragment>
 						<Button

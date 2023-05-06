@@ -5,6 +5,8 @@ import com.xtremehiphopwithtash.book.dao.InstructorDAO;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Instructor;
 import com.xtremehiphopwithtash.book.resolver.input.InstructorInput;
+import com.xtremehiphopwithtash.book.resolver.mapper.DetailsInputMapper;
+import com.xtremehiphopwithtash.book.resolver.mapper.InstructorInputMapper;
 import com.xtremehiphopwithtash.book.resolver.transform.CommonTransform;
 import com.xtremehiphopwithtash.book.resolver.validator.DetailsValidator;
 import com.xtremehiphopwithtash.book.resolver.validator.InstructorValidator;
@@ -21,21 +23,24 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class InstructorResolver {
 
+	private final InstructorInputMapper instructorInputMapper;
+	private final DetailsInputMapper detailsInputMapper;
 	private final InstructorDAO instructorDAO;
 	private final DetailsDAO detailsDAO;
 	private final InstructorValidator instructorValidator;
-	private final DetailsValidator detailsValidator;
 
 	public InstructorResolver(
+		InstructorInputMapper instructorInputMapper,
+		DetailsInputMapper detailsInputMapper,
 		InstructorDAO instructorDAO,
 		DetailsDAO detailsDAO,
-		InstructorValidator instructorValidator,
-		DetailsValidator detailsValidator
+		InstructorValidator instructorValidator
 	) {
+		this.instructorInputMapper = instructorInputMapper;
+		this.detailsInputMapper = detailsInputMapper;
 		this.instructorDAO = instructorDAO;
 		this.detailsDAO = detailsDAO;
 		this.instructorValidator = instructorValidator;
-		this.detailsValidator = detailsValidator;
 	}
 
 	@QueryMapping
@@ -55,45 +60,16 @@ public class InstructorResolver {
 
 	@MutationMapping
 	public Instructor createInstructor(@Argument InstructorInput input) {
-		URL photo = input.getPhoto();
-		String firstName = CommonTransform.transformName(input.getDetails().getFirstName());
-		String lastName = CommonTransform.transformName(input.getDetails().getLastName());
-		Optional<String> nickName = CommonTransform.transformName(input.getDetails().getNickName());
-		Optional<String> gender = input.getDetails().getGender();
-		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
-		Optional<String> instgramUsername = input.getDetails().getInstagramUsername();
+		instructorValidator.validateCreate(input);
 
-		instructorValidator.validateInput(input);
-		detailsValidator.validateNameIsUnique(input.getDetails());
-
-		Details details = new Details();
-		details.setFirstName(firstName);
-		details.setLastName(lastName);
-		details.setNickName(nickName.orElse(null));
-		details.setGender(gender.orElse(null));
-		details.setMobilePhoneNumber(mobilePhoneNumber);
-		details.setInstagramUsername(instgramUsername.orElse(null));
+		Details details = detailsInputMapper.map(input.details());
 
 		Details savedDetails = detailsDAO.insert(details);
 
-		Instructor instructor = new Instructor();
-		instructor.setPhoto(photo);
+		Instructor instructor = instructorInputMapper.map(input);
 		instructor.setDetailsID(savedDetails.getDetailsID());
 
 		return instructorDAO.insert(instructor);
-	}
-
-	@MutationMapping
-	public UUID deleteInstructorByID(@Argument UUID instructorID) {
-		instructorValidator.validateID(instructorID);
-		instructorValidator.validateCanDelete(instructorID);
-
-		Optional<Instructor> instructor = instructorDAO.selectByID(instructorID);
-
-		instructorDAO.deleteByID(instructorID);
-		detailsDAO.deleteByID(instructor.get().getDetailsID());
-
-		return instructorID;
 	}
 
 	@MutationMapping
@@ -101,32 +77,29 @@ public class InstructorResolver {
 		@Argument UUID instructorID,
 		@Argument InstructorInput input
 	) {
-		URL photo = input.getPhoto();
-		String firstName = CommonTransform.transformName(input.getDetails().getFirstName());
-		String lastName = CommonTransform.transformName(input.getDetails().getLastName());
-		Optional<String> nickName = CommonTransform.transformName(input.getDetails().getNickName());
-		Optional<String> gender = input.getDetails().getGender();
-		String mobilePhoneNumber = input.getDetails().getMobilePhoneNumber();
-		Optional<String> instgramUsername = input.getDetails().getInstagramUsername();
+		instructorValidator.validateUpdate(instructorID, input);
 
-		instructorValidator.validateID(instructorID);
-		instructorValidator.validateInput(input);
+		Instructor currentInstructor = instructorDAO.selectByID(instructorID).get();
+		currentInstructor.setPhoto(input.photo());
 
-		Instructor instructor = instructorDAO.selectByID(instructorID).get();
-		instructor.setPhoto(photo);
+		Details details = detailsInputMapper.map(input.details());
 
-		Details details = new Details();
-		details.setFirstName(firstName);
-		details.setLastName(lastName);
-		details.setNickName(nickName.orElse(null));
-		details.setGender(gender.orElse(null));
-		details.setMobilePhoneNumber(mobilePhoneNumber);
-		details.setInstagramUsername(instgramUsername.orElse(null));
+		instructorDAO.updateByID(instructorID, currentInstructor);
+		detailsDAO.updateByID(currentInstructor.getDetailsID(), details);
 
-		instructorDAO.updateByID(instructorID, instructor);
-		detailsDAO.updateByID(instructor.getDetailsID(), details);
+		return currentInstructor;
+	}
 
-		return instructor;
+	@MutationMapping
+	public UUID deleteInstructorByID(@Argument UUID instructorID) {
+		instructorValidator.validateDelete(instructorID);
+
+		Optional<Instructor> instructor = instructorDAO.selectByID(instructorID);
+
+		instructorDAO.deleteByID(instructorID);
+		detailsDAO.deleteByID(instructor.get().getDetailsID());
+
+		return instructorID;
 	}
 
 	@QueryMapping

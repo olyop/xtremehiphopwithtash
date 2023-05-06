@@ -62,7 +62,7 @@ public class BookingQuery {
 				booking
 			WHERE
 				session_id = :sessionID
-				AND is_bringing_own_equipment = TRUE;
+				AND is_bringing_own_equipment = FALSE;
 		""";
 
 	public final String SELECT_BY_SESSION_ID = String.format(
@@ -88,6 +88,22 @@ public class BookingQuery {
 		"""
 			SELECT
 				%s
+			FROM
+				booking
+			WHERE
+				student_id = :studentID
+			ORDER BY
+				created_at DESC
+			LIMIT
+				30;
+		""",
+		columnNames
+	);
+
+	public final String SELECT_COUNT_BOOKINGS_BY_STUDENT_ID = String.format(
+		"""
+			SELECT
+				count(*)
 			FROM
 				booking
 			WHERE

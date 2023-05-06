@@ -26,3 +26,12 @@ export const determineDetailsFullName = ({
 	firstName,
 	lastName,
 }: Pick<Details, "firstName" | "lastName">) => `${firstName} ${lastName}`;
+
+export const isSessionInProgress = ({
+	startTime,
+	endTime,
+}: Pick<Session, "startTime" | "endTime">) => {
+	const now = new Date();
+	const time = now.getTime();
+	return startTime <= time && time <= endTime;
+};

@@ -19,15 +19,19 @@ const Header: FC = () => {
 		navigate(-1);
 	};
 
+	const backButtonClassName = `items-center gap-1 md:gap-4 h-full rounded-none ${
+		location.pathname === "/" ? "invisible" : "visible"
+	}`;
+
 	return (
-		<header className="flex items-stretch relative justify-between pr-4 border-b h-header-height bg-white">
+		<header className="flex items-stretch relative justify-between pr-2 md:pr-4 border-b h-header-height bg-white">
 			{location.pathname === "/payment" && sessionID ? (
 				<Link to={`/session/${sessionID}`}>
 					<Button
 						transparent
 						text="Back"
+						className={backButtonClassName}
 						ariaLabel="Go back to the home page"
-						className="items-center gap-4 h-full rounded-none"
 						leftIcon={className => <ArrowSmallLeftIcon className={className} />}
 					/>
 				</Link>
@@ -36,11 +40,9 @@ const Header: FC = () => {
 					<Button
 						transparent
 						text="Back"
-						ariaLabel="Go back to the home page"
 						onClick={handleBack}
-						className={`${
-							location.pathname === "/" ? "invisible" : "visible"
-						} items-center gap-4 h-full rounded-none`}
+						className={backButtonClassName}
+						ariaLabel="Go back to the home page"
 						leftIcon={className => <ArrowSmallLeftIcon className={className} />}
 					/>
 					<Link

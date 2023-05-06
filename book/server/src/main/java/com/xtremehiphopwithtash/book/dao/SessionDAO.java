@@ -167,4 +167,12 @@ public class SessionDAO
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
+
+	public short selectEquipmentLeftBySessionID(UUID sessionID) {
+		String sql = query.SELECT_EQUIPMENT_LEFT_BY_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+	}
 }

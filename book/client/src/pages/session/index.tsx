@@ -1,5 +1,4 @@
 import { useLazyQuery } from "@apollo/client";
-import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
 import { FC, Fragment, createElement, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -17,15 +16,19 @@ import {
 	Session,
 } from "../../generated-types";
 import { determineSessionDateLabel } from "../../helpers";
+import { Breakpoint, useBreakpoint } from "../../hooks";
 import BookingForm from "./book-session";
 import SessionBookings from "./bookings";
 import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
+import SessionPriceBanner from "./price-banner";
 import ShareButton from "./share-button";
+import SessionSpotsBanner from "./spots-banner";
 import UpdateSession from "./update-session";
 
 const SessionPage: FC = () => {
+	const breakpoint = useBreakpoint();
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
@@ -59,25 +62,12 @@ const SessionPage: FC = () => {
 
 	const { getSessionByID: session } = result.data;
 
-	const isFree = session.price === null;
 	const isInPast = isSessionInPast(session);
-
-	console.log(session.capacityRemaining);
 
 	return (
 		<div className="flex flex-col pb-52">
-			<div
-				className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-amber-500"}`}
-			>
-				{isFree ? (
-					<CheckCircleIcon className="w-6 h-6 text-white" />
-				) : (
-					<InformationCircleIcon className="w-6 h-6 text-white" />
-				)}
-				<p className="pb-0.5 text-xl font-bold text-white">
-					{isFree ? "Free session" : `Price: $A${session.price}`}
-				</p>
-			</div>
+			<SessionSpotsBanner session={session as Session} />
+			<SessionPriceBanner session={session as Session} />
 			<img
 				src={session.course.photo}
 				alt={session.course.name}
@@ -107,30 +97,38 @@ const SessionPage: FC = () => {
 						<p>
 							<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
 						</p>
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
-						<p>
-							{session.capacityRemaining ? (
-								<Fragment>
-									{session.capacityRemaining} / {session.capacity}
-								</Fragment>
-							) : (
-								"Fully booked"
-							)}
-						</p>
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">steps</p>
-						<p>
-							{session.equipmentAvailable}
-							<Fragment> available</Fragment>
-						</p>
-						<div />
-						<div className="flex flex-col gap-8 pt-3">
+						{isAdministrator && (
+							<Fragment>
+								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
+								<p>
+									{session.capacityRemaining ? (
+										<Fragment>
+											{session.bookingsTotal || 0} / {session.capacity}
+										</Fragment>
+									) : (
+										"Fully booked"
+									)}
+								</p>
+								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">steps</p>
+								<p>
+									{session.equipmentAvailable}
+									<Fragment> available</Fragment>
+								</p>
+							</Fragment>
+						)}
+						{breakpoint !== Breakpoint.SMALL && <div />}
+						<div
+							className={`"flex flex-col gap-8 pt-3 ${
+								breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
+							}`}
+						>
 							<div className="flex flex-col gap-4">
-								<div className="flex gap-4">
+								<div className="flex gap-4 items-start flex-col md:flex-row">
 									<BookingForm session={session as Session} isSessionInPast={isInPast} />
 									<ShareButton url={location.href} isSessionInPast={isInPast} />
 								</div>
 								{isAdministrator && (
-									<div className="flex gap-4">
+									<div className="flex">
 										{session && (
 											<Fragment>
 												<UpdateSession session={session as Session} onEdit={handleRefetch} />

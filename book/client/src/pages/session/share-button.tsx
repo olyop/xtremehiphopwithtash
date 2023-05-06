@@ -16,10 +16,10 @@ const ShareButton: FC<PropTypes> = ({ url, isSessionInPast }) => {
 
 	return isSessionInPast ? null : (
 		<Button
-			transparent
 			onClick={handleClick}
 			ariaLabel={shareText}
-			className="!h-14 !w-14 items-center justify-center"
+			text={shareText}
+			className="!h-14 items-center justify-center rounded-xl"
 			leftIcon={className =>
 				hasShared ? (
 					<CheckIcon className={className} />

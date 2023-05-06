@@ -4,10 +4,12 @@ import { FC, createElement } from "react";
 import { Link } from "react-router-dom";
 
 import Button from "../../components/button";
+import { Breakpoint, useBreakpoint } from "../../hooks";
 
 const className = "!shadow-xl !hover:shadow-2xl";
 
 const AccountButton: FC = () => {
+	const breakpoint = useBreakpoint();
 	const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
 	const handleLogin = () => {
@@ -39,7 +41,7 @@ const AccountButton: FC = () => {
 		<Button
 			ariaLabel="Log In"
 			onClick={handleLogin}
-			className={className}
+			className={`${className} ${breakpoint === Breakpoint.SMALL ? "!p-2 !gap-1" : ""}`}
 			text={userHasImage ? undefined : "Log In"}
 			leftIcon={c => <UserCircleIcon className={c} />}
 		/>

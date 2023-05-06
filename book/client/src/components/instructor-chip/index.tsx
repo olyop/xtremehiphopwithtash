@@ -3,7 +3,6 @@ import { FC, Fragment, createElement } from "react";
 
 import { Instructor } from "../../generated-types";
 import { useModal } from "../../hooks";
-import { capitalizeFirstLetter } from "../../utils";
 import Chip from "../chip";
 import Modal from "../modal";
 
@@ -24,9 +23,9 @@ const InstructorChip: FC<PropTypes> = ({ instructor }) => {
 				isLarge
 				hideTitle
 				isOpen={isOpen}
+				onClose={closeModal}
 				icon={iconClassName => <UserCircleIcon className={iconClassName} />}
 				title={instructor.details.nickName ?? instructor.details.firstName}
-				onClose={closeModal}
 				contentClassName="flex flex-col items-center justify-center gap-6 h-[28rem]"
 				children={
 					<Fragment>
@@ -47,9 +46,9 @@ const InstructorChip: FC<PropTypes> = ({ instructor }) => {
 									</Fragment>
 								)}
 							</h2>
-							{instructor.details.gender && (
+							{/* {instructor.details.gender && (
 								<p>{capitalizeFirstLetter(instructor.details.gender.toLowerCase())}</p>
-							)}
+							)} */}
 							<div className="flex flex-col items-center">
 								<p className="text-gray-500">Contact Number</p>
 								<p>{instructor.details.mobilePhoneNumber}</p>

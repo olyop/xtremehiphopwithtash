@@ -41,6 +41,7 @@ const DeleteSession: FC<PropTypes> = ({ session }) => {
 		<Fragment>
 			<Button
 				transparent
+				text="Delete"
 				ariaLabel="Delete"
 				onClick={openModal}
 				leftIcon={className => <TrashIcon className={className} />}

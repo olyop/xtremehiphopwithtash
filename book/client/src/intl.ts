@@ -1,6 +1,7 @@
 export const currencyFormatter = new Intl.NumberFormat(undefined, {
 	style: "currency",
 	currency: "AUD",
+	currencyDisplay: "narrowSymbol",
 });
 
 export const listFormatter = new Intl.ListFormat(undefined, {

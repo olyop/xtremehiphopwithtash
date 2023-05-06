@@ -12,7 +12,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LocationValidator implements Validator<UUID, LocationInput> {
+public class LocationValidator implements ValidatorCRUD<UUID, LocationInput> {
 
 	private final LocationDAO locationDAO;
 	private final CourseDAO courseDAO;

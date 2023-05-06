@@ -19,20 +19,26 @@ const readUnixTime: FieldReadFunction<number, number> = value => {
 };
 
 export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
-	const { getAccessTokenSilently } = useAuth0();
+	const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
 	const httpLink = new HttpLink();
 
 	const addJWTToken = setContext(async () => {
-		try {
-			const accessToken = await getAccessTokenSilently();
+		if (isAuthenticated) {
+			try {
+				const accessToken = await getAccessTokenSilently();
 
-			return {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			};
-		} catch {
+				console.log(accessToken);
+
+				return {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				};
+			} catch {
+				return {};
+			}
+		} else {
 			return {};
 		}
 	});

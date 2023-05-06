@@ -157,11 +157,13 @@ export type Mutation = {
 
 export type MutationCreateBookingFreeArgs = {
 	input: BookingInput;
+	studentID: Scalars["String"];
 };
 
 export type MutationCreateBookingReferralCodeArgs = {
 	code: Scalars["String"];
 	input: BookingInput;
+	studentID: Scalars["String"];
 };
 
 export type MutationCreateCourseArgs = {
@@ -334,14 +336,16 @@ export type Review = {
 
 export type Session = {
 	readonly __typename: "Session";
-	readonly bookings: ReadonlyArray<Booking>;
+	readonly bookings: Maybe<ReadonlyArray<Booking>>;
+	readonly bookingsTotal: Maybe<Scalars["PositiveInt"]>;
 	readonly capacity: Scalars["PositiveInt"];
-	readonly capacityRemaining: Maybe<Scalars["NonNegativeInt"]>;
+	readonly capacityRemaining: Maybe<Scalars["PositiveInt"]>;
 	readonly course: Course;
 	readonly createdAt: Scalars["UnixTime"];
 	readonly endTime: Scalars["UnixTime"];
-	readonly equipmentAvailable: Scalars["NonNegativeInt"];
+	readonly equipmentAvailable: Scalars["PositiveInt"];
 	readonly equipmentFee: Maybe<Scalars["PositiveInt"]>;
+	readonly equipmentLeft: Scalars["PositiveInt"];
 	readonly instructors: ReadonlyArray<Instructor>;
 	readonly location: Location;
 	readonly notes: Maybe<Scalars["String"]>;
@@ -367,7 +371,8 @@ export type SessionInput = {
 
 export type Student = {
 	readonly __typename: "Student";
-	readonly bookings: ReadonlyArray<Booking>;
+	readonly bookings: Maybe<ReadonlyArray<Booking>>;
+	readonly bookingsTotal: Maybe<Scalars["PositiveInt"]>;
 	readonly createdAt: Scalars["UnixTime"];
 	readonly details: Details;
 	readonly isAdministrator: Scalars["Boolean"];
@@ -411,12 +416,6 @@ export type GetCourseFormDataQuery = {
 		{ readonly locationID: string; readonly name: string } & { readonly __typename: "Location" }
 	>;
 } & { readonly __typename: "Query" };
-
-export type GetDetailsFormDataQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetDetailsFormDataQuery = { readonly getGenders: ReadonlyArray<string> } & {
-	readonly __typename: "Query";
-};
 
 export type GetSessionFormDataQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -568,7 +567,7 @@ export type GetAccountPageQuery = {
 					} & { readonly __typename: "Details" };
 				} & { readonly __typename: "Student" };
 			} & { readonly __typename: "Booking" }
-		>;
+		> | null;
 	} & { readonly __typename: "Student" };
 } & { readonly __typename: "Query" };
 
@@ -865,6 +864,7 @@ export type GetStudentsQuery = {
 	readonly getStudents: ReadonlyArray<
 		{
 			readonly studentID: string;
+			readonly bookingsTotal: number | null;
 			readonly details: {
 				readonly detailsID: string;
 				readonly firstName: string;
@@ -880,6 +880,7 @@ export type GetStudentsQuery = {
 
 export type CreateBookingFreeMutationVariables = Exact<{
 	input: BookingInput;
+	studentID: Scalars["String"];
 }>;
 
 export type CreateBookingFreeMutation = {
@@ -888,6 +889,7 @@ export type CreateBookingFreeMutation = {
 
 export type CreateBookingReferralCodeMutationVariables = Exact<{
 	input: BookingInput;
+	studentID: Scalars["String"];
 	code: Scalars["String"];
 }>;
 
@@ -974,7 +976,7 @@ export type GetSessionBookingsQuery = {
 					} & { readonly __typename: "Details" };
 				} & { readonly __typename: "Student" };
 			} & { readonly __typename: "Booking" }
-		>;
+		> | null;
 	} & { readonly __typename: "Session" };
 } & { readonly __typename: "Query" };
 
@@ -1002,6 +1004,7 @@ export type GetSessionPageQuery = {
 		readonly capacity: number;
 		readonly equipmentAvailable: number;
 		readonly capacityRemaining: number | null;
+		readonly bookingsTotal: number | null;
 		readonly createdAt: number;
 		readonly location: {
 			readonly locationID: string;

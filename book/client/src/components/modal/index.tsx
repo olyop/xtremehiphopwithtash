@@ -1,8 +1,10 @@
+import { ApolloError } from "@apollo/client";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, PropsWithChildren, ReactNode, createElement, useEffect } from "react";
 
 import { useKeyPress } from "../../hooks";
 import Button from "../button";
+import FormError from "../form-error";
 
 const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	title,
@@ -10,6 +12,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	subTitle,
 	icon,
 	isOpen,
+	error,
 	buttons,
 	onClose,
 	children,
@@ -46,9 +49,9 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-1/2 left-1/2 z-[120] absolute ${
+					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-6 md:top-1/2 left-1/2 z-[120] absolute ${
 						isLarge ? "md:w-booking-modal lg:w-booking-modal" : "md:w-96 lg:w-96"
-					} w-[calc(100vw_-_2.5rem)] -translate-x-1/2 -translate-y-1/2 bg-white ${
+					} w-[calc(100vw_-_2.5rem)] max-h-[calc(100vh_-_6rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
 						modalClassName || ""
 					}`}
 				>
@@ -76,7 +79,8 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 							</div>
 						</div>
 					)}
-					<div className={contentClassName}>{children}</div>
+					<div className={`overflow-auto py-2 ${contentClassName ?? ""}`}>{children}</div>
+					{error && <FormError error={error} />}
 					{buttons && <div className={`flex gap-2 ${buttonClassName ?? ""}`}>{buttons}</div>}
 				</div>
 			)}
@@ -91,6 +95,7 @@ interface ModalPropTypes {
 	subTitle?: ReactNode;
 	icon: (className: string) => ReactNode;
 	onClose?: () => void;
+	error?: ApolloError | undefined;
 	buttons?: ReactNode;
 	className?: string;
 	modalClassName?: string;

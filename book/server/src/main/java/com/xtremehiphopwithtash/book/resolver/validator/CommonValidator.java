@@ -22,8 +22,11 @@ class CommonValidator {
 	}
 
 	private void validateTextIsNotEmpty(String text, String label) {
-		if (text.isEmpty() || text.isBlank()) {
+		if (text.isEmpty()) {
 			throw new ResolverException(String.format("%s cannot be empty", label));
+		}
+		if (text.isBlank()) {
+			throw new ResolverException(String.format("%s cannot be blank", label));
 		}
 	}
 
@@ -48,7 +51,7 @@ class CommonValidator {
 	}
 
 	public void validatePrice(Optional<Short> price, String label) {
-		if (price.isPresent() && price.get() >= 0 && price.get() <= 50) {
+		if (price.isPresent() && price.get() <= 0 && price.get() <= 50) {
 			throw new ResolverException(String.format("%s cannot be greater than A$50", label));
 		}
 	}

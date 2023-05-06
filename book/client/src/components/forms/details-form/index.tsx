@@ -1,14 +1,9 @@
-import { useQuery } from "@apollo/client";
 import { FC, Fragment, createElement } from "react";
 
-import { DetailsInput, GetDetailsFormDataQuery } from "../../../generated-types";
-import { capitalizeFirstLetter } from "../../../utils";
-import Input, { InputOnChange, InputType, mapListToSelectOptions } from "../../input";
-import GET_DETAILS_FORM_DATA from "./get-details-form-data.graphql";
+import { DetailsInput } from "../../../generated-types";
+import Input, { InputOnChange, InputType } from "../../input";
 
 const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
-	const { data } = useQuery<GetDetailsFormDataQuery>(GET_DETAILS_FORM_DATA);
-
 	const handleChange =
 		(key: keyof DetailsInput): InputOnChange =>
 		value => {
@@ -40,34 +35,21 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 			/>
 			<Input
 				optional
+				nullable
 				id="nickName"
 				name="Nick Name"
 				autoComplete="nickname"
 				placeHolder="e.g. Jan"
-				note="This will be shown to other users"
+				note="This will be used instead of your first name"
 				value={input.nickName ?? ""}
 				type={InputType.TEXT}
 				onChange={handleChange("nickName")}
 			/>
 			<Input
-				optional
-				id="gender"
-				name="Gender"
-				placeHolder="Gender"
-				autoComplete="sex"
-				value={input.gender}
-				type={InputType.SELECT}
-				onChange={handleChange("gender")}
-				selectOptions={mapListToSelectOptions(data?.getGenders, gender => ({
-					optionID: gender,
-					description: capitalizeFirstLetter(gender.toLowerCase()),
-				}))}
-			/>
-			<Input
 				id="mobilePhoneNumber"
 				name="Mobile Number"
 				autoComplete="tel"
-				note="This will be used to send you notifications"
+				note="We may need to contact you regarding your bookings"
 				value={input.mobilePhoneNumber}
 				type={InputType.TEXT}
 				onChange={handleChange("mobilePhoneNumber")}
@@ -76,7 +58,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 			<Input
 				optional
 				id="instagramUsername"
-				name="Instagram Handle"
+				name="Instagram Username"
 				value={input.instagramUsername ?? ""}
 				type={InputType.TEXT}
 				onChange={handleChange("instagramUsername")}

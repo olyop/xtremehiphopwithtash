@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 public class ReferralCodeValidator implements ValidatorBase<String> {
 
 	private final ReferralCodeDAO referralCodeDAO;
+	private final CommonValidator commonValidator;
 
-	public ReferralCodeValidator(ReferralCodeDAO referralCodeDAO) {
+	public ReferralCodeValidator(ReferralCodeDAO referralCodeDAO, CommonValidator commonValidator) {
 		this.referralCodeDAO = referralCodeDAO;
+		this.commonValidator = commonValidator;
 	}
 
-	public void validateNotEmpty(String code) {
-		if (code.isEmpty()) {
-			throw new ResolverException("Referral code is required.");
-		}
+	public void validateText(String code) {
+		commonValidator.validateText(code, "Referral code", 9);
 	}
 
 	@Override

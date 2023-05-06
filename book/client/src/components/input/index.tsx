@@ -19,7 +19,7 @@ const createClassName = (type: InputType, value: InputValue, className: string |
 	`border cursor-pointer outline-none ${
 		type === InputType.CHECKBOX ? "mt-[1px] ml-[1px]" : "w-full"
 	} border-gray-200 hover:border-gray-400 transition-all rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
-		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-8") : ""
+		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-6") : ""
 	} ${type === InputType.TEXTAREA ? "resize-none h-[7rem]" : ""} ${className ?? ""}`;
 
 const Input: FC<InputPropTypes> = ({
@@ -42,25 +42,33 @@ const Input: FC<InputPropTypes> = ({
 	items,
 }) => {
 	const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
+		const { value: targetValue, checked } = event.target;
+
 		if (type === InputType.TIME && typeof value === "number") {
-			onChange(convertTimeInputToUnixTime(value, event.target.value));
+			onChange(convertTimeInputToUnixTime(value, targetValue));
 		} else if (type === InputType.DATE && typeof value === "number") {
-			onChange(convertDateTimeInputToUnixTime(value, event.target.value));
+			onChange(convertDateTimeInputToUnixTime(value, targetValue));
 		} else if (type === InputType.INTEGER || type === InputType.PRICE) {
-			const valueInt = Number.parseInt(event.target.value, 10);
-			onChange(nullable ? (valueInt === 0 ? null : valueInt) : valueInt);
-		} else if (type === InputType.TEXT || type === InputType.URL || type === InputType.TEXTAREA) {
-			onChange(nullable && event.target.value.length === 0 ? null : event.target.value);
+			if (targetValue.length === 0) {
+				onChange(null);
+			} else {
+				const valueInt = Number.parseInt(targetValue, 10);
+				onChange(nullable ? (valueInt === 0 ? null : valueInt) : valueInt);
+			}
+		} else if (type === InputType.TEXT || type === InputType.URL) {
+			onChange(nullable ? (targetValue.length === 0 ? null : targetValue) : targetValue);
 		} else if (type === InputType.CHECKBOX) {
-			onChange(event.target.checked);
+			onChange(checked);
 		} else {
 			throw new Error(`Invalid input type: ${type} ${value?.toString() ?? "unknown"}`);
 		}
 	};
 
 	const handleTextAreaChange: ChangeEventHandler<HTMLTextAreaElement> = event => {
+		const { value: targetValue } = event.target;
+
 		if (type === InputType.TEXTAREA) {
-			onChange(event.target.value);
+			onChange(nullable ? (targetValue.length === 0 ? null : targetValue) : targetValue);
 		} else {
 			throw new Error(`Invalid input type: ${type} ${value?.toString() ?? "unknown"}`);
 		}
@@ -85,7 +93,9 @@ const Input: FC<InputPropTypes> = ({
 		<div
 			className={`relative ${
 				type === InputType.CHECKBOX ? "flex gap-2 flex-row-reverse justify-end" : ""
-			} ${type === InputType.TEXTAREA ? "h-[7rem]" : ""} ${className ?? ""}`}
+			} ${type === InputType.TEXTAREA ? (note ? "h-[8.5rem]" : "h-[7rem]") : ""} ${
+				className ?? ""
+			}`}
 		>
 			<label
 				children={optional ? `${name} (optional)` : name}
@@ -105,7 +115,7 @@ const Input: FC<InputPropTypes> = ({
 			)}
 			{type === InputType.PRICE && (value === null || typeof value === "number") && (
 				<p className="absolute top-1/2 -translate-y-1/2 left-3">
-					{value === null ? "Free" : currencyFormatter.format(value).slice(0, 2)}
+					{value === null ? "Free" : currencyFormatter.format(value).slice(0, 1)}
 				</p>
 			)}
 			{type === InputType.LIST && Array.isArray(value) ? (
@@ -189,12 +199,18 @@ const Input: FC<InputPropTypes> = ({
 					step={type === InputType.INTEGER ? 1 : undefined}
 					className={createClassName(type, value, className)}
 					value={determineInputValue(type, value, selectOptions)}
-					min={type === InputType.INTEGER || type === InputType.PRICE ? 0 : undefined}
+					min={type === InputType.INTEGER ? 0 : undefined}
 					checked={type === InputType.CHECKBOX && typeof value === "boolean" ? value : undefined}
 				/>
 			)}
 			{note && type !== InputType.CHECKBOX && (
-				<div className={`text-gray-500 text-sm px-3 pb-1 ${noteClassName ?? ""}`}>{note}</div>
+				<p
+					className={`text-gray-500 text-xs md:text-sm px-3 pb-1 ${
+						noteClassName ?? ""
+					} whitespace-nowrap overflow-hidden overflow-ellipsis`}
+				>
+					{note}
+				</p>
 			)}
 		</div>
 	);

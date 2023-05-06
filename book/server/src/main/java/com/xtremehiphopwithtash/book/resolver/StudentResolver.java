@@ -8,6 +8,7 @@ import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
+import com.xtremehiphopwithtash.book.resolver.mapper.DetailsInputMapper;
 import com.xtremehiphopwithtash.book.resolver.validator.StudentValidator;
 import com.xtremehiphopwithtash.book.service.Auth0Management;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class StudentResolver {
 
+	private final DetailsInputMapper detailsInputMapper;
 	private final StudentDAO studentDAO;
 	private final DetailsDAO detailsDAO;
 	private final BookingDAO bookingDAO;
@@ -28,12 +30,14 @@ public class StudentResolver {
 	private final StudentValidator studentValidator;
 
 	public StudentResolver(
+		DetailsInputMapper detailsInputMapper,
 		StudentDAO studentDAO,
 		DetailsDAO detailsDAO,
 		BookingDAO bookingDAO,
 		Auth0Management auth0Management,
 		StudentValidator studentValidator
 	) {
+		this.detailsInputMapper = detailsInputMapper;
 		this.studentDAO = studentDAO;
 		this.detailsDAO = detailsDAO;
 		this.bookingDAO = bookingDAO;
@@ -56,25 +60,33 @@ public class StudentResolver {
 		return detailsDAO.selectByID(student.getDetailsID());
 	}
 
+	@SchemaMapping(typeName = "Student", field = "bookings")
+	public List<Booking> getStudentBookings(Student student) {
+		List<Booking> bookings = bookingDAO.selectByStudentID(student.getStudentID());
+
+		if (bookings.isEmpty()) {
+			return null;
+		}
+
+		return bookings;
+	}
+
+	@SchemaMapping(typeName = "Student", field = "bookingsTotal")
+	public Short getStudentBookingsTotal(Student student) {
+		short bookingsTotal = bookingDAO.selectCountByStudentID(student.getStudentID());
+
+		if (bookingsTotal == 0) {
+			return null;
+		}
+
+		return bookingsTotal;
+	}
+
 	@MutationMapping
 	public Student createStudent(@Argument String studentID, @Argument DetailsInput input) {
-		String firstName = input.getFirstName();
-		String lastName = input.getLastName();
-		Optional<String> nickName = input.getNickName();
-		Optional<String> gender = input.getGender();
-		String mobilePhoneNumber = input.getMobilePhoneNumber();
-		Optional<String> instagramUsername = input.getInstagramUsername();
+		studentValidator.validateCreate(input, studentID);
 
-		studentValidator.validateIDDoesNotExist(studentID);
-		studentValidator.validateInput(input);
-
-		Details details = new Details();
-		details.setFirstName(firstName);
-		details.setLastName(lastName);
-		details.setNickName(nickName.orElse(null));
-		details.setGender(gender.orElse(null));
-		details.setMobilePhoneNumber(mobilePhoneNumber);
-		details.setInstagramUsername(instagramUsername.orElse(null));
+		Details details = detailsInputMapper.map(input);
 
 		Details savedDetails = detailsDAO.insert(details);
 
@@ -87,25 +99,11 @@ public class StudentResolver {
 
 	@MutationMapping
 	public Student updateStudentByID(@Argument String studentID, @Argument DetailsInput input) {
-		String firstName = input.getFirstName();
-		String lastName = input.getLastName();
-		Optional<String> nickName = input.getNickName();
-		Optional<String> gender = input.getGender();
-		String mobilePhoneNumber = input.getMobilePhoneNumber();
-		Optional<String> instagramUsername = input.getInstagramUsername();
-
-		studentValidator.validateID(studentID);
-		studentValidator.validateInput(input);
+		studentValidator.validateUpdate(studentID, input);
 
 		Student student = studentDAO.selectByID(studentID).get();
 
-		Details details = new Details();
-		details.setFirstName(firstName);
-		details.setLastName(lastName);
-		details.setNickName(nickName.orElse(null));
-		details.setGender(gender.orElse(null));
-		details.setMobilePhoneNumber(mobilePhoneNumber);
-		details.setInstagramUsername(instagramUsername.orElse(null));
+		Details details = detailsInputMapper.map(input);
 
 		detailsDAO.updateByID(student.getDetailsID(), details);
 
@@ -117,15 +115,10 @@ public class StudentResolver {
 		return studentDAO.existsByID(studentID);
 	}
 
-	@SchemaMapping(typeName = "Student", field = "bookings")
-	public List<Booking> getStudentBookings(Student student) {
-		return bookingDAO.selectByStudentID(student.getStudentID());
-	}
-
 	@QueryMapping
 	public boolean isStudentAdministator(@Argument String studentID) throws Auth0Exception {
 		if (!studentDAO.existsByID(studentID)) {
-			throw new IllegalArgumentException("Student does not exist");
+			return false;
 		}
 
 		return auth0Management.isUserAdministrator(studentID);

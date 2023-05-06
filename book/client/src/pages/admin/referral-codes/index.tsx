@@ -10,6 +10,23 @@ import { GenerateReferalCodeMutation } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import GENERATE_REFERRAL_CODE from "./generate-referral-code.graphql";
 
+/**
+ * REFRERAL CODES:
+ * 	FULL PRICE OFF
+ *  50% OFF
+ */
+
+/**
+ * FIX POPUPS
+ * @returns
+ */
+
+// nO GENDER
+
+// NO PRICE A INFRONT OF THE PIRCE
+// ADD THE decimal places
+//
+
 const ReferralCodes: FC = () => {
 	const [isModalOpen, openModal, closeModal] = useModal();
 

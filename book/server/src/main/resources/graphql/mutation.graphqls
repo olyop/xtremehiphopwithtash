@@ -20,6 +20,6 @@ type Mutation {
 
 	generateReferralCode: String!
 
-	createBookingFree(input: BookingInput!): Booking!
-	createBookingReferralCode(input: BookingInput!, code: String!): Booking!
+	createBookingFree(input: BookingInput!, studentID: String!): Booking!
+	createBookingReferralCode(input: BookingInput!, studentID: String!, code: String!): Booking!
 }

@@ -115,7 +115,7 @@ public class BookingDAO
 		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
 	}
 
-	public Short selectCapacityRemaning(UUID sessionID) {
+	public short selectCapacityRemaning(UUID sessionID) {
 		String sql = query.SELECT_CAPACITY_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
@@ -129,6 +129,14 @@ public class BookingDAO
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
+	public short selectCountByStudentID(String studentID) {
+		String sql = query.SELECT_COUNT_BOOKINGS_BY_STUDENT_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
 	}
 
 	public boolean existsByStudentAndSession(String studentID, UUID sessionID) {

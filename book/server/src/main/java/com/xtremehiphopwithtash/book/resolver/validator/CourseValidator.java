@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CourseValidator implements Validator<UUID, CourseInput> {
+public class CourseValidator implements ValidatorCRUD<UUID, CourseInput> {
 
 	private final CourseDAO courseDAO;
 	private final SessionDAO sessionDAO;

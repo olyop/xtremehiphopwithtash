@@ -30,6 +30,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	booking,
 	onBookingUpdated,
 	hideDelete = false,
+	hideEquipmentFee = false,
 	hideAddToCalendar = false,
 }) => {
 	const [isUpdateModalOpen, openUpdateModal, closeUpdateModal] = useModal();
@@ -103,7 +104,12 @@ const SessionPageBooking: FC<PropTypes> = ({
 						contentClassName="flex flex-col gap-4"
 						children={
 							<Fragment>
-								<BookingForm session={session} input={bookingInput} onChange={setBookingInput} />
+								<BookingForm
+									session={session}
+									input={bookingInput}
+									onChange={setBookingInput}
+									hideEquipmentFee={hideEquipmentFee}
+								/>
 								<FormError error={updateBookingResult.error} />
 							</Fragment>
 						}
@@ -182,6 +188,7 @@ interface PropTypes {
 	session: Session;
 	booking: Booking;
 	hideDelete?: boolean;
+	hideEquipmentFee?: boolean;
 	hideAddToCalendar?: boolean;
 	onBookingUpdated: () => void;
 }

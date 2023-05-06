@@ -101,13 +101,44 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 						value={input.title}
 					/>
 					<Input
-						id="notes"
-						name="Notes"
-						placeHolder="Notes"
+						id="locationID"
+						name="Location"
+						placeHolder="Location"
 						autoComplete="off"
-						type={InputType.TEXTAREA}
-						onChange={handleChange("notes")}
-						value={input.notes}
+						type={InputType.SELECT}
+						onChange={handleChange("locationID")}
+						value={input.locationID}
+						selectOptions={mapListToSelectOptions(data?.getLocations, ({ locationID, name }) => ({
+							optionID: locationID,
+							description: name,
+						}))}
+					/>
+					<Input
+						id="instructorIDs"
+						name="Instructors"
+						value={input.instructorIDs}
+						type={InputType.LIST}
+						onChange={handleChange("instructorIDs")}
+						placeHolder="Instructors"
+						autoComplete="off"
+						items={mapListToChips(
+							input.instructorIDs,
+							data?.getInstructors,
+							({ instructorID }) => instructorID,
+							({ instructorID, photo, details: { firstName, nickName } }) => ({
+								chipID: instructorID,
+								text: nickName ?? firstName,
+								photo,
+								onRemove: handleInstructorDelete({ instructorID }),
+							}),
+						)}
+						selectOptions={mapListToSelectOptions(
+							data?.getInstructors,
+							({ instructorID, details: { firstName, nickName } }) => ({
+								optionID: instructorID,
+								description: nickName ?? firstName,
+							}),
+						)}
 					/>
 					<div className="grid grid-cols-2 gap-2">
 						<Input
@@ -150,46 +181,6 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 							value={input.equipmentAvailable}
 						/>
 					</div>
-					<Input
-						id="locationID"
-						name="Location"
-						placeHolder="Location"
-						autoComplete="off"
-						type={InputType.SELECT}
-						onChange={handleChange("locationID")}
-						value={input.locationID}
-						selectOptions={mapListToSelectOptions(data?.getLocations, ({ locationID, name }) => ({
-							optionID: locationID,
-							description: name,
-						}))}
-					/>
-					<Input
-						id="instructorIDs"
-						name="Instructors"
-						value={input.instructorIDs}
-						type={InputType.LIST}
-						onChange={handleChange("instructorIDs")}
-						placeHolder="Instructors"
-						autoComplete="off"
-						items={mapListToChips(
-							input.instructorIDs,
-							data?.getInstructors,
-							({ instructorID }) => instructorID,
-							({ instructorID, photo, details: { firstName, nickName } }) => ({
-								chipID: instructorID,
-								text: nickName ?? firstName,
-								photo,
-								onRemove: handleInstructorDelete({ instructorID }),
-							}),
-						)}
-						selectOptions={mapListToSelectOptions(
-							data?.getInstructors,
-							({ instructorID, details: { firstName, nickName } }) => ({
-								optionID: instructorID,
-								description: nickName ?? firstName,
-							}),
-						)}
-					/>
 					<div className={`grid ${onCourseReset ? "grid-cols-2 gap-2" : "grid-row-2 gap-4"}`}>
 						<Input
 							id="startTime"
@@ -210,6 +201,16 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 							value={input.endTime}
 						/>
 					</div>
+					<Input
+						id="notes"
+						name="Notes"
+						nullable
+						placeHolder="Notes"
+						autoComplete="off"
+						type={InputType.TEXTAREA}
+						onChange={handleChange("notes")}
+						value={input.notes}
+					/>
 				</Fragment>
 			)}
 		</Fragment>

@@ -140,4 +140,14 @@ public class SessionQuery {
 		""",
 		columnNames
 	);
+
+	public final String SELECT_EQUIPMENT_LEFT_BY_SESSION_ID =
+		"""
+		SELECT
+			equipment_available
+		FROM
+			session
+		WHERE
+			session_id = :sessionID;
+	""";
 }
