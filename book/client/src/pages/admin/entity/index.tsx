@@ -8,7 +8,6 @@ import { FC, Fragment, ReactNode, createElement } from "react";
 
 import Button from "../../../components/button";
 import Entity, { EntityPropTypes } from "../../../components/entity";
-import FormError from "../../../components/form-error";
 import Modal from "../../../components/modal";
 import { useModal } from "../../../hooks";
 
@@ -72,12 +71,8 @@ const AdminEntity: FC<PropTypes> = ({
 								isOpen={isEditModalOpen}
 								onClose={closeEditModal}
 								contentClassName="flex flex-col gap-4"
-								children={
-									<Fragment>
-										{editModalContent}
-										<FormError error={editModalError} />
-									</Fragment>
-								}
+								children={editModalContent}
+								error={editModalError}
 								buttons={
 									<Fragment>
 										<Button
@@ -119,12 +114,8 @@ const AdminEntity: FC<PropTypes> = ({
 								isOpen={isDeleteModalOpen}
 								onClose={closeDeleteModal}
 								contentClassName="flex flex-col gap-2 text"
-								children={
-									<Fragment>
-										<p>Are you sure?</p>
-										<FormError error={deleteModalError} />
-									</Fragment>
-								}
+								children={<p>Are you sure?</p>}
+								error={deleteModalError}
 								buttons={
 									<Fragment>
 										<Button

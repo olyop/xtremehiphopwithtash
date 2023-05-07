@@ -11,7 +11,6 @@ import {
 import { useModal } from "../../../hooks";
 import { millisecondsToSeconds } from "../../../utils";
 import Button from "../../button";
-import FormError from "../../form-error";
 import SessionInput from "../../forms/session-form";
 import Modal from "../../modal";
 import { Day } from "../types";
@@ -74,11 +73,9 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 				onClose={handleCloseModal}
 				contentClassName="flex flex-col gap-4"
 				children={
-					<Fragment>
-						<SessionInput input={input} onChange={setInput} onCourseReset={handleCourseReset} />
-						<FormError error={error} />
-					</Fragment>
+					<SessionInput input={input} onChange={setInput} onCourseReset={handleCourseReset} />
 				}
+				error={error}
 				buttons={
 					input.courseID === "" ? undefined : (
 						<Fragment>

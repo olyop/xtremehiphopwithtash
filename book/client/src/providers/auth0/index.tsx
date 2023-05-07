@@ -7,7 +7,9 @@ const Auth0: FC<PropsWithChildren> = ({ children }) => (
 		domain={import.meta.env.VITE_AUTH0_DOMAIN}
 		clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
 		authorizationParams={{
-			redirect_uri: import.meta.env.VITE_AUTH0_REDIRECT_URL,
+			scope: "openid profile email",
+			redirect_uri: window.location.origin,
+			audience: import.meta.env.VITE_AUTH0_API_AUDIENCE,
 		}}
 	>
 		{children}

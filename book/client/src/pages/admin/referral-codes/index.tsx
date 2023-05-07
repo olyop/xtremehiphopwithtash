@@ -16,17 +16,6 @@ import GENERATE_REFERRAL_CODE from "./generate-referral-code.graphql";
  *  50% OFF
  */
 
-/**
- * FIX POPUPS
- * @returns
- */
-
-// nO GENDER
-
-// NO PRICE A INFRONT OF THE PIRCE
-// ADD THE decimal places
-//
-
 const ReferralCodes: FC = () => {
 	const [isModalOpen, openModal, closeModal] = useModal();
 

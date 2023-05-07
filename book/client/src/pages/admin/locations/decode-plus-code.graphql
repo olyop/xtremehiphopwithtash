@@ -1,0 +1,6 @@
+query decodePlusCode($plusCode: String!) {
+	decodePlusCode(plusCode: $plusCode) {
+		latitude
+		longitude
+	}
+}

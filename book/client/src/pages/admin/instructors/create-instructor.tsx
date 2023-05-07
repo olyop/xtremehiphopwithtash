@@ -4,7 +4,6 @@ import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
-import FormError from "../../../components/form-error";
 import InstructorForm from "../../../components/forms/instructor-form";
 import Modal from "../../../components/modal";
 import {
@@ -59,12 +58,8 @@ const AddInstructor: FC = () => {
 				isOpen={isOpen}
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
-				children={
-					<Fragment>
-						<InstructorForm input={input} onChange={setInput} />
-						<FormError error={error} />
-					</Fragment>
-				}
+				children={<InstructorForm input={input} onChange={setInput} />}
+				error={error}
 				buttons={
 					<Fragment>
 						<Button

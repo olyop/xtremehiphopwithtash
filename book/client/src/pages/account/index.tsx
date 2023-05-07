@@ -45,10 +45,11 @@ const AccountPage: FC = () => {
 	});
 
 	const [getAccountPage, queryResult] = useLazyQuery<QueryData, QueryVars>(GET_ACCOUNT_PAGE);
-	const [updateStudent, mutationResult] = useMutation<MutationData, MutationVars>(UPDATE_STUDENT);
+	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(
+		UPDATE_STUDENT,
+	);
 
 	const { data: queryData, loading, called, refetch } = queryResult;
-	const { data: updateData } = mutationResult;
 
 	const handleGoHome = () => {
 		navigate("/");
@@ -91,11 +92,11 @@ const AccountPage: FC = () => {
 	}, [queryData]);
 
 	useEffect(() => {
-		if (updateData) {
+		if (updateStudentResult.data) {
 			closeEditModal();
 			void refetch();
 		}
-	}, [updateData]);
+	}, [updateStudentResult.data]);
 
 	if (!isAuthenticated && called && !loading) {
 		return (
@@ -164,6 +165,7 @@ const AccountPage: FC = () => {
 						contentClassName="flex flex-col gap-4"
 						icon={className => <PencilIcon className={className} />}
 						children={<DetailsForm input={detailsInput} onChange={setDetailsInput} />}
+						error={updateStudentResult.error}
 						buttons={
 							<Fragment>
 								<Button

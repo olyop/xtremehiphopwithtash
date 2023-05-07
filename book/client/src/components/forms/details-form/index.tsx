@@ -19,7 +19,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 				id="firstName"
 				name="First Name"
 				autoComplete="given-name"
-				placeHolder="e.g. Jane"
+				placeHolder="First Name"
 				value={input.firstName}
 				type={InputType.TEXT}
 				onChange={handleChange("firstName")}
@@ -28,7 +28,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 				id="lastName"
 				name="Last Name"
 				autoComplete="family-name"
-				placeHolder="e.g. Doe"
+				placeHolder="Last Name"
 				value={input.lastName}
 				type={InputType.TEXT}
 				onChange={handleChange("lastName")}
@@ -39,7 +39,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 				id="nickName"
 				name="Nick Name"
 				autoComplete="nickname"
-				placeHolder="e.g. Jan"
+				placeHolder="Nick Name"
 				note="This will be used instead of your first name"
 				value={input.nickName ?? ""}
 				type={InputType.TEXT}
@@ -53,7 +53,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 				value={input.mobilePhoneNumber}
 				type={InputType.TEXT}
 				onChange={handleChange("mobilePhoneNumber")}
-				placeHolder="e.g. 0412345678"
+				placeHolder="Mobile Number"
 			/>
 			<Input
 				optional
@@ -62,7 +62,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 				value={input.instagramUsername ?? ""}
 				type={InputType.TEXT}
 				onChange={handleChange("instagramUsername")}
-				placeHolder="e.g. @janedoe"
+				placeHolder="Username"
 			/>
 		</Fragment>
 	);

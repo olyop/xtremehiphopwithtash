@@ -14,7 +14,6 @@ import {
 } from "react";
 
 import Button from "../../components/button";
-import FormError from "../../components/form-error";
 import DetailsForm from "../../components/forms/details-form";
 import Modal from "../../components/modal";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
@@ -130,15 +129,15 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 						</h2>
 						<div className="flex flex-col gap-4 pt-4">
 							<DetailsForm input={detailsInput} onChange={setDetailsInput} />
-							{error && <FormError error={error} />}
 						</div>
 					</Fragment>
 				}
 				buttonClassName="justify-center pb-4"
+				error={error}
 				buttons={
 					<Fragment>
 						<Button
-							text="Create Account"
+							text="Complete"
 							onClick={handleCreateAccountClick}
 							ariaLabel="Create Account"
 							rightIcon={className => <PaperAirplaneIcon className={className} />}

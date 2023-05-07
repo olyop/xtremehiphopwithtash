@@ -18,7 +18,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	// implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'com.graphql-java:graphql-java-extended-scalars:20.0'
 	implementation 'com.graphql-java:graphql-java-extended-validation:20.0'
 	implementation 'com.auth0:auth0:2.1.0'

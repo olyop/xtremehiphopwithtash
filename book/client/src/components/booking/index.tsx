@@ -19,7 +19,6 @@ import { dateTimeFormatter } from "../../intl";
 import AddToCalender from "../add-to-calender";
 import Button from "../button";
 import Entity from "../entity";
-import FormError from "../form-error";
 import BookingForm from "../forms/booking-form";
 import Modal from "../modal";
 import DELETE_BOOKING from "./delete-booking.graphql";
@@ -103,16 +102,14 @@ const SessionPageBooking: FC<PropTypes> = ({
 						subTitle={`${booking.student.details.firstName} ${booking.student.details.lastName}`}
 						contentClassName="flex flex-col gap-4"
 						children={
-							<Fragment>
-								<BookingForm
-									session={session}
-									input={bookingInput}
-									onChange={setBookingInput}
-									hideEquipmentFee={hideEquipmentFee}
-								/>
-								<FormError error={updateBookingResult.error} />
-							</Fragment>
+							<BookingForm
+								session={session}
+								input={bookingInput}
+								onChange={setBookingInput}
+								hideEquipmentFee={hideEquipmentFee}
+							/>
 						}
+						error={updateBookingResult.error}
 						buttons={
 							<Fragment>
 								<Button
@@ -146,12 +143,8 @@ const SessionPageBooking: FC<PropTypes> = ({
 								icon={className => <TrashIcon className={className} />}
 								title="Delete Booking"
 								contentClassName="flex flex-col gap-4"
-								children={
-									<Fragment>
-										<p>Are you sure you want to delete this booking?</p>
-										<FormError error={deleteBookingResult.error} />
-									</Fragment>
-								}
+								children={<p>Are you sure you want to delete this booking?</p>}
+								error={deleteBookingResult.error}
 								subTitle={`${booking.student.details.firstName} ${booking.student.details.lastName}`}
 								buttons={
 									<Fragment>

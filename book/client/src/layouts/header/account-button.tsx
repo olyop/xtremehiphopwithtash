@@ -13,11 +13,7 @@ const AccountButton: FC = () => {
 	const { user, isAuthenticated, loginWithRedirect } = useAuth0();
 
 	const handleLogin = () => {
-		void loginWithRedirect({
-			authorizationParams: {
-				scope: "openid sub given_name family_name nickname phone_number picture read:current_user",
-			},
-		});
+		void loginWithRedirect();
 	};
 
 	const userHasImage = user?.picture !== undefined;
@@ -27,7 +23,7 @@ const AccountButton: FC = () => {
 			<Button
 				ariaLabel="Account Page"
 				transparent={userHasImage}
-				text={userHasImage ? undefined : "Account"}
+				text={userHasImage || breakpoint === Breakpoint.SMALL ? undefined : "Account"}
 				className={userHasImage ? `!p-0 ${className}` : className}
 				leftIcon={c => (userHasImage ? undefined : <UserCircleIcon className={c} />)}
 				childrenNode={
@@ -39,10 +35,10 @@ const AccountButton: FC = () => {
 		</Link>
 	) : (
 		<Button
+			text="Log In"
 			ariaLabel="Log In"
 			onClick={handleLogin}
 			className={`${className} ${breakpoint === Breakpoint.SMALL ? "!p-2 !gap-1" : ""}`}
-			text={userHasImage ? undefined : "Log In"}
 			leftIcon={c => <UserCircleIcon className={c} />}
 		/>
 	);

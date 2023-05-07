@@ -29,6 +29,22 @@ const LocationForm: FC<PropTypes> = ({ input, coordinates, onChange }) => {
 				placeHolder="e.g. Gym"
 			/>
 			<Input
+				id="address"
+				name="Address"
+				value={input.address}
+				type={InputType.TEXT}
+				onChange={handleChange("address")}
+				placeHolder="Address"
+				autoComplete="off"
+				noteClassName="flex gap-1 items-center"
+				note={
+					<Fragment>
+						<InformationCircleIcon className="h-4 w-4" />
+						<span>Guessed address from name</span>
+					</Fragment>
+				}
+			/>
+			<Input
 				id="plusCode"
 				name="Plus Code"
 				value={input.plusCode}
@@ -49,22 +65,6 @@ const LocationForm: FC<PropTypes> = ({ input, coordinates, onChange }) => {
 							<ArrowTopRightOnSquareIcon className="h-4 w-4" />
 							<span>https://plus.codes/map</span>
 						</a>
-					</Fragment>
-				}
-			/>
-			<Input
-				id="address"
-				name="Address"
-				value={input.address}
-				type={InputType.TEXT}
-				onChange={handleChange("address")}
-				placeHolder="Address"
-				autoComplete="off"
-				noteClassName="flex gap-1 items-center"
-				note={
-					<Fragment>
-						<InformationCircleIcon className="h-4 w-4" />
-						<span>Guessed address from name</span>
 					</Fragment>
 				}
 			/>

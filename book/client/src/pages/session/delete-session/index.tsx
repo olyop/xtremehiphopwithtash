@@ -5,7 +5,6 @@ import { FC, Fragment, createElement, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../../../components/button";
-import FormError from "../../../components/form-error";
 import Modal from "../../../components/modal";
 import {
 	DeleteSessionMutation,
@@ -56,12 +55,8 @@ const DeleteSession: FC<PropTypes> = ({ session }) => {
 				subTitle={
 					<SessionSubtitle startTime={session.startTime} endTime={session.endTime} label="" />
 				}
-				children={
-					<Fragment>
-						<p>Are you sure?</p>
-						<FormError error={error} />
-					</Fragment>
-				}
+				children={<p>Are you sure?</p>}
+				error={error}
 				buttons={
 					<Fragment>
 						<Button

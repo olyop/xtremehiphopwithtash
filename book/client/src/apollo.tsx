@@ -28,8 +28,6 @@ export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
 			try {
 				const accessToken = await getAccessTokenSilently();
 
-				console.log(accessToken);
-
 				return {
 					headers: {
 						Authorization: `Bearer ${accessToken}`,

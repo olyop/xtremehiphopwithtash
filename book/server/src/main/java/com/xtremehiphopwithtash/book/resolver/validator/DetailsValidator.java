@@ -28,6 +28,7 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 		commonValidator.validateText(input.firstName(), "First Name", 255);
 		commonValidator.validateText(input.lastName(), "Last Name", 255);
 		commonValidator.validateText(input.nickName(), "Nick Name", 255);
+		commonValidator.validateText(input.mobilePhoneNumber(), "Mobile Number", 14);
 		commonValidator.validateText(input.instagramUsername(), "Instagram Username", 255);
 		validateGender(input);
 		validateMobilePhoneNumber(input);
@@ -46,27 +47,27 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 
 		if (mobilePhoneNumber.length() == 10) {
 			if (!mobilePhoneNumber.startsWith("04")) {
-				throw new ResolverException("Invalid phone number - must be a mobile phone number");
+				throw new ResolverException("Invalid mobile number - must start with 04");
 			}
 			if (!mobilePhoneNumber.matches("^[0-9]*$")) {
-				throw new ResolverException("Invalid phone number - must only contain numbers");
+				throw new ResolverException("Invalid mobile number - must only contain numbers");
 			}
 		} else if (mobilePhoneNumber.length() == 13) {
 			if (!mobilePhoneNumber.startsWith("+61 4")) {
-				throw new ResolverException("Invalid phone number - must be a mobile phone number");
+				throw new ResolverException("Invalid mobile number - must bestart with +61 4");
 			}
 			if (!mobilePhoneNumber.substring(4).matches("^[0-9]*$")) {
-				throw new ResolverException("Invalid phone number - must only contain numbers");
+				throw new ResolverException("Invalid mobile number - must only contain numbers");
 			}
 		} else if (mobilePhoneNumber.length() == 14) {
 			if (!mobilePhoneNumber.startsWith("+61 04")) {
-				throw new ResolverException("Invalid phone number - must be a mobile phone number");
+				throw new ResolverException("Invalid mobile number - must start with 04");
 			}
 			if (!mobilePhoneNumber.substring(4).matches("^[0-9]*$")) {
-				throw new ResolverException("Invalid phone number - must only contain numbers");
+				throw new ResolverException("Invalid mobile number - must only contain numbers");
 			}
 		} else {
-			throw new ResolverException("Invalid mobile phone number");
+			throw new ResolverException("Invalid mobile number");
 		}
 	}
 

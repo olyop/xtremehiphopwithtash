@@ -795,6 +795,16 @@ export type CreateLocationMutation = {
 	};
 } & { readonly __typename: "Mutation" };
 
+export type DecodePlusCodeQueryVariables = Exact<{
+	plusCode: Scalars["String"];
+}>;
+
+export type DecodePlusCodeQuery = {
+	readonly decodePlusCode: { readonly latitude: number; readonly longitude: number } & {
+		readonly __typename: "Coordinates";
+	};
+} & { readonly __typename: "Query" };
+
 export type DeleteLocationMutationVariables = Exact<{
 	locationID: Scalars["UUID"];
 }>;

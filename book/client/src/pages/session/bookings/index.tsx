@@ -32,7 +32,7 @@ const SessionBookings: FC<PropTypes> = ({ session }) => {
 			<h3 className="text-xl p-2 border-b">Bookings</h3>
 			{bookingsResult.data ? (
 				<Fragment>
-					{bookingsResult.data.getSessionByID.bookings.length > 0 ? (
+					{bookingsResult.data.getSessionByID.bookings ? (
 						<div>
 							{bookingsResult.data.getSessionByID.bookings.map(booking => (
 								<SessionPageBooking

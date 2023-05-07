@@ -4,19 +4,21 @@ import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
 import Button from "../../../components/button";
-import FormError from "../../../components/form-error";
 import LocationForm from "../../../components/forms/location-form";
 import Modal from "../../../components/modal";
 import {
 	Coordinates,
 	CreateLocationMutation,
+	DecodePlusCodeQuery,
 	LocationInput,
 	MutationCreateLocationArgs,
+	QueryDecodePlusCodeArgs,
 	QuerySearchPlaceByNameArgs,
 	SearchPlaceByNameQuery,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import CREATE_LOCATION from "./create-location.graphql";
+import DECODE_PLUS_CODE from "./decode-plus-code.graphql";
 import GET_LOCATIONS from "./get-locations.graphql";
 import { initialInput } from "./initial-input";
 import SEARCH_PLACE_BY_NAME from "./search-place-by-name.graphql";
@@ -73,6 +75,19 @@ const AddLocation: FC = () => {
 		}
 	};
 
+	const decodePlusCode = async (plusCode: string) => {
+		const result = await apollo.query<DecodePlusCodeQuery, QueryDecodePlusCodeArgs>({
+			query: DECODE_PLUS_CODE,
+			variables: {
+				plusCode,
+			},
+		});
+
+		if (result.data.decodePlusCode) {
+			setCoordinates(result.data.decodePlusCode);
+		}
+	};
+
 	const [isOpen, openModal, closeModal] = useModal(handleFormReset);
 
 	useEffect(() => {
@@ -90,6 +105,14 @@ const AddLocation: FC = () => {
 		}
 	}, [input.name]);
 
+	useEffect(() => {
+		if (input.plusCode.length === 0) {
+			setCoordinates(null);
+		} else {
+			void decodePlusCode(input.plusCode);
+		}
+	}, [input.plusCode]);
+
 	return (
 		<Fragment>
 			<Button
@@ -101,16 +124,12 @@ const AddLocation: FC = () => {
 			<Modal
 				isLarge
 				title="Add Location"
-				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
-				children={
-					<Fragment>
-						<LocationForm input={input} onChange={setInput} coordinates={coordinates} />
-						<FormError error={error} />
-					</Fragment>
-				}
+				icon={className => <PlusIcon className={className} />}
+				children={<LocationForm input={input} onChange={setInput} coordinates={coordinates} />}
+				error={error}
 				buttons={
 					<Fragment>
 						<Button

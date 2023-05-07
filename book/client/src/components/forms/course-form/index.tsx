@@ -107,7 +107,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 				<Input
 					nullable
 					id="defaultEquipmentAvailable"
-					name="Default Steps Available"
+					name="Default Steps"
 					value={input.defaultEquipmentAvailable || 0}
 					type={InputType.INTEGER}
 					onChange={handleChange("defaultEquipmentAvailable")}

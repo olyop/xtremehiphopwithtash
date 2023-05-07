@@ -6,7 +6,6 @@ import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../../../components/button";
-import FormError from "../../../components/form-error";
 import BookingForm from "../../../components/forms/booking-form";
 import Modal from "../../../components/modal";
 import SessionCard from "../../../components/session-card";
@@ -108,7 +107,6 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 							imageClassName="!h-20"
 						/>
 						<BookingForm session={session} input={input} onChange={setInput} />
-						<FormError error={undefined} />
 					</Fragment>
 				}
 				buttons={
