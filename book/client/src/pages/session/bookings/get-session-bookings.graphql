@@ -4,8 +4,14 @@ query getSessionBookings($sessionID: UUID!) {
 		bookings {
 			bookingID
 			notes
-			isBringingOwnEquipment
 			createdAt
+			bookingQuantity
+			equipmentQuantity
+			paymentMethod
+			cost
+			session {
+				sessionID
+			}
 			student {
 				studentID
 				details {

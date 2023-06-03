@@ -6,6 +6,7 @@ type Details {
 	nickName: String
 	gender: String
 	mobilePhoneNumber: String!
+	emailAddress: String
 	instagramUsername: String
 
 	createdAt: UnixTime!
@@ -63,9 +64,9 @@ type Course {
 	description: String!
 	defaultPrice: PositiveInt
 	defaultEquipmentFee: PositiveInt
-	defaultCapacity: PositiveInt!
 	defaultDuration: PositiveInt!
 	defaultLocation: Location!
+	defaultCapacityAvailable: PositiveInt!
 	defaultEquipmentAvailable: PositiveInt
 
 	defaultInstructors: [Instructor!]!
@@ -84,15 +85,20 @@ type Session {
 	location: Location!
 	startTime: UnixTime!
 	endTime: UnixTime!
-	capacity: PositiveInt!
-	equipmentAvailable: PositiveInt!
-	equipmentLeft: PositiveInt!
+
+	capacityAvailable: PositiveInt!
+	capacityBooked: PositiveInt
+	capacityRemaining: PositiveInt
+	isCapacityRemaining(bookingQuantity: PositiveInt!): Boolean!
+
+	equipmentAvailable: PositiveInt
+	equipmentHired: PositiveInt
+	equipmentRemaining: PositiveInt
+	isEquipmentRemaining(equipmentQuantity: PositiveInt): Boolean!
 
 	course: Course!
 	instructors: [Instructor!]!
 	bookings: [Booking!]
-	bookingsTotal: PositiveInt
-	capacityRemaining: PositiveInt
 
 	createdAt: UnixTime!
 }
@@ -101,12 +107,28 @@ type Booking {
 	bookingID: UUID!
 
 	notes: String
-	isBringingOwnEquipment: Boolean!
+	paymentMethod: PaymentMethod
+	bookingQuantity: PositiveInt!
+	equipmentQuantity: PositiveInt
+	cost: Float
 
 	student: Student!
 	session: Session!
 
 	createdAt: UnixTime!
+}
+
+type BookingCost {
+	bookingCost: NonNegativeInt!
+	equipmentCost: NonNegativeInt!
+	fullCost: NonNegativeInt!
+	couponDiscountPercentage: NonNegativeInt!
+	couponDiscount: Float!
+	finalCost: Float!
+	surcharge: Float!
+	transactionFee: Float!
+	fullSurcharge: Float!
+	estimatedCost: Float!
 }
 
 type Review {

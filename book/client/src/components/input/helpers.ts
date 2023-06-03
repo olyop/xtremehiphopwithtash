@@ -67,6 +67,8 @@ export const determineInputValue = (
 		return value;
 	} else if (type === InputType.TEXTAREA && typeof value === "string") {
 		return value;
+	} else if (type === InputType.MOBILE && typeof value === "string") {
+		return value;
 	} else {
 		throw new Error(`Invalid input value of type ${typeof value} for input type ${type}`);
 	}
@@ -85,6 +87,8 @@ export const determineInputType = (type: InputType): HTMLInputTypeAttribute =>
 		? "time"
 		: type === InputType.CHECKBOX
 		? "checkbox"
+		: type === InputType.MOBILE
+		? "tel"
 		: "text";
 
 export const mapListToChips = <T>(

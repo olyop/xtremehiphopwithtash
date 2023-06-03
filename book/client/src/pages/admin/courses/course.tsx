@@ -2,10 +2,10 @@ import { MutationResult } from "@apollo/client";
 import { FC, Fragment, createElement, useState } from "react";
 
 import CourseInput from "../../../components/forms/course-form";
-import { CourseInput as CourseInputType, GetCoursesQuery } from "../../../generated-types";
+import { CourseInput as CourseInputType, Course as CourseType } from "../../../generated-types";
 import { currencyFormatter, listFormatter } from "../../../intl";
-import { ArrayElement } from "../../../utils";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
+import { mapCourseToInput } from "../map-entity-to-input";
 
 const Course: FC<PropTypes> = ({
 	course,
@@ -16,22 +16,13 @@ const Course: FC<PropTypes> = ({
 	updateModalError,
 	deleteModalError,
 }) => {
-	const { defaultInstructors, defaultLocation, ...courseInput } = course;
-
-	const [input, setInput] = useState<CourseInputType>({
-		...courseInput,
-		defaultLocationID: defaultLocation?.locationID,
-		defaultPrice: courseInput.defaultPrice === 0 ? null : courseInput.defaultPrice,
-		defaultEquipmentFee:
-			courseInput.defaultEquipmentFee === 0 ? null : courseInput.defaultEquipmentFee,
-		defaultInstructorIDs: defaultInstructors.map(({ instructorID }) => instructorID),
-	});
-
+	const [input, setInput] = useState<CourseInputType>(mapCourseToInput(course));
 	return (
 		<AdminEntity
 			id={course.courseID}
 			photo={course.photo}
 			typeName={course.__typename}
+			isLargeEditModal
 			editModalContent={<CourseInput input={input} onChange={setInput} />}
 			onEdit={onUpdate(input)}
 			onDelete={onDelete}
@@ -53,7 +44,9 @@ const Course: FC<PropTypes> = ({
 			description={
 				<span className="text-gray-500">
 					{listFormatter.format(
-						defaultInstructors.map(({ details: { firstName, nickName } }) => nickName ?? firstName),
+						course.defaultInstructors.map(
+							({ details: { firstName, nickName } }) => nickName ?? firstName,
+						),
 					)}
 				</span>
 			}
@@ -62,7 +55,7 @@ const Course: FC<PropTypes> = ({
 };
 
 interface PropTypes {
-	course: ArrayElement<GetCoursesQuery["getCourses"]>;
+	course: CourseType;
 	onUpdate: (input: CourseInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;
 	isUpdating: boolean;

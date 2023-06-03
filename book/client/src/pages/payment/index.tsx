@@ -1,265 +1,250 @@
 import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
 import { useAuth0 } from "@auth0/auth0-react";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import { FC, createElement, useCallback, useEffect, useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { PaymentElement } from "@stripe/react-stripe-js";
+import { FC, createElement, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import Button from "../../components/button";
 import FormError from "../../components/form-error";
-import Input, { InputOnChange, InputType } from "../../components/input";
 import {
+	BookingCost,
 	BookingInput,
-	CreateBookingFreeMutation,
-	CreateBookingFreeMutationVariables,
-	CreateBookingReferralCodeMutation,
-	CreateBookingReferralCodeMutationVariables,
+	CreateBookingMutation,
+	CreateBookingMutationVariables,
 	GetPaymentScreenSessionQuery,
 	GetPaymentScreenSessionQueryVariables,
+	GetStripeCheckoutUrlQuery,
+	PaymentMethod,
 	Session,
 } from "../../generated-types";
-import { useHasMounted } from "../../hooks";
+import { useGetReCaptchaToken, useHasMounted } from "../../hooks";
+import Page from "../page";
 import PaymentConfirmation from "./confirmation";
-import CREATE_BOOKING_FREE from "./create-booking-free.graphql";
-import CREATE_BOOKING_COUPON from "./create-booking-referral-code.graphql";
+import PaymentCoupon from "./coupon";
+import CREATE_BOOKING from "./create-booking.graphql";
 import GET_PAYMENT_SCREEN from "./get-payment-screen-session.graphql";
+import GET_STRIPE_CHECKOUT_URL from "./get-stripe-checkout-url.graphql";
 import PaymentOverview from "./overview";
 import PaymentLoading from "./payment-loading";
 import PaymentMethodForm from "./payment-method-form";
-import { PaymentMethod } from "./types";
-import { verifyBooleanParamater } from "./verify-boolean-paramater";
-import { verifyReferralCode } from "./verify-referral-code";
+import { verifyIntegerParamater } from "./search-paramaters";
 
 const PaymentPage: FC = () => {
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
 	const { isAuthenticated, user } = useAuth0();
-	const { executeRecaptcha } = useGoogleReCaptcha();
+	const reCaptchaToken = useGetReCaptchaToken();
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const [hasPaid, setHasPaid] = useState(false);
 	const [isPaying, setIsPaying] = useState(false);
-	const [referralCode, setReferralCode] = useState("");
-	const [paymentMethod, setPaymentMethod] = useState(PaymentMethod.UNCHOSEN);
-	const [bookingInput, setBookingInput] = useState<BookingInput | null>(null);
-	const [isReferralCodeValid, setIsReferralCodeValid] = useState<boolean | null>(null);
-	const [reCaptchaToken, setReCaptchaToken] = useState<string | null>(null);
 
-	const [getSession, sessionResult] = useLazyQuery<SessionData, SessionVars>(GET_PAYMENT_SCREEN);
-	const [bookFree, bookFreeResult] = useMutation<FreeData, FreeVars>(CREATE_BOOKING_FREE);
-	const [bookCoupon, bookCouponResult] = useMutation<CouponData, CouponVars>(CREATE_BOOKING_COUPON);
+	const [session, setSession] = useState<Session | null>(null);
+	const [bookingCost, setBookingCost] = useState<BookingCost | null>(null);
+	const [bookingInput, setBookingInput] = useState<BookingInput | null>(null);
+
+	const [createBooking, createBookingResult] = useMutation<CreateData, CreateVars>(CREATE_BOOKING);
+
+	const [getCheckoutURL, getCheckoutURLResult] =
+		useLazyQuery<CheckoutURLData>(GET_STRIPE_CHECKOUT_URL);
+
+	const reftechPageData = async (input: BookingInput) => {
+		const { data } = await apollo.query<PageData, PageVars>({
+			query: GET_PAYMENT_SCREEN,
+			variables: {
+				sessionID: input.sessionID,
+				bookingInput: input,
+			},
+		});
+
+		const { getSessionByID, getBookingCost } = data;
+
+		setBookingCost(getBookingCost);
+		setSession(getSessionByID as Session);
+
+		setBookingInput({
+			...input,
+			paymentMethod: getBookingCost.finalCost === 0 ? null : input.paymentMethod,
+		});
+	};
 
 	useEffect(() => {
 		if (!hasMounted) {
 			const sessionIDParam = searchParams.get("sessionID");
 			const notesParam = searchParams.get("notes");
-			const isBringingOwnEquipmentParam = searchParams.get("isBringingOwnEquipment");
+			const couponParam = searchParams.get("coupon");
+			const bookingQuantityParam = searchParams.get("bookingQuantity");
+			const equipmentQuantityParam = searchParams.get("equipmentQuantity");
 
 			if (
 				sessionIDParam &&
-				isBringingOwnEquipmentParam &&
-				verifyBooleanParamater(isBringingOwnEquipmentParam)
+				bookingQuantityParam &&
+				verifyIntegerParamater(bookingQuantityParam) &&
+				(equipmentQuantityParam ? verifyIntegerParamater(equipmentQuantityParam) : true)
 			) {
-				setBookingInput({
+				const input: BookingInput = {
 					sessionID: sessionIDParam,
 					notes: notesParam,
-					isBringingOwnEquipment: isBringingOwnEquipmentParam === "true",
-				});
+					bookingQuantity: Number.parseInt(bookingQuantityParam),
+					equipmentQuantity: equipmentQuantityParam
+						? Number.parseInt(equipmentQuantityParam)
+						: null,
+					couponCode: couponParam,
+					paymentMethod: null,
+				};
 
-				void getSession({
-					variables: {
-						sessionID: sessionIDParam,
-					},
-				});
+				void reftechPageData(input);
 			}
 		}
 	}, []);
 
-	const handleReferralCodeChange: InputOnChange = value => {
-		if (typeof value === "string") {
-			setReferralCode(value);
+	useEffect(() => {
+		if (bookingInput) {
+			void reftechPageData(bookingInput);
 		}
-	};
-
-	const handleVerifyCoupon = async () => {
-		setIsReferralCodeValid(await verifyReferralCode(apollo)(referralCode));
-	};
-
-	const handleReCaptchaVerify = useCallback(async () => {
-		if (executeRecaptcha) {
-			const token = await executeRecaptcha("book");
-			setReCaptchaToken(token);
-		}
-	}, [executeRecaptcha]);
+	}, [bookingInput?.couponCode, bookingInput?.paymentMethod]);
 
 	useEffect(() => {
-		if (reCaptchaToken === null) {
-			void handleReCaptchaVerify();
-		}
-	}, []);
-
-	useEffect(() => {
-		if (hasMounted && referralCode.length > 0) {
-			void handleVerifyCoupon();
-		}
-	}, [referralCode]);
-
-	useEffect(() => {
-		if (isReferralCodeValid) {
+		if (hasMounted) {
 			setSearchParams(prevSearchParams => {
-				prevSearchParams.append("referralCode", referralCode);
-				return prevSearchParams;
-			});
-		} else {
-			setSearchParams(prevSearchParams => {
-				prevSearchParams.delete("referralCode");
+				if (bookingInput?.paymentMethod) {
+					if (prevSearchParams.has("paymentMethod")) {
+						prevSearchParams.set("paymentMethod", bookingInput?.paymentMethod);
+					} else {
+						prevSearchParams.append("paymentMethod", bookingInput?.paymentMethod);
+					}
+				} else {
+					prevSearchParams.delete("paymentMethod");
+				}
+
 				return prevSearchParams;
 			});
 		}
-	}, [isReferralCodeValid]);
+	}, [bookingInput?.paymentMethod]);
 
-	useEffect(() => {
-		if (bookFreeResult.data?.createBookingFree.bookingID) {
+	const handleApplyCoupon = (coupon: string) => {
+		setBookingInput(prevState => {
+			if (prevState === null) {
+				return null;
+			} else {
+				return {
+					...prevState,
+					couponCode: coupon,
+				};
+			}
+		});
+	};
+
+	const handleSubmit = () => {
+		if (bookingInput && user?.sub) {
 			setIsPaying(true);
+
+			void createBooking({
+				variables: {
+					input: bookingInput,
+				},
+			});
 		}
-	}, [bookFreeResult]);
+	};
 
 	useEffect(() => {
-		if (bookCouponResult.data?.createBookingReferralCode.bookingID) {
-			setIsPaying(true);
-		}
-	}, [bookCouponResult]);
-
-	useEffect(() => {
-		if (isPaying) {
+		if (createBookingResult.data) {
 			setTimeout(() => {
-				setHasPaid(true);
 				setIsPaying(false);
+				setHasPaid(true);
 			}, 1500);
 		}
-	}, [isPaying]);
+	}, [createBookingResult.data]);
+
+	useEffect(() => {
+		if (createBookingResult.error) {
+			setIsPaying(false);
+			setHasPaid(false);
+		}
+	}, [createBookingResult.error]);
+
+	useEffect(() => {
+		if (getCheckoutURLResult.data) {
+			window.location.href = getCheckoutURLResult.data.getStripeCheckoutURL;
+		}
+	}, [getCheckoutURLResult]);
+
+	if (!isAuthenticated) {
+		return <PaymentLoading />;
+	}
 
 	if (bookingInput === null) {
 		return <PaymentLoading />;
 	}
 
-	if (!sessionResult.data?.getSessionByID) {
+	if (session === null) {
 		return <PaymentLoading />;
 	}
 
-	const { sessionID, notes, isBringingOwnEquipment } = bookingInput;
-	const session = sessionResult.data.getSessionByID;
-
-	if (hasPaid) {
-		return <PaymentConfirmation session={session as Session} />;
+	if (bookingCost === null) {
+		return <PaymentLoading />;
 	}
 
 	if (isPaying) {
 		return <PaymentLoading />;
 	}
 
-	const handleCouponSubmit = () => {
-		if (user?.sub) {
-			void bookCoupon({
-				variables: {
-					input: bookingInput,
-					studentID: user.sub,
-					code: referralCode,
-				},
-			});
-		}
-	};
+	if (hasPaid) {
+		return <PaymentConfirmation session={session} />;
+	}
 
-	const handleFreeSubmit = () => {
-		if (user?.sub) {
-			void bookFree({
-				variables: {
-					input: bookingInput,
-					studentID: user.sub,
-				},
-			});
-		}
-	};
-
-	const calculatedPrice = isBringingOwnEquipment
-		? session.price ?? 0
-		: (session.price ?? 0) + (session.equipmentFee ?? 0);
-
-	const price = calculatedPrice === 0 ? null : calculatedPrice;
-
-	const handleSubmit = () => {
-		if (isAuthenticated && sessionID && sessionResult) {
-			if (price) {
-				if (paymentMethod === PaymentMethod.COUPON) {
-					handleCouponSubmit();
-				}
-			} else {
-				handleFreeSubmit();
-			}
-		}
-	};
-
-	const disableBookingButton =
-		reCaptchaToken === null
-			? true
-			: price === null
-			? false
-			: paymentMethod === PaymentMethod.UNCHOSEN ||
-			  (paymentMethod === PaymentMethod.COUPON && !isReferralCodeValid);
+	const canBook =
+		reCaptchaToken !== null &&
+		isAuthenticated &&
+		user?.sub !== null &&
+		(bookingInput.paymentMethod === PaymentMethod.CASH ||
+			(bookingInput.paymentMethod === null && bookingCost.finalCost === 0));
 
 	return (
-		<div className="h-full flex flex-col gap-12 justify-between">
-			<div className="flex flex-col gap-8">
-				<PaymentOverview
-					notes={notes}
-					price={price}
-					session={session as Session}
-					isBringingOwnEquipment={isBringingOwnEquipment}
-				/>
-				<div className="flex flex-col gap-8 p-4">
-					{price && <PaymentMethodForm onChange={setPaymentMethod} paymentMethod={paymentMethod} />}
-					{paymentMethod === PaymentMethod.COUPON ? (
-						<Input
-							id="referralCode"
-							name="Code"
-							type={InputType.TEXT}
-							value={referralCode}
-							maxLength={9}
-							autoComplete="off"
-							onChange={handleReferralCodeChange}
-							placeHolder="Enter Here"
-							note={
-								referralCode.length === 0 ? undefined : isReferralCodeValid ? (
-									<span className="text-green-500">Valid</span>
-								) : (
-									<span className="text-red-500">Invalid</span>
-								)
-							}
+		<Page className="h-full flex flex-col gap-12 justify-between !pb-0">
+			<div className="flex flex-col gap-6">
+				<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
+				<div className="flex flex-col gap-8 px-4">
+					{bookingCost.fullCost === 0 || (
+						<PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />
+					)}
+					{bookingCost.finalCost === 0 || (
+						<PaymentMethodForm
+							setBookingInput={setBookingInput}
+							paymentMethod={bookingInput.paymentMethod}
 						/>
-					) : null}
+					)}
+					{bookingInput.paymentMethod === PaymentMethod.CARD && <PaymentElement />}
 				</div>
 			</div>
 			<div className="flex flex-col gap-4 border-t p-4">
-				<FormError error={bookFreeResult.error || bookCouponResult.error} />
+				<FormError error={createBookingResult.error} />
+				<Button
+					text="Stripe Checkout"
+					ariaLabel="Stripe Checkout"
+					onClick={() => {
+						void getCheckoutURL();
+					}}
+				/>
 				<Button
 					text="Book Session"
 					ariaLabel="Book Session"
 					textClassName="!text-xl"
 					onClick={handleSubmit}
-					disabled={disableBookingButton}
+					disabled={!canBook}
 					className="!h-14 shadow-xl hover:shadow-xl rounded-xl"
 					leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
 				/>
 			</div>
-		</div>
+		</Page>
 	);
 };
 
-type SessionData = GetPaymentScreenSessionQuery;
-type SessionVars = GetPaymentScreenSessionQueryVariables;
-type CouponData = CreateBookingReferralCodeMutation;
-type CouponVars = CreateBookingReferralCodeMutationVariables;
-type FreeData = CreateBookingFreeMutation;
-type FreeVars = CreateBookingFreeMutationVariables;
+type PageData = GetPaymentScreenSessionQuery;
+type PageVars = GetPaymentScreenSessionQueryVariables;
+type CreateData = CreateBookingMutation;
+type CreateVars = CreateBookingMutationVariables;
+type CheckoutURLData = GetStripeCheckoutUrlQuery;
 
 export default PaymentPage;

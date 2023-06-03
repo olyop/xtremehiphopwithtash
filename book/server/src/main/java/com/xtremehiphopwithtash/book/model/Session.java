@@ -11,10 +11,10 @@ public class Session extends Base {
 	private UUID locationID;
 	private Short price;
 	private Short equipmentFee;
-	private Short capacity;
 	private Instant startTime;
 	private Instant endTime;
 	private UUID courseID;
+	private Short capacityAvailable;
 	private Short equipmentAvailable;
 
 	public Session() {}
@@ -67,14 +67,6 @@ public class Session extends Base {
 		this.equipmentFee = equipmentFee;
 	}
 
-	public Short getCapacity() {
-		return capacity;
-	}
-
-	public void setCapacity(Short capacity) {
-		this.capacity = capacity;
-	}
-
 	public Instant getStartTime() {
 		return startTime;
 	}
@@ -97,6 +89,14 @@ public class Session extends Base {
 
 	public void setCourseID(UUID courseID) {
 		this.courseID = courseID;
+	}
+
+	public Short getCapacityAvailable() {
+		return capacityAvailable;
+	}
+
+	public void setCapacityAvailable(Short bookingsAvailable) {
+		this.capacityAvailable = bookingsAvailable;
 	}
 
 	public Short getEquipmentAvailable() {

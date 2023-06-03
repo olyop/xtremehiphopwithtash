@@ -8,5 +8,6 @@ public record DetailsInput(
 	Optional<String> nickName,
 	Optional<String> gender,
 	String mobilePhoneNumber,
+	Optional<String> emailAddress,
 	Optional<String> instagramUsername
 ) {}

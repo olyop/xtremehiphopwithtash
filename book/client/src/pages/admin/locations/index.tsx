@@ -67,7 +67,7 @@ const Locations: FC = () => {
 			renderItem={location => (
 				<Location
 					key={location.locationID}
-					location={location}
+					location={location as LocationType}
 					onUpdate={handleUpdateLocation(location)}
 					onDelete={handleDeleteLocation(location)}
 					isUpdating={updateResult.loading}

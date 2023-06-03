@@ -1,5 +1,5 @@
-mutation updateStudent($studentID: String!, $detailsInput: DetailsInput!) {
-	updateStudentByID(studentID: $studentID, input: $detailsInput) {
+mutation updateStudent($detailsInput: DetailsInput!) {
+	updateStudentByID(input: $detailsInput) {
 		studentID
 		createdAt
 		details {
@@ -7,7 +7,6 @@ mutation updateStudent($studentID: String!, $detailsInput: DetailsInput!) {
 			firstName
 			lastName
 			nickName
-			gender
 			mobilePhoneNumber
 			instagramUsername
 		}

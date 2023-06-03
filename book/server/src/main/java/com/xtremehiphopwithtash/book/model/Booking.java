@@ -1,14 +1,18 @@
 package com.xtremehiphopwithtash.book.model;
 
+import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import java.util.UUID;
 
 public class Booking extends Base {
 
 	private UUID bookingID;
 	private String notes;
-	private Boolean isBringingOwnEquipment;
 	private UUID sessionID;
 	private String studentID;
+	private Short bookingQuantity;
+	private Short equipmentQuantity;
+	private PaymentMethod paymentMethod;
+	private Double cost;
 
 	public Booking() {}
 
@@ -28,14 +32,6 @@ public class Booking extends Base {
 		this.notes = notes;
 	}
 
-	public Boolean getIsBringingOwnEquipment() {
-		return isBringingOwnEquipment;
-	}
-
-	public void setIsBringingOwnEquipment(Boolean isBringingOwnEquipment) {
-		this.isBringingOwnEquipment = isBringingOwnEquipment;
-	}
-
 	public UUID getSessionID() {
 		return sessionID;
 	}
@@ -50,5 +46,37 @@ public class Booking extends Base {
 
 	public void setStudentID(String studentID) {
 		this.studentID = studentID;
+	}
+
+	public Short getBookingQuantity() {
+		return bookingQuantity;
+	}
+
+	public void setBookingQuantity(Short bookingQuantity) {
+		this.bookingQuantity = bookingQuantity;
+	}
+
+	public Short getEquipmentQuantity() {
+		return equipmentQuantity;
+	}
+
+	public void setEquipmentQuantity(Short equipmentQuantity) {
+		this.equipmentQuantity = equipmentQuantity;
+	}
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 }

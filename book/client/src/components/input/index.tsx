@@ -15,10 +15,17 @@ import {
 } from "./helpers";
 import { InputOnChange, InputSelectOptions, InputType, InputValue, SelectOption } from "./types";
 
-const createClassName = (type: InputType, value: InputValue, className: string | undefined) =>
+const createClassName = (
+	type: InputType,
+	value: InputValue,
+	className: string | undefined,
+	disabled: boolean,
+) =>
 	`border cursor-pointer outline-none ${
 		type === InputType.CHECKBOX ? "mt-[1px] ml-[1px]" : "w-full"
-	} border-gray-200 hover:border-gray-400 transition-all rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
+	} border-gray-200 ${
+		disabled ? "" : "hover:border-gray-400 transition-all"
+	} rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
 		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-6") : ""
 	} ${type === InputType.TEXTAREA ? "resize-none h-[7rem]" : ""} ${className ?? ""}`;
 
@@ -38,9 +45,13 @@ const Input: FC<InputPropTypes> = ({
 	autoComplete,
 	placeHolder,
 	selectOptions,
+	hideEmptySelectOptions = false,
 	onChange,
 	items,
 }) => {
+	const isTextType = type === InputType.TEXT || type === InputType.URL || type === InputType.MOBILE;
+	const isIntegerType = type === InputType.INTEGER || type === InputType.PRICE;
+
 	const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
 		const { value: targetValue, checked } = event.target;
 
@@ -48,14 +59,14 @@ const Input: FC<InputPropTypes> = ({
 			onChange(convertTimeInputToUnixTime(value, targetValue));
 		} else if (type === InputType.DATE && typeof value === "number") {
 			onChange(convertDateTimeInputToUnixTime(value, targetValue));
-		} else if (type === InputType.INTEGER || type === InputType.PRICE) {
+		} else if (isIntegerType) {
 			if (targetValue.length === 0) {
 				onChange(null);
 			} else {
 				const valueInt = Number.parseInt(targetValue, 10);
 				onChange(nullable ? (valueInt === 0 ? null : valueInt) : valueInt);
 			}
-		} else if (type === InputType.TEXT || type === InputType.URL) {
+		} else if (isTextType) {
 			onChange(nullable ? (targetValue.length === 0 ? null : targetValue) : targetValue);
 		} else if (type === InputType.CHECKBOX) {
 			onChange(checked);
@@ -123,10 +134,13 @@ const Input: FC<InputPropTypes> = ({
 					<select
 						value=""
 						name={name}
+						disabled={disabled}
 						id={`${id}-select`}
 						placeholder={placeHolder}
 						onChange={handleSelectChange}
-						className={`${createClassName(type, value, className)} appearance-none`}
+						className={`${createClassName(type, value, className, disabled)} appearance-none ${
+							disabled ? "text-gray-400" : ""
+						}`}
 					>
 						{selectOptions === null ? (
 							<option value="">None found</option>
@@ -134,7 +148,9 @@ const Input: FC<InputPropTypes> = ({
 							<option value="">Loading...</option>
 						) : (
 							<Fragment>
-								<option value="">Please choose</option>
+								{hideEmptySelectOptions || (
+									<option value="">{placeHolder ?? "Please choose"}</option>
+								)}
 								{selectOptions
 									.filter(({ optionID }) => !value.includes(optionID))
 									.map(({ optionID, description }) => (
@@ -145,17 +161,24 @@ const Input: FC<InputPropTypes> = ({
 							</Fragment>
 						)}
 					</select>
-					<ChevronDownIcon className="w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10" />
+					<ChevronDownIcon
+						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${
+							disabled ? "text-gray-500" : ""
+						}`}
+					/>
 				</Fragment>
 			) : type === InputType.SELECT ? (
 				<Fragment>
 					<select
 						id={id}
 						name={name}
+						disabled={disabled}
 						placeholder={placeHolder}
 						onChange={handleSelectChange}
 						value={determineInputValue(type, value, selectOptions)}
-						className={`${createClassName(type, value, className)} appearance-none`}
+						className={`${createClassName(type, value, className, disabled)} appearance-none ${
+							disabled ? "text-gray-400" : ""
+						}`}
 					>
 						{selectOptions === null ? (
 							<option value="">None found</option>
@@ -163,7 +186,9 @@ const Input: FC<InputPropTypes> = ({
 							<option value="">Loading...</option>
 						) : (
 							<Fragment>
-								<option value="">Please choose</option>
+								{hideEmptySelectOptions || (
+									<option value="">{placeHolder ?? "Please choose"}</option>
+								)}
 								{selectOptions.map(({ optionID, description }) => (
 									<option key={optionID} value={optionID}>
 										{capitalizeFirstLetter(description)}
@@ -172,7 +197,11 @@ const Input: FC<InputPropTypes> = ({
 							</Fragment>
 						)}
 					</select>
-					<ChevronDownIcon className="w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10" />
+					<ChevronDownIcon
+						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${
+							disabled ? "text-gray-500" : ""
+						}`}
+					/>
 				</Fragment>
 			) : type === InputType.TEXTAREA ? (
 				<textarea
@@ -183,24 +212,25 @@ const Input: FC<InputPropTypes> = ({
 					placeholder={placeHolder}
 					autoComplete={autoComplete}
 					onChange={handleTextAreaChange}
-					className={createClassName(type, value, className)}
+					className={createClassName(type, value, className, disabled)}
 					value={determineInputValue(type, value, selectOptions)}
 				/>
 			) : (
 				<input
 					id={id}
 					name={name}
-					maxLength={maxLength}
 					disabled={disabled}
 					placeholder={placeHolder}
 					autoComplete={autoComplete}
 					onChange={handleInputChange}
 					type={determineInputType(type)}
-					step={type === InputType.INTEGER ? 1 : undefined}
-					className={createClassName(type, value, className)}
+					max={isIntegerType ? 50 : undefined}
+					step={isIntegerType ? 1 : undefined}
+					min={isIntegerType ? (nullable ? 0 : 1) : undefined}
 					value={determineInputValue(type, value, selectOptions)}
-					min={type === InputType.INTEGER ? 0 : undefined}
+					className={createClassName(type, value, className, disabled)}
 					checked={type === InputType.CHECKBOX && typeof value === "boolean" ? value : undefined}
+					maxLength={type === InputType.MOBILE ? 14 : maxLength}
 				/>
 			)}
 			{note && type !== InputType.CHECKBOX && (
@@ -224,7 +254,7 @@ interface InputPropTypes {
 	disabled?: boolean;
 	className?: string;
 	maxLength?: number;
-	noteClassName?: string;
+	noteClassName?: string | undefined;
 	labelClassName?: string;
 	value: InputValue;
 	placeHolder?: string;
@@ -233,6 +263,7 @@ interface InputPropTypes {
 	type: InputType;
 	onChange: InputOnChange;
 	selectOptions?: InputSelectOptions;
+	hideEmptySelectOptions?: boolean;
 	items?: ChipInput[];
 }
 

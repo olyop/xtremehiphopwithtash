@@ -7,6 +7,7 @@ import Button from "../button";
 
 const CopyButton: FC<PropTypes> = ({
 	text,
+	buttonText,
 	ariaLabel,
 	className,
 	buttonDimension = 6,
@@ -24,7 +25,7 @@ const CopyButton: FC<PropTypes> = ({
 		} finally {
 			setTimeout(() => {
 				setHasCopied(false);
-			}, 1000);
+			}, 1500);
 		}
 	};
 
@@ -34,10 +35,13 @@ const CopyButton: FC<PropTypes> = ({
 
 	return (
 		<Button
-			transparent
+			transparent={buttonText === undefined}
+			text={buttonText && hasCopied ? "Copied" : buttonText}
 			ariaLabel={ariaLabel}
 			onClick={handleClick}
-			className={`!w-${buttonDimension} !h-${buttonDimension} !p-0 ${className ?? ""}`}
+			className={`${buttonText ? "p-4" : `!w-${buttonDimension} !p-0`} !h-${buttonDimension} ${
+				className ?? ""
+			}`}
 			iconClassName={`!w-${iconDimension} !h-${iconDimension}`}
 			leftIcon={iconClassName =>
 				error ? (
@@ -54,6 +58,7 @@ const CopyButton: FC<PropTypes> = ({
 
 interface PropTypes {
 	text: string;
+	buttonText?: string;
 	showText?: boolean;
 	className?: string;
 	ariaLabel: string;

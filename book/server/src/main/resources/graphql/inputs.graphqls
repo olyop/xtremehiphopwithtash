@@ -10,6 +10,7 @@ input DetailsInput {
 	lastName: String!
 	gender: String
 	mobilePhoneNumber: String!
+	emailAddress: String
 	instagramUsername: String
 }
 
@@ -31,7 +32,7 @@ input CourseInput {
 	defaultPrice: PositiveInt
 	defaultEquipmentFee: PositiveInt
 	defaultDuration: PositiveInt!
-	defaultCapacity: PositiveInt!
+	defaultCapacityAvailable: PositiveInt!
 	defaultEquipmentAvailable: PositiveInt
 	defaultLocationID: UUID!
 	defaultInstructorIDs: [UUID!]!
@@ -42,17 +43,25 @@ input SessionInput {
 	notes: String
 	startTime: UnixTime!
 	endTime: UnixTime!
+	courseID: UUID!
 	price: PositiveInt
 	equipmentFee: PositiveInt
-	capacity: PositiveInt!
+	capacityAvailable: PositiveInt!
 	equipmentAvailable: PositiveInt
-	courseID: UUID!
 	locationID: UUID!
 	instructorIDs: [UUID!]!
+}
+
+enum PaymentMethod {
+	CASH
+	CARD
 }
 
 input BookingInput {
 	notes: String
 	sessionID: UUID!
-	isBringingOwnEquipment: Boolean!
+	bookingQuantity: PositiveInt!
+	equipmentQuantity: PositiveInt
+	couponCode: String
+	paymentMethod: PaymentMethod
 }

@@ -1,4 +1,4 @@
-query getPaymentScreenSession($sessionID: UUID!) {
+query getPaymentScreenSession($sessionID: UUID!, $bookingInput: BookingInput!) {
 	getSessionByID(sessionID: $sessionID) {
 		sessionID
 		title
@@ -30,10 +30,21 @@ query getPaymentScreenSession($sessionID: UUID!) {
 				firstName
 				lastName
 				nickName
-				gender
 				mobilePhoneNumber
 				instagramUsername
 			}
 		}
+	}
+	getBookingCost(sessionID: $sessionID, bookingInput: $bookingInput) {
+		bookingCost
+		equipmentCost
+		fullCost
+		couponDiscountPercentage
+		couponDiscount
+		finalCost
+		surcharge
+		transactionFee
+		fullSurcharge
+		estimatedCost
 	}
 }

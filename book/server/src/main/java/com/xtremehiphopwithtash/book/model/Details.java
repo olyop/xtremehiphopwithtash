@@ -10,6 +10,7 @@ public class Details extends Base {
 	private String nickName;
 	private String gender;
 	private String mobilePhoneNumber;
+	private String emailAddress;
 	private String instagramUsername;
 
 	public Details() {}
@@ -62,32 +63,19 @@ public class Details extends Base {
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
 	public String getInstagramUsername() {
 		return instagramUsername;
 	}
 
 	public void setInstagramUsername(String instagramUsername) {
 		this.instagramUsername = instagramUsername;
-	}
-
-	@Override
-	public String toString() {
-		return (
-			"Details [detailsID=" +
-			detailsID +
-			", firstName=" +
-			firstName +
-			", lastName=" +
-			lastName +
-			", nickName=" +
-			nickName +
-			", gender=" +
-			gender +
-			", mobilePhoneNumber=" +
-			mobilePhoneNumber +
-			", instgramUsername=" +
-			instagramUsername +
-			"]"
-		);
 	}
 }

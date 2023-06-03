@@ -1,13 +1,14 @@
 import { MutationResult } from "@apollo/client";
-import { FC, Fragment, createElement, useState } from "react";
+import { FC, createElement, useState } from "react";
 
 import InstructorInput from "../../../components/forms/instructor-form";
 import {
-	GetInstructorsQuery,
 	InstructorInput as InstructorInputType,
+	Instructor as InstructorType,
 } from "../../../generated-types";
-import { ArrayElement } from "../../../utils";
+import { determineDetailsName } from "../../../helpers";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
+import { mapInstructorToInput } from "../map-entity-to-input";
 
 const Instructor: FC<PropTypes> = ({
 	instructor,
@@ -18,35 +19,30 @@ const Instructor: FC<PropTypes> = ({
 	updateModalError,
 	deleteModalError,
 }) => {
-	const [input, setInput] = useState<InstructorInputType>(instructor);
+	const [input, setInput] = useState<InstructorInputType>(mapInstructorToInput(instructor));
 	return (
 		<AdminEntity
 			id={instructor.instructorID}
 			photo={instructor.photo}
 			typeName={instructor.__typename}
-			editModalContent={<InstructorInput input={input} onChange={setInput} />}
+			isLargeEditModal
+			editModalContent={
+				<InstructorInput input={input} onChange={setInput} hideEmailAddress={false} />
+			}
 			onEdit={onUpdate(input)}
 			onDelete={onDelete}
 			isUpdating={isUpdating}
 			isDeleting={isDeleting}
 			editModalError={updateModalError}
 			deleteModalError={deleteModalError}
-			text={
-				<Fragment>
-					{instructor.details.firstName} {instructor.details.lastName}
-					<span> </span>
-					{instructor.details.nickName && (
-						<span className="text-gray-500">({instructor.details.nickName})</span>
-					)}
-				</Fragment>
-			}
+			text={determineDetailsName(instructor.details)}
 			description={instructor.details.mobilePhoneNumber}
 		/>
 	);
 };
 
 interface PropTypes {
-	instructor: ArrayElement<GetInstructorsQuery["getInstructors"]>;
+	instructor: InstructorType;
 	onUpdate: (input: InstructorInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;
 	isUpdating: boolean;

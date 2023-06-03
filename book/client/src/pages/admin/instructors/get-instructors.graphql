@@ -7,9 +7,9 @@ query getInstructors {
 			firstName
 			lastName
 			nickName
-			gender
 			mobilePhoneNumber
 			instagramUsername
+			createdAt
 		}
 	}
 }

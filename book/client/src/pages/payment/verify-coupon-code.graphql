@@ -1,0 +1,3 @@
+query verifyCoupon($code: String!) {
+	verifyCoupon(code: $code)
+}

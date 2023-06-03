@@ -7,7 +7,6 @@ query getStudents {
 			firstName
 			lastName
 			nickName
-			gender
 			mobilePhoneNumber
 			instagramUsername
 		}

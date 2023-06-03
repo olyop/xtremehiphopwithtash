@@ -13,7 +13,7 @@ import {
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import CREATE_LOCATION from "./create-course.graphql";
-import GET_LOCATIONS from "./get-courses.graphql";
+import GET_COURSES from "./get-courses.graphql";
 import { initialInput } from "./initial-input";
 
 const AddCourse: FC = () => {
@@ -24,20 +24,9 @@ const AddCourse: FC = () => {
 	const handleSubmit = () => {
 		if (!data) {
 			void createCourse({
-				refetchQueries: [GET_LOCATIONS],
+				refetchQueries: [GET_COURSES],
 				variables: {
-					input: {
-						name: input.name,
-						description: input.description,
-						photo: input.photo,
-						defaultPrice: input.defaultPrice === 0 ? null : input.defaultPrice,
-						defaultEquipmentFee: input.defaultEquipmentFee === 0 ? null : input.defaultEquipmentFee,
-						defaultDuration: input.defaultDuration,
-						defaultCapacity: input.defaultCapacity,
-						defaultEquipmentAvailable: input.defaultEquipmentAvailable,
-						defaultLocationID: input.defaultLocationID,
-						defaultInstructorIDs: input.defaultInstructorIDs,
-					},
+					input,
 				},
 			});
 		}
@@ -64,6 +53,7 @@ const AddCourse: FC = () => {
 				leftIcon={className => <PlusIcon className={className} />}
 			/>
 			<Modal
+				isLarge
 				title="Add course"
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}

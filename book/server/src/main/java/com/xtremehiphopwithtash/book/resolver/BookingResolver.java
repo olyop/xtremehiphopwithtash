@@ -1,19 +1,19 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.dao.BookingDAO;
-import com.xtremehiphopwithtash.book.dao.ReferralCodeDAO;
-import com.xtremehiphopwithtash.book.dao.SessionDAO;
-import com.xtremehiphopwithtash.book.dao.StudentDAO;
 import com.xtremehiphopwithtash.book.model.Booking;
-import com.xtremehiphopwithtash.book.model.ReferralCode;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.Student;
+import com.xtremehiphopwithtash.book.other.BookingCost;
+import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
-import com.xtremehiphopwithtash.book.resolver.mapper.BookingInputMapper;
-import com.xtremehiphopwithtash.book.resolver.validator.BookingValidator;
-import com.xtremehiphopwithtash.book.resolver.validator.ReferralCodeValidator;
-import com.xtremehiphopwithtash.book.resolver.validator.SessionValidator;
-import java.time.Instant;
+import com.xtremehiphopwithtash.book.service.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.BookingCostService;
+import com.xtremehiphopwithtash.book.service.BookingService;
+import com.xtremehiphopwithtash.book.service.SessionService;
+import com.xtremehiphopwithtash.book.service.StripeService;
+import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,121 +21,117 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class BookingResolver {
 
-	private final BookingInputMapper bookingInputMapper;
-	private final BookingDAO bookingDAO;
-	private final SessionDAO sessionDAO;
-	private final StudentDAO studentDAO;
-	private final ReferralCodeDAO referralCodeDAO;
-	private final BookingValidator bookingValidator;
+	private final StudentService studentService;
+	private final BookingService bookingService;
+	private final SessionService sessionService;
+	private final BookingCostService bookingCostService;
+	private final Auth0JwtService auth0JwtService;
+	private final StripeService stripeService;
 	private final SessionValidator sessionValidator;
-	private final ReferralCodeValidator referralCodeValidator;
 
 	public BookingResolver(
-		BookingInputMapper bookingInputMapper,
-		BookingDAO bookingDAO,
-		SessionDAO sessionDAO,
-		StudentDAO studentDAO,
-		ReferralCodeDAO referralCodeDAO,
-		BookingValidator bookingValidator,
-		SessionValidator sessionValidator,
-		ReferralCodeValidator referralCodeValidator
+		StudentService studentService,
+		BookingService bookingService,
+		SessionService sessionService,
+		BookingCostService bookingCostService,
+		Auth0JwtService auth0JwtService,
+		StripeService stripeService,
+		SessionValidator sessionValidator
 	) {
-		this.bookingInputMapper = bookingInputMapper;
-		this.bookingDAO = bookingDAO;
-		this.sessionDAO = sessionDAO;
-		this.studentDAO = studentDAO;
-		this.referralCodeDAO = referralCodeDAO;
-		this.bookingValidator = bookingValidator;
+		this.studentService = studentService;
+		this.bookingService = bookingService;
+		this.sessionService = sessionService;
+		this.bookingCostService = bookingCostService;
+		this.auth0JwtService = auth0JwtService;
+		this.stripeService = stripeService;
 		this.sessionValidator = sessionValidator;
-		this.referralCodeValidator = referralCodeValidator;
 	}
 
 	@QueryMapping
-	public List<Booking> getBookings() {
-		return bookingDAO.select();
+	public List<Booking> getBookings(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		return bookingService.retreiveAll();
 	}
 
 	@QueryMapping
-	public Optional<Booking> getBookingByID(UUID bookingID) {
-		return bookingDAO.selectByID(bookingID);
-	}
-
-	@QueryMapping
-	public boolean isEquipmentAvailable(@Argument UUID sessionID) {
-		return bookingValidator.isEquipmentAvailable(sessionID);
+	public Booking getBookingByID(UUID bookingID) {
+		return bookingService.retreiveByID(bookingID);
 	}
 
 	@MutationMapping
-	public UUID deleteBookingByID(@Argument UUID bookingID) {
-		bookingValidator.validateID(bookingID);
+	public UUID deleteBookingByID(@Argument UUID bookingID, @AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		Booking booking = bookingDAO.selectByID(bookingID).get();
-		Session session = sessionDAO.selectByID(booking.getSessionID()).get();
-		sessionValidator.validateIsNotInPast(session.getStartTime());
-
-		bookingDAO.deleteByID(bookingID);
-
-		return bookingID;
+		return bookingService.deleteByID(bookingID);
 	}
 
 	@SchemaMapping(typeName = "Booking", field = "session")
 	public Session getSession(Booking booking) {
-		Optional<Session> session = sessionDAO.selectByID(booking.getSessionID());
-
-		if (session.isEmpty()) {
-			throw new RuntimeException("Session not found");
-		}
-
-		return session.get();
+		return sessionService.retreiveByID(booking.getSessionID());
 	}
 
 	@SchemaMapping(typeName = "Booking", field = "student")
 	public Student getStudent(Booking booking) {
-		return studentDAO.selectByID(booking.getStudentID()).get();
+		return studentService.retreiveByID(booking.getStudentID());
 	}
 
 	@MutationMapping
-	public Booking createBookingReferralCode(
+	public Booking createBooking(
 		@Argument BookingInput input,
-		@Argument String studentID,
-		@Argument String code
+		Principal principal,
+		@AuthenticationPrincipal Jwt jwt
 	) {
-		bookingValidator.validateCreateWithReferralCode(input, studentID, code);
+		auth0JwtService.validateAdministrator(jwt);
+		String studentID = auth0JwtService.extractStudentID(principal);
 
-		Booking booking = bookingInputMapper.map(input);
-		booking.setStudentID(studentID);
-
-		Booking savedBooking = bookingDAO.insert(booking);
-
-		ReferralCode referralCode = new ReferralCode();
-		referralCode.setUsedAt(Instant.now());
-
-		referralCodeDAO.updateByID(code, referralCode);
-
-		return savedBooking;
+		return bookingService.createBooking(input, studentID);
 	}
 
 	@MutationMapping
-	public Booking createBookingFree(@Argument BookingInput input, @Argument String studentID) {
-		bookingValidator.validateCreateFree(input, studentID);
+	public Booking updateBookingByID(
+		@Argument UUID bookingID,
+		@Argument BookingInput input,
+		@AuthenticationPrincipal Jwt jwt
+	) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		Booking booking = bookingInputMapper.map(input);
-		booking.setStudentID(studentID);
-
-		return bookingDAO.insert(booking);
+		return bookingService.updateBooking(bookingID, input);
 	}
 
-	@MutationMapping
-	public Booking updateBookingByID(@Argument UUID bookingID, @Argument BookingInput input) {
-		bookingValidator.validateUpdate(bookingID, input);
+	@QueryMapping
+	public BookingCost getBookingCost(@Argument UUID sessionID, @Argument BookingInput bookingInput) {
+		sessionValidator.validateID(sessionID);
 
-		Booking booking = bookingInputMapper.map(input);
+		short bookingQuantity = bookingInput.bookingQuantity();
+		Optional<Short> equipmentQuantity = bookingInput.equipmentQuantity();
+		Optional<String> coupon = bookingInput.couponCode();
+		Optional<PaymentMethod> paymentMethod = bookingInput.paymentMethod();
 
-		return bookingDAO.updateByID(bookingID, booking);
+		Session session = sessionService.retreiveByID(sessionID);
+		Optional<Short> price = Optional.ofNullable(session.getPrice());
+		Optional<Short> equipmentFee = Optional.ofNullable(session.getEquipmentFee());
+
+		return bookingCostService.getBookingCost(
+			price,
+			equipmentFee,
+			bookingQuantity,
+			equipmentQuantity,
+			paymentMethod,
+			coupon
+		);
+	}
+
+	@QueryMapping
+	public String getStripeCheckoutURL() {
+		return "";
+		// return stripeService.createSessionURL();
 	}
 }

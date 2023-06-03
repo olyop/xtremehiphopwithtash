@@ -46,9 +46,6 @@ const InstructorChip: FC<PropTypes> = ({ instructor }) => {
 									</Fragment>
 								)}
 							</h2>
-							{/* {instructor.details.gender && (
-								<p>{capitalizeFirstLetter(instructor.details.gender.toLowerCase())}</p>
-							)} */}
 							<div className="flex flex-col items-center">
 								<p className="text-gray-500">Contact Number</p>
 								<p>{instructor.details.mobilePhoneNumber}</p>

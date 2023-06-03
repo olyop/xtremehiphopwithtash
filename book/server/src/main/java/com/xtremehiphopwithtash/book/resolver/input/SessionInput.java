@@ -11,10 +11,10 @@ public record SessionInput(
 	UUID locationID,
 	Optional<Short> price,
 	Optional<Short> equipmentFee,
-	Short capacity,
 	Instant startTime,
 	Instant endTime,
-	UUID courseID,
+	Short capacityAvailable,
 	Optional<Short> equipmentAvailable,
+	UUID courseID,
 	List<UUID> instructorIDs
 ) {}

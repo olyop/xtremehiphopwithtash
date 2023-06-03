@@ -1,0 +1,9 @@
+CREATE OR REPLACE FUNCTION
+	get_now()
+RETURNS
+	INTEGER
+LANGUAGE
+	SQL STABLE
+AS $$
+	SELECT cast(extract(epoch FROM now()) AS INTEGER);
+$$;

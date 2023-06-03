@@ -1,159 +1,187 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.dao.BookingDAO;
-import com.xtremehiphopwithtash.book.dao.CourseDAO;
-import com.xtremehiphopwithtash.book.dao.InstructorDAO;
-import com.xtremehiphopwithtash.book.dao.LocationDAO;
-import com.xtremehiphopwithtash.book.dao.SessionDAO;
-import com.xtremehiphopwithtash.book.dao.SessionInstructorDAO;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Course;
 import com.xtremehiphopwithtash.book.model.Instructor;
 import com.xtremehiphopwithtash.book.model.Location;
 import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.model.SessionInstructor;
 import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
-import com.xtremehiphopwithtash.book.resolver.mapper.SessionInputMapper;
-import com.xtremehiphopwithtash.book.resolver.validator.SessionValidator;
+import com.xtremehiphopwithtash.book.service.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.BookingService;
+import com.xtremehiphopwithtash.book.service.CourseService;
+import com.xtremehiphopwithtash.book.service.InstructorService;
+import com.xtremehiphopwithtash.book.service.LocationService;
+import com.xtremehiphopwithtash.book.service.SessionService;
+import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
+import com.xtremehiphopwithtash.book.util.CurrencyUtil;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class SessionResolver {
 
-	private SessionInputMapper sessionInputMapper;
-	private final SessionDAO sessionDAO;
-	private final SessionInstructorDAO sessionInstructorDAO;
-	private final InstructorDAO instructorDAO;
+	private final SessionService sessionService;
+	private final CourseService courseService;
+	private final LocationService locationService;
+	private final InstructorService instructorService;
+	private final BookingService bookingService;
+	private final Auth0JwtService auth0JwtService;
 	private final SessionValidator sessionValidator;
-	private final CourseDAO courseDAO;
-	private final LocationDAO locationDAO;
-	private final BookingDAO bookingDAO;
+	private final CurrencyUtil currencyUtil;
 
 	public SessionResolver(
-		SessionInputMapper sessionInputMapper,
-		SessionDAO sessionDAO,
-		SessionInstructorDAO sessionInstructorDAO,
-		InstructorDAO instructorDAO,
+		SessionService sessionService,
+		CourseService courseService,
+		LocationService locationService,
+		InstructorService instructorService,
+		BookingService bookingService,
+		Auth0JwtService auth0JwtService,
 		SessionValidator sessionValidator,
-		CourseDAO courseDAO,
-		LocationDAO locationDAO,
-		BookingDAO bookingDAO
+		CurrencyUtil currencyUtil
 	) {
-		this.sessionInputMapper = sessionInputMapper;
-		this.sessionDAO = sessionDAO;
-		this.sessionInstructorDAO = sessionInstructorDAO;
-		this.instructorDAO = instructorDAO;
+		this.sessionService = sessionService;
+		this.courseService = courseService;
+		this.locationService = locationService;
+		this.instructorService = instructorService;
+		this.bookingService = bookingService;
+		this.auth0JwtService = auth0JwtService;
 		this.sessionValidator = sessionValidator;
-		this.courseDAO = courseDAO;
-		this.locationDAO = locationDAO;
-		this.bookingDAO = bookingDAO;
+		this.currencyUtil = currencyUtil;
 	}
 
 	@QueryMapping
-	public List<Session> getSessions() {
-		return sessionDAO.select();
+	public List<Session> getSessions(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		return sessionService.retreiveAll();
 	}
 
 	@QueryMapping
-	public Optional<Session> getSessionByID(@Argument UUID sessionID) {
-		return sessionDAO.selectByID(sessionID);
+	public Session getSessionByID(@Argument UUID sessionID) {
+		return sessionService.retreiveByID(sessionID);
+	}
+
+	@SchemaMapping(typeName = "Session", field = "price")
+	public Short getDefaultPrice(Session session) {
+		return currencyUtil.centsToDollars(session.getPrice());
+	}
+
+	@SchemaMapping(typeName = "Session", field = "equipmentFee")
+	public Short getDefaultEquipmentFee(Session session) {
+		return currencyUtil.centsToDollars(session.getEquipmentFee());
 	}
 
 	@SchemaMapping(typeName = "Session", field = "course")
 	public Course getCourse(Session session) {
-		return courseDAO.selectByID(session.getCourseID()).get();
+		return courseService.retreiveByID(session.getCourseID());
 	}
 
 	@SchemaMapping(typeName = "Session", field = "location")
 	public Location getLocation(Session session) {
-		return locationDAO.selectByID(session.getLocationID()).get();
+		return locationService.retreiveByID(session.getLocationID());
 	}
 
 	@SchemaMapping(typeName = "Session", field = "instructors")
 	public List<Instructor> getInstructors(Session session) {
-		return instructorDAO.selectsSessionInstructors(session.getSessionID());
+		return instructorService.retreiveSessionInstructors(session.getSessionID());
 	}
 
 	@SchemaMapping(typeName = "Session", field = "bookings")
 	public List<Booking> getBookings(Session session) {
-		return bookingDAO.selectBySessionID(session.getSessionID());
-	}
+		List<Booking> bookings = bookingService.retreiveBySessionID(session.getSessionID());
 
-	@SchemaMapping(typeName = "Session", field = "bookingsTotal")
-	public Short getBookingsTotal(Session session) {
-		short count = bookingDAO.selectCountBySessionID(session.getSessionID());
-
-		if (count == 0) {
+		if (bookings.isEmpty()) {
 			return null;
 		}
 
-		return count;
+		return bookings;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "capacityBooked")
+	public Short getCapacityBooked(Session session) {
+		short capacityBooked = bookingService.retreiveCapacityBooked(session.getSessionID());
+
+		if (capacityBooked == 0) {
+			return null;
+		}
+
+		return capacityBooked;
 	}
 
 	@SchemaMapping(typeName = "Session", field = "capacityRemaining")
 	public Short getCapacityRemaining(Session session) {
-		short capacityRemaning = bookingDAO.selectCapacityRemaning(session.getSessionID());
+		short capacityRemaining = bookingService.retreiveCapacityRemaining(session.getSessionID());
 
-		if (capacityRemaning == 0) {
+		if (capacityRemaining == 0) {
 			return null;
 		}
 
-		return capacityRemaning;
+		return capacityRemaining;
 	}
 
-	@SchemaMapping(typeName = "Session", field = "equipmentLeft")
-	public Short getEquipmentLeft(Session session) {
-		short equipmentLeft = sessionDAO.selectEquipmentLeftBySessionID(session.getSessionID());
+	@SchemaMapping(typeName = "Session", field = "isCapacityRemaining")
+	public Boolean getIsCapacityRemaining(@Argument short bookingQuantity, Session session) {
+		return bookingService.retreiveIsCapacityRemaining(session.getSessionID(), bookingQuantity);
+	}
 
-		if (equipmentLeft == 0) {
+	@SchemaMapping(typeName = "Session", field = "equipmentHired")
+	public Short getEquipmentHired(Session session) {
+		short equipmentHired = bookingService.retreiveEquipmentHired(session.getSessionID());
+
+		if (equipmentHired == 0) {
 			return null;
 		}
 
-		return equipmentLeft;
+		return equipmentHired;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "equipmentRemaining")
+	public Short getEquipmentRemaining(Session session) {
+		short equipmentRemaining = bookingService.retreiveEquipmentRemaining(session.getSessionID());
+
+		if (equipmentRemaining == 0) {
+			return null;
+		}
+
+		return equipmentRemaining;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "isEquipmentRemaining")
+	public Boolean getIsEquipmentRemaining(@Argument short equipmentQuantity, Session session) {
+		return bookingService.retreiveIsEquipmentRemaining(session.getSessionID(), equipmentQuantity);
 	}
 
 	@MutationMapping
-	public Session createSession(@Argument SessionInput input) {
-		sessionValidator.validateCreate(input);
+	public Session createSession(@Argument SessionInput input, @AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		Session session = sessionInputMapper.map(input);
-
-		Session createdSession = sessionDAO.insert(session);
-
-		handleInstructorsChange(input.instructorIDs(), createdSession.getSessionID());
-
-		return createdSession;
+		return sessionService.create(input);
 	}
 
 	@MutationMapping
-	public Session updateSessionByID(@Argument UUID sessionID, @Argument SessionInput input) {
-		sessionValidator.validateUpdate(sessionID, input);
+	public Session updateSessionByID(
+		@Argument UUID sessionID,
+		@Argument SessionInput input,
+		@AuthenticationPrincipal Jwt jwt
+	) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		Session session = sessionInputMapper.map(input);
-
-		Session updatedSession = sessionDAO.updateByID(sessionID, session);
-
-		handleInstructorsChange(input.instructorIDs(), updatedSession.getSessionID());
-
-		return updatedSession;
+		return sessionService.updateByID(sessionID, input);
 	}
 
 	@MutationMapping
-	public UUID deleteSessionByID(@Argument UUID sessionID) {
-		sessionValidator.validateDelete(sessionID);
+	public UUID deleteSessionByID(@Argument UUID sessionID, @AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		sessionInstructorDAO.deleteBySessionID(sessionID);
-		sessionDAO.deleteByID(sessionID);
-
-		return sessionID;
+		return sessionService.deleteByID(sessionID);
 	}
 
 	@QueryMapping
@@ -161,34 +189,18 @@ public class SessionResolver {
 		sessionValidator.validateGetSessionsInput(input);
 
 		if (input.courseID().isPresent()) {
-			return sessionDAO.selectInTimePeriodAndCourseID(
+			return sessionService.retreiveInTimePeriodByCourseID(
 				input.startTime(),
 				input.endTime(),
 				input.courseID().get()
 			);
 		} else {
-			return sessionDAO.selectInTimePeriod(input.startTime(), input.endTime());
+			return sessionService.retreiveInTimePeriod(input.startTime(), input.endTime());
 		}
 	}
 
 	@QueryMapping
 	public boolean doesSessionExist(@Argument UUID sessionID) {
-		return sessionDAO.existsByID(sessionID);
-	}
-
-	private void handleInstructorsChange(List<UUID> instructorIDs, UUID sessionID) {
-		sessionInstructorDAO.deleteBySessionID(sessionID);
-
-		short instructorIndex = 0;
-
-		for (UUID instructorID : instructorIDs) {
-			SessionInstructor sessionInstructor = new SessionInstructor();
-
-			sessionInstructor.setSessionID(sessionID);
-			sessionInstructor.setIndex(instructorIndex++);
-			sessionInstructor.setInstructorID(instructorID);
-
-			sessionInstructorDAO.insert(sessionInstructor);
-		}
+		return sessionService.existsByID(sessionID);
 	}
 }

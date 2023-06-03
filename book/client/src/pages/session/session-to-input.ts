@@ -3,7 +3,7 @@ import { GetSessionPageQuery, SessionInput } from "../../generated-types";
 export const sessionToInput = (session: GetSessionPageQuery["getSessionByID"]): SessionInput => {
 	const {
 		sessionID,
-		capacityRemaining,
+		capacityAvailable,
 		__typename,
 		createdAt,
 		course,
@@ -16,6 +16,7 @@ export const sessionToInput = (session: GetSessionPageQuery["getSessionByID"]): 
 		startTime: sessionInput.startTime,
 		endTime: sessionInput.endTime,
 		courseID: course.courseID,
+		capacityAvailable,
 		locationID: location.locationID,
 		instructorIDs: instructors.map(({ instructorID }) => instructorID),
 	};

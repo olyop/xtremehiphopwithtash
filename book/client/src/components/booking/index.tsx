@@ -15,12 +15,14 @@ import {
 } from "../../generated-types";
 import { determineDetailsFullName } from "../../helpers";
 import { useModal } from "../../hooks";
-import { dateTimeFormatter } from "../../intl";
+import { currencyFormatter, dateTimeFormatter } from "../../intl";
+import { capitalizeFirstLetter, determinePlural } from "../../utils";
 import AddToCalender from "../add-to-calender";
 import Button from "../button";
 import Entity from "../entity";
 import BookingForm from "../forms/booking-form";
 import Modal from "../modal";
+import { bookingToInput } from "./booking-to-input";
 import DELETE_BOOKING from "./delete-booking.graphql";
 import UPDATE_BOOKING from "./update-booking.graphql";
 
@@ -38,11 +40,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	const [updateBooking, updateBookingResult] = useMutation<UpdateData, UpdateVars>(UPDATE_BOOKING);
 	const [deleteBooking, deleteBookingResult] = useMutation<DeleteData, DeleteVars>(DELETE_BOOKING);
 
-	const [bookingInput, setBookingInput] = useState<BookingInput>({
-		notes: booking.notes,
-		sessionID: session.sessionID,
-		isBringingOwnEquipment: booking.isBringingOwnEquipment,
-	});
+	const [bookingInput, setBookingInput] = useState<BookingInput>(bookingToInput(booking));
 
 	const handleUpdateBooking = () => {
 		void updateBooking({
@@ -85,7 +83,37 @@ const SessionPageBooking: FC<PropTypes> = ({
 					<span className="text-gray-500">{booking.student.details.mobilePhoneNumber}</span>
 				</Fragment>
 			}
-			description={dateTimeFormatter.format(booking.createdAt)}
+			description={
+				<Fragment>
+					{booking.bookingQuantity} x booking{determinePlural(booking.bookingQuantity)}
+					{booking.equipmentQuantity && (
+						<Fragment>
+							<Fragment>, </Fragment>
+							{booking.equipmentQuantity} x step{determinePlural(booking.equipmentQuantity)}
+							<Fragment> </Fragment>
+							{booking.equipmentQuantity === 1 ? "hire" : "hired"}
+						</Fragment>
+					)}
+					<br />
+					<Fragment>
+						Paid with
+						<Fragment> </Fragment>
+						{booking.paymentMethod
+							? `${capitalizeFirstLetter(booking.paymentMethod.toLowerCase())}`
+							: "Free"}
+						{booking.cost && (
+							<Fragment>
+								<Fragment> owes </Fragment>
+								{currencyFormatter.format(booking.cost)}
+							</Fragment>
+						)}
+					</Fragment>
+					<br />
+					<span className="text-gray-500">
+						Created: {dateTimeFormatter.format(booking.createdAt)}
+					</span>
+				</Fragment>
+			}
 			rightContent={
 				<Fragment>
 					<Button

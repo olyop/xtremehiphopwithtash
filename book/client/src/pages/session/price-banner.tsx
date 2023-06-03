@@ -8,9 +8,7 @@ import { currencyFormatter } from "../../intl";
 const SessionPriceBanner: FC<PropTypes> = ({ session }) => {
 	const isFree = session.price === null;
 	return (
-		<div
-			className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-amber-500"}`}
-		>
+		<div className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-gray-700"}`}>
 			{isFree ? (
 				<CheckCircleIcon className="w-6 h-6 text-white" />
 			) : (

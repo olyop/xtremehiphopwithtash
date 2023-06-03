@@ -8,8 +8,8 @@ mutation createInstructor($input: InstructorInput!) {
 			firstName
 			lastName
 			nickName
-			gender
 			mobilePhoneNumber
+			instagramUsername
 			createdAt
 		}
 	}

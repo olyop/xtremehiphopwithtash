@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 import { DetailsInput } from "../../../generated-types";
 import Input, { InputOnChange, InputType } from "../../input";
 
-const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
+const DetailsForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = true }) => {
 	const handleChange =
 		(key: keyof DetailsInput): InputOnChange =>
 		value => {
@@ -51,10 +51,21 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 				autoComplete="tel"
 				note="We may need to contact you regarding your bookings"
 				value={input.mobilePhoneNumber}
-				type={InputType.TEXT}
+				type={InputType.MOBILE}
 				onChange={handleChange("mobilePhoneNumber")}
 				placeHolder="Mobile Number"
 			/>
+			{hideEmailAddress || (
+				<Input
+					id="emailAddress"
+					name="Email Address"
+					autoComplete="email"
+					value={input.emailAddress}
+					type={InputType.TEXT}
+					onChange={handleChange("emailAddress")}
+					placeHolder="Email Address"
+				/>
+			)}
 			<Input
 				optional
 				id="instagramUsername"
@@ -70,6 +81,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange }) => {
 
 interface PropTypes {
 	input: DetailsInput;
+	hideEmailAddress?: boolean;
 	onChange: (input: DetailsInput) => void;
 }
 

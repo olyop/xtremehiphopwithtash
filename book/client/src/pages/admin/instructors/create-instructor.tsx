@@ -53,12 +53,13 @@ const AddInstructor: FC = () => {
 				leftIcon={className => <PlusIcon className={className} />}
 			/>
 			<Modal
+				isLarge
 				title="Add Instructor"
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
-				children={<InstructorForm input={input} onChange={setInput} />}
+				children={<InstructorForm input={input} onChange={setInput} hideEmailAddress={false} />}
 				error={error}
 				buttons={
 					<Fragment>

@@ -20,6 +20,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	modalClassName,
 	contentClassName,
 	buttonClassName,
+	errorClassName,
 	isLarge = false,
 	hideTitle = false,
 	centerTitle = false,
@@ -80,7 +81,11 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 						</div>
 					)}
 					<div className={`overflow-auto py-2 ${contentClassName ?? ""}`}>{children}</div>
-					{error && <FormError error={error} />}
+					{error && (
+						<div className={errorClassName}>
+							<FormError error={error} />
+						</div>
+					)}
 					{buttons && <div className={`flex gap-2 ${buttonClassName ?? ""}`}>{buttons}</div>}
 				</div>
 			)}
@@ -96,6 +101,8 @@ interface ModalPropTypes {
 	icon: (className: string) => ReactNode;
 	onClose?: () => void;
 	error?: ApolloError | undefined;
+	errorClassName?: string;
+
 	buttons?: ReactNode;
 	className?: string;
 	modalClassName?: string;

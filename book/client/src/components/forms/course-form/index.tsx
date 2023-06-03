@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
-import { CourseInput, GetCourseFormDataQuery } from "../../../generated-types";
+import { CourseInput, GetCourseFormDataQuery, Instructor } from "../../../generated-types";
 import { determineDetailsName } from "../../../helpers";
 import Input, {
 	InputOnChange,
@@ -9,8 +9,8 @@ import Input, {
 	mapListToChips,
 	mapListToSelectOptions,
 } from "../../input";
+import DefaultDurationInput from "./default-duration";
 import GET_COURSE_FORM_DATA from "./get-course-form-data.graphql";
-import { OnInstructorDelete } from "./types";
 
 const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 	const { data } = useQuery<GetCourseFormDataQuery>(GET_COURSE_FORM_DATA);
@@ -24,15 +24,14 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 			}));
 		};
 
-	const handleDefaultInstructorDelete: OnInstructorDelete =
-		({ instructorID }) =>
+	const handleDefaultInstructorDelete =
+		({ instructorID }: Pick<Instructor, "instructorID">) =>
 		() => {
 			onChange(prevState => ({
 				...prevState,
 				defaultInstructorIDs: input.defaultInstructorIDs.filter(id => id !== instructorID),
 			}));
 		};
-
 	return (
 		<Fragment>
 			<Input
@@ -62,16 +61,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 				autoComplete="off"
 				placeHolder="Please enter"
 			/>
-			<Input
-				id="defaultDuration"
-				name="Default Duration"
-				value={input.defaultDuration}
-				type={InputType.INTEGER}
-				onChange={handleChange("defaultDuration")}
-				placeHolder="Please enter"
-				autoComplete="off"
-				note="In Seconds"
-			/>
+			<DefaultDurationInput value={input.defaultDuration} onChange={onChange} />
 			<div className="grid grid-cols-2 gap-2">
 				<Input
 					nullable
@@ -98,9 +88,9 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 				<Input
 					id="defaultCapacity"
 					name="Default Capacity"
-					value={input.defaultCapacity}
+					value={input.defaultCapacityAvailable}
 					type={InputType.INTEGER}
-					onChange={handleChange("defaultCapacity")}
+					onChange={handleChange("defaultCapacityAvailable")}
 					placeHolder="Please enter"
 					autoComplete="off"
 				/>
@@ -108,7 +98,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 					nullable
 					id="defaultEquipmentAvailable"
 					name="Default Steps"
-					value={input.defaultEquipmentAvailable || 0}
+					value={input.defaultEquipmentAvailable}
 					type={InputType.INTEGER}
 					onChange={handleChange("defaultEquipmentAvailable")}
 					placeHolder="Please enter"

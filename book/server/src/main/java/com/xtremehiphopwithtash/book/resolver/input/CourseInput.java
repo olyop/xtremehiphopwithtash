@@ -12,7 +12,7 @@ public record CourseInput(
 	Optional<Short> defaultPrice,
 	Optional<Short> defaultEquipmentFee,
 	Short defaultDuration,
-	Short defaultCapacity,
+	Short defaultCapacityAvailable,
 	Optional<Short> defaultEquipmentAvailable,
 	UUID defaultLocationID,
 	List<UUID> defaultInstructorIDs

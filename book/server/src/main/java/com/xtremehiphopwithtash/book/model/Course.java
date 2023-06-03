@@ -11,9 +11,9 @@ public class Course extends Base {
 	private URL photo;
 	private Short defaultPrice;
 	private Short defaultEquipmentFee;
-	private Short defaultCapacity;
 	private Short defaultDuration;
 	private UUID defaultLocationID;
+	private Short defaultCapacityAvailable;
 	private Short defaultEquipmentAvailable;
 
 	public Course() {}
@@ -66,12 +66,12 @@ public class Course extends Base {
 		this.defaultEquipmentFee = defaultEquipmentFee;
 	}
 
-	public Short getDefaultCapacity() {
-		return defaultCapacity;
+	public Short getDefaultCapacityAvailable() {
+		return defaultCapacityAvailable;
 	}
 
-	public void setDefaultCapacity(Short defaultCapacity) {
-		this.defaultCapacity = defaultCapacity;
+	public void setDefaultCapacityAvailable(Short defaultCapacityAvailable) {
+		this.defaultCapacityAvailable = defaultCapacityAvailable;
 	}
 
 	public Short getDefaultDuration() {

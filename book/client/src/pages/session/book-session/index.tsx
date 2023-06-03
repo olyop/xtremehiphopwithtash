@@ -10,25 +10,21 @@ import BookingForm from "../../../components/forms/booking-form";
 import Modal from "../../../components/modal";
 import SessionCard from "../../../components/session-card";
 import { BookingInput, Session } from "../../../generated-types";
+import { determineSessionDateLabel } from "../../../helpers";
 import { useModal } from "../../../hooks";
+import { initialInput } from "./initial-input";
 
 const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	const navigate = useNavigate();
 	const { isAuthenticated, user, isLoading } = useAuth0();
 	const [isModalOpen, openModal, closeModal] = useModal();
-	const [showBookButtonLogIn, setShowBookButtonLogIn] = useState(false);
 
-	const [input, setInput] = useState<BookingInput>({
-		notes: "",
-		isBringingOwnEquipment: false,
-		sessionID: session.sessionID,
-	});
+	const [showBookButtonLogIn, setShowBookButtonLogIn] = useState(false);
+	const [input, setInput] = useState<BookingInput>(initialInput(session));
 
 	const isLoggedIn = isAuthenticated && user;
 
-	const areSpotsAvailable = !!session.capacityRemaining;
-
-	const canBook = !isSessionInPast && areSpotsAvailable;
+	const canBook = !isSessionInPast && session.isCapacityRemaining;
 
 	const handleBookClick = () => {
 		if (isLoggedIn) {
@@ -46,7 +42,11 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 			const searchParams = new URLSearchParams();
 
 			searchParams.append("sessionID", input.sessionID);
-			searchParams.append("isBringingOwnEquipment", input.isBringingOwnEquipment.toString());
+			searchParams.append("bookingQuantity", input.bookingQuantity.toString());
+
+			if (input.equipmentQuantity) {
+				searchParams.append("equipmentQuantity", input.equipmentQuantity.toString());
+			}
 
 			if (input.notes) {
 				searchParams.append("notes", input.notes);
@@ -59,17 +59,22 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 		}
 	};
 
+	const handleModalClose = () => {
+		closeModal();
+		setInput(initialInput(session));
+	};
+
 	useEffect(() => {
 		if (showBookButtonLogIn) {
 			setTimeout(() => {
 				setShowBookButtonLogIn(false);
-			}, 2000);
+			}, 3000);
 		}
 	}, [showBookButtonLogIn]);
 
 	const bookButtonText = isSessionInPast
 		? "Elapsed"
-		: areSpotsAvailable
+		: session.isCapacityRemaining
 		? showBookButtonLogIn
 			? "Please Log In"
 			: "Book Now"
@@ -85,7 +90,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 				ariaLabel={bookButtonText}
 				disabled={!isLoading && !canBook}
 				className={`!h-14 px-6 shadow-xl hover:shadow-xl rounded-xl ${
-					showBookButtonLogIn ? "!bg-amber-500" : ""
+					showBookButtonLogIn ? "!bg-amber-500 text-white" : ""
 				}`}
 				leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
 			/>
@@ -94,8 +99,9 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 				className="z-30"
 				disableCloseOnEscape
 				isOpen={isModalOpen}
-				onClose={closeModal}
+				onClose={handleModalClose}
 				title="Book Session"
+				subTitle={determineSessionDateLabel(session)}
 				contentClassName="flex flex-col gap-4"
 				icon={className => <CalendarIcon className={className} />}
 				children={
@@ -121,7 +127,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 							transparent
 							text="Cancel"
 							ariaLabel="Cancel"
-							onClick={closeModal}
+							onClick={handleModalClose}
 							leftIcon={className => <XMarkIcon className={className} />}
 						/>
 					</Fragment>

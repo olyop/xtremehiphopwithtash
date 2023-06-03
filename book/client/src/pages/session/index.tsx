@@ -3,12 +3,13 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { FC, Fragment, createElement, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import Chip from "../../components/chip";
+import CourseChip from "../../components/course-chip";
 import InstructorsChip from "../../components/instructors-chip";
 import LocationChip from "../../components/location-chip";
 import SessionStartTime from "../../components/session-start-end-time";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
 import {
+	Course,
 	GetSessionPageQuery,
 	GetSessionPageQueryVariables,
 	Instructor,
@@ -17,14 +18,15 @@ import {
 } from "../../generated-types";
 import { determineSessionDateLabel } from "../../helpers";
 import { Breakpoint, useBreakpoint } from "../../hooks";
-import BookingForm from "./book-session";
+import Page from "../page";
+import BookSession from "./book-session";
 import SessionBookings from "./bookings";
+import SessionCapacityBanner from "./capacity-banner";
 import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
 import SessionPriceBanner from "./price-banner";
 import ShareButton from "./share-button";
-import SessionSpotsBanner from "./spots-banner";
 import UpdateSession from "./update-session";
 
 const SessionPage: FC = () => {
@@ -57,7 +59,7 @@ const SessionPage: FC = () => {
 	}
 
 	if (!result.data) {
-		return <div>Loading...</div>;
+		return <p className="p-4">Loading...</p>;
 	}
 
 	const { getSessionByID: session } = result.data;
@@ -65,34 +67,26 @@ const SessionPage: FC = () => {
 	const isInPast = isSessionInPast(session);
 
 	return (
-		<div className="flex flex-col pb-52">
-			<SessionSpotsBanner session={session as Session} />
+		<Page className="flex flex-col">
+			<SessionCapacityBanner session={session as Session} />
 			<SessionPriceBanner session={session as Session} />
 			<img
 				src={session.course.photo}
 				alt={session.course.name}
-				className="object-cover w-full shadow-lg h-96"
+				className="object-cover object-top w-full shadow-lg h-96"
 			/>
 			<div className="flex flex-col gap-8 p-4 justify-items-start">
 				<div className="flex flex-col gap-4">
 					<h1 className="text-3xl font-bold">{session.title}</h1>
 					<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">class</p>
-						<Chip
-							chip={{
-								chipID: session.course.courseID,
-								text: session.course.name,
-								photo: session.course.photo,
-							}}
-						/>
+						<CourseChip course={session.course as Course} />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">with</p>
 						<InstructorsChip instructors={session.instructors as Instructor[]} />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">at</p>
 						<LocationChip location={session.location as Location} />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">on</p>
-						<p className="text-l pl-0.5">
-							<Fragment>{determineSessionDateLabel(session)}</Fragment>
-						</p>
+						<p className="text-l pl-0.5">{determineSessionDateLabel(session)}</p>
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">from</p>
 						<p>
 							<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
@@ -101,18 +95,13 @@ const SessionPage: FC = () => {
 							<Fragment>
 								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
 								<p>
-									{session.capacityRemaining ? (
-										<Fragment>
-											{session.bookingsTotal || 0} / {session.capacity}
-										</Fragment>
-									) : (
-										"Fully booked"
-									)}
+									{session.capacityBooked || 0} / {session.capacityAvailable}
 								</p>
 								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">steps</p>
 								<p>
-									{session.equipmentAvailable}
-									<Fragment> available</Fragment>
+									{session.equipmentAvailable
+										? `${session.equipmentHired || 0} / ${session.equipmentAvailable}`
+										: "No steps available"}
 								</p>
 							</Fragment>
 						)}
@@ -124,7 +113,7 @@ const SessionPage: FC = () => {
 						>
 							<div className="flex flex-col gap-4">
 								<div className="flex gap-4 items-start flex-col md:flex-row">
-									<BookingForm session={session as Session} isSessionInPast={isInPast} />
+									<BookSession session={session as Session} isSessionInPast={isInPast} />
 									<ShareButton url={location.href} isSessionInPast={isInPast} />
 								</div>
 								{isAdministrator && (
@@ -153,7 +142,7 @@ const SessionPage: FC = () => {
 				</div>
 				{isAdministrator && <SessionBookings session={session as Session} />}
 			</div>
-		</div>
+		</Page>
 	);
 };
 

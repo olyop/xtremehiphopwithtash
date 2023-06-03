@@ -6,8 +6,9 @@ export const initialInput: InstructorInput = {
 		firstName: "",
 		lastName: "",
 		nickName: null,
-		gender: "",
+		gender: null,
 		mobilePhoneNumber: "",
+		emailAddress: null,
 		instagramUsername: null,
 	},
 };

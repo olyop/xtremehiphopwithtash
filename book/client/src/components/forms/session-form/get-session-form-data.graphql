@@ -6,7 +6,7 @@ query getSessionFormData {
 		defaultPrice
 		defaultEquipmentFee
 		defaultDuration
-		defaultCapacity
+		defaultCapacityAvailable
 		defaultEquipmentAvailable
 		defaultLocation {
 			locationID

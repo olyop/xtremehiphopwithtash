@@ -12,6 +12,7 @@ import Input, {
 	mapListToChips,
 	mapListToSelectOptions,
 } from "../../input";
+import SessionFormCapacityAndEquipment from "./capacity-and-equipment";
 import GET_SESSION_FORM_DATA from "./get-session-form-data.graphql";
 
 const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
@@ -37,11 +38,11 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 					notes: null,
 					price: course.defaultPrice,
 					equipmentFee: course.defaultEquipmentFee,
-					capacity: course.defaultCapacity,
 					locationID: course.defaultLocation.locationID,
+					capacityAvailable: course.defaultCapacityAvailable,
 					equipmentAvailable: course.defaultEquipmentAvailable,
-					instructorIDs: course.defaultInstructors.map(({ instructorID }) => instructorID),
 					endTime: prevState.startTime + course.defaultDuration * 1000,
+					instructorIDs: course.defaultInstructors.map(({ instructorID }) => instructorID),
 				}));
 			} else {
 				onChange(prevState => ({
@@ -78,7 +79,6 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 				<Input
 					id="courseID"
 					name="Course"
-					placeHolder="Course"
 					autoComplete="off"
 					type={InputType.SELECT}
 					onChange={handleCourseChange}
@@ -140,67 +140,56 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 							}),
 						)}
 					/>
-					<div className="grid grid-cols-2 gap-2">
-						<Input
-							nullable
-							id="price"
-							name="Price"
-							autoComplete="off"
-							type={InputType.PRICE}
-							onChange={handleChange("price")}
-							value={input.price}
-						/>
-						<Input
-							nullable
-							id="equipmentFee"
-							name="Step Fee"
-							autoComplete="off"
-							type={InputType.PRICE}
-							onChange={handleChange("equipmentFee")}
-							value={input.equipmentFee}
-						/>
-					</div>
-					<div className="grid grid-cols-2 gap-2">
-						<Input
-							id="capacity"
-							name="Capacity"
-							placeHolder="Capacity"
-							autoComplete="off"
-							type={InputType.INTEGER}
-							onChange={handleChange("capacity")}
-							value={input.capacity}
-						/>
-						<Input
-							nullable
-							id="equipmentAvailable"
-							name="Steps"
-							placeHolder="Steps Available"
-							autoComplete="off"
-							type={InputType.INTEGER}
-							onChange={handleChange("equipmentAvailable")}
-							value={input.equipmentAvailable}
-						/>
-					</div>
-					<div className={`grid ${onCourseReset ? "grid-cols-2 gap-2" : "grid-row-2 gap-4"}`}>
-						<Input
-							id="startTime"
-							name="Start Time"
-							placeHolder="Start time"
-							autoComplete="off"
-							type={onCourseReset ? InputType.TIME : InputType.DATE}
-							onChange={handleStartTimeChange}
-							value={input.startTime}
-						/>
-						<Input
-							id="endTime"
-							name="End Time"
-							placeHolder="End time"
-							autoComplete="off"
-							type={onCourseReset ? InputType.TIME : InputType.DATE}
-							onChange={handleChange("endTime")}
-							value={input.endTime}
-						/>
-					</div>
+					{input.startTime > Date.now() && (
+						<Fragment>
+							<div className="grid grid-cols-2 gap-2">
+								<Input
+									nullable
+									id="price"
+									name="Price"
+									autoComplete="off"
+									type={InputType.PRICE}
+									onChange={handleChange("price")}
+									value={input.price}
+								/>
+								<Input
+									nullable
+									id="equipmentFee"
+									name="Step Fee"
+									autoComplete="off"
+									type={InputType.PRICE}
+									onChange={handleChange("equipmentFee")}
+									value={input.equipmentFee}
+								/>
+							</div>
+							<SessionFormCapacityAndEquipment
+								capacityAvailable={input.capacityAvailable}
+								equipmentAvailable={input.equipmentAvailable}
+								onCapacityAvailableChange={handleChange("capacityAvailable")}
+								onEquipmentAvailableChange={handleChange("equipmentAvailable")}
+							/>
+							<div className={`grid ${onCourseReset ? "grid-cols-2 gap-2" : "grid-row-2 gap-4"}`}>
+								<Input
+									id="startTime"
+									name="Start Time"
+									placeHolder="Start time"
+									autoComplete="off"
+									type={onCourseReset ? InputType.TIME : InputType.DATE}
+									onChange={handleStartTimeChange}
+									value={input.startTime}
+								/>
+								<Input
+									id="endTime"
+									name="End Time"
+									placeHolder="End time"
+									autoComplete="off"
+									type={onCourseReset ? InputType.TIME : InputType.DATE}
+									onChange={handleChange("endTime")}
+									value={input.endTime}
+								/>
+							</div>
+						</Fragment>
+					)}
 					<Input
 						id="notes"
 						name="Notes"
@@ -221,6 +210,7 @@ interface PropTypes {
 	input: SessionInputType;
 	onChange: Dispatch<SetStateAction<SessionInputType>>;
 	onCourseReset?: () => void;
+	isCreate?: boolean;
 }
 
 export default SessionForm;

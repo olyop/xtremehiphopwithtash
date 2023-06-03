@@ -1,8 +1,10 @@
+import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { BookingInput, Session } from "../../../generated-types";
 import { currencyFormatter } from "../../../intl";
 import Input, { InputOnChange, InputType } from "../../input";
+import BookingQuantities from "./quantities";
 
 const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false, session }) => {
 	const handleChange =
@@ -14,21 +16,7 @@ const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false,
 			}));
 		};
 
-	const { equipmentAvailable, equipmentFee } = session;
-
-	const isEquipmentAvailable = equipmentAvailable > 0;
-
-	const handleIsBringingEquipmentYes: InputOnChange = value => {
-		if (typeof value === "boolean") {
-			handleChange("isBringingOwnEquipment")(true);
-		}
-	};
-
-	const handleIsBringingEquipmentNo: InputOnChange = value => {
-		if (typeof value === "boolean") {
-			handleChange("isBringingOwnEquipment")(false);
-		}
-	};
+	const { price, equipmentFee } = session;
 
 	return (
 		<Fragment>
@@ -41,40 +29,24 @@ const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false,
 				type={InputType.TEXTAREA}
 				onChange={handleChange("notes")}
 			/>
-			<div className="flex flex-col gap-1">
-				<p>Will you be bringing your own step?</p>
-				<div className="flex flex-col">
-					<Input
-						autoComplete="off"
-						id="isBringingEquipment"
-						type={InputType.CHECKBOX}
-						disabled={!isEquipmentAvailable}
-						value={!!input.isBringingOwnEquipment}
-						onChange={handleIsBringingEquipmentYes}
-						name={`Yes${
-							input.isBringingOwnEquipment
-								? ` ${
-										isEquipmentAvailable ? `(${equipmentAvailable} available)` : "(None available)"
-								  }`
-								: ""
-						}`}
-					/>
-					<Input
-						autoComplete="off"
-						id="isBringingEquipment"
-						type={InputType.CHECKBOX}
-						disabled={!isEquipmentAvailable}
-						value={input.isBringingOwnEquipment === false}
-						onChange={handleIsBringingEquipmentNo}
-						name="No"
-					/>
+			<BookingQuantities
+				session={session}
+				bookingQuantity={input.bookingQuantity}
+				equipmentQuantity={input.equipmentQuantity}
+				onBookingQuantityChange={handleChange("bookingQuantity")}
+				onEquipmentQuantityChange={handleChange("equipmentQuantity")}
+			/>
+			{price === null && (
+				<div className="px-4 py-3 border border-green-500 rounded bg-green-50 flex gap-2">
+					<InformationCircleIcon className="h-6 w-6" />
+					<p>Free session</p>
 				</div>
-				{hideEquipmentFee || !equipmentFee || !input.isBringingOwnEquipment || (
-					<p className="text-sm text-gray-500">
-						Step hire will inccur a {currencyFormatter.format(equipmentFee)} fee.
-					</p>
-				)}
-			</div>
+			)}
+			{hideEquipmentFee || !equipmentFee || (
+				<p className="text-sm text-gray-500">
+					Step hire will inccur a {currencyFormatter.format(equipmentFee)} fee.
+				</p>
+			)}
 		</Fragment>
 	);
 };

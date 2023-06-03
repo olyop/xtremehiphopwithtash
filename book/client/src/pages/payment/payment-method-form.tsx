@@ -1,23 +1,59 @@
 import { Dispatch, FC, SetStateAction, createElement } from "react";
 
 import Input, { InputType } from "../../components/input";
+import { BookingInput, PaymentMethod } from "../../generated-types";
 import { noop } from "../../utils";
-import { PaymentMethod } from "./types";
 
-const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, onChange }) => {
-	const handleStripeClick = () => {
-		if (paymentMethod === PaymentMethod.STRIPE) {
-			onChange(PaymentMethod.UNCHOSEN);
+const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, setBookingInput }) => {
+	const handleCardClick = () => {
+		if (paymentMethod === PaymentMethod.CARD) {
+			setBookingInput(prevState => {
+				if (prevState) {
+					return {
+						...prevState,
+						paymentMethod: null,
+					};
+				} else {
+					return null;
+				}
+			});
 		} else {
-			onChange(PaymentMethod.STRIPE);
+			setBookingInput(prevState => {
+				if (prevState) {
+					return {
+						...prevState,
+						paymentMethod: PaymentMethod[PaymentMethod.CARD],
+					};
+				} else {
+					return null;
+				}
+			});
 		}
 	};
 
 	const handleCouponClick = () => {
-		if (paymentMethod === PaymentMethod.COUPON) {
-			onChange(PaymentMethod.UNCHOSEN);
+		if (paymentMethod === PaymentMethod.CASH) {
+			setBookingInput(prevState => {
+				if (prevState) {
+					return {
+						...prevState,
+						paymentMethod: null,
+					};
+				} else {
+					return null;
+				}
+			});
 		} else {
-			onChange(PaymentMethod.COUPON);
+			setBookingInput(prevState => {
+				if (prevState) {
+					return {
+						...prevState,
+						paymentMethod: PaymentMethod[PaymentMethod.CASH],
+					};
+				} else {
+					return null;
+				}
+			});
 		}
 	};
 
@@ -28,9 +64,9 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, onChange }) => {
 				<div
 					role="button"
 					tabIndex={1}
-					onClick={handleStripeClick}
-					onKeyDown={handleStripeClick}
-					className={`${paymentMethod === PaymentMethod.STRIPE ? "bg-gray-100" : ""} p-4`}
+					onClick={handleCardClick}
+					onKeyDown={handleCardClick}
+					className={`${paymentMethod === PaymentMethod.CARD ? "bg-gray-100" : ""} p-4`}
 				>
 					<Input
 						id="stripe"
@@ -38,7 +74,7 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, onChange }) => {
 						labelClassName="!bg-transparent"
 						name="Card / Apple Pay / Google Pay"
 						className="pointer-events-none"
-						value={paymentMethod === PaymentMethod.STRIPE}
+						value={paymentMethod === PaymentMethod.CARD}
 						onChange={noop}
 						autoComplete="off"
 					/>
@@ -49,15 +85,15 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, onChange }) => {
 					tabIndex={2}
 					onClick={handleCouponClick}
 					onKeyDown={handleCouponClick}
-					className={`${paymentMethod === PaymentMethod.COUPON ? "bg-gray-100" : ""} p-4`}
+					className={`${paymentMethod === PaymentMethod.CASH ? "bg-gray-100" : ""} p-4`}
 				>
 					<Input
-						id="coupon"
+						id="cash"
 						type={InputType.CHECKBOX}
-						name="Referral Code"
+						name="Cash"
 						labelClassName="!bg-transparent"
 						className="pointer-events-none"
-						value={paymentMethod === PaymentMethod.COUPON}
+						value={paymentMethod === PaymentMethod.CASH}
 						onChange={noop}
 						autoComplete="off"
 					/>
@@ -68,8 +104,8 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, onChange }) => {
 };
 
 interface PropTypes {
-	paymentMethod: PaymentMethod;
-	onChange: Dispatch<SetStateAction<PaymentMethod>>;
+	paymentMethod: string | null;
+	setBookingInput: Dispatch<SetStateAction<BookingInput | null>>;
 }
 
 export default PaymentMethodForm;

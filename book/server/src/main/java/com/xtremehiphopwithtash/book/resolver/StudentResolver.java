@@ -1,68 +1,99 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.auth0.exception.Auth0Exception;
-import com.xtremehiphopwithtash.book.dao.BookingDAO;
-import com.xtremehiphopwithtash.book.dao.DetailsDAO;
-import com.xtremehiphopwithtash.book.dao.StudentDAO;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
-import com.xtremehiphopwithtash.book.resolver.mapper.DetailsInputMapper;
-import com.xtremehiphopwithtash.book.resolver.validator.StudentValidator;
-import com.xtremehiphopwithtash.book.service.Auth0Management;
+import com.xtremehiphopwithtash.book.service.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.BookingService;
+import com.xtremehiphopwithtash.book.service.DetailsService;
+import com.xtremehiphopwithtash.book.service.StudentService;
+import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class StudentResolver {
 
-	private final DetailsInputMapper detailsInputMapper;
-	private final StudentDAO studentDAO;
-	private final DetailsDAO detailsDAO;
-	private final BookingDAO bookingDAO;
-	private final Auth0Management auth0Management;
-	private final StudentValidator studentValidator;
+	private final StudentService studentService;
+	private final DetailsService detailsService;
+	private final BookingService bookingService;
+	private final Auth0JwtService auth0JwtService;
 
 	public StudentResolver(
-		DetailsInputMapper detailsInputMapper,
-		StudentDAO studentDAO,
-		DetailsDAO detailsDAO,
-		BookingDAO bookingDAO,
-		Auth0Management auth0Management,
-		StudentValidator studentValidator
+		StudentService studentService,
+		DetailsService detailsService,
+		BookingService bookingService,
+		Auth0JwtService auth0JwtService
 	) {
-		this.detailsInputMapper = detailsInputMapper;
-		this.studentDAO = studentDAO;
-		this.detailsDAO = detailsDAO;
-		this.bookingDAO = bookingDAO;
-		this.auth0Management = auth0Management;
-		this.studentValidator = studentValidator;
+		this.studentService = studentService;
+		this.detailsService = detailsService;
+		this.bookingService = bookingService;
+		this.auth0JwtService = auth0JwtService;
 	}
 
 	@QueryMapping
-	public List<Student> getStudents() {
-		return studentDAO.select();
+	public List<Student> getStudents(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		List<Student> students = studentService.retreiveAll();
+
+		return students.isEmpty() ? null : students;
 	}
 
 	@QueryMapping
-	public Optional<Student> getStudentByID(@Argument String studentID) {
-		return studentDAO.selectByID(studentID);
+	public Student getStudentByID(Principal principal) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		return studentService.retreiveByID(studentID);
 	}
 
 	@SchemaMapping(typeName = "Student", field = "details")
-	public Optional<Details> getStudentDetails(Student student) {
-		return detailsDAO.selectByID(student.getDetailsID());
+	public Details getStudentDetails(Student student) {
+		return detailsService.retreiveByID(student.getDetailsID());
+	}
+
+	@MutationMapping
+	public Student createStudent(Principal principal, @Argument DetailsInput input) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		return studentService.create(studentID, input);
+	}
+
+	@MutationMapping
+	public Student updateStudentByID(Principal principal, @Argument DetailsInput input) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		return studentService.updateByID(studentID, input);
+	}
+
+	@QueryMapping
+	public boolean doesStudentExist(Principal principal) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		return studentService.existsByID(studentID);
+	}
+
+	@QueryMapping
+	public boolean isStudentAdministator(Principal principal, @AuthenticationPrincipal Jwt jwt) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		if (!studentService.existsByID(studentID)) {
+			return false;
+		}
+
+		return auth0JwtService.isAdministrator(jwt);
 	}
 
 	@SchemaMapping(typeName = "Student", field = "bookings")
 	public List<Booking> getStudentBookings(Student student) {
-		List<Booking> bookings = bookingDAO.selectByStudentID(student.getStudentID());
+		List<Booking> bookings = bookingService.retreiveByStudentID(student.getStudentID());
 
 		if (bookings.isEmpty()) {
 			return null;
@@ -73,54 +104,12 @@ public class StudentResolver {
 
 	@SchemaMapping(typeName = "Student", field = "bookingsTotal")
 	public Short getStudentBookingsTotal(Student student) {
-		short bookingsTotal = bookingDAO.selectCountByStudentID(student.getStudentID());
+		short bookingsTotal = bookingService.retreiveStudentTotal(student.getStudentID());
 
 		if (bookingsTotal == 0) {
 			return null;
 		}
 
 		return bookingsTotal;
-	}
-
-	@MutationMapping
-	public Student createStudent(@Argument String studentID, @Argument DetailsInput input) {
-		studentValidator.validateCreate(input, studentID);
-
-		Details details = detailsInputMapper.map(input);
-
-		Details savedDetails = detailsDAO.insert(details);
-
-		Student student = new Student();
-		student.setStudentID(studentID);
-		student.setDetailsID(savedDetails.getDetailsID());
-
-		return studentDAO.insert(student);
-	}
-
-	@MutationMapping
-	public Student updateStudentByID(@Argument String studentID, @Argument DetailsInput input) {
-		studentValidator.validateUpdate(studentID, input);
-
-		Student student = studentDAO.selectByID(studentID).get();
-
-		Details details = detailsInputMapper.map(input);
-
-		detailsDAO.updateByID(student.getDetailsID(), details);
-
-		return student;
-	}
-
-	@QueryMapping
-	public boolean doesStudentExist(@Argument String studentID) {
-		return studentDAO.existsByID(studentID);
-	}
-
-	@QueryMapping
-	public boolean isStudentAdministator(@Argument String studentID) throws Auth0Exception {
-		if (!studentDAO.existsByID(studentID)) {
-			return false;
-		}
-
-		return auth0Management.isUserAdministrator(studentID);
 	}
 }

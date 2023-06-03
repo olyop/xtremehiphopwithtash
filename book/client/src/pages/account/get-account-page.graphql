@@ -1,5 +1,5 @@
-query getAccountPage($studentID: String!) {
-	getStudentByID(studentID: $studentID) {
+query getAccountPage {
+	getStudentByID {
 		studentID
 		createdAt
 		details {
@@ -8,13 +8,13 @@ query getAccountPage($studentID: String!) {
 			lastName
 			nickName
 			gender
+			emailAddress
 			mobilePhoneNumber
 			instagramUsername
 		}
 		bookings {
 			bookingID
 			notes
-			isBringingOwnEquipment
 			createdAt
 			session {
 				sessionID
@@ -40,7 +40,6 @@ query getAccountPage($studentID: String!) {
 						firstName
 						lastName
 						nickName
-						gender
 						mobilePhoneNumber
 						instagramUsername
 					}
@@ -53,7 +52,6 @@ query getAccountPage($studentID: String!) {
 					firstName
 					lastName
 					nickName
-					gender
 					mobilePhoneNumber
 					instagramUsername
 				}

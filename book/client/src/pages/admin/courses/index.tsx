@@ -28,22 +28,24 @@ const Courses: FC = () => {
 		({ courseID }: Pick<CourseType, "courseID">) =>
 		(input: CourseInputType): OnEditAndUpdate =>
 		async onClose => {
+			const course: CourseInputType = {
+				name: input.name,
+				description: input.description,
+				photo: input.photo,
+				defaultPrice: input.defaultPrice === 0 ? null : input.defaultPrice,
+				defaultEquipmentFee: input.defaultEquipmentFee === 0 ? null : input.defaultEquipmentFee,
+				defaultDuration: input.defaultDuration,
+				defaultCapacityAvailable: input.defaultCapacityAvailable,
+				defaultEquipmentAvailable: input.defaultEquipmentAvailable,
+				defaultLocationID: input.defaultLocationID,
+				defaultInstructorIDs: input.defaultInstructorIDs,
+			};
+
 			const result = await updateCourse({
 				refetchQueries: [GET_COURSES],
 				variables: {
 					courseID,
-					input: {
-						name: input.name,
-						description: input.description,
-						photo: input.photo,
-						defaultPrice: input.defaultPrice === 0 ? null : input.defaultPrice,
-						defaultEquipmentFee: input.defaultEquipmentFee === 0 ? null : input.defaultEquipmentFee,
-						defaultDuration: input.defaultDuration,
-						defaultCapacity: input.defaultCapacity,
-						defaultEquipmentAvailable: input.defaultEquipmentAvailable,
-						defaultLocationID: input.defaultLocationID,
-						defaultInstructorIDs: input.defaultInstructorIDs,
-					},
+					input: course,
 				},
 			});
 
@@ -73,7 +75,7 @@ const Courses: FC = () => {
 			renderItem={course => (
 				<Course
 					key={course.courseID}
-					course={course}
+					course={course as CourseType}
 					isUpdating={updateResult.loading}
 					isDeleting={deleteResult.loading}
 					onUpdate={handleUpdatecourse(course)}

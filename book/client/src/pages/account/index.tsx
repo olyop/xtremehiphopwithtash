@@ -13,14 +13,16 @@ import DetailsForm from "../../components/forms/details-form";
 import Modal from "../../components/modal";
 import {
 	Booking,
+	Details,
 	DetailsInput,
 	GetAccountPageQuery,
-	GetAccountPageQueryVariables,
 	Session,
 	UpdateStudentMutation,
 	UpdateStudentMutationVariables,
 } from "../../generated-types";
 import { useModal } from "../../hooks";
+import Page from "../page";
+import { detailsToInput } from "./details-to-input";
 import GET_ACCOUNT_PAGE from "./get-account-page.graphql";
 import UPDATE_STUDENT from "./update-student.graphql";
 
@@ -35,16 +37,10 @@ const AccountPage: FC = () => {
 	const { isAuthenticated, logout, user } = useAuth0();
 	const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
 
-	const [detailsInput, setDetailsInput] = useState<DetailsInput>({
-		firstName: "",
-		lastName: "",
-		nickName: "",
-		gender: "",
-		mobilePhoneNumber: "",
-		instagramUsername: "",
-	});
+	const [detailsInput, setDetailsInput] = useState<DetailsInput | null>(null);
 
-	const [getAccountPage, queryResult] = useLazyQuery<QueryData, QueryVars>(GET_ACCOUNT_PAGE);
+	const [getAccountPage, queryResult] = useLazyQuery<QueryData>(GET_ACCOUNT_PAGE);
+
 	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(
 		UPDATE_STUDENT,
 	);
@@ -56,14 +52,17 @@ const AccountPage: FC = () => {
 	};
 
 	const handleLogOut = () => {
-		void logout({ logoutParams: { returnTo: window.location.origin } });
+		void logout({
+			logoutParams: {
+				returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URL,
+			},
+		});
 	};
 
 	const handleUpdateStudent = () => {
-		if (user?.sub) {
+		if (user?.sub && detailsInput) {
 			void updateStudent({
 				variables: {
-					studentID: user.sub,
 					detailsInput,
 				},
 			});
@@ -72,22 +71,14 @@ const AccountPage: FC = () => {
 
 	useEffect(() => {
 		if (user?.sub) {
-			void getAccountPage({ variables: { studentID: user.sub } });
+			void getAccountPage();
 		}
 	}, [user]);
 
 	useEffect(() => {
 		if (queryData) {
-			const { details } = queryData.getStudentByID;
-
-			setDetailsInput({
-				firstName: details.firstName,
-				lastName: details.lastName,
-				nickName: details.nickName,
-				gender: details.gender,
-				mobilePhoneNumber: details.mobilePhoneNumber,
-				instagramUsername: details.instagramUsername,
-			});
+			const details = queryData.getStudentByID.details as Details;
+			setDetailsInput(detailsToInput(details));
 		}
 	}, [queryData]);
 
@@ -112,7 +103,17 @@ const AccountPage: FC = () => {
 	}
 
 	if (!queryData || !user) {
-		return <p className="p-4">Loading...</p>;
+		return (
+			<div>
+				<p className="p-4">Loading...</p>
+				<Button
+					text="Log Out"
+					ariaLabel="Log Out"
+					onClick={handleLogOut}
+					leftIcon={className => <ArrowLeftOnRectangleIcon className={className} />}
+				/>
+			</div>
+		);
 	}
 
 	const {
@@ -122,7 +123,7 @@ const AccountPage: FC = () => {
 	const detailsClassName = "flex flex-col gap-1";
 
 	return (
-		<div className="p-4 flex flex-col gap-6 pb-56">
+		<Page className="p-4 flex flex-col gap-6 pb-56">
 			<h1 className="text-3xl py-2 font-bold text-center md:text-left">My Account</h1>
 			<div className={detailsClassName}>
 				<p>
@@ -158,32 +159,34 @@ const AccountPage: FC = () => {
 						onClick={openEditModal}
 						leftIcon={className => <PencilIcon className={className} />}
 					/>
-					<Modal
-						title="Edit Details"
-						isOpen={isEditModalOpen}
-						onClose={closeEditModal}
-						contentClassName="flex flex-col gap-4"
-						icon={className => <PencilIcon className={className} />}
-						children={<DetailsForm input={detailsInput} onChange={setDetailsInput} />}
-						error={updateStudentResult.error}
-						buttons={
-							<Fragment>
-								<Button
-									ariaLabel="Edit"
-									text="Edit"
-									onClick={handleUpdateStudent}
-									leftIcon={className => <PencilIcon className={className} />}
-								/>
-								<Button
-									ariaLabel="Cancel"
-									text="Cancel"
-									transparent
-									onClick={closeEditModal}
-									leftIcon={className => <XMarkIcon className={className} />}
-								/>
-							</Fragment>
-						}
-					/>
+					{detailsInput && (
+						<Modal
+							title="Edit Details"
+							isOpen={isEditModalOpen}
+							onClose={closeEditModal}
+							contentClassName="flex flex-col gap-4"
+							icon={className => <PencilIcon className={className} />}
+							children={<DetailsForm input={detailsInput} onChange={setDetailsInput} />}
+							error={updateStudentResult.error}
+							buttons={
+								<Fragment>
+									<Button
+										ariaLabel="Edit"
+										text="Edit"
+										onClick={handleUpdateStudent}
+										leftIcon={className => <PencilIcon className={className} />}
+									/>
+									<Button
+										ariaLabel="Cancel"
+										text="Cancel"
+										transparent
+										onClick={closeEditModal}
+										leftIcon={className => <XMarkIcon className={className} />}
+									/>
+								</Fragment>
+							}
+						/>
+					)}
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">
@@ -211,12 +214,11 @@ const AccountPage: FC = () => {
 				onClick={handleLogOut}
 				leftIcon={className => <ArrowLeftOnRectangleIcon className={className} />}
 			/>
-		</div>
+		</Page>
 	);
 };
 
 type QueryData = GetAccountPageQuery;
-type QueryVars = GetAccountPageQueryVariables;
 type MutationData = UpdateStudentMutation;
 type MutationVars = UpdateStudentMutationVariables;
 

@@ -1,10 +1,14 @@
 package com.xtremehiphopwithtash.book.resolver.input;
 
+import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import java.util.Optional;
 import java.util.UUID;
 
 public record BookingInput(
 	Optional<String> notes,
-	boolean isBringingOwnEquipment,
-	UUID sessionID
+	UUID sessionID,
+	Short bookingQuantity,
+	Optional<Short> equipmentQuantity,
+	Optional<PaymentMethod> paymentMethod,
+	Optional<String> couponCode
 ) {}

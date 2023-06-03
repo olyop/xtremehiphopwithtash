@@ -7,6 +7,7 @@ import {
 	Location as LocationType,
 } from "../../../generated-types";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
+import { mapLocationToInput } from "../map-entity-to-input";
 
 const Location: FC<PropTypes> = ({
 	location,
@@ -17,11 +18,7 @@ const Location: FC<PropTypes> = ({
 	updateModalError,
 	deleteModalError,
 }) => {
-	const [input, setInput] = useState<LocationInputType>({
-		name: location.name,
-		plusCode: location.plusCode,
-		address: location.address,
-	});
+	const [input, setInput] = useState<LocationInputType>(mapLocationToInput(location));
 	return (
 		<AdminEntity
 			id={location.locationID}
@@ -43,10 +40,7 @@ const Location: FC<PropTypes> = ({
 };
 
 interface PropTypes {
-	location: Pick<
-		LocationType,
-		"locationID" | "__typename" | "name" | "plusCode" | "address" | "coordinates"
-	>;
+	location: LocationType;
 	onUpdate: (input: LocationInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;
 	isUpdating: boolean;

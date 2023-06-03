@@ -1,6 +1,7 @@
 export enum InputType {
 	TEXT,
 	TEXTAREA,
+	MOBILE,
 	INTEGER,
 	PRICE,
 	URL,

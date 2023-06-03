@@ -7,7 +7,7 @@ mutation createCourse($input: CourseInput!) {
 		defaultPrice
 		defaultEquipmentFee
 		defaultDuration
-		defaultCapacity
+		defaultCapacityAvailable
 		defaultEquipmentAvailable
 		defaultLocation {
 			locationID
@@ -21,7 +21,6 @@ mutation createCourse($input: CourseInput!) {
 				firstName
 				lastName
 				nickName
-				gender
 				mobilePhoneNumber
 			}
 		}

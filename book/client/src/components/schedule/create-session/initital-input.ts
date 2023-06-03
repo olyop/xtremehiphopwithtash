@@ -6,7 +6,7 @@ export const initialCourseDefaultInput: Pick<
 	| "notes"
 	| "price"
 	| "equipmentFee"
-	| "capacity"
+	| "capacityAvailable"
 	| "equipmentAvailable"
 	| "locationID"
 	| "courseID"
@@ -16,7 +16,7 @@ export const initialCourseDefaultInput: Pick<
 	notes: "",
 	price: 20,
 	equipmentFee: 0,
-	capacity: 20,
+	capacityAvailable: 20,
 	equipmentAvailable: 10,
 	locationID: "",
 	courseID: "",

@@ -7,19 +7,22 @@ type Query {
 	getBookings: [Booking!]!
 	getGenders: [String!]!
 
-	getStudentByID(studentID: String!): Student!
 	getInstructorByID(instructorID: UUID!): Instructor!
 	getCourseByID(courseID: UUID!): Course!
 	getLocationByID(locationID: UUID!): Location!
 	getSessionByID(sessionID: UUID!): Session!
 	getBookingByID(bookingID: UUID!): Booking!
 
-	doesStudentExist(studentID: String!): Boolean!
-	doesSessionExist(sessionID: UUID!): Boolean!
-	verifyReferralCode(code: String!): Boolean!
-	isStudentAdministator(studentID: String!): Boolean!
+	getStudentByID: Student!
+	doesStudentExist: Boolean!
+	isStudentAdministator: Boolean!
 
 	decodePlusCode(plusCode: String!): Coordinates!
 	searchPlaceByName(name: String!): Place
-	isEquipmentAvailable(sessionID: UUID!): Boolean!
+
+	verifyCoupon(code: String!): String
+
+	getBookingCost(sessionID: UUID!, bookingInput: BookingInput!): BookingCost!
+
+	getStripeCheckoutURL: URL!
 }

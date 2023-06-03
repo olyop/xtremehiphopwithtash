@@ -15,6 +15,7 @@ import {
 import { determineSessionDateLabel } from "../../../helpers";
 import { useModal } from "../../../hooks";
 import { millisecondsToSeconds } from "../../../utils";
+import GET_SESSION_PAGE from "../get-session-page.graphql";
 import SessionSubtitle from "../session-subtitle";
 import UPDATE_SESSION from "./update-session.graphql";
 
@@ -30,7 +31,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 		equipmentFee: session.equipmentFee,
 		startTime: session.startTime,
 		endTime: session.endTime,
-		capacity: session.capacity,
+		capacityAvailable: session.capacityAvailable,
 		equipmentAvailable: session.equipmentAvailable,
 		courseID: session.course.courseID,
 		instructorIDs: session.instructors.map(instructor => instructor.instructorID),
@@ -39,6 +40,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 
 	const handleUpdateSubmit = () => {
 		void updateSession({
+			refetchQueries: [GET_SESSION_PAGE],
 			variables: {
 				sessionID: session.sessionID,
 				input: {

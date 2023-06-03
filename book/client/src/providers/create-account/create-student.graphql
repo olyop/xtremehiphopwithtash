@@ -1,5 +1,5 @@
-mutation createStudent($studentID: String!, $input: DetailsInput!) {
-	createStudent(studentID: $studentID, input: $input) {
+mutation createStudent($input: DetailsInput!) {
+	createStudent(input: $input) {
 		studentID
 	}
 }

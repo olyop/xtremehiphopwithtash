@@ -1,16 +1,11 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.dao.DetailsDAO;
-import com.xtremehiphopwithtash.book.dao.InstructorDAO;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Instructor;
 import com.xtremehiphopwithtash.book.resolver.input.InstructorInput;
-import com.xtremehiphopwithtash.book.resolver.mapper.DetailsInputMapper;
-import com.xtremehiphopwithtash.book.resolver.mapper.InstructorInputMapper;
-import com.xtremehiphopwithtash.book.resolver.transform.CommonTransform;
-import com.xtremehiphopwithtash.book.resolver.validator.DetailsValidator;
-import com.xtremehiphopwithtash.book.resolver.validator.InstructorValidator;
-import java.net.URL;
+import com.xtremehiphopwithtash.book.service.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.DetailsService;
+import com.xtremehiphopwithtash.book.service.InstructorService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,92 +13,76 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class InstructorResolver {
 
-	private final InstructorInputMapper instructorInputMapper;
-	private final DetailsInputMapper detailsInputMapper;
-	private final InstructorDAO instructorDAO;
-	private final DetailsDAO detailsDAO;
-	private final InstructorValidator instructorValidator;
+	private final InstructorService instructorService;
+	private final DetailsService detailsService;
+	private final Auth0JwtService auth0JwtService;
 
 	public InstructorResolver(
-		InstructorInputMapper instructorInputMapper,
-		DetailsInputMapper detailsInputMapper,
-		InstructorDAO instructorDAO,
-		DetailsDAO detailsDAO,
-		InstructorValidator instructorValidator
+		InstructorService instructorService,
+		DetailsService detailsService,
+		Auth0JwtService auth0JwtService
 	) {
-		this.instructorInputMapper = instructorInputMapper;
-		this.detailsInputMapper = detailsInputMapper;
-		this.instructorDAO = instructorDAO;
-		this.detailsDAO = detailsDAO;
-		this.instructorValidator = instructorValidator;
-	}
-
-	@QueryMapping
-	public List<Instructor> getInstructors() {
-		return instructorDAO.select();
-	}
-
-	@QueryMapping
-	public Optional<Instructor> getInstructorByID(@Argument UUID instructorID) {
-		return instructorDAO.selectByID(instructorID);
-	}
-
-	@SchemaMapping(typeName = "Instructor", field = "details")
-	public Optional<Details> getInstructorDetails(Instructor instructor) {
-		return detailsDAO.selectByID(instructor.getDetailsID());
+		this.instructorService = instructorService;
+		this.detailsService = detailsService;
+		this.auth0JwtService = auth0JwtService;
 	}
 
 	@MutationMapping
-	public Instructor createInstructor(@Argument InstructorInput input) {
-		instructorValidator.validateCreate(input);
+	public Instructor createInstructor(
+		@Argument InstructorInput input,
+		@AuthenticationPrincipal Jwt jwt
+	) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		Details details = detailsInputMapper.map(input.details());
-
-		Details savedDetails = detailsDAO.insert(details);
-
-		Instructor instructor = instructorInputMapper.map(input);
-		instructor.setDetailsID(savedDetails.getDetailsID());
-
-		return instructorDAO.insert(instructor);
+		return instructorService.create(input);
 	}
 
 	@MutationMapping
 	public Instructor updateInstructorByID(
 		@Argument UUID instructorID,
-		@Argument InstructorInput input
+		@Argument InstructorInput input,
+		@AuthenticationPrincipal Jwt jwt
 	) {
-		instructorValidator.validateUpdate(instructorID, input);
+		auth0JwtService.validateAdministrator(jwt);
 
-		Instructor currentInstructor = instructorDAO.selectByID(instructorID).get();
-		currentInstructor.setPhoto(input.photo());
-
-		Details details = detailsInputMapper.map(input.details());
-
-		instructorDAO.updateByID(instructorID, currentInstructor);
-		detailsDAO.updateByID(currentInstructor.getDetailsID(), details);
-
-		return currentInstructor;
+		return instructorService.updateByID(instructorID, input);
 	}
 
 	@MutationMapping
-	public UUID deleteInstructorByID(@Argument UUID instructorID) {
-		instructorValidator.validateDelete(instructorID);
+	public UUID deleteInstructorByID(@Argument UUID instructorID, @AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
 
-		Optional<Instructor> instructor = instructorDAO.selectByID(instructorID);
-
-		instructorDAO.deleteByID(instructorID);
-		detailsDAO.deleteByID(instructor.get().getDetailsID());
-
-		return instructorID;
+		return instructorService.deleteByID(instructorID);
 	}
 
 	@QueryMapping
 	public List<String> getGenders() {
-		return detailsDAO.selectGenders();
+		return detailsService.retrieveGenders();
+	}
+
+	@QueryMapping
+	public Optional<List<Instructor>> getInstructors(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		List<Instructor> instructors = instructorService.retreiveAll();
+
+		return instructors.isEmpty() ? Optional.empty() : Optional.of(instructors);
+	}
+
+	@QueryMapping
+	public Instructor getInstructorByID(@Argument UUID instructorID) {
+		return instructorService.retreiveByID(instructorID);
+	}
+
+	@SchemaMapping(typeName = "Instructor", field = "details")
+	public Details getInstructorDetails(Instructor instructor) {
+		return detailsService.retreiveByID(instructor.getDetailsID());
 	}
 }

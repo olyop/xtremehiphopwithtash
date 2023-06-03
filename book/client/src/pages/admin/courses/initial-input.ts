@@ -4,11 +4,11 @@ export const initialInput: CourseInput = {
 	name: "",
 	description: "",
 	photo: "",
-	defaultPrice: 10,
-	defaultEquipmentFee: 2,
-	defaultDuration: 60 * 60, // 1 hour
-	defaultCapacity: 30,
-	defaultEquipmentAvailable: 30,
+	defaultPrice: null,
+	defaultEquipmentFee: null,
+	defaultDuration: 60 * 45, // 1 hour
+	defaultCapacityAvailable: 0,
+	defaultEquipmentAvailable: 0,
 	defaultLocationID: "",
 	defaultInstructorIDs: [],
 };

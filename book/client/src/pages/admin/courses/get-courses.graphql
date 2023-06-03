@@ -7,7 +7,7 @@ query getCourses {
 		defaultPrice
 		defaultEquipmentFee
 		defaultDuration
-		defaultCapacity
+		defaultCapacityAvailable
 		defaultEquipmentAvailable
 		defaultLocation {
 			locationID
@@ -26,7 +26,6 @@ query getCourses {
 				firstName
 				lastName
 				nickName
-				gender
 				mobilePhoneNumber
 			}
 		}

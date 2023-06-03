@@ -7,7 +7,7 @@ mutation updateCourse($courseID: UUID!, $input: CourseInput!) {
 		defaultPrice
 		defaultEquipmentFee
 		defaultDuration
-		defaultCapacity
+		defaultCapacityAvailable
 		defaultEquipmentAvailable
 		defaultLocation {
 			locationID
@@ -26,7 +26,6 @@ mutation updateCourse($courseID: UUID!, $input: CourseInput!) {
 				firstName
 				lastName
 				nickName
-				gender
 				mobilePhoneNumber
 			}
 		}

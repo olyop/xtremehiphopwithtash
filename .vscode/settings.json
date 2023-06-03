@@ -1,5 +1,6 @@
 {
 	"files.exclude": {
-		"book/client/node_modules": true
+		"book/client/node_modules": true,
+		"book/server/bin": true
 	}
 }

@@ -63,7 +63,7 @@ const Instructors: FC = () => {
 			renderItem={instructor => (
 				<Instructor
 					key={instructor.instructorID}
-					instructor={instructor}
+					instructor={instructor as InstructorType}
 					onUpdate={handleUpdateInstructor(instructor)}
 					onDelete={handleDeleteInstructor(instructor)}
 					isUpdating={updateResult.loading}
