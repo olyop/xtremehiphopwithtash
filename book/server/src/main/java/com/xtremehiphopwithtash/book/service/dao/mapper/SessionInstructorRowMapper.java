@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.SessionInstructor;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,12 +16,12 @@ public class SessionInstructorRowMapper implements RowMapper<SessionInstructor> 
 	public SessionInstructor mapRow(ResultSet rs, int rowNum) throws SQLException {
 		SessionInstructor sessionInstructor = new SessionInstructor();
 
-		sessionInstructor.setSessionID(MapRowUtil.mapToUUID(rs.getString("session_id")));
+		sessionInstructor.setSessionID(MapRowUtil.mapUUID(rs.getString("session_id")));
 		sessionInstructor.setIndex(rs.getShort("index"));
 
-		sessionInstructor.setInstructorID(MapRowUtil.mapToUUID(rs.getString("instructor_id")));
+		sessionInstructor.setInstructorID(MapRowUtil.mapUUID(rs.getString("instructor_id")));
 
-		sessionInstructor.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		sessionInstructor.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return sessionInstructor;
 	}

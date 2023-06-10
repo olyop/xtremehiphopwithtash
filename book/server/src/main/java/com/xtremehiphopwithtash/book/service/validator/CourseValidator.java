@@ -95,7 +95,7 @@ public class CourseValidator implements ValidatorCRUD<UUID, CourseInput> {
 		}
 	}
 
-	private void validateDuration(Short defaultDuration) {
+	private void validateDuration(Integer defaultDuration) {
 		if (defaultDuration > 60 * 60 * 4) {
 			throw new ResolverException("Default duration cannot be greater than 4 hours");
 		}

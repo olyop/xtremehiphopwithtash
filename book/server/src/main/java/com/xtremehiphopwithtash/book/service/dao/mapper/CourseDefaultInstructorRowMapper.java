@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.CourseDefaultInstructor;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,12 +16,12 @@ public class CourseDefaultInstructorRowMapper implements RowMapper<CourseDefault
 	public CourseDefaultInstructor mapRow(ResultSet rs, int rowNum) throws SQLException {
 		CourseDefaultInstructor courseDefaultInstructor = new CourseDefaultInstructor();
 
-		courseDefaultInstructor.setCourseID(MapRowUtil.mapToUUID(rs.getString("course_id")));
+		courseDefaultInstructor.setCourseID(MapRowUtil.mapUUID(rs.getString("course_id")));
 		courseDefaultInstructor.setIndex(rs.getShort("index"));
 
-		courseDefaultInstructor.setInstructorID(MapRowUtil.mapToUUID(rs.getString("instructor_id")));
+		courseDefaultInstructor.setInstructorID(MapRowUtil.mapUUID(rs.getString("instructor_id")));
 
-		courseDefaultInstructor.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		courseDefaultInstructor.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return courseDefaultInstructor;
 	}

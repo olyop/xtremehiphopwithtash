@@ -57,12 +57,12 @@ public class CourseResolver {
 	}
 
 	@SchemaMapping(typeName = "Course", field = "defaultPrice")
-	public Short getDefaultPrice(Course course) {
+	public Integer getDefaultPrice(Course course) {
 		return currencyUtil.centsToDollars(course.getDefaultPrice());
 	}
 
 	@SchemaMapping(typeName = "Course", field = "defaultEquipmentFee")
-	public Short getDefaultEquipmentFee(Course course) {
+	public Integer getDefaultEquipmentFee(Course course) {
 		return currencyUtil.centsToDollars(course.getDefaultEquipmentFee());
 	}
 

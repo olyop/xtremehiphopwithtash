@@ -8,7 +8,6 @@ import { ApolloProvider } from "./providers/apollo";
 import Auth0 from "./providers/auth0";
 import CreateAccount from "./providers/create-account";
 import ReCaptcha from "./providers/recaptcha";
-import StripeProvider from "./providers/stripe";
 import Routes from "./routes";
 
 const Application: FC = () => (
@@ -16,17 +15,15 @@ const Application: FC = () => (
 		<ReCaptcha>
 			<BrowserRouter>
 				<Auth0>
-					<StripeProvider>
-						<ApolloProvider>
-							<IsAdministratorProvider>
-								<CreateAccount>
-									<Header />
-									<Routes />
-									<InstagramButton />
-								</CreateAccount>
-							</IsAdministratorProvider>
-						</ApolloProvider>
-					</StripeProvider>
+					<ApolloProvider>
+						<IsAdministratorProvider>
+							<CreateAccount>
+								<Header />
+								<Routes />
+								<InstagramButton />
+							</CreateAccount>
+						</IsAdministratorProvider>
+					</ApolloProvider>
 				</Auth0>
 			</BrowserRouter>
 		</ReCaptcha>

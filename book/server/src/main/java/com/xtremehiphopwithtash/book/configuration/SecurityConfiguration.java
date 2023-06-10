@@ -39,10 +39,11 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
+			.csrf(csrf -> csrf.disable())
 			.cors(cors -> cors.configurationSource(request -> corsConfiguration))
 			.authorizeHttpRequests(authorize -> {
-				authorize.requestMatchers("/stripe").permitAll();
 				authorize.requestMatchers("/graphiql").permitAll();
+				authorize.requestMatchers("/stripe/webhook").permitAll();
 				authorize.requestMatchers(HttpMethod.POST, "/api/**").authenticated();
 				authorize.requestMatchers(HttpMethod.POST, "/graphql").authenticated();
 			})

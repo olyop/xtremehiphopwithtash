@@ -27,8 +27,7 @@ public class AdministratorController {
 	public GenerateCouponResponse generateCoupon(
 		@Validated @RequestBody GenerateCouponBody generateCoupon
 	) {
-		short discount = generateCoupon.discount();
-		String couponCode = couponService.create(discount);
+		String couponCode = couponService.create(generateCoupon.discount());
 		return new GenerateCouponResponse(couponCode);
 	}
 }

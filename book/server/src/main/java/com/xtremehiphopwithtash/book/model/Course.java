@@ -9,14 +9,12 @@ public class Course extends Base {
 	private String name;
 	private String description;
 	private URL photo;
-	private Short defaultPrice;
-	private Short defaultEquipmentFee;
-	private Short defaultDuration;
+	private Integer defaultPrice;
+	private Integer defaultEquipmentFee;
+	private Integer defaultDuration;
 	private UUID defaultLocationID;
-	private Short defaultCapacityAvailable;
-	private Short defaultEquipmentAvailable;
-
-	public Course() {}
+	private Integer defaultCapacityAvailable;
+	private Integer defaultEquipmentAvailable;
 
 	public UUID getCourseID() {
 		return courseID;
@@ -50,35 +48,27 @@ public class Course extends Base {
 		this.photo = photo;
 	}
 
-	public Short getDefaultPrice() {
+	public Integer getDefaultPrice() {
 		return defaultPrice;
 	}
 
-	public void setDefaultPrice(Short defaultPrice) {
+	public void setDefaultPrice(Integer defaultPrice) {
 		this.defaultPrice = defaultPrice;
 	}
 
-	public Short getDefaultEquipmentFee() {
+	public Integer getDefaultEquipmentFee() {
 		return defaultEquipmentFee;
 	}
 
-	public void setDefaultEquipmentFee(Short defaultEquipmentFee) {
+	public void setDefaultEquipmentFee(Integer defaultEquipmentFee) {
 		this.defaultEquipmentFee = defaultEquipmentFee;
 	}
 
-	public Short getDefaultCapacityAvailable() {
-		return defaultCapacityAvailable;
-	}
-
-	public void setDefaultCapacityAvailable(Short defaultCapacityAvailable) {
-		this.defaultCapacityAvailable = defaultCapacityAvailable;
-	}
-
-	public Short getDefaultDuration() {
+	public Integer getDefaultDuration() {
 		return defaultDuration;
 	}
 
-	public void setDefaultDuration(Short defaultDuration) {
+	public void setDefaultDuration(Integer defaultDuration) {
 		this.defaultDuration = defaultDuration;
 	}
 
@@ -90,11 +80,19 @@ public class Course extends Base {
 		this.defaultLocationID = defaultLocationID;
 	}
 
-	public Short getDefaultEquipmentAvailable() {
+	public Integer getDefaultCapacityAvailable() {
+		return defaultCapacityAvailable;
+	}
+
+	public void setDefaultCapacityAvailable(Integer defaultCapacityAvailable) {
+		this.defaultCapacityAvailable = defaultCapacityAvailable;
+	}
+
+	public Integer getDefaultEquipmentAvailable() {
 		return defaultEquipmentAvailable;
 	}
 
-	public void setDefaultEquipmentAvailable(Short defaultEquipmentAvailable) {
+	public void setDefaultEquipmentAvailable(Integer defaultEquipmentAvailable) {
 		this.defaultEquipmentAvailable = defaultEquipmentAvailable;
 	}
 }

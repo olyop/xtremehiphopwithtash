@@ -26,6 +26,7 @@ dependencies {
 	implementation 'com.google.openlocationcode:openlocationcode:1.0.4'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 	implementation 'com.google.maps:google-maps-services:2.2.0'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

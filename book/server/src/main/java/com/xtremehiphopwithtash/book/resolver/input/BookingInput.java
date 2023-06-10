@@ -7,8 +7,8 @@ import java.util.UUID;
 public record BookingInput(
 	Optional<String> notes,
 	UUID sessionID,
-	Short bookingQuantity,
-	Optional<Short> equipmentQuantity,
+	Integer bookingQuantity,
+	Optional<Integer> equipmentQuantity,
 	Optional<PaymentMethod> paymentMethod,
 	Optional<String> couponCode
 ) {}

@@ -70,12 +70,12 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "price")
-	public Short getDefaultPrice(Session session) {
+	public Integer getDefaultPrice(Session session) {
 		return currencyUtil.centsToDollars(session.getPrice());
 	}
 
 	@SchemaMapping(typeName = "Session", field = "equipmentFee")
-	public Short getDefaultEquipmentFee(Session session) {
+	public Integer getDefaultEquipmentFee(Session session) {
 		return currencyUtil.centsToDollars(session.getEquipmentFee());
 	}
 
@@ -106,8 +106,8 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "capacityBooked")
-	public Short getCapacityBooked(Session session) {
-		short capacityBooked = bookingService.retreiveCapacityBooked(session.getSessionID());
+	public Integer getCapacityBooked(Session session) {
+		int capacityBooked = bookingService.retreiveCapacityBooked(session.getSessionID());
 
 		if (capacityBooked == 0) {
 			return null;
@@ -117,8 +117,8 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "capacityRemaining")
-	public Short getCapacityRemaining(Session session) {
-		short capacityRemaining = bookingService.retreiveCapacityRemaining(session.getSessionID());
+	public Integer getCapacityRemaining(Session session) {
+		int capacityRemaining = bookingService.retreiveCapacityRemaining(session.getSessionID());
 
 		if (capacityRemaining == 0) {
 			return null;
@@ -133,8 +133,8 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "equipmentHired")
-	public Short getEquipmentHired(Session session) {
-		short equipmentHired = bookingService.retreiveEquipmentHired(session.getSessionID());
+	public Integer getEquipmentHired(Session session) {
+		int equipmentHired = bookingService.retreiveEquipmentHired(session.getSessionID());
 
 		if (equipmentHired == 0) {
 			return null;
@@ -144,8 +144,8 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "equipmentRemaining")
-	public Short getEquipmentRemaining(Session session) {
-		short equipmentRemaining = bookingService.retreiveEquipmentRemaining(session.getSessionID());
+	public Integer getEquipmentRemaining(Session session) {
+		int equipmentRemaining = bookingService.retreiveEquipmentRemaining(session.getSessionID());
 
 		if (equipmentRemaining == 0) {
 			return null;
@@ -188,15 +188,7 @@ public class SessionResolver {
 	public List<Session> getSessionsInPeriod(@Argument GetSessionsInput input) {
 		sessionValidator.validateGetSessionsInput(input);
 
-		if (input.courseID().isPresent()) {
-			return sessionService.retreiveInTimePeriodByCourseID(
-				input.startTime(),
-				input.endTime(),
-				input.courseID().get()
-			);
-		} else {
-			return sessionService.retreiveInTimePeriod(input.startTime(), input.endTime());
-		}
+		return sessionService.retreiveInTimePeriod(input.startTime(), input.endTime());
 	}
 
 	@QueryMapping

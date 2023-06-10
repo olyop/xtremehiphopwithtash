@@ -1,6 +1,8 @@
 {
 	"files.exclude": {
 		"book/client/node_modules": true,
-		"book/server/bin": true
-	}
+		"book/server/bin": true,
+		"book/client/.swc": true
+	},
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

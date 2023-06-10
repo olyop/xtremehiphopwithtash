@@ -4,18 +4,16 @@ import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.other.BookingCost;
-import com.xtremehiphopwithtash.book.other.PaymentMethod;
+import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
 import com.xtremehiphopwithtash.book.service.Auth0JwtService;
-import com.xtremehiphopwithtash.book.service.BookingCostService;
 import com.xtremehiphopwithtash.book.service.BookingService;
 import com.xtremehiphopwithtash.book.service.SessionService;
 import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
-import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
+import com.xtremehiphopwithtash.book.util.CurrencyUtil;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -31,27 +29,24 @@ public class BookingResolver {
 	private final StudentService studentService;
 	private final BookingService bookingService;
 	private final SessionService sessionService;
-	private final BookingCostService bookingCostService;
 	private final Auth0JwtService auth0JwtService;
 	private final StripeService stripeService;
-	private final SessionValidator sessionValidator;
+	private final CurrencyUtil currencyUtil;
 
 	public BookingResolver(
 		StudentService studentService,
 		BookingService bookingService,
 		SessionService sessionService,
-		BookingCostService bookingCostService,
 		Auth0JwtService auth0JwtService,
 		StripeService stripeService,
-		SessionValidator sessionValidator
+		CurrencyUtil currencyUtil
 	) {
 		this.studentService = studentService;
 		this.bookingService = bookingService;
 		this.sessionService = sessionService;
-		this.bookingCostService = bookingCostService;
 		this.auth0JwtService = auth0JwtService;
 		this.stripeService = stripeService;
-		this.sessionValidator = sessionValidator;
+		this.currencyUtil = currencyUtil;
 	}
 
 	@QueryMapping
@@ -92,7 +87,7 @@ public class BookingResolver {
 		auth0JwtService.validateAdministrator(jwt);
 		String studentID = auth0JwtService.extractStudentID(principal);
 
-		return bookingService.createBooking(input, studentID);
+		return bookingService.createBooking(input, studentID, null);
 	}
 
 	@MutationMapping
@@ -106,32 +101,22 @@ public class BookingResolver {
 		return bookingService.updateBooking(bookingID, input);
 	}
 
-	@QueryMapping
-	public BookingCost getBookingCost(@Argument UUID sessionID, @Argument BookingInput bookingInput) {
-		sessionValidator.validateID(sessionID);
+	@MutationMapping
+	public CreatePaymentIntentResponse createPaymentIntent(
+		@Argument BookingInput input,
+		Principal principal
+	) {
+		String studentID = auth0JwtService.extractStudentID(principal);
 
-		short bookingQuantity = bookingInput.bookingQuantity();
-		Optional<Short> equipmentQuantity = bookingInput.equipmentQuantity();
-		Optional<String> coupon = bookingInput.couponCode();
-		Optional<PaymentMethod> paymentMethod = bookingInput.paymentMethod();
-
-		Session session = sessionService.retreiveByID(sessionID);
-		Optional<Short> price = Optional.ofNullable(session.getPrice());
-		Optional<Short> equipmentFee = Optional.ofNullable(session.getEquipmentFee());
-
-		return bookingCostService.getBookingCost(
-			price,
-			equipmentFee,
-			bookingQuantity,
-			equipmentQuantity,
-			paymentMethod,
-			coupon
-		);
+		return stripeService.createPaymentIntent(input, studentID);
 	}
 
-	@QueryMapping
-	public String getStripeCheckoutURL() {
-		return "";
-		// return stripeService.createSessionURL();
+	@SchemaMapping(typeName = "Booking", field = "cost")
+	public Integer getBookingCost(Booking booking) {
+		if (booking.getCost() == null) {
+			return null;
+		}
+
+		return currencyUtil.centsToDollars(booking.getCost());
 	}
 }

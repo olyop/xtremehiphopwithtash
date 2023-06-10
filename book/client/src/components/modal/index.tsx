@@ -21,6 +21,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	contentClassName,
 	buttonClassName,
 	errorClassName,
+	backgroundClassName,
 	isLarge = false,
 	hideTitle = false,
 	centerTitle = false,
@@ -46,7 +47,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 				onClick={disableCloseOnEscape ? undefined : onClose}
 				className={`inset-0 cursor-pointer absolute z-[110] bg-gray-900 transition-opacity ${
 					isOpen ? "opacity-50 visible" : "opacity-0 invisible"
-				}`}
+				} ${backgroundClassName || ""}`}
 			/>
 			{isOpen && (
 				<div
@@ -56,7 +57,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 						modalClassName || ""
 					}`}
 				>
-					{!disableCloseOnEscape && !hideCloseButton && onClose && (
+					{!disableCloseOnEscape && !hideCloseButton && onClose && title && (
 						<Button
 							onClick={onClose}
 							ariaLabel={`Close ${title}`}
@@ -64,7 +65,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 							leftIcon={c => <XMarkIcon className={c} />}
 						/>
 					)}
-					{hideTitle || (
+					{!hideTitle && icon && (
 						<div
 							className={`flex gap-2 -mt-1 ${
 								subTitle === undefined ? "items-center" : "items-start"
@@ -95,10 +96,10 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 
 interface ModalPropTypes {
 	isOpen: boolean;
-	title: string;
+	title?: string;
 	titleContent?: ReactNode;
 	subTitle?: ReactNode;
-	icon: (className: string) => ReactNode;
+	icon?: (className: string) => ReactNode;
 	onClose?: () => void;
 	error?: ApolloError | undefined;
 	errorClassName?: string;
@@ -108,6 +109,7 @@ interface ModalPropTypes {
 	modalClassName?: string;
 	contentClassName?: string;
 	buttonClassName?: string;
+	backgroundClassName?: string;
 	hideTitle?: boolean;
 	centerTitle?: boolean;
 	disableCloseOnEscape?: boolean;

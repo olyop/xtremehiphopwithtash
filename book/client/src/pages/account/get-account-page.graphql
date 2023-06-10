@@ -16,6 +16,10 @@ query getAccountPage {
 			bookingID
 			notes
 			createdAt
+			bookingQuantity
+			equipmentQuantity
+			paymentMethod
+			cost
 			session {
 				sessionID
 				title

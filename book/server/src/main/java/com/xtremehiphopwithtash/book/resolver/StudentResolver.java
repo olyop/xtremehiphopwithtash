@@ -103,8 +103,8 @@ public class StudentResolver {
 	}
 
 	@SchemaMapping(typeName = "Student", field = "bookingsTotal")
-	public Short getStudentBookingsTotal(Student student) {
-		short bookingsTotal = bookingService.retreiveStudentTotal(student.getStudentID());
+	public Integer getStudentBookingsTotal(Student student) {
+		int bookingsTotal = bookingService.retreiveStudentTotal(student.getStudentID());
 
 		if (bookingsTotal == 0) {
 			return null;

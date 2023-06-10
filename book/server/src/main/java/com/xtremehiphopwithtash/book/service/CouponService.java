@@ -49,7 +49,7 @@ public class CouponService {
 		return null;
 	}
 
-	public String create(short discount) {
+	public String create(int discount) {
 		validateDiscount(discount);
 
 		String code = generateCode();
@@ -68,7 +68,7 @@ public class CouponService {
 		return code;
 	}
 
-	public short getDiscount(String code) {
+	public int getDiscount(String code) {
 		String errorMessage = canUseErrorMessage(code);
 
 		if (errorMessage != null) {
@@ -91,6 +91,10 @@ public class CouponService {
 		coupon.setUsedOnBookingID(bookingID);
 
 		couponDAO.updateByID(code, coupon);
+	}
+
+	public void delete(String studentID, UUID bookingID) {
+		couponDAO.deleteByStudentAndBooking(studentID, bookingID);
 	}
 
 	private String generateCode() {
@@ -131,8 +135,8 @@ public class CouponService {
 		}
 	}
 
-	private void validateDiscount(short discount) {
-		if (discount <= 0 || discount >= 100) {
+	private void validateDiscount(int discount) {
+		if (discount <= 0 || discount > 100) {
 			throw new IllegalArgumentException("Discount must be between 0 and 100");
 		}
 	}

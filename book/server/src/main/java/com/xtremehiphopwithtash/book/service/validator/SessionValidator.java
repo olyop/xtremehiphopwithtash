@@ -101,10 +101,6 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	}
 
 	public void validateGetSessionsInput(GetSessionsInput input) {
-		if (input.courseID().isPresent()) {
-			courseValidator.validateID(input.courseID().get());
-		}
-
 		if (input.startTime().isAfter(input.endTime())) {
 			throw new ResolverException("Start time must be before end time");
 		}
@@ -127,7 +123,7 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	}
 
 	private void validateCapacityIsNotLessThanBookings(UUID sessionID, SessionInput input) {
-		short capacityBooked = bookingDAO.selectCapacityBooked(sessionID);
+		int capacityBooked = bookingDAO.selectCapacityBooked(sessionID);
 
 		if (input.capacityAvailable() < capacityBooked) {
 			throw new ResolverException("Cannot reduce capacity below the current number of bookings");

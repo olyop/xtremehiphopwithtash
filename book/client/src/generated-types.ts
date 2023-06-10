@@ -46,15 +46,12 @@ export type Booking = {
 export type BookingCost = {
 	readonly __typename: "BookingCost";
 	readonly bookingCost: Scalars["NonNegativeInt"]["output"];
-	readonly couponDiscount: Scalars["Float"]["output"];
+	readonly couponDiscount: Scalars["Int"]["output"];
 	readonly couponDiscountPercentage: Scalars["NonNegativeInt"]["output"];
 	readonly equipmentCost: Scalars["NonNegativeInt"]["output"];
-	readonly estimatedCost: Scalars["Float"]["output"];
-	readonly finalCost: Scalars["Float"]["output"];
+	readonly finalCost: Scalars["NonNegativeInt"]["output"];
 	readonly fullCost: Scalars["NonNegativeInt"]["output"];
-	readonly fullSurcharge: Scalars["Float"]["output"];
-	readonly surcharge: Scalars["Float"]["output"];
-	readonly transactionFee: Scalars["Float"]["output"];
+	readonly isFreeFromCoupon: Scalars["Boolean"]["output"];
 };
 
 export type BookingInput = {
@@ -100,6 +97,11 @@ export type CourseInput = {
 	readonly description: Scalars["String"]["input"];
 	readonly name: Scalars["String"]["input"];
 	readonly photo: Scalars["URL"]["input"];
+};
+
+export type CreatePaymentIntentResponse = {
+	readonly __typename: "CreatePaymentIntentResponse";
+	readonly clientSecret: Scalars["String"]["output"];
 };
 
 export type Details = {
@@ -166,7 +168,7 @@ export type Mutation = {
 	readonly createCourse: Course;
 	readonly createInstructor: Instructor;
 	readonly createLocation: Location;
-	readonly createPaymentIntent: Scalars["String"]["output"];
+	readonly createPaymentIntent: CreatePaymentIntentResponse;
 	readonly createSession: Session;
 	readonly createStudent: Student;
 	readonly deleteBookingByID: Scalars["UUID"]["output"];
@@ -287,7 +289,6 @@ export type Query = {
 	readonly getLocations: ReadonlyArray<Location>;
 	readonly getSessionByID: Session;
 	readonly getSessionsInPeriod: ReadonlyArray<Session>;
-	readonly getStripeCheckoutURL: Scalars["URL"]["output"];
 	readonly getStudentByID: Student;
 	readonly getStudents: ReadonlyArray<Student>;
 	readonly isStudentAdministator: Scalars["Boolean"]["output"];
@@ -305,7 +306,6 @@ export type QueryGetBookingByIdArgs = {
 
 export type QueryGetBookingCostArgs = {
 	bookingInput: BookingInput;
-	sessionID: Scalars["UUID"]["input"];
 };
 
 export type QueryGetCourseByIdArgs = {
@@ -545,6 +545,10 @@ export type GetAccountPageQuery = {
 				readonly bookingID: string;
 				readonly notes: string | null;
 				readonly createdAt: number;
+				readonly bookingQuantity: number;
+				readonly equipmentQuantity: number | null;
+				readonly paymentMethod: PaymentMethod | null;
+				readonly cost: number | null;
 				readonly session: {
 					readonly sessionID: string;
 					readonly title: string;
@@ -896,6 +900,50 @@ export type GetStudentsQuery = {
 	>;
 } & { readonly __typename: "Query" };
 
+export type GetPaymentSuccessDataQueryVariables = Exact<{
+	sessionID: Scalars["UUID"]["input"];
+}>;
+
+export type GetPaymentSuccessDataQuery = {
+	readonly getSessionByID: {
+		readonly sessionID: string;
+		readonly title: string;
+		readonly price: number | null;
+		readonly equipmentFee: number | null;
+		readonly startTime: number;
+		readonly endTime: number;
+		readonly capacityRemaining: number | null;
+		readonly location: {
+			readonly locationID: string;
+			readonly name: string;
+			readonly plusCode: string;
+			readonly address: string;
+			readonly coordinates: { readonly latitude: number; readonly longitude: number } & {
+				readonly __typename: "Coordinates";
+			};
+		} & { readonly __typename: "Location" };
+		readonly course: {
+			readonly courseID: string;
+			readonly name: string;
+			readonly photo: string;
+		} & { readonly __typename: "Course" };
+		readonly instructors: ReadonlyArray<
+			{
+				readonly instructorID: string;
+				readonly photo: string;
+				readonly details: {
+					readonly detailsID: string;
+					readonly firstName: string;
+					readonly lastName: string;
+					readonly nickName: string | null;
+					readonly mobilePhoneNumber: string;
+					readonly instagramUsername: string | null;
+				} & { readonly __typename: "Details" };
+			} & { readonly __typename: "Instructor" }
+		>;
+	} & { readonly __typename: "Session" };
+} & { readonly __typename: "Query" };
+
 export type CreateBookingMutationVariables = Exact<{
 	input: BookingInput;
 }>;
@@ -904,12 +952,12 @@ export type CreateBookingMutation = {
 	readonly createBooking: { readonly bookingID: string } & { readonly __typename: "Booking" };
 } & { readonly __typename: "Mutation" };
 
-export type GetPaymentScreenSessionQueryVariables = Exact<{
+export type GetPaymentScreenDataQueryVariables = Exact<{
 	sessionID: Scalars["UUID"]["input"];
 	bookingInput: BookingInput;
 }>;
 
-export type GetPaymentScreenSessionQuery = {
+export type GetPaymentScreenDataQuery = {
 	readonly getSessionByID: {
 		readonly sessionID: string;
 		readonly title: string;
@@ -954,18 +1002,19 @@ export type GetPaymentScreenSessionQuery = {
 		readonly couponDiscountPercentage: number;
 		readonly couponDiscount: number;
 		readonly finalCost: number;
-		readonly surcharge: number;
-		readonly transactionFee: number;
-		readonly fullSurcharge: number;
-		readonly estimatedCost: number;
+		readonly isFreeFromCoupon: boolean;
 	} & { readonly __typename: "BookingCost" };
 } & { readonly __typename: "Query" };
 
-export type GetStripeCheckoutUrlQueryVariables = Exact<{ [key: string]: never }>;
+export type CreatePaymentIntentMutationVariables = Exact<{
+	input: BookingInput;
+}>;
 
-export type GetStripeCheckoutUrlQuery = { readonly getStripeCheckoutURL: string } & {
-	readonly __typename: "Query";
-};
+export type CreatePaymentIntentMutation = {
+	readonly createPaymentIntent: { readonly clientSecret: string } & {
+		readonly __typename: "CreatePaymentIntentResponse";
+	};
+} & { readonly __typename: "Mutation" };
 
 export type VerifyCouponQueryVariables = Exact<{
 	code: Scalars["String"]["input"];

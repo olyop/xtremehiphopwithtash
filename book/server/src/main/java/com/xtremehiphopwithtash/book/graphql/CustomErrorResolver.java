@@ -15,6 +15,7 @@ public class CustomErrorResolver extends DataFetcherExceptionResolverAdapter {
 		Throwable throwable = NestedExceptionUtils.getMostSpecificCause(ex);
 
 		if (throwable instanceof Exception e) {
+			e.printStackTrace();
 			return GraphqlErrorBuilder
 				.newError(env)
 				.errorType(ErrorTypes.BAD_REQUEST)

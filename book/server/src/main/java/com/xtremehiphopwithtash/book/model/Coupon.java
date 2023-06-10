@@ -7,12 +7,10 @@ public class Coupon extends Base {
 
 	private UUID couponID;
 	private String code;
-	private Short discount;
+	private Integer discount;
 	private Instant usedAt;
 	private String usedByStudentID;
 	private UUID usedOnBookingID;
-
-	public Coupon() {}
 
 	public UUID getCouponID() {
 		return couponID;
@@ -30,11 +28,11 @@ public class Coupon extends Base {
 		this.code = code;
 	}
 
-	public Short getDiscount() {
+	public Integer getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(Short discount) {
+	public void setDiscount(Integer discount) {
 		this.discount = discount;
 	}
 

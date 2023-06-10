@@ -5,6 +5,7 @@ import Schedule from "./components/schedule";
 import AccountPage from "./pages/account";
 import AdminPage from "./pages/admin";
 import PaymentPage from "./pages/payment";
+import PaymentSuccessPage from "./pages/payment-success";
 import SessionPage from "./pages/session";
 
 const routes: RouteObject[] = [
@@ -27,6 +28,10 @@ const routes: RouteObject[] = [
 	{
 		path: "payment",
 		element: <PaymentPage />,
+	},
+	{
+		path: "payment-success",
+		element: <PaymentSuccessPage />,
 	},
 ];
 

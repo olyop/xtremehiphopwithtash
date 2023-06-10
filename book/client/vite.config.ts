@@ -9,7 +9,6 @@ const gql = (gqlImport as unknown as { default: () => PluginOption }).default;
 export default defineConfig(async ({ mode }) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd(), "") };
 	return {
-		mode: "development",
 		plugins: [react(), gql()],
 		server: {
 			host: true,

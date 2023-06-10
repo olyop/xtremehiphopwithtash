@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.Instructor;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,12 +16,12 @@ public class InstructorRowMapper implements RowMapper<Instructor> {
 	public Instructor mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Instructor instructor = new Instructor();
 
-		instructor.setInstructorID(MapRowUtil.mapToUUID(rs.getString("instructor_id")));
+		instructor.setInstructorID(MapRowUtil.mapUUID(rs.getString("instructor_id")));
 
-		instructor.setDetailsID(MapRowUtil.mapToUUID(rs.getString("details_id")));
-		instructor.setPhoto(MapRowUtil.mapToURL(rs.getString("photo")));
+		instructor.setDetailsID(MapRowUtil.mapUUID(rs.getString("details_id")));
+		instructor.setPhoto(MapRowUtil.mapURL(rs.getString("photo")));
 
-		instructor.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		instructor.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return instructor;
 	}

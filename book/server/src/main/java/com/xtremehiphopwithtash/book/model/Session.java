@@ -9,15 +9,13 @@ public class Session extends Base {
 	private String title;
 	private String notes;
 	private UUID locationID;
-	private Short price;
-	private Short equipmentFee;
+	private Integer price;
+	private Integer equipmentFee;
 	private Instant startTime;
 	private Instant endTime;
 	private UUID courseID;
-	private Short capacityAvailable;
-	private Short equipmentAvailable;
-
-	public Session() {}
+	private Integer capacityAvailable;
+	private Integer equipmentAvailable;
 
 	public UUID getSessionID() {
 		return sessionID;
@@ -51,19 +49,19 @@ public class Session extends Base {
 		this.locationID = locationID;
 	}
 
-	public Short getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(Short price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 
-	public Short getEquipmentFee() {
+	public Integer getEquipmentFee() {
 		return equipmentFee;
 	}
 
-	public void setEquipmentFee(Short equipmentFee) {
+	public void setEquipmentFee(Integer equipmentFee) {
 		this.equipmentFee = equipmentFee;
 	}
 
@@ -91,19 +89,19 @@ public class Session extends Base {
 		this.courseID = courseID;
 	}
 
-	public Short getCapacityAvailable() {
+	public Integer getCapacityAvailable() {
 		return capacityAvailable;
 	}
 
-	public void setCapacityAvailable(Short bookingsAvailable) {
-		this.capacityAvailable = bookingsAvailable;
+	public void setCapacityAvailable(Integer capacityAvailable) {
+		this.capacityAvailable = capacityAvailable;
 	}
 
-	public Short getEquipmentAvailable() {
+	public Integer getEquipmentAvailable() {
 		return equipmentAvailable;
 	}
 
-	public void setEquipmentAvailable(Short equipmentAvailable) {
+	public void setEquipmentAvailable(Integer equipmentAvailable) {
 		this.equipmentAvailable = equipmentAvailable;
 	}
 }

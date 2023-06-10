@@ -1,5 +1,6 @@
 package com.xtremehiphopwithtash.book.service;
 
+import com.stripe.model.PaymentIntent;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.other.BookingCost;
@@ -49,84 +50,10 @@ public class BookingService {
 		this.commonValidator = commonValidator;
 	}
 
-	public List<Booking> retreiveAll() {
-		return bookingDAO.select();
-	}
-
-	public Booking retreiveByID(UUID bookingID) {
-		validateID(bookingID);
-
-		return bookingDAO.selectByID(bookingID);
-	}
-
-	public UUID deleteByID(UUID bookingID) {
-		validateID(bookingID);
-
-		Booking booking = bookingDAO.selectByID(bookingID);
-		Session session = sessionService.retreiveByID(booking.getSessionID());
-
-		sessionValidator.validateIsNotInPast(session.getStartTime());
-
-		bookingDAO.deleteByID(bookingID);
-
-		return bookingID;
-	}
-
-	public List<Booking> retreiveByStudentID(String studentID) {
-		studentValidator.validateID(studentID);
-
-		return bookingDAO.selectByStudentID(studentID);
-	}
-
-	public short retreiveStudentTotal(String studentID) {
-		return bookingDAO.selectSumByStudentID(studentID);
-	}
-
-	public List<Booking> retreiveBySessionID(UUID sessionID) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectBySessionID(sessionID);
-	}
-
-	public short retreiveCapacityBooked(UUID sessionID) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectCapacityBooked(sessionID);
-	}
-
-	public short retreiveCapacityRemaining(UUID sessionID) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectCapacityRemaining(sessionID);
-	}
-
-	public boolean retreiveIsCapacityRemaining(UUID sessionID, short bookingQuantity) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectIsCapacityRemaining(sessionID, bookingQuantity);
-	}
-
-	public short retreiveEquipmentHired(UUID sessionID) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectEquipmentHired(sessionID);
-	}
-
-	public boolean retreiveIsEquipmentRemaining(UUID sessionID, short equipmentQuantity) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectIsEquipmentRemaining(sessionID, equipmentQuantity);
-	}
-
-	public short retreiveEquipmentRemaining(UUID sessionID) {
-		sessionValidator.validateID(sessionID);
-
-		return bookingDAO.selectEquipmentRemaining(sessionID);
-	}
-
-	public Booking createBooking(BookingInput input, String studentID) {
+	public Booking createBooking(BookingInput input, String studentID, PaymentIntent paymentIntent) {
 		studentValidator.validateID(studentID);
 		validateInput(input);
+		validateCoupon(input.couponCode());
 
 		Session session = sessionService.retreiveByID(input.sessionID());
 		BookingCost bookingCost = getBookingCost(input, session);
@@ -136,10 +63,14 @@ public class BookingService {
 
 		if (isBookingFree(bookingCost)) {
 			booking.setCost(null);
-		}
-
-		if (isPayingWithCash(input)) {
+		} else if (isPayingWithCash(input)) {
+			validateStudentHasNotBookedSession(studentID, input);
+			validateQuantiesAreOne(input);
 			booking.setCost(bookingCost.getFinalCost());
+		} else if (isPayingWithCard(input, paymentIntent)) {
+			booking.setCost(paymentIntent.getAmount().intValue());
+		} else {
+			throw new ResolverException("Invalid payment method");
 		}
 
 		Booking savedBooking = bookingDAO.insert(booking);
@@ -173,7 +104,6 @@ public class BookingService {
 		commonValidator.validateText(input.notes(), "Notes", 1024);
 		commonValidator.validateNonZeroInteger(input.bookingQuantity(), "Booking quantity");
 		commonValidator.validateNonZeroInteger(input.equipmentQuantity(), "Equipment quantity");
-		validateCoupon(input.couponCode());
 	}
 
 	private void validateSession(UUID sessionID) {
@@ -190,14 +120,39 @@ public class BookingService {
 		}
 	}
 
-	private BookingCost getBookingCost(BookingInput input, Session session) {
+	private void validateStudentHasNotBookedSession(String studentID, BookingInput input) {
+		if (bookingDAO.existsByStudentIDAndSessionID(studentID, input.sessionID())) {
+			throw new ResolverException(
+				"You already booked this session. When paying with cash you can only book a session once."
+			);
+		}
+	}
+
+	private void validateQuantiesAreOne(BookingInput input) {
+		if (
+			input.bookingQuantity() != 1 &&
+			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : true)
+		) {
+			throw new ResolverException(
+				"When paying with cash you can only book one session and hire one step."
+			);
+		}
+	}
+
+	public BookingCost getBookingCost(BookingInput input, Session session) {
+		Optional<String> coupon = input.couponCode();
+		Optional<Integer> couponDiscountPercentage = coupon.isPresent()
+			? Optional.of(couponService.getDiscount(coupon.get()))
+			: Optional.empty();
+
 		return bookingCostService.getBookingCost(
 			Optional.ofNullable(session.getPrice()),
 			Optional.ofNullable(session.getEquipmentFee()),
 			input.bookingQuantity(),
 			input.equipmentQuantity(),
 			input.paymentMethod(),
-			input.couponCode()
+			input.couponCode(),
+			couponDiscountPercentage
 		);
 	}
 
@@ -207,5 +162,93 @@ public class BookingService {
 
 	private boolean isPayingWithCash(BookingInput input) {
 		return input.paymentMethod().isPresent() && input.paymentMethod().get() == PaymentMethod.CASH;
+	}
+
+	private boolean isPayingWithCard(BookingInput input, PaymentIntent paymentIntent) {
+		if (paymentIntent != null) {
+			System.out.println(paymentIntent.getStatus().equals("succeeded"));
+		}
+		return (
+			input.paymentMethod().isPresent() &&
+			input.paymentMethod().get() == PaymentMethod.CARD &&
+			paymentIntent != null &&
+			paymentIntent.getStatus().equals("succeeded")
+		);
+	}
+
+	public List<Booking> retreiveAll() {
+		return bookingDAO.select();
+	}
+
+	public Booking retreiveByID(UUID bookingID) {
+		validateID(bookingID);
+
+		return bookingDAO.selectByID(bookingID);
+	}
+
+	public UUID deleteByID(UUID bookingID) {
+		validateID(bookingID);
+
+		Booking booking = bookingDAO.selectByID(bookingID);
+		Session session = sessionService.retreiveByID(booking.getSessionID());
+
+		sessionValidator.validateIsNotInPast(session.getStartTime());
+
+		couponService.delete(booking.getStudentID(), booking.getBookingID());
+		bookingDAO.deleteByID(bookingID);
+
+		return bookingID;
+	}
+
+	public List<Booking> retreiveByStudentID(String studentID) {
+		studentValidator.validateID(studentID);
+
+		return bookingDAO.selectByStudentID(studentID);
+	}
+
+	public int retreiveStudentTotal(String studentID) {
+		return bookingDAO.selectSumByStudentID(studentID);
+	}
+
+	public List<Booking> retreiveBySessionID(UUID sessionID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectBySessionID(sessionID);
+	}
+
+	public int retreiveCapacityBooked(UUID sessionID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectCapacityBooked(sessionID);
+	}
+
+	public int retreiveCapacityRemaining(UUID sessionID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectCapacityRemaining(sessionID);
+	}
+
+	public boolean retreiveIsCapacityRemaining(UUID sessionID, short bookingQuantity) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectIsCapacityRemaining(sessionID, bookingQuantity);
+	}
+
+	public int retreiveEquipmentHired(UUID sessionID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectEquipmentHired(sessionID);
+	}
+
+	public boolean retreiveIsEquipmentRemaining(UUID sessionID, short equipmentQuantity) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectIsEquipmentRemaining(sessionID, equipmentQuantity);
+	}
+
+	public int retreiveEquipmentRemaining(UUID sessionID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectEquipmentRemaining(sessionID);
 	}
 }

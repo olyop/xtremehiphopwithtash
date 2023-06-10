@@ -1,0 +1,5 @@
+mutation createPaymentIntent($input: BookingInput!) {
+	createPaymentIntent(input: $input) {
+		clientSecret
+	}
+}

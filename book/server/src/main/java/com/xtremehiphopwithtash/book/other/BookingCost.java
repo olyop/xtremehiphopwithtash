@@ -6,13 +6,9 @@ public class BookingCost {
 	private int equipmentCost;
 	private int fullCost;
 	private int couponDiscountPercentage;
-	private double couponDiscount;
-	private double finalCost;
+	private int couponDiscount;
+	private int finalCost;
 	private boolean isFreeFromCoupon;
-	private double surcharge;
-	private double transactionFee;
-	private double fullSurcharge;
-	private double estimatedCost;
 
 	public int getBookingCost() {
 		return bookingCost;
@@ -46,19 +42,19 @@ public class BookingCost {
 		this.couponDiscountPercentage = couponDiscountPercentage;
 	}
 
-	public double getCouponDiscount() {
+	public int getCouponDiscount() {
 		return couponDiscount;
 	}
 
-	public void setCouponDiscount(double couponDiscount) {
+	public void setCouponDiscount(int couponDiscount) {
 		this.couponDiscount = couponDiscount;
 	}
 
-	public double getFinalCost() {
+	public int getFinalCost() {
 		return finalCost;
 	}
 
-	public void setFinalCost(double finalCost) {
+	public void setFinalCost(int finalCost) {
 		this.finalCost = finalCost;
 	}
 
@@ -68,37 +64,5 @@ public class BookingCost {
 
 	public void setFreeFromCoupon(boolean isFreeFromCoupon) {
 		this.isFreeFromCoupon = isFreeFromCoupon;
-	}
-
-	public double getSurcharge() {
-		return surcharge;
-	}
-
-	public void setSurcharge(double surcharge) {
-		this.surcharge = surcharge;
-	}
-
-	public double getTransactionFee() {
-		return transactionFee;
-	}
-
-	public void setTransactionFee(double transactionFee) {
-		this.transactionFee = transactionFee;
-	}
-
-	public double getFullSurcharge() {
-		return fullSurcharge;
-	}
-
-	public void setFullSurcharge(double fullSurcharge) {
-		this.fullSurcharge = fullSurcharge;
-	}
-
-	public double getEstimatedCost() {
-		return estimatedCost;
-	}
-
-	public void setEstimatedCost(double estimatedCost) {
-		this.estimatedCost = estimatedCost;
 	}
 }

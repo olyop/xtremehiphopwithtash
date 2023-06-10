@@ -2,6 +2,7 @@ package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,19 +17,19 @@ public class BookingRowMapper implements RowMapper<Booking> {
 	public Booking mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Booking booking = new Booking();
 
-		booking.setBookingID(MapRowUtil.mapToUUID(rs.getString("booking_id")));
+		booking.setBookingID(MapRowUtil.mapUUID(rs.getString("booking_id")));
 
 		booking.setNotes(rs.getString("notes"));
-		booking.setSessionID(MapRowUtil.mapToUUID(rs.getString("session_id")));
+		booking.setSessionID(MapRowUtil.mapUUID(rs.getString("session_id")));
 		booking.setStudentID(rs.getString("student_id"));
-		booking.setBookingQuantity(MapRowUtil.mapToShort(rs.getShort("booking_quantity")));
-		booking.setEquipmentQuantity(MapRowUtil.mapToShort(rs.getShort("equipment_quantity")));
+		booking.setBookingQuantity(MapRowUtil.mapInteger(rs.getInt("booking_quantity")));
+		booking.setEquipmentQuantity(MapRowUtil.mapInteger(rs.getInt("equipment_quantity")));
 		booking.setPaymentMethod(
-			MapRowUtil.mapToEnum(PaymentMethod.class, rs.getString("payment_method"))
+			MapRowUtil.mapEnum(PaymentMethod.class, rs.getString("payment_method"))
 		);
-		booking.setCost(MapRowUtil.mapToDouble(rs.getDouble("cost")));
+		booking.setCost(MapRowUtil.mapInteger(rs.getInt("cost")));
 
-		booking.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		booking.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return booking;
 	}

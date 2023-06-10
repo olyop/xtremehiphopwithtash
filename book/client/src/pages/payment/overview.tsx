@@ -50,19 +50,11 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 						</p>
 					</Fragment>
 				)}
-				{bookingCost.fullSurcharge > 0 && (
-					<Fragment>
-						<p className="text-sm truncate">1 x Card Surcharge (Estimated)</p>
-						<p className="text-sm justify-self-end">
-							{currencyFormatter.format(bookingCost.fullSurcharge)}
-						</p>
-					</Fragment>
-				)}
 				<div className="h-[2px] w-full bg-gray-500 my-[8px]" />
 				<div className="h-[2px] w-full bg-gray-500 my-[8px]" />
 				<p className="text-sm font-bold truncate">Total:</p>
 				<p className="text-sm justify-self-end font-bold">
-					{currencyFormatter.format(bookingCost.estimatedCost)}
+					{currencyFormatter.format(bookingCost.finalCost)}
 				</p>
 			</div>
 		</div>

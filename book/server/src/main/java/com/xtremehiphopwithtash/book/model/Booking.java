@@ -9,12 +9,10 @@ public class Booking extends Base {
 	private String notes;
 	private UUID sessionID;
 	private String studentID;
-	private Short bookingQuantity;
-	private Short equipmentQuantity;
+	private Integer bookingQuantity;
+	private Integer equipmentQuantity;
 	private PaymentMethod paymentMethod;
-	private Double cost;
-
-	public Booking() {}
+	private Integer cost;
 
 	public UUID getBookingID() {
 		return bookingID;
@@ -48,19 +46,19 @@ public class Booking extends Base {
 		this.studentID = studentID;
 	}
 
-	public Short getBookingQuantity() {
+	public Integer getBookingQuantity() {
 		return bookingQuantity;
 	}
 
-	public void setBookingQuantity(Short bookingQuantity) {
+	public void setBookingQuantity(Integer bookingQuantity) {
 		this.bookingQuantity = bookingQuantity;
 	}
 
-	public Short getEquipmentQuantity() {
+	public Integer getEquipmentQuantity() {
 		return equipmentQuantity;
 	}
 
-	public void setEquipmentQuantity(Short equipmentQuantity) {
+	public void setEquipmentQuantity(Integer equipmentQuantity) {
 		this.equipmentQuantity = equipmentQuantity;
 	}
 
@@ -72,11 +70,11 @@ public class Booking extends Base {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public Double getCost() {
+	public Integer getCost() {
 		return cost;
 	}
 
-	public void setCost(Double cost) {
+	public void setCost(Integer cost) {
 		this.cost = cost;
 	}
 }

@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS booking (
 	student_id VARCHAR(255) NOT NULL,
 	booking_quantity SMALLINT NOT NULL,
 	equipment_quantity SMALLINT,
-	payment_method payment_method,
-	cost NUMERIC(3, 1),
+	payment_method booking_payment_method,
+	cost INTEGER,
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
 	CONSTRAINT booking_pk

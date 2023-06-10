@@ -1,50 +1,114 @@
 package com.xtremehiphopwithtash.book.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
-import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData;
+import com.stripe.model.Event;
+import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
+import com.stripe.net.Webhook;
+import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods;
+import com.xtremehiphopwithtash.book.model.Session;
+import com.xtremehiphopwithtash.book.other.BookingCost;
+import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
+import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
 import java.lang.module.ResolutionException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StripeService {
 
-	public StripeService(@Value("${stripe.live.key}") String secretKey) {
+	private final String currency;
+	private final String webhookSecret;
+	private final ObjectMapper objectMapper;
+
+	private final BookingService bookingService;
+	private final SessionService sessionService;
+
+	public StripeService(
+		@Value("${stripe.currency}") String currency,
+		@Value("${stripe.live.key}") String secretKey,
+		@Value("${stripe.webhook.secret}") String webhookSecret,
+		BookingService bookingService,
+		SessionService sessionService
+	) {
 		Stripe.apiKey = secretKey;
+
+		this.currency = currency;
+		this.webhookSecret = webhookSecret;
+		this.objectMapper = new ObjectMapper();
+		this.objectMapper.registerModule(new Jdk8Module());
+		this.bookingService = bookingService;
+		this.sessionService = sessionService;
 	}
 
-	public String createPaymentIntent(long price) {
+	public CreatePaymentIntentResponse createPaymentIntent(
+		BookingInput bookingInput,
+		String studentID
+	) {
 		try {
-			SessionCreateParams params = SessionCreateParams
+			Session session = sessionService.retreiveByID(bookingInput.sessionID());
+			BookingCost bookingCost = bookingService.getBookingCost(bookingInput, session);
+
+			long amount = bookingCost.getFinalCost();
+
+			Map<String, String> metadata = new HashMap<>();
+
+			metadata.put("studentID", studentID);
+			metadata.put("bookingInput", objectMapper.writeValueAsString(bookingInput));
+
+			System.out.println("createPaymentIntent: " + bookingInput);
+
+			AutomaticPaymentMethods automaticPaymentMethods = AutomaticPaymentMethods
 				.builder()
-				.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-				.addLineItem(
-					SessionCreateParams.LineItem
-						.builder()
-						.setPriceData(
-							PriceData
-								.builder()
-								.setCurrency("aud")
-								.setUnitAmount(1000L)
-								.setProductData(
-									PriceData.ProductData.builder().setName("Xtreme Hip Hop with Tash").build()
-								)
-								.build()
-						)
-						.setQuantity(1L)
-						.build()
-				)
-				.setMode(SessionCreateParams.Mode.PAYMENT)
-				.setSuccessUrl("http://localhost:3000/success")
-				.setCancelUrl("http://localhost:3000/cancel")
+				.setEnabled(true)
 				.build();
-			Session session = Session.create(params);
-			return session.getId();
+
+			PaymentIntentCreateParams params = PaymentIntentCreateParams
+				.builder()
+				.setCurrency(currency)
+				.setAmount(amount)
+				.setAutomaticPaymentMethods(automaticPaymentMethods)
+				.putAllMetadata(metadata)
+				.build();
+
+			PaymentIntent paymentIntent = PaymentIntent.create(params);
+
+			return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
 		} catch (StripeException e) {
-			throw new ResolutionException(e.getMessage());
+			e.printStackTrace();
+			throw new ResolutionException("Unable to create payment intent");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ResolutionException("Unable to parse booking input");
 		}
+	}
+
+	public Event createPaymentEvent(String payload, String signature) {
+		try {
+			return Webhook.constructEvent(payload, signature, webhookSecret);
+		} catch (Exception e) {
+			throw new ResolutionException("Unable to parse webhook payload");
+		}
+	}
+
+	public StripeObject constructObject(Event event) {
+		StripeObject stripeObject = null;
+
+		EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
+
+		if (dataObjectDeserializer.getObject().isPresent()) {
+			stripeObject = dataObjectDeserializer.getObject().get();
+		} else {
+			throw new IllegalArgumentException("Invalid object");
+		}
+
+		return stripeObject;
 	}
 }

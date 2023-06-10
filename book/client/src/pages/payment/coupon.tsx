@@ -57,14 +57,6 @@ const PaymentCoupon: FC<PropTypes> = ({ bookingInput, onApplyCoupon }) => {
 		} else {
 			const message = await getCouponMessage();
 			setValidationMessage(message === null ? true : message);
-			setSearchParams(prevSearchParams => {
-				if (prevSearchParams.has("coupon")) {
-					prevSearchParams.set("coupon", code);
-				} else {
-					prevSearchParams.append("coupon", code);
-				}
-				return prevSearchParams;
-			});
 		}
 	};
 

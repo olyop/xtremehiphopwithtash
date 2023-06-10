@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CurrencyUtil {
 
-	public Short dollarsToCents(Optional<Short> amount) {
+	public Integer dollarsToCents(Optional<Integer> amount) {
 		if (amount.isPresent()) {
 			return dollarsToCents(amount.get());
 		} else {
@@ -14,11 +14,15 @@ public class CurrencyUtil {
 		}
 	}
 
-	public short dollarsToCents(double amount) {
-		return (short) (amount * 100);
+	public Integer dollarsToCents(Integer amount) {
+		if (amount == null) {
+			return null;
+		}
+
+		return amount * 100;
 	}
 
-	public Short centsToDollars(Optional<Short> amount) {
+	public Integer centsToDollars(Optional<Integer> amount) {
 		if (amount.isPresent()) {
 			return centsToDollars(amount.get());
 		} else {
@@ -26,7 +30,11 @@ public class CurrencyUtil {
 		}
 	}
 
-	public short centsToDollars(double amount) {
-		return (short) Math.floor(amount / 100);
+	public Integer centsToDollars(Integer amount) {
+		if (amount == null) {
+			return null;
+		}
+
+		return (int) amount / 100;
 	}
 }

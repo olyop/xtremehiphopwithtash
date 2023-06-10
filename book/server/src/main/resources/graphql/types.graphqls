@@ -123,12 +123,9 @@ type BookingCost {
 	equipmentCost: NonNegativeInt!
 	fullCost: NonNegativeInt!
 	couponDiscountPercentage: NonNegativeInt!
-	couponDiscount: Float!
-	finalCost: Float!
-	surcharge: Float!
-	transactionFee: Float!
-	fullSurcharge: Float!
-	estimatedCost: Float!
+	couponDiscount: Int!
+	finalCost: NonNegativeInt!
+	isFreeFromCoupon: Boolean!
 }
 
 type Review {
@@ -141,4 +138,8 @@ type Review {
 	student: Student!
 
 	createdAt: Int!
+}
+
+type CreatePaymentIntentResponse {
+	clientSecret: String!
 }

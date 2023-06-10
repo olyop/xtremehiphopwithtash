@@ -9,11 +9,11 @@ public record CourseInput(
 	String name,
 	String description,
 	URL photo,
-	Optional<Short> defaultPrice,
-	Optional<Short> defaultEquipmentFee,
-	Short defaultDuration,
-	Short defaultCapacityAvailable,
-	Optional<Short> defaultEquipmentAvailable,
+	Optional<Integer> defaultPrice,
+	Optional<Integer> defaultEquipmentFee,
+	Integer defaultDuration,
+	Integer defaultCapacityAvailable,
+	Optional<Integer> defaultEquipmentAvailable,
 	UUID defaultLocationID,
 	List<UUID> defaultInstructorIDs
 ) {}

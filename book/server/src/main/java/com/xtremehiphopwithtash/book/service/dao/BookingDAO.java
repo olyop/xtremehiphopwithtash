@@ -90,11 +90,6 @@ public class BookingDAO
 		paramSource.addValue("notes", value.getNotes());
 		paramSource.addValue("bookingQuantity", value.getBookingQuantity());
 		paramSource.addValue("equipmentQuantity", value.getEquipmentQuantity());
-		paramSource.addValue(
-			"paymentMethod",
-			value.getPaymentMethod() == null ? null : value.getPaymentMethod().name()
-		);
-		paramSource.addValue("cost", value.getCost());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}
@@ -115,31 +110,31 @@ public class BookingDAO
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 
-	public short selectSumByStudentID(String studentID) {
+	public int selectSumByStudentID(String studentID) {
 		String sql = query.SELECT_SUM_BOOKINGS_BY_STUDENT_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
 
-		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
 
-	public short selectCapacityBooked(UUID sessionID) {
+	public int selectCapacityBooked(UUID sessionID) {
 		String sql = query.SELECT_CAPACITY_BOOKED_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
 
-		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
 
-	public short selectCapacityRemaining(UUID sessionID) {
+	public int selectCapacityRemaining(UUID sessionID) {
 		String sql = query.SELECT_CAPACITY_REMAINING_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
 
-		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
 
-	public boolean selectIsCapacityRemaining(UUID sessionID, short bookingQuantity) {
+	public boolean selectIsCapacityRemaining(UUID sessionID, int bookingQuantity) {
 		String sql = query.SELECT_IS_CAPACITY_REMAINING_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
@@ -149,28 +144,38 @@ public class BookingDAO
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
-	public short selectEquipmentHired(UUID sessionID) {
+	public int selectEquipmentHired(UUID sessionID) {
 		String sql = query.SELECT_EQUIPMENT_HIRED_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
 
-		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
 
-	public short selectEquipmentRemaining(UUID sessionID) {
+	public int selectEquipmentRemaining(UUID sessionID) {
 		String sql = query.SELECT_EQUIPMENT_REMAINING_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
 
-		return jdbcTemplate.queryForObject(sql, paramSource, Short.class);
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
 
-	public boolean selectIsEquipmentRemaining(UUID sessionID, short equipmentQuantity) {
+	public boolean selectIsEquipmentRemaining(UUID sessionID, int equipmentQuantity) {
 		String sql = query.SELECT_IS_EQUIPMENT_REMAINING_BY_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("sessionID", sessionID);
 		paramSource.addValue("equipmentQuantity", equipmentQuantity);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public boolean existsByStudentIDAndSessionID(String studentID, UUID sessionID) {
+		String sql = query.SELECT_EXISTS_BY_STUDENT_ID_AND_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("studentID", studentID);
+		paramSource.addValue("sessionID", sessionID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}

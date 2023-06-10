@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.Coupon;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,15 +16,15 @@ public class CouponRowMapper implements RowMapper<Coupon> {
 	public Coupon mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Coupon coupon = new Coupon();
 
-		coupon.setCouponID(MapRowUtil.mapToUUID(rs.getString("coupon_id")));
+		coupon.setCouponID(MapRowUtil.mapUUID(rs.getString("coupon_id")));
 
 		coupon.setCode(rs.getString("code"));
-		coupon.setDiscount(rs.getShort("discount"));
-		coupon.setUsedAt(MapRowUtil.mapToInstant(rs.getInt("used_at")));
+		coupon.setDiscount(MapRowUtil.mapInteger(rs.getInt("discount")));
+		coupon.setUsedAt(MapRowUtil.mapInstant(rs.getInt("used_at")));
 		coupon.setUsedByStudentID(rs.getString("used_by_student_id"));
-		coupon.setUsedOnBookingID(MapRowUtil.mapToUUID(rs.getString("used_on_booking_id")));
+		coupon.setUsedOnBookingID(MapRowUtil.mapUUID(rs.getString("used_on_booking_id")));
 
-		coupon.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		coupon.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return coupon;
 	}

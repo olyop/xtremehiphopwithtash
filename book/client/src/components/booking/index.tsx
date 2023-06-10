@@ -9,6 +9,7 @@ import {
 	BookingInput,
 	DeleteBookingMutation,
 	DeleteBookingMutationVariables,
+	PaymentMethod,
 	Session,
 	UpdateBookingMutation,
 	UpdateBookingMutationVariables,
@@ -95,23 +96,21 @@ const SessionPageBooking: FC<PropTypes> = ({
 						</Fragment>
 					)}
 					<br />
-					<Fragment>
-						Paid with
-						<Fragment> </Fragment>
-						{booking.paymentMethod
-							? `${capitalizeFirstLetter(booking.paymentMethod.toLowerCase())}`
-							: "Free"}
-						{booking.cost && (
-							<Fragment>
-								<Fragment> owes </Fragment>
-								{currencyFormatter.format(booking.cost)}
-							</Fragment>
-						)}
-					</Fragment>
+					{booking.paymentMethod === null && booking.cost === null
+						? "Paid in full with COUPON"
+						: bookingInput.paymentMethod === PaymentMethod.CASH && booking.cost
+						? `Paid in cash ${currencyFormatter.format(booking.cost)}`
+						: bookingInput.paymentMethod === PaymentMethod.CARD && booking.cost
+						? `Paid ${currencyFormatter.format(booking.cost)} with CARD`
+						: null}
+					{booking.notes && (
+						<Fragment>
+							<br />
+							Notes: {booking.notes}
+						</Fragment>
+					)}
 					<br />
-					<span className="text-gray-500">
-						Created: {dateTimeFormatter.format(booking.createdAt)}
-					</span>
+					<span className="text-gray-500">Date: {dateTimeFormatter.format(booking.createdAt)}</span>
 				</Fragment>
 			}
 			rightContent={

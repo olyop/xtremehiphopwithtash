@@ -2,10 +2,12 @@ package com.xtremehiphopwithtash.book.service.dao;
 
 import com.xtremehiphopwithtash.book.model.Coupon;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityBaseDAO;
+import com.xtremehiphopwithtash.book.service.dao.inter.EntityDeleteDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.service.dao.mapper.CouponRowMapper;
 import com.xtremehiphopwithtash.book.service.dao.query.CouponQuery;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -72,5 +74,15 @@ public class CouponDAO implements EntityBaseDAO<Coupon, String>, EntityUpdateDAO
 		paramSource.addValue("usedOnBookingID", value.getUsedOnBookingID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
+	}
+
+	public void deleteByStudentAndBooking(String studentID, UUID bookingID) {
+		String sql = query.DELETE_BY_STUDENT_AND_BOOKING;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("studentID", studentID);
+		paramSource.addValue("bookingID", bookingID);
+
+		jdbcTemplate.update(sql, paramSource);
 	}
 }

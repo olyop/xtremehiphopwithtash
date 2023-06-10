@@ -45,7 +45,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 			const { data, error } = await checkStudent();
 
 			if (error) {
-				// void loginWithRedirect();
+				void loginWithRedirect();
 			} else {
 				if (data) {
 					setHasCreatedAccount(data.doesStudentExist);

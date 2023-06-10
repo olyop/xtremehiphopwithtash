@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.Details;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,7 +16,7 @@ public class DetailsRowMapper implements RowMapper<Details> {
 	public Details mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Details details = new Details();
 
-		details.setDetailsID(MapRowUtil.mapToUUID(rs.getString("details_id")));
+		details.setDetailsID(MapRowUtil.mapUUID(rs.getString("details_id")));
 
 		details.setFirstName(rs.getString("first_name"));
 		details.setLastName(rs.getString("last_name"));
@@ -25,7 +26,7 @@ public class DetailsRowMapper implements RowMapper<Details> {
 		details.setEmailAddress(rs.getString("email_address"));
 		details.setInstagramUsername(rs.getString("instagram_username"));
 
-		details.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		details.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return details;
 	}

@@ -9,12 +9,12 @@ public record SessionInput(
 	String title,
 	Optional<String> notes,
 	UUID locationID,
-	Optional<Short> price,
-	Optional<Short> equipmentFee,
+	Optional<Integer> price,
+	Optional<Integer> equipmentFee,
 	Instant startTime,
 	Instant endTime,
-	Short capacityAvailable,
-	Optional<Short> equipmentAvailable,
+	Integer capacityAvailable,
+	Optional<Integer> equipmentAvailable,
 	UUID courseID,
 	List<UUID> instructorIDs
 ) {}

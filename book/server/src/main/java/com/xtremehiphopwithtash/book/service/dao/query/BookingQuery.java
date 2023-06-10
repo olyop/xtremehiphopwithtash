@@ -45,6 +45,8 @@ public class BookingQuery {
 				booking
 			SET
 				notes = :notes,
+				booking_quantity = :bookingQuantity,
+				equipment_quantity = :equipmentQuantity
 			WHERE
 				booking_id = :bookingID
 			RETURNING
@@ -56,7 +58,7 @@ public class BookingQuery {
 	public final String EXISTS_BY_ID =
 		"SELECT EXISTS (SELECT 1 FROM booking WHERE booking_id = :bookingID);";
 
-	public final String DELETE_BY_ID = "DELETE booking WHERE booking_id = :bookingID;";
+	public final String DELETE_BY_ID = "DELETE FROM booking WHERE booking_id = :bookingID;";
 
 	public final String SELECT_BY_SESSION_ID = String.format(
 		"SELECT %s FROM booking WHERE session_id = :sessionID;",
@@ -139,5 +141,5 @@ public class BookingQuery {
 		"SELECT UNNEST(ENUM_RANGE(NULL::payment_methods)) AS payment_methods;";
 
 	public final String SELECT_EXISTS_BY_STUDENT_ID_AND_SESSION_ID =
-		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID);";
+		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID AND payment_method = 'CASH');";
 }

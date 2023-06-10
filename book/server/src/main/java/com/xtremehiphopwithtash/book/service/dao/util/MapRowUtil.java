@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.dao.mapper;
+package com.xtremehiphopwithtash.book.service.dao.util;
 
 import com.xtremehiphopwithtash.book.other.LikertScale;
 import java.net.MalformedURLException;
@@ -9,9 +9,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
-class MapRowUtil {
+public class MapRowUtil {
 
-	public static final UUID mapToUUID(String value) {
+	public static final UUID mapUUID(String value) {
 		if (value == null) {
 			return null;
 		} else {
@@ -19,7 +19,7 @@ class MapRowUtil {
 		}
 	}
 
-	public static final URL mapToURL(String value) throws SQLException {
+	public static final URL mapURL(String value) throws SQLException {
 		try {
 			URL url = new URL(value);
 			return url;
@@ -28,7 +28,7 @@ class MapRowUtil {
 		}
 	}
 
-	public static final Instant mapToInstant(Integer value) {
+	public static final Instant mapInstant(Integer value) {
 		if (value == 0) {
 			return null;
 		} else {
@@ -36,19 +36,15 @@ class MapRowUtil {
 		}
 	}
 
-	public static final LikertScale mapToLikertScale(Integer value) {
+	public static final LikertScale mapLikertScale(Integer value) {
 		return new LikertScale(value);
 	}
 
-	public static final Short mapToShort(Short value) {
+	public static final Integer mapInteger(int value) {
 		return value == 0 ? null : value;
 	}
 
-	public static final Double mapToDouble(Double value) {
-		return value == 0 ? null : value;
-	}
-
-	public static final <T extends Enum<T>> T mapToEnum(Class<T> enumClass, String value) {
+	public static final <T extends Enum<T>> T mapEnum(Class<T> enumClass, String value) {
 		if (value == null) {
 			return null;
 		} else {

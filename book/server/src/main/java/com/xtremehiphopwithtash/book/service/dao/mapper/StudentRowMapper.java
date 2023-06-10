@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao.mapper;
 
 import com.xtremehiphopwithtash.book.model.Student;
+import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,9 +18,9 @@ public class StudentRowMapper implements RowMapper<Student> {
 
 		student.setStudentID(rs.getString("student_id"));
 
-		student.setDetailsID(MapRowUtil.mapToUUID(rs.getString("details_id")));
+		student.setDetailsID(MapRowUtil.mapUUID(rs.getString("details_id")));
 
-		student.setCreatedAt(MapRowUtil.mapToInstant(rs.getInt("created_at")));
+		student.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
 		return student;
 	}

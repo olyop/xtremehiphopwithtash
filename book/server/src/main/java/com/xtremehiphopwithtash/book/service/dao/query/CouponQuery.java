@@ -44,4 +44,13 @@ public final class CouponQuery {
 	);
 
 	public final String EXISTS_BY_CODE = "SELECT EXISTS (SELECT 1 FROM coupon WHERE code = :code);";
+
+	public final String DELETE_BY_STUDENT_AND_BOOKING =
+		"""
+			DELETE FROM
+				coupon
+			WHERE
+				used_by_student_id = :studentID AND
+				used_on_booking_id = :bookingID
+			""";
 }

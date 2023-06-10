@@ -10,7 +10,7 @@ import { cache } from "./cache";
 import { httpLink } from "./http-link";
 
 export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
-	const { getAccessTokenSilently, isLoading } = useAuth0();
+	const { getAccessTokenSilently, loginWithRedirect, isLoading } = useAuth0();
 
 	const addJWTToken = setContext(async () => {
 		try {
@@ -21,7 +21,8 @@ export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
 					Authorization: `Bearer ${accessToken}`,
 				},
 			};
-		} catch {
+		} catch (error) {
+			loginWithRedirect();
 			return {};
 		}
 	});

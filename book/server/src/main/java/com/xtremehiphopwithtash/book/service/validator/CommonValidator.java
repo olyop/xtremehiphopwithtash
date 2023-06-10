@@ -50,19 +50,19 @@ public class CommonValidator {
 		}
 	}
 
-	public void validatePrice(Optional<Short> price, String label) {
+	public void validatePrice(Optional<Integer> price, String label) {
 		if (price.isPresent() && price.get() <= 0 && price.get() <= 50) {
 			throw new ResolverException(String.format("%s cannot be greater than A$50", label));
 		}
 	}
 
-	public void validateNonZeroInteger(Optional<Short> integer, String label) {
+	public void validateNonZeroInteger(Optional<Integer> integer, String label) {
 		if (integer.isPresent()) {
 			validateNonZeroInteger(integer.get(), label);
 		}
 	}
 
-	public void validateNonZeroInteger(Short integer, String label) {
+	public void validateNonZeroInteger(Integer integer, String label) {
 		if (integer <= 0) {
 			throw new ResolverException(String.format("%s cannot be less than or equal to 0", label));
 		}

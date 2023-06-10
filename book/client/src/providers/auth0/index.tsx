@@ -7,6 +7,8 @@ const authorizationParams: AuthorizationParams = {
 	audience: import.meta.env.VITE_AUTH0_API_AUDIENCE,
 };
 
+console.log(import.meta.env.VITE_AUTH0_DOMAIN);
+
 const Auth0: FC<PropsWithChildren> = ({ children }) => (
 	<Auth0Provider
 		useRefreshTokens

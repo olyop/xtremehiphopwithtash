@@ -18,6 +18,6 @@ type Mutation {
 	updateSessionByID(sessionID: UUID!, input: SessionInput!): Session!
 	updateBookingByID(bookingID: UUID!, input: BookingInput!): Booking!
 
-	createPaymentIntent(input: BookingInput!): String!
+	createPaymentIntent(input: BookingInput!): CreatePaymentIntentResponse!
 	createBooking(input: BookingInput!): Booking!
 }
