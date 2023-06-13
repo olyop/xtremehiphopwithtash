@@ -1,14 +1,9 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { CourseInput, GetCourseFormDataQuery, Instructor } from "../../../generated-types";
 import { determineDetailsName } from "../../../helpers";
-import Input, {
-	InputOnChange,
-	InputType,
-	mapListToChips,
-	mapListToSelectOptions,
-} from "../../input";
+import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions } from "../../input";
 import DefaultDurationInput from "./default-duration";
 import GET_COURSE_FORM_DATA from "./get-course-form-data.graphql";
 
@@ -32,6 +27,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 				defaultInstructorIDs: input.defaultInstructorIDs.filter(id => id !== instructorID),
 			}));
 		};
+
 	return (
 		<Fragment>
 			<Input
@@ -135,13 +131,10 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 						onRemove: handleDefaultInstructorDelete({ instructorID }),
 					}),
 				)}
-				selectOptions={mapListToSelectOptions(
-					data?.getInstructors,
-					({ instructorID, details }) => ({
-						optionID: instructorID,
-						description: determineDetailsName(details),
-					}),
-				)}
+				selectOptions={mapListToSelectOptions(data?.getInstructors, ({ instructorID, details }) => ({
+					optionID: instructorID,
+					description: determineDetailsName(details),
+				}))}
 			/>
 		</Fragment>
 	);

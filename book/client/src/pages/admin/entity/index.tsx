@@ -1,4 +1,4 @@
-import { MutationResult } from "@apollo/client";
+import { MutationResult } from "@apollo/client/react/types/types";
 import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";

@@ -4,7 +4,7 @@ import { DetailsInput, InstructorInput } from "../../../generated-types";
 import Input, { InputOnChange, InputType } from "../../input";
 import DetailsForm from "../details-form";
 
-const InstructorForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = true }) => {
+const InstructorForm: FC<PropTypes> = ({ input, onChange }) => {
 	const handleChange =
 		(key: keyof InstructorInput): InputOnChange =>
 		value => {
@@ -23,11 +23,7 @@ const InstructorForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = tru
 
 	return (
 		<Fragment>
-			<DetailsForm
-				input={input.details}
-				onChange={handleDetailsChange}
-				hideEmailAddress={hideEmailAddress}
-			/>
+			<DetailsForm input={input.details} onChange={handleDetailsChange} hideNotes />
 			<Input
 				id="photo"
 				name="Photo"
@@ -43,7 +39,6 @@ const InstructorForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = tru
 
 interface PropTypes {
 	input: InstructorInput;
-	hideEmailAddress?: boolean;
 	onChange: Dispatch<SetStateAction<InstructorInput>>;
 }
 

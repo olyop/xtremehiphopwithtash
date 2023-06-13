@@ -8,7 +8,7 @@ export const initialInput: InstructorInput = {
 		nickName: null,
 		gender: null,
 		mobilePhoneNumber: "",
-		emailAddress: null,
+		emailAddress: "",
 		instagramUsername: null,
 	},
 };

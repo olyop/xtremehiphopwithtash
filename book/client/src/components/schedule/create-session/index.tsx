@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import {
 	SessionInput as SessionInputType,
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
-import { millisecondsToSeconds } from "../../../utils";
+import { dollarsToCents, millisecondsToSeconds } from "../../../utils";
 import Button from "../../button";
 import SessionInput from "../../forms/session-form";
 import Modal from "../../modal";
@@ -28,6 +28,8 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 			variables: {
 				input: {
 					...input,
+					price: input.price === null ? null : dollarsToCents(input.price),
+					equipmentFee: input.equipmentFee === null ? null : dollarsToCents(input.equipmentFee),
 					startTime: millisecondsToSeconds(input.startTime),
 					endTime: millisecondsToSeconds(input.endTime),
 				},
@@ -61,7 +63,7 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 			<Button
 				transparent
 				ariaLabel="Add new session"
-				className="!w-5 !h-5 !p-1 -mt-0.5 -mr-0.5"
+				className="!w-5 !h-5 !p-1"
 				leftIcon={className => <PlusIcon className={className} />}
 				onClick={openModal}
 			/>
@@ -72,9 +74,7 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 				isOpen={isOpen}
 				onClose={handleCloseModal}
 				contentClassName="flex flex-col gap-4"
-				children={
-					<SessionInput input={input} onChange={setInput} onCourseReset={handleCourseReset} />
-				}
+				children={<SessionInput input={input} onChange={setInput} onCourseReset={handleCourseReset} />}
 				error={error}
 				buttons={
 					input.courseID === "" ? undefined : (

@@ -1,4 +1,5 @@
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -36,7 +37,6 @@ const PaymentPage: FC = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const [isPaying, setIsPaying] = useState(false);
-
 	const [session, setSession] = useState<Session | null>(null);
 	const [bookingCost, setBookingCost] = useState<BookingCost | null>(null);
 	const [bookingInput, setBookingInput] = useState<BookingInput | null>(null);
@@ -46,6 +46,7 @@ const PaymentPage: FC = () => {
 	const refetchPageData = async (input: BookingInput) => {
 		const { data } = await apollo.query<PageData, PageVars>({
 			query: GET_PAYMENT_SCREEN,
+			fetchPolicy: "network-only",
 			variables: {
 				sessionID: input.sessionID,
 				bookingInput: input,
@@ -59,7 +60,7 @@ const PaymentPage: FC = () => {
 
 		setBookingInput({
 			...input,
-			paymentMethod: getBookingCost.finalCost === 0 ? null : input.paymentMethod,
+			paymentMethod: getBookingCost.cost === 0 ? null : input.paymentMethod,
 		});
 	};
 
@@ -69,19 +70,17 @@ const PaymentPage: FC = () => {
 	};
 
 	useEffect(() => {
-		if (!hasMounted) {
+		if (hasMounted) {
+			if (bookingInput) {
+				void refetchPageData(bookingInput);
+				handleSyncSearchParams(bookingInput);
+			}
+		} else {
 			const input = mapSearchParamsToBookingInput(searchParams);
 
 			if (input) {
 				void refetchPageData(input);
 			}
-		}
-	}, []);
-
-	useEffect(() => {
-		if (hasMounted && bookingInput) {
-			void refetchPageData(bookingInput);
-			handleSyncSearchParams(bookingInput);
 		}
 	}, [bookingInput?.couponCode, bookingInput?.paymentMethod]);
 
@@ -110,11 +109,7 @@ const PaymentPage: FC = () => {
 	}, [createBookingResult.error]);
 
 	const showSpinner =
-		!isAuthenticated ||
-		user === null ||
-		bookingInput === null ||
-		bookingCost === null ||
-		session === null;
+		!isAuthenticated || user === null || bookingInput === null || bookingCost === null || session === null;
 
 	if (showSpinner) {
 		return <PaymentLoading />;
@@ -135,25 +130,18 @@ const PaymentPage: FC = () => {
 			<PayingSpinner isPaying={isPaying} />
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
 			<div className="flex flex-col gap-12 px-4 pb-52">
-				{bookingCost.fullCost === 0 || (
+				{bookingCost.bookingCost === 0 || (
 					<PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />
 				)}
 				{bookingCost.finalCost === 0 || (
-					<PaymentMethodForm
-						setBookingInput={setBookingInput}
-						paymentMethod={bookingInput.paymentMethod}
-					/>
+					<PaymentMethodForm setBookingInput={setBookingInput} paymentMethod={bookingInput.paymentMethod} />
 				)}
 				{bookingInput.paymentMethod === PaymentMethod.CARD ? (
 					<PaymentPageStripe bookingInput={bookingInput} setIsPaying={setIsPaying} />
 				) : bookingCost.finalCost === 0 || bookingInput.paymentMethod === PaymentMethod.CASH ? (
 					<Fragment>
 						<FormError error={createBookingResult.error} />
-						<PaymentButton
-							text="Book Now"
-							onClick={handleCreateBooking}
-							disabled={reCaptchaToken === null}
-						/>
+						<PaymentButton text="Book Now" onClick={handleCreateBooking} disabled={reCaptchaToken === null} />
 					</Fragment>
 				) : null}
 			</div>

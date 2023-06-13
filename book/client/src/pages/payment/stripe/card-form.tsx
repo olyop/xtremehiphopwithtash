@@ -1,6 +1,6 @@
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripePaymentElementChangeEvent } from "@stripe/stripe-js";
-import { Dispatch, FC, SetStateAction, createElement, useState } from "react";
+import { Dispatch, FC, SetStateAction, createElement, useEffect, useState } from "react";
 
 import { BookingInput } from "../../../generated-types";
 import PaymentButton from "../payment-button";
@@ -47,6 +47,22 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 	const handleSubmit = () => {
 		void confirmPayment();
 	};
+
+	useEffect(() => {
+		let timeout: NodeJS.Timeout;
+
+		if (errorMessage) {
+			timeout = setTimeout(() => {
+				setErrorMessage(null);
+			}, 5000);
+		}
+
+		return () => {
+			if (timeout) {
+				clearTimeout(timeout);
+			}
+		};
+	}, [errorMessage]);
 
 	return (
 		<div className="flex flex-col gap-12">

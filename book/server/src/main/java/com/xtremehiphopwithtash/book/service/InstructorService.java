@@ -59,14 +59,16 @@ public class InstructorService implements EntityServiceInter<Instructor, Instruc
 	public Instructor updateByID(UUID instructorID, InstructorInput input) {
 		validator.validateUpdate(instructorID, input);
 
-		Details details = detailsService.updateByID(instructorID, input.details());
+		Instructor currentInstructor = instructorDAO.selectByID(instructorID);
+
+		detailsService.updateByID(currentInstructor.getDetailsID(), input.details());
 
 		Instructor instructor = inputMapper.map(input);
-		instructor.setDetailsID(details.getDetailsID());
+		instructor.setPhoto(currentInstructor.getPhoto());
 
-		instructorDAO.updateByID(instructorID, instructor);
+		Instructor savedInstructor = instructorDAO.updateByID(instructorID, instructor);
 
-		return instructor;
+		return savedInstructor;
 	}
 
 	@Override

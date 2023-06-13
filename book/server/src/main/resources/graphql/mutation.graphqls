@@ -20,4 +20,6 @@ type Mutation {
 
 	createPaymentIntent(input: BookingInput!): CreatePaymentIntentResponse!
 	createBooking(input: BookingInput!): Booking!
+
+	checkInBooking(bookingID: UUID!, value: Boolean!): UUID!
 }

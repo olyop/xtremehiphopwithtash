@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { FC, createElement, useEffect, useRef, useState } from "react";
 
 import { useBreakpoint, useHasMounted } from "../../hooks";

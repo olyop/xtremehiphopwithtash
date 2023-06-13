@@ -18,20 +18,9 @@ public final class SQLColumnNamesUtil {
 		CREATED_AT
 	);
 
-	public static final List<String> INSTRUCTOR = List.of(
-		"instructor_id",
-		"details_id",
-		"photo",
-		CREATED_AT
-	);
+	public static final List<String> INSTRUCTOR = List.of("instructor_id", "details_id", "photo", CREATED_AT);
 
-	public static final List<String> LOCATION = List.of(
-		"location_id",
-		"name",
-		"plus_code",
-		"address",
-		CREATED_AT
-	);
+	public static final List<String> LOCATION = List.of("location_id", "name", "plus_code", "address", CREATED_AT);
 
 	public static final List<String> COURSE = List.of(
 		"course_id",
@@ -69,14 +58,9 @@ public final class SQLColumnNamesUtil {
 		CREATED_AT
 	);
 
-	public static final List<String> SESSION_INSTRUCTOR = List.of(
-		"session_id",
-		"index",
-		"instructor_id",
-		CREATED_AT
-	);
+	public static final List<String> SESSION_INSTRUCTOR = List.of("session_id", "index", "instructor_id", CREATED_AT);
 
-	public static final List<String> STUDENT = List.of("student_id", "details_id", CREATED_AT);
+	public static final List<String> STUDENT = List.of("student_id", "details_id", "stripe_customer_id", CREATED_AT);
 
 	public static final List<String> BOOKING = List.of(
 		"booking_id",
@@ -87,6 +71,7 @@ public final class SQLColumnNamesUtil {
 		"equipment_quantity",
 		"payment_method",
 		"cost",
+		"has_checked_in",
 		CREATED_AT
 	);
 

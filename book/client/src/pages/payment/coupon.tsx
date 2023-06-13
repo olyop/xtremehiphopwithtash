@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";

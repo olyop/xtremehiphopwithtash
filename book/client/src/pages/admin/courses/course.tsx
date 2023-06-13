@@ -1,9 +1,10 @@
-import { MutationResult } from "@apollo/client";
+import { MutationResult } from "@apollo/client/react/types/types";
 import { FC, Fragment, createElement, useState } from "react";
 
 import CourseInput from "../../../components/forms/course-form";
 import { CourseInput as CourseInputType, Course as CourseType } from "../../../generated-types";
-import { currencyFormatter, listFormatter } from "../../../intl";
+import { currencyDollarsFormatter, listFormatter } from "../../../intl";
+import { centsToDollars } from "../../../utils";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapCourseToInput } from "../map-entity-to-input";
 
@@ -36,7 +37,7 @@ const Course: FC<PropTypes> = ({
 					<Fragment> </Fragment>
 					<span className="text-gray-500">
 						<Fragment>(</Fragment>
-						{course.defaultPrice ? currencyFormatter.format(course.defaultPrice) : "Free"}
+						{course.defaultPrice ? currencyDollarsFormatter.format(centsToDollars(course.defaultPrice)) : "Free"}
 						<Fragment>)</Fragment>
 					</span>
 				</Fragment>
@@ -44,9 +45,7 @@ const Course: FC<PropTypes> = ({
 			description={
 				<span className="text-gray-500">
 					{listFormatter.format(
-						course.defaultInstructors.map(
-							({ details: { firstName, nickName } }) => nickName ?? firstName,
-						),
+						course.defaultInstructors.map(({ details: { firstName, nickName } }) => nickName ?? firstName),
 					)}
 				</span>
 			}

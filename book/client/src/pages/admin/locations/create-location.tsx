@@ -1,4 +1,5 @@
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";

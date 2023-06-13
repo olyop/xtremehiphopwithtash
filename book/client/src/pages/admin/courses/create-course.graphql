@@ -22,6 +22,7 @@ mutation createCourse($input: CourseInput!) {
 				lastName
 				nickName
 				mobilePhoneNumber
+				emailAddress
 			}
 		}
 	}

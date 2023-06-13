@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.xtremehiphopwithtash'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '19'
 
 repositories {
@@ -36,4 +36,12 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.named('bootJar') {
+	launchScript()
+}
+
+bootJar {
+	archiveFileName = 'book.jar'
 }

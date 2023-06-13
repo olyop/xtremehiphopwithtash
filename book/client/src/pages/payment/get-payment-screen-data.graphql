@@ -30,18 +30,25 @@ query getPaymentScreenData($sessionID: UUID!, $bookingInput: BookingInput!) {
 				firstName
 				lastName
 				nickName
+				emailAddress
 				mobilePhoneNumber
 				instagramUsername
 			}
 		}
 	}
 	getBookingCost(bookingInput: $bookingInput) {
-		bookingCost
+		sessionCost
 		equipmentCost
-		fullCost
+		bookingCost
 		couponDiscountPercentage
+		couponAmountToDiscount
 		couponDiscount
-		finalCost
+		cost
 		isFreeFromCoupon
+		cardFee
+		cardSurchargeRatio
+		cardSurcharge
+		cardSurchargeWithoutFee
+		finalCost
 	}
 }

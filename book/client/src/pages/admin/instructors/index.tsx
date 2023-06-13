@@ -1,4 +1,5 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { FC, createElement } from "react";
 
 import {

@@ -1,5 +1,6 @@
 package com.xtremehiphopwithtash.book.service;
 
+import com.stripe.model.Customer;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
@@ -14,15 +15,18 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 
 	private final StudentDAO studentDAO;
 	private final DetailsService detailsService;
+	private final StripeService stripeService;
 	private final StudentValidator validator;
 
 	public StudentService(
 		StudentDAO studentDAO,
 		DetailsService detailsService,
+		StripeService stripeService,
 		StudentValidator validator
 	) {
 		this.studentDAO = studentDAO;
 		this.detailsService = detailsService;
+		this.stripeService = stripeService;
 		this.validator = validator;
 	}
 
@@ -49,11 +53,16 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 
 		Details details = detailsService.create(input);
 
+		String stripeCustomerID = stripeService.createCustomer(studentID, details);
+
 		Student student = new Student();
 		student.setStudentID(studentID);
 		student.setDetailsID(details.getDetailsID());
+		student.setStripeCustomerID(stripeCustomerID);
 
-		return studentDAO.insert(student);
+		Student savedStudent = studentDAO.insert(student);
+
+		return savedStudent;
 	}
 
 	@Override

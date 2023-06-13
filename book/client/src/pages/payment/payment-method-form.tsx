@@ -66,17 +66,17 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, setBookingInput }) =>
 					tabIndex={1}
 					onClick={handleCardClick}
 					onKeyDown={handleCardClick}
-					className={`${paymentMethod === PaymentMethod.CARD ? "bg-gray-100" : ""} p-4`}
+					className={`${paymentMethod === PaymentMethod.CARD ? "bg-gray-100" : ""} px-4 py-5`}
 				>
 					<Input
 						id="stripe"
 						type={InputType.CHECKBOX}
-						labelClassName="!bg-transparent"
 						name="Card / Apple Pay / Google Pay"
-						className="pointer-events-none"
 						value={paymentMethod === PaymentMethod.CARD}
 						onChange={noop}
 						autoComplete="off"
+						labelClassName="!bg-transparent leading-none"
+						className="pointer-events-none items-center gap-4"
 					/>
 				</div>
 				<div className="w-full h-px bg-gray-200" />
@@ -85,17 +85,17 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, setBookingInput }) =>
 					tabIndex={2}
 					onClick={handleCouponClick}
 					onKeyDown={handleCouponClick}
-					className={`${paymentMethod === PaymentMethod.CASH ? "bg-gray-100" : ""} p-4`}
+					className={`${paymentMethod === PaymentMethod.CASH ? "bg-gray-100" : ""} px-4 py-5`}
 				>
 					<Input
 						id="cash"
 						type={InputType.CHECKBOX}
 						name="Cash"
-						labelClassName="!bg-transparent"
-						className="pointer-events-none"
 						value={paymentMethod === PaymentMethod.CASH}
 						onChange={noop}
 						autoComplete="off"
+						labelClassName="!bg-transparent leading-none"
+						className="pointer-events-none items-center gap-4"
 					/>
 				</div>
 			</div>

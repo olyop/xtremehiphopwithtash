@@ -66,7 +66,7 @@ public class BookingService {
 		} else if (isPayingWithCash(input)) {
 			validateStudentHasNotBookedSession(studentID, input);
 			validateQuantiesAreOne(input);
-			booking.setCost(bookingCost.getFinalCost());
+			booking.setCost(bookingCost.getCost());
 		} else if (isPayingWithCard(input, paymentIntent)) {
 			booking.setCost(paymentIntent.getAmount().intValue());
 		} else {
@@ -157,7 +157,7 @@ public class BookingService {
 	}
 
 	private boolean isBookingFree(BookingCost bookingCost) {
-		return bookingCost.getFinalCost() == 0;
+		return bookingCost.getCost() == 0;
 	}
 
 	private boolean isPayingWithCash(BookingInput input) {
@@ -165,9 +165,6 @@ public class BookingService {
 	}
 
 	private boolean isPayingWithCard(BookingInput input, PaymentIntent paymentIntent) {
-		if (paymentIntent != null) {
-			System.out.println(paymentIntent.getStatus().equals("succeeded"));
-		}
 		return (
 			input.paymentMethod().isPresent() &&
 			input.paymentMethod().get() == PaymentMethod.CARD &&
@@ -250,5 +247,11 @@ public class BookingService {
 		sessionValidator.validateID(sessionID);
 
 		return bookingDAO.selectEquipmentRemaining(sessionID);
+	}
+
+	public void checkIn(UUID bookingID, boolean hasCheckedIn) {
+		validateID(bookingID);
+
+		bookingDAO.updateHasCheckedIn(bookingID, hasCheckedIn);
 	}
 }

@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
 import { FC, Fragment, createElement, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";

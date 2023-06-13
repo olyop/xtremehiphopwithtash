@@ -6,6 +6,7 @@ public class Student extends Base {
 
 	private String studentID;
 	private UUID detailsID;
+	private String stripeCustomerID;
 
 	public Student() {}
 
@@ -23,5 +24,13 @@ public class Student extends Base {
 
 	public void setDetailsID(UUID detailsID) {
 		this.detailsID = detailsID;
+	}
+
+	public String getStripeCustomerID() {
+		return stripeCustomerID;
+	}
+
+	public void setStripeCustomerID(String stripeCustomerID) {
+		this.stripeCustomerID = stripeCustomerID;
 	}
 }

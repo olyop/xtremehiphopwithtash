@@ -2,7 +2,19 @@
 	"files.exclude": {
 		"book/client/node_modules": true,
 		"book/server/bin": true,
-		"book/client/.swc": true
+		"book/client/.swc": true,
+		"book/client/dist": true,
+		"book/server/src/main/resources/public": true
 	},
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"java.project.resourceFilters": [
+		"node_modules",
+		".git",
+		".svn",
+		"book/client/node_modules",
+		"book/server/bin",
+		"book/client/.swc",
+		"book/client/dist",
+		"book/server/src/main/resources/public"
+	]
 }

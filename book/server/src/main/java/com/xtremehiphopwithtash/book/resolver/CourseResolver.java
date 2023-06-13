@@ -8,7 +8,6 @@ import com.xtremehiphopwithtash.book.service.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.CourseService;
 import com.xtremehiphopwithtash.book.service.InstructorService;
 import com.xtremehiphopwithtash.book.service.LocationService;
-import com.xtremehiphopwithtash.book.util.CurrencyUtil;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -26,20 +25,17 @@ public class CourseResolver {
 	private final LocationService locationService;
 	private final InstructorService instructorService;
 	private final Auth0JwtService auth0JwtService;
-	private final CurrencyUtil currencyUtil;
 
 	public CourseResolver(
 		CourseService courseService,
 		LocationService locationService,
 		InstructorService instructorService,
-		Auth0JwtService auth0JwtService,
-		CurrencyUtil currencyUtil
+		Auth0JwtService auth0JwtService
 	) {
 		this.courseService = courseService;
 		this.locationService = locationService;
 		this.instructorService = instructorService;
 		this.auth0JwtService = auth0JwtService;
-		this.currencyUtil = currencyUtil;
 	}
 
 	@QueryMapping
@@ -54,16 +50,6 @@ public class CourseResolver {
 	@QueryMapping
 	public Course getCourseByID(@Argument UUID courseID) {
 		return courseService.retreiveByID(courseID);
-	}
-
-	@SchemaMapping(typeName = "Course", field = "defaultPrice")
-	public Integer getDefaultPrice(Course course) {
-		return currencyUtil.centsToDollars(course.getDefaultPrice());
-	}
-
-	@SchemaMapping(typeName = "Course", field = "defaultEquipmentFee")
-	public Integer getDefaultEquipmentFee(Course course) {
-		return currencyUtil.centsToDollars(course.getDefaultEquipmentFee());
 	}
 
 	@SchemaMapping(typeName = "Course", field = "defaultLocation")

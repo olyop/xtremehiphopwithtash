@@ -8,6 +8,7 @@ import {
 	Location,
 	LocationInput,
 } from "../../generated-types";
+import { centsToDollars } from "../../utils";
 
 export const mapDetailsToInput = ({
 	firstName,
@@ -49,8 +50,8 @@ export const mapCourseToInput = ({
 	photo,
 	defaultCapacityAvailable,
 	defaultEquipmentAvailable,
-	defaultPrice,
-	defaultEquipmentFee,
+	defaultPrice: defaultPrice === null ? null : centsToDollars(defaultPrice),
+	defaultEquipmentFee: defaultEquipmentFee === null ? null : centsToDollars(defaultEquipmentFee),
 	defaultDuration,
 	defaultLocationID: defaultLocation.locationID,
 	defaultInstructorIDs: defaultInstructors.map(({ instructorID }) => instructorID),

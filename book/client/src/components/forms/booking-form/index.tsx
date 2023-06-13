@@ -2,11 +2,19 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { BookingInput, Session } from "../../../generated-types";
-import { currencyFormatter } from "../../../intl";
+import { currencyDollarsFormatter } from "../../../intl";
+import { centsToDollars } from "../../../utils";
 import Input, { InputOnChange, InputType } from "../../input";
 import BookingQuantities from "./quantities";
 
-const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false, session }) => {
+const BookingForm: FC<PropTypes> = ({
+	input,
+	onChange,
+	isEditing = false,
+	hideQuantities = false,
+	hideEquipmentFee = false,
+	session,
+}) => {
 	const handleChange =
 		(key: keyof BookingInput): InputOnChange =>
 		value => {
@@ -29,13 +37,16 @@ const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false,
 				type={InputType.TEXTAREA}
 				onChange={handleChange("notes")}
 			/>
-			<BookingQuantities
-				session={session}
-				bookingQuantity={input.bookingQuantity}
-				equipmentQuantity={input.equipmentQuantity}
-				onBookingQuantityChange={handleChange("bookingQuantity")}
-				onEquipmentQuantityChange={handleChange("equipmentQuantity")}
-			/>
+			{hideQuantities || (
+				<BookingQuantities
+					session={session}
+					isEditing={isEditing}
+					bookingQuantity={input.bookingQuantity}
+					equipmentQuantity={input.equipmentQuantity}
+					onBookingQuantityChange={handleChange("bookingQuantity")}
+					onEquipmentQuantityChange={handleChange("equipmentQuantity")}
+				/>
+			)}
 			{price === null && (
 				<div className="px-4 py-3 border border-green-500 rounded bg-green-50 flex gap-2">
 					<InformationCircleIcon className="h-6 w-6" />
@@ -44,7 +55,7 @@ const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false,
 			)}
 			{hideEquipmentFee || !equipmentFee || (
 				<p className="text-sm text-gray-500">
-					Step hire will inccur a {currencyFormatter.format(equipmentFee)} fee.
+					Step hire will inccur a {currencyDollarsFormatter.format(centsToDollars(equipmentFee))} fee.
 				</p>
 			)}
 		</Fragment>
@@ -54,6 +65,8 @@ const BookingForm: FC<PropTypes> = ({ input, onChange, hideEquipmentFee = false,
 interface PropTypes {
 	session: Session;
 	input: BookingInput;
+	isEditing?: boolean;
+	hideQuantities?: boolean;
 	hideEquipmentFee?: boolean;
 	onChange: Dispatch<SetStateAction<BookingInput>>;
 }

@@ -74,10 +74,7 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 	}
 
 	private void validateEmailAddress(DetailsInput input) {
-		if (
-			input.emailAddress().isPresent() &&
-			!input.emailAddress().get().matches("^[A-Za-z0-9+_.-]+@(.+)$")
-		) {
+		if (!input.emailAddress().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
 			throw new ResolverException("Invalid email address");
 		}
 	}

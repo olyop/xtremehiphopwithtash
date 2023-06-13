@@ -35,10 +35,7 @@ public class InstructorResolver {
 	}
 
 	@MutationMapping
-	public Instructor createInstructor(
-		@Argument InstructorInput input,
-		@AuthenticationPrincipal Jwt jwt
-	) {
+	public Instructor createInstructor(@Argument InstructorInput input, @AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
 		return instructorService.create(input);
@@ -63,17 +60,12 @@ public class InstructorResolver {
 	}
 
 	@QueryMapping
-	public List<String> getGenders() {
-		return detailsService.retrieveGenders();
-	}
-
-	@QueryMapping
-	public Optional<List<Instructor>> getInstructors(@AuthenticationPrincipal Jwt jwt) {
+	public List<Instructor> getInstructors(@AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
 		List<Instructor> instructors = instructorService.retreiveAll();
 
-		return instructors.isEmpty() ? Optional.empty() : Optional.of(instructors);
+		return instructors.isEmpty() ? null : instructors;
 	}
 
 	@QueryMapping

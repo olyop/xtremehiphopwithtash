@@ -55,13 +55,12 @@ public class BookingQuery {
 		columnNames
 	);
 
-	public final String EXISTS_BY_ID =
-		"SELECT EXISTS (SELECT 1 FROM booking WHERE booking_id = :bookingID);";
+	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM booking WHERE booking_id = :bookingID);";
 
 	public final String DELETE_BY_ID = "DELETE FROM booking WHERE booking_id = :bookingID;";
 
 	public final String SELECT_BY_SESSION_ID = String.format(
-		"SELECT %s FROM booking WHERE session_id = :sessionID;",
+		"SELECT %s FROM booking WHERE session_id = :sessionID ORDER BY has_checked_in ASC, created_at DESC;",
 		columnNames
 	);
 
@@ -109,7 +108,7 @@ public class BookingQuery {
 			) as is_equipment_remaining;
 	""";
 
-	public final String SELECT_BOOKINGS_BY_STUDENT_ID = String.format(
+	public final String SELECT_BY_STUDENT_ID = String.format(
 		"""
 			SELECT
 				%s
@@ -137,9 +136,11 @@ public class BookingQuery {
 		columnNames
 	);
 
-	public final String SELECT_PAYMENT_METHODS =
-		"SELECT UNNEST(ENUM_RANGE(NULL::payment_methods)) AS payment_methods;";
+	public final String SELECT_PAYMENT_METHODS = "SELECT UNNEST(ENUM_RANGE(NULL::payment_methods)) AS payment_methods;";
 
 	public final String SELECT_EXISTS_BY_STUDENT_ID_AND_SESSION_ID =
 		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID AND payment_method = 'CASH');";
+
+	public final String UPDATE_HAS_CHECKED_IN_BY_ID =
+		"UPDATE booking SET has_checked_in = :hasCheckedIn WHERE booking_id = :bookingID;";
 }

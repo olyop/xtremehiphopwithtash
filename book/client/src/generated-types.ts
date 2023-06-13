@@ -9,12 +9,8 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
-	[_ in K]?: never;
-};
-export type Incremental<T> =
-	| T
-	| { [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: { input: string | number; output: string };
@@ -37,6 +33,7 @@ export type Booking = {
 	readonly cost: Maybe<Scalars["Float"]["output"]>;
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly equipmentQuantity: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly hasCheckedIn: Scalars["Boolean"]["output"];
 	readonly notes: Maybe<Scalars["String"]["output"]>;
 	readonly paymentMethod: Maybe<PaymentMethod>;
 	readonly session: Session;
@@ -46,12 +43,18 @@ export type Booking = {
 export type BookingCost = {
 	readonly __typename: "BookingCost";
 	readonly bookingCost: Scalars["NonNegativeInt"]["output"];
+	readonly cardFee: Scalars["PositiveInt"]["output"];
+	readonly cardSurcharge: Scalars["NonNegativeInt"]["output"];
+	readonly cardSurchargeRatio: Scalars["Float"]["output"];
+	readonly cardSurchargeWithoutFee: Scalars["NonNegativeInt"]["output"];
+	readonly cost: Scalars["NonNegativeInt"]["output"];
+	readonly couponAmountToDiscount: Scalars["NonNegativeInt"]["output"];
 	readonly couponDiscount: Scalars["Int"]["output"];
 	readonly couponDiscountPercentage: Scalars["NonNegativeInt"]["output"];
 	readonly equipmentCost: Scalars["NonNegativeInt"]["output"];
 	readonly finalCost: Scalars["NonNegativeInt"]["output"];
-	readonly fullCost: Scalars["NonNegativeInt"]["output"];
 	readonly isFreeFromCoupon: Scalars["Boolean"]["output"];
+	readonly sessionCost: Scalars["PositiveInt"]["output"];
 };
 
 export type BookingInput = {
@@ -108,7 +111,7 @@ export type Details = {
 	readonly __typename: "Details";
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly detailsID: Scalars["UUID"]["output"];
-	readonly emailAddress: Maybe<Scalars["String"]["output"]>;
+	readonly emailAddress: Scalars["String"]["output"];
 	readonly firstName: Scalars["String"]["output"];
 	readonly gender: Maybe<Scalars["String"]["output"]>;
 	readonly instagramUsername: Maybe<Scalars["String"]["output"]>;
@@ -118,7 +121,7 @@ export type Details = {
 };
 
 export type DetailsInput = {
-	readonly emailAddress: InputMaybe<Scalars["String"]["input"]>;
+	readonly emailAddress: Scalars["String"]["input"];
 	readonly firstName: Scalars["String"]["input"];
 	readonly gender: InputMaybe<Scalars["String"]["input"]>;
 	readonly instagramUsername: InputMaybe<Scalars["String"]["input"]>;
@@ -164,6 +167,7 @@ export type LocationInput = {
 
 export type Mutation = {
 	readonly __typename: "Mutation";
+	readonly checkInBooking: Scalars["UUID"]["output"];
 	readonly createBooking: Booking;
 	readonly createCourse: Course;
 	readonly createInstructor: Instructor;
@@ -182,6 +186,11 @@ export type Mutation = {
 	readonly updateLocationByID: Location;
 	readonly updateSessionByID: Session;
 	readonly updateStudentByID: Student;
+};
+
+export type MutationCheckInBookingArgs = {
+	bookingID: Scalars["UUID"]["input"];
+	value: Scalars["Boolean"]["input"];
 };
 
 export type MutationCreateBookingArgs = {
@@ -279,18 +288,16 @@ export type Query = {
 	readonly doesStudentExist: Scalars["Boolean"]["output"];
 	readonly getBookingByID: Booking;
 	readonly getBookingCost: BookingCost;
-	readonly getBookings: ReadonlyArray<Booking>;
 	readonly getCourseByID: Course;
-	readonly getCourses: ReadonlyArray<Course>;
-	readonly getGenders: ReadonlyArray<Scalars["String"]["output"]>;
+	readonly getCourses: Maybe<ReadonlyArray<Course>>;
 	readonly getInstructorByID: Instructor;
-	readonly getInstructors: ReadonlyArray<Instructor>;
+	readonly getInstructors: Maybe<ReadonlyArray<Instructor>>;
 	readonly getLocationByID: Location;
-	readonly getLocations: ReadonlyArray<Location>;
+	readonly getLocations: Maybe<ReadonlyArray<Location>>;
 	readonly getSessionByID: Session;
 	readonly getSessionsInPeriod: ReadonlyArray<Session>;
 	readonly getStudentByID: Student;
-	readonly getStudents: ReadonlyArray<Student>;
+	readonly getStudents: Maybe<ReadonlyArray<Student>>;
 	readonly isStudentAdministator: Scalars["Boolean"]["output"];
 	readonly searchPlaceByName: Maybe<Place>;
 	readonly verifyCoupon: Maybe<Scalars["String"]["output"]>;
@@ -403,13 +410,18 @@ export type Student = {
 	readonly studentID: Scalars["String"]["output"];
 };
 
+export type CheckInBookingMutationVariables = Exact<{
+	bookingID: Scalars["UUID"]["input"];
+	value: Scalars["Boolean"]["input"];
+}>;
+
+export type CheckInBookingMutation = { readonly checkInBooking: string } & { readonly __typename: "Mutation" };
+
 export type DeleteBookingMutationVariables = Exact<{
 	bookingID: Scalars["UUID"]["input"];
 }>;
 
-export type DeleteBookingMutation = { readonly deleteBookingByID: string } & {
-	readonly __typename: "Mutation";
-};
+export type DeleteBookingMutation = { readonly deleteBookingByID: string } & { readonly __typename: "Mutation" };
 
 export type UpdateBookingMutationVariables = Exact<{
 	bookingID: Scalars["UUID"]["input"];
@@ -434,10 +446,10 @@ export type GetCourseFormDataQuery = {
 				readonly nickName: string | null;
 			} & { readonly __typename: "Details" };
 		} & { readonly __typename: "Instructor" }
-	>;
+	> | null;
 	readonly getLocations: ReadonlyArray<
 		{ readonly locationID: string; readonly name: string } & { readonly __typename: "Location" }
-	>;
+	> | null;
 } & { readonly __typename: "Query" };
 
 export type GetSessionFormDataQueryVariables = Exact<{ [key: string]: never }>;
@@ -473,10 +485,10 @@ export type GetSessionFormDataQuery = {
 				} & { readonly __typename: "Instructor" }
 			>;
 		} & { readonly __typename: "Course" }
-	>;
+	> | null;
 	readonly getLocations: ReadonlyArray<
 		{ readonly locationID: string; readonly name: string } & { readonly __typename: "Location" }
-	>;
+	> | null;
 	readonly getInstructors: ReadonlyArray<
 		{
 			readonly instructorID: string;
@@ -488,7 +500,7 @@ export type GetSessionFormDataQuery = {
 				readonly nickName: string | null;
 			} & { readonly __typename: "Details" };
 		} & { readonly __typename: "Instructor" }
-	>;
+	> | null;
 } & { readonly __typename: "Query" };
 
 export type CreateSessionMutationVariables = Exact<{
@@ -512,14 +524,10 @@ export type GetSessionsInPeriodQuery = {
 			readonly endTime: number;
 			readonly price: number | null;
 			readonly capacityRemaining: number | null;
-			readonly location: { readonly locationID: string; readonly name: string } & {
-				readonly __typename: "Location";
+			readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
+			readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
+				readonly __typename: "Course";
 			};
-			readonly course: {
-				readonly courseID: string;
-				readonly name: string;
-				readonly photo: string;
-			} & { readonly __typename: "Course" };
 		} & { readonly __typename: "Session" }
 	>;
 } & { readonly __typename: "Query" };
@@ -536,7 +544,7 @@ export type GetAccountPageQuery = {
 			readonly lastName: string;
 			readonly nickName: string | null;
 			readonly gender: string | null;
-			readonly emailAddress: string | null;
+			readonly emailAddress: string;
 			readonly mobilePhoneNumber: string;
 			readonly instagramUsername: string | null;
 		} & { readonly __typename: "Details" };
@@ -549,14 +557,13 @@ export type GetAccountPageQuery = {
 				readonly equipmentQuantity: number | null;
 				readonly paymentMethod: PaymentMethod | null;
 				readonly cost: number | null;
+				readonly hasCheckedIn: boolean;
 				readonly session: {
 					readonly sessionID: string;
 					readonly title: string;
 					readonly startTime: number;
 					readonly endTime: number;
-					readonly course: { readonly courseID: string; readonly name: string } & {
-						readonly __typename: "Course";
-					};
+					readonly course: { readonly courseID: string; readonly name: string } & { readonly __typename: "Course" };
 					readonly location: {
 						readonly locationID: string;
 						readonly name: string;
@@ -572,6 +579,7 @@ export type GetAccountPageQuery = {
 								readonly firstName: string;
 								readonly lastName: string;
 								readonly nickName: string | null;
+								readonly emailAddress: string;
 								readonly mobilePhoneNumber: string;
 								readonly instagramUsername: string | null;
 							} & { readonly __typename: "Details" };
@@ -585,6 +593,7 @@ export type GetAccountPageQuery = {
 						readonly firstName: string;
 						readonly lastName: string;
 						readonly nickName: string | null;
+						readonly emailAddress: string;
 						readonly mobilePhoneNumber: string;
 						readonly instagramUsername: string | null;
 					} & { readonly __typename: "Details" };
@@ -607,6 +616,7 @@ export type UpdateStudentMutation = {
 			readonly firstName: string;
 			readonly lastName: string;
 			readonly nickName: string | null;
+			readonly emailAddress: string;
 			readonly mobilePhoneNumber: string;
 			readonly instagramUsername: string | null;
 		} & { readonly __typename: "Details" };
@@ -641,6 +651,7 @@ export type CreateCourseMutation = {
 					readonly lastName: string;
 					readonly nickName: string | null;
 					readonly mobilePhoneNumber: string;
+					readonly emailAddress: string;
 				} & { readonly __typename: "Details" };
 			} & { readonly __typename: "Instructor" }
 		>;
@@ -651,9 +662,7 @@ export type DeleteCourseMutationVariables = Exact<{
 	courseID: Scalars["UUID"]["input"];
 }>;
 
-export type DeleteCourseMutation = { readonly deleteCourseByID: string } & {
-	readonly __typename: "Mutation";
-};
+export type DeleteCourseMutation = { readonly deleteCourseByID: string } & { readonly __typename: "Mutation" };
 
 export type GetCoursesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -686,12 +695,13 @@ export type GetCoursesQuery = {
 						readonly firstName: string;
 						readonly lastName: string;
 						readonly nickName: string | null;
+						readonly emailAddress: string;
 						readonly mobilePhoneNumber: string;
 					} & { readonly __typename: "Details" };
 				} & { readonly __typename: "Instructor" }
 			>;
 		} & { readonly __typename: "Course" }
-	>;
+	> | null;
 } & { readonly __typename: "Query" };
 
 export type UpdateCourseMutationVariables = Exact<{
@@ -727,6 +737,7 @@ export type UpdateCourseMutation = {
 					readonly firstName: string;
 					readonly lastName: string;
 					readonly nickName: string | null;
+					readonly emailAddress: string;
 					readonly mobilePhoneNumber: string;
 				} & { readonly __typename: "Details" };
 			} & { readonly __typename: "Instructor" }
@@ -749,6 +760,7 @@ export type CreateInstructorMutation = {
 			readonly lastName: string;
 			readonly nickName: string | null;
 			readonly mobilePhoneNumber: string;
+			readonly emailAddress: string;
 			readonly instagramUsername: string | null;
 			readonly createdAt: number;
 		} & { readonly __typename: "Details" };
@@ -759,9 +771,7 @@ export type DeleteInstructorMutationVariables = Exact<{
 	instructorID: Scalars["UUID"]["input"];
 }>;
 
-export type DeleteInstructorMutation = { readonly deleteInstructorByID: string } & {
-	readonly __typename: "Mutation";
-};
+export type DeleteInstructorMutation = { readonly deleteInstructorByID: string } & { readonly __typename: "Mutation" };
 
 export type GetInstructorsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -775,12 +785,13 @@ export type GetInstructorsQuery = {
 				readonly firstName: string;
 				readonly lastName: string;
 				readonly nickName: string | null;
+				readonly emailAddress: string;
 				readonly mobilePhoneNumber: string;
 				readonly instagramUsername: string | null;
 				readonly createdAt: number;
 			} & { readonly __typename: "Details" };
 		} & { readonly __typename: "Instructor" }
-	>;
+	> | null;
 } & { readonly __typename: "Query" };
 
 export type UpdateInstructorMutationVariables = Exact<{
@@ -797,6 +808,7 @@ export type UpdateInstructorMutation = {
 			readonly firstName: string;
 			readonly lastName: string;
 			readonly nickName: string | null;
+			readonly emailAddress: string;
 			readonly mobilePhoneNumber: string;
 			readonly instagramUsername: string | null;
 			readonly createdAt: number;
@@ -809,9 +821,7 @@ export type CreateLocationMutationVariables = Exact<{
 }>;
 
 export type CreateLocationMutation = {
-	readonly createLocation: { readonly locationID: string; readonly name: string } & {
-		readonly __typename: "Location";
-	};
+	readonly createLocation: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
 } & { readonly __typename: "Mutation" };
 
 export type DecodePlusCodeQueryVariables = Exact<{
@@ -828,9 +838,7 @@ export type DeleteLocationMutationVariables = Exact<{
 	locationID: Scalars["UUID"]["input"];
 }>;
 
-export type DeleteLocationMutation = { readonly deleteLocationByID: string } & {
-	readonly __typename: "Mutation";
-};
+export type DeleteLocationMutation = { readonly deleteLocationByID: string } & { readonly __typename: "Mutation" };
 
 export type GetLocationsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -845,7 +853,7 @@ export type GetLocationsQuery = {
 				readonly __typename: "Coordinates";
 			};
 		} & { readonly __typename: "Location" }
-	>;
+	> | null;
 } & { readonly __typename: "Query" };
 
 export type SearchPlaceByNameQueryVariables = Exact<{
@@ -893,11 +901,12 @@ export type GetStudentsQuery = {
 				readonly firstName: string;
 				readonly lastName: string;
 				readonly nickName: string | null;
+				readonly emailAddress: string;
 				readonly mobilePhoneNumber: string;
 				readonly instagramUsername: string | null;
 			} & { readonly __typename: "Details" };
 		} & { readonly __typename: "Student" }
-	>;
+	> | null;
 } & { readonly __typename: "Query" };
 
 export type GetPaymentSuccessDataQueryVariables = Exact<{
@@ -922,11 +931,9 @@ export type GetPaymentSuccessDataQuery = {
 				readonly __typename: "Coordinates";
 			};
 		} & { readonly __typename: "Location" };
-		readonly course: {
-			readonly courseID: string;
-			readonly name: string;
-			readonly photo: string;
-		} & { readonly __typename: "Course" };
+		readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
+			readonly __typename: "Course";
+		};
 		readonly instructors: ReadonlyArray<
 			{
 				readonly instructorID: string;
@@ -936,6 +943,7 @@ export type GetPaymentSuccessDataQuery = {
 					readonly firstName: string;
 					readonly lastName: string;
 					readonly nickName: string | null;
+					readonly emailAddress: string;
 					readonly mobilePhoneNumber: string;
 					readonly instagramUsername: string | null;
 				} & { readonly __typename: "Details" };
@@ -975,11 +983,9 @@ export type GetPaymentScreenDataQuery = {
 				readonly __typename: "Coordinates";
 			};
 		} & { readonly __typename: "Location" };
-		readonly course: {
-			readonly courseID: string;
-			readonly name: string;
-			readonly photo: string;
-		} & { readonly __typename: "Course" };
+		readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
+			readonly __typename: "Course";
+		};
 		readonly instructors: ReadonlyArray<
 			{
 				readonly instructorID: string;
@@ -989,6 +995,7 @@ export type GetPaymentScreenDataQuery = {
 					readonly firstName: string;
 					readonly lastName: string;
 					readonly nickName: string | null;
+					readonly emailAddress: string;
 					readonly mobilePhoneNumber: string;
 					readonly instagramUsername: string | null;
 				} & { readonly __typename: "Details" };
@@ -996,13 +1003,19 @@ export type GetPaymentScreenDataQuery = {
 		>;
 	} & { readonly __typename: "Session" };
 	readonly getBookingCost: {
-		readonly bookingCost: number;
+		readonly sessionCost: number;
 		readonly equipmentCost: number;
-		readonly fullCost: number;
+		readonly bookingCost: number;
 		readonly couponDiscountPercentage: number;
+		readonly couponAmountToDiscount: number;
 		readonly couponDiscount: number;
-		readonly finalCost: number;
+		readonly cost: number;
 		readonly isFreeFromCoupon: boolean;
+		readonly cardFee: number;
+		readonly cardSurchargeRatio: number;
+		readonly cardSurcharge: number;
+		readonly cardSurchargeWithoutFee: number;
+		readonly finalCost: number;
 	} & { readonly __typename: "BookingCost" };
 } & { readonly __typename: "Query" };
 
@@ -1020,9 +1033,7 @@ export type VerifyCouponQueryVariables = Exact<{
 	code: Scalars["String"]["input"];
 }>;
 
-export type VerifyCouponQuery = { readonly verifyCoupon: string | null } & {
-	readonly __typename: "Query";
-};
+export type VerifyCouponQuery = { readonly verifyCoupon: string | null } & { readonly __typename: "Query" };
 
 export type GetSessionBookingsQueryVariables = Exact<{
 	sessionID: Scalars["UUID"]["input"];
@@ -1040,6 +1051,7 @@ export type GetSessionBookingsQuery = {
 				readonly equipmentQuantity: number | null;
 				readonly paymentMethod: PaymentMethod | null;
 				readonly cost: number | null;
+				readonly hasCheckedIn: boolean;
 				readonly session: { readonly sessionID: string } & { readonly __typename: "Session" };
 				readonly student: {
 					readonly studentID: string;
@@ -1048,6 +1060,7 @@ export type GetSessionBookingsQuery = {
 						readonly firstName: string;
 						readonly lastName: string;
 						readonly nickName: string | null;
+						readonly emailAddress: string;
 						readonly mobilePhoneNumber: string;
 					} & { readonly __typename: "Details" };
 				} & { readonly __typename: "Student" };
@@ -1060,9 +1073,7 @@ export type DeleteSessionMutationVariables = Exact<{
 	sessionID: Scalars["UUID"]["input"];
 }>;
 
-export type DeleteSessionMutation = { readonly deleteSessionByID: string } & {
-	readonly __typename: "Mutation";
-};
+export type DeleteSessionMutation = { readonly deleteSessionByID: string } & { readonly __typename: "Mutation" };
 
 export type GetSessionPageQueryVariables = Exact<{
 	sessionID: Scalars["UUID"]["input"];
@@ -1110,6 +1121,7 @@ export type GetSessionPageQuery = {
 					readonly firstName: string;
 					readonly lastName: string;
 					readonly nickName: string | null;
+					readonly emailAddress: string;
 					readonly mobilePhoneNumber: string;
 					readonly instagramUsername: string | null;
 					readonly createdAt: number;
@@ -1130,10 +1142,9 @@ export type UpdateSessionMutation = {
 
 export type CheckStudentQueryVariables = Exact<{ [key: string]: never }>;
 
-export type CheckStudentQuery = {
-	readonly doesStudentExist: boolean;
-	readonly isStudentAdministator: boolean;
-} & { readonly __typename: "Query" };
+export type CheckStudentQuery = { readonly doesStudentExist: boolean; readonly isStudentAdministator: boolean } & {
+	readonly __typename: "Query";
+};
 
 export type CreateStudentMutationVariables = Exact<{
 	input: DetailsInput;

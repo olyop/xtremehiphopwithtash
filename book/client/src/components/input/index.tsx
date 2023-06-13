@@ -1,7 +1,7 @@
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import { ChangeEventHandler, FC, Fragment, ReactNode, createElement } from "react";
 
-import { currencyFormatter } from "../../intl";
+import { currencyDollarsFormatter } from "../../intl";
 import { capitalizeFirstLetter } from "../../utils";
 import Chip, { ChipInput } from "../chip";
 import {
@@ -15,15 +15,8 @@ import {
 } from "./helpers";
 import { InputOnChange, InputSelectOptions, InputType, InputValue, SelectOption } from "./types";
 
-const createClassName = (
-	type: InputType,
-	value: InputValue,
-	className: string | undefined,
-	disabled: boolean,
-) =>
-	`border cursor-pointer outline-none ${
-		type === InputType.CHECKBOX ? "mt-[1px] ml-[1px]" : "w-full"
-	} border-gray-200 ${
+const createClassName = (type: InputType, value: InputValue, className: string | undefined, disabled: boolean) =>
+	`border cursor-pointer outline-none ${type === InputType.CHECKBOX ? "mt-[1px] ml-[1px]" : "w-full"} border-gray-200 ${
 		disabled ? "" : "hover:border-gray-400 transition-all"
 	} rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
 		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-6") : ""
@@ -102,22 +95,16 @@ const Input: FC<InputPropTypes> = ({
 
 	return (
 		<div
-			className={`relative ${
-				type === InputType.CHECKBOX ? "flex gap-2 flex-row-reverse justify-end" : ""
-			} ${type === InputType.TEXTAREA ? (note ? "h-[8.5rem]" : "h-[7rem]") : ""} ${
-				className ?? ""
-			}`}
+			className={`relative ${type === InputType.CHECKBOX ? "flex gap-2 flex-row-reverse justify-end" : ""} ${
+				type === InputType.TEXTAREA ? (note ? "h-[8.5rem]" : "h-[7rem]") : ""
+			} ${className ?? ""}`}
 		>
 			<label
 				children={optional ? `${name} (optional)` : name}
 				htmlFor={type === InputType.LIST ? `${id}-select` : id}
 				className={`${
-					type === InputType.CHECKBOX
-						? "text-base"
-						: "uppercase font-bold text-xs absolute -top-1.5"
-				} cursor-pointer left-3 bg-white z-50 select-none ${disabled ? "text-gray-400" : ""} ${
-					labelClassName ?? ""
-				}`}
+					type === InputType.CHECKBOX ? "text-base" : "uppercase font-bold text-xs absolute -top-1.5"
+				} cursor-pointer left-3 bg-white z-50 select-none ${disabled ? "text-gray-400" : ""} ${labelClassName ?? ""}`}
 			/>
 			{type === InputType.LIST && items && selectOptions && (
 				<div className="absolute flex items-center gap-1 top-[1.65rem] left-2 -translate-y-1/2 w-1/2 bg-white">
@@ -126,7 +113,7 @@ const Input: FC<InputPropTypes> = ({
 			)}
 			{type === InputType.PRICE && (value === null || typeof value === "number") && (
 				<p className="absolute top-1/2 -translate-y-1/2 left-3">
-					{value === null ? "Free" : currencyFormatter.format(value).slice(0, 1)}
+					{value === null ? "Free" : currencyDollarsFormatter.format(value).slice(0, 1)}
 				</p>
 			)}
 			{type === InputType.LIST && Array.isArray(value) ? (
@@ -148,9 +135,7 @@ const Input: FC<InputPropTypes> = ({
 							<option value="">Loading...</option>
 						) : (
 							<Fragment>
-								{hideEmptySelectOptions || (
-									<option value="">{placeHolder ?? "Please choose"}</option>
-								)}
+								{hideEmptySelectOptions || <option value="">{placeHolder ?? "Please choose"}</option>}
 								{selectOptions
 									.filter(({ optionID }) => !value.includes(optionID))
 									.map(({ optionID, description }) => (
@@ -162,9 +147,7 @@ const Input: FC<InputPropTypes> = ({
 						)}
 					</select>
 					<ChevronDownIcon
-						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${
-							disabled ? "text-gray-500" : ""
-						}`}
+						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${disabled ? "text-gray-500" : ""}`}
 					/>
 				</Fragment>
 			) : type === InputType.SELECT ? (
@@ -186,9 +169,7 @@ const Input: FC<InputPropTypes> = ({
 							<option value="">Loading...</option>
 						) : (
 							<Fragment>
-								{hideEmptySelectOptions || (
-									<option value="">{placeHolder ?? "Please choose"}</option>
-								)}
+								{hideEmptySelectOptions || <option value="">{placeHolder ?? "Please choose"}</option>}
 								{selectOptions.map(({ optionID, description }) => (
 									<option key={optionID} value={optionID}>
 										{capitalizeFirstLetter(description)}
@@ -198,9 +179,7 @@ const Input: FC<InputPropTypes> = ({
 						)}
 					</select>
 					<ChevronDownIcon
-						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${
-							disabled ? "text-gray-500" : ""
-						}`}
+						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${disabled ? "text-gray-500" : ""}`}
 					/>
 				</Fragment>
 			) : type === InputType.TEXTAREA ? (

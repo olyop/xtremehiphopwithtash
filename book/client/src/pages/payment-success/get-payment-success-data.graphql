@@ -30,6 +30,7 @@ query getPaymentSuccessData($sessionID: UUID!) {
 				firstName
 				lastName
 				nickName
+				emailAddress
 				mobilePhoneNumber
 				instagramUsername
 			}

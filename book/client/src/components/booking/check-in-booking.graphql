@@ -1,0 +1,3 @@
+mutation checkInBooking($bookingID: UUID!, $value: Boolean!) {
+	checkInBooking(bookingID: $bookingID, value: $value)
+}

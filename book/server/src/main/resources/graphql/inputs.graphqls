@@ -10,7 +10,7 @@ input DetailsInput {
 	lastName: String!
 	gender: String
 	mobilePhoneNumber: String!
-	emailAddress: String
+	emailAddress: String!
 	instagramUsername: String
 }
 

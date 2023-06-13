@@ -1,4 +1,4 @@
-import { MutationResult } from "@apollo/client";
+import { MutationResult } from "@apollo/client/react/types/types";
 import { FC, createElement, useState } from "react";
 
 import LocationInput from "../../../components/forms/location-form";

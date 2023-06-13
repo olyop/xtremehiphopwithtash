@@ -15,7 +15,9 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 			}`}
 		>
 			<div className="flex justify-between">
-				<p className="text-sm select-none justify-self-center">{day.label}</p>
+				<p className="text-sm select-none justify-self-center whitespace-nowrap overflow-hidden">
+					{day.label}
+				</p>
 				{isAdministrator && (day.isToday || !day.isInPast) && (
 					<CreateSession day={day} onSubmit={onSessionUpdate} />
 				)}

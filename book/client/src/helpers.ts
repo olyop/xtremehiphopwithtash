@@ -12,7 +12,7 @@ const currentYear = new Date().getFullYear();
 export const determineSessionDateLabel = ({ startTime }: Pick<Session, "startTime">) => {
 	const date = new Date(startTime);
 
-	const dayName = date.toLocaleDateString(undefined, { weekday: "long" });
+	const dayName = date.toLocaleDateString(undefined, { weekday: "short" });
 
 	const dateLabel =
 		date.getFullYear() === currentYear

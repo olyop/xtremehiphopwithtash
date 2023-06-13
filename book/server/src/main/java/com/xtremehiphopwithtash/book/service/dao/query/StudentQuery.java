@@ -31,12 +31,11 @@ public class StudentQuery {
 	);
 
 	public final String INSERT = String.format(
-		"INSERT INTO student (student_id, details_id) VALUES (:studentID, :detailsID) RETURNING %s;",
+		"INSERT INTO student (student_id, details_id, stripe_customer_id) VALUES (:studentID, :detailsID, :stripeCustomerID) RETURNING %s;",
 		columnNames
 	);
 
 	public final String DELETE_BY_ID = "DELETE FROM student WHERE student_id = :studentID;";
 
-	public final String EXISTS_BY_ID =
-		"SELECT EXISTS (SELECT 1 FROM student WHERE student_id = :studentID);";
+	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM student WHERE student_id = :studentID);";
 }

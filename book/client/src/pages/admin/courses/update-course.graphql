@@ -26,6 +26,7 @@ mutation updateCourse($courseID: UUID!, $input: CourseInput!) {
 				firstName
 				lastName
 				nickName
+				emailAddress
 				mobilePhoneNumber
 			}
 		}

@@ -3,7 +3,8 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { FC, createElement } from "react";
 
 import { Session } from "../../generated-types";
-import { currencyFormatter } from "../../intl";
+import { currencyDollarsFormatter } from "../../intl";
+import { centsToDollars } from "../../utils";
 
 const SessionPriceBanner: FC<PropTypes> = ({ session }) => {
 	const isFree = session.price === null;
@@ -15,7 +16,7 @@ const SessionPriceBanner: FC<PropTypes> = ({ session }) => {
 				<InformationCircleIcon className="w-6 h-6 text-white" />
 			)}
 			<p className="pb-0.5 text-xl font-bold text-white">
-				{isFree ? "Free session" : `Price: ${currencyFormatter.format(session.price)}`}
+				{isFree ? "Free session" : `Price: ${currencyDollarsFormatter.format(centsToDollars(session.price))}`}
 			</p>
 		</div>
 	);

@@ -12,7 +12,7 @@ public class CommonValidator {
 
 	public void validateText(Optional<String> text, String label, int maxLength) {
 		if (text.isPresent()) {
-			validateText(text.get(), label, maxLength);
+			validateTextLength(text.get(), label, maxLength);
 		}
 	}
 
@@ -32,9 +32,7 @@ public class CommonValidator {
 
 	private void validateTextLength(String string, String label, int maxLength) {
 		if (string.length() > maxLength) {
-			throw new ResolverException(
-				String.format("%s length cannot be greater than %d", label, maxLength)
-			);
+			throw new ResolverException(String.format("%s length cannot be greater than %d", label, maxLength));
 		}
 	}
 

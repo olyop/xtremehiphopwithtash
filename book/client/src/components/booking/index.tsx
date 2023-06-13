@@ -1,12 +1,16 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
-import { FC, Fragment, createElement, useEffect, useState } from "react";
+import { FC, Fragment, createElement, useContext, useEffect, useState } from "react";
 
+import { IsAdministratorContext } from "../../contexts/is-administrator";
 import {
 	Booking,
 	BookingInput,
+	CheckInBookingMutation,
+	CheckInBookingMutationVariables,
 	DeleteBookingMutation,
 	DeleteBookingMutationVariables,
 	PaymentMethod,
@@ -14,32 +18,40 @@ import {
 	UpdateBookingMutation,
 	UpdateBookingMutationVariables,
 } from "../../generated-types";
-import { determineDetailsFullName } from "../../helpers";
+import { determineDetailsFullName, determineSessionDateLabel } from "../../helpers";
 import { useModal } from "../../hooks";
-import { currencyFormatter, dateTimeFormatter } from "../../intl";
-import { capitalizeFirstLetter, determinePlural } from "../../utils";
-import AddToCalender from "../add-to-calender";
+import { currencyDollarsFormatter, dateTimeFormatter } from "../../intl";
+import { centsToDollars, determinePlural } from "../../utils";
 import Button from "../button";
 import Entity from "../entity";
 import BookingForm from "../forms/booking-form";
 import Modal from "../modal";
 import { bookingToInput } from "./booking-to-input";
+import BOOKING_CHECK_IN from "./check-in-booking.graphql";
 import DELETE_BOOKING from "./delete-booking.graphql";
 import UPDATE_BOOKING from "./update-booking.graphql";
 
 const SessionPageBooking: FC<PropTypes> = ({
 	session,
 	booking,
+	isEditing = false,
 	onBookingUpdated,
 	hideDelete = false,
+	hideUpdate = false,
+	hideCheckIn = false,
+	hideQuantities = false,
 	hideEquipmentFee = false,
-	hideAddToCalendar = false,
 }) => {
+	const { isAdministrator } = useContext(IsAdministratorContext);
+
 	const [isUpdateModalOpen, openUpdateModal, closeUpdateModal] = useModal();
 	const [isDeleteModalOpen, openDeleteModal, closeDeleteModal] = useModal();
+	const [isCheckInModalOpen, openCheckInModal, closeCheckInModal] = useModal();
 
 	const [updateBooking, updateBookingResult] = useMutation<UpdateData, UpdateVars>(UPDATE_BOOKING);
 	const [deleteBooking, deleteBookingResult] = useMutation<DeleteData, DeleteVars>(DELETE_BOOKING);
+
+	const [checkInBooking, checkInBookingResult] = useMutation<CheckInData, CheckInVars>(BOOKING_CHECK_IN);
 
 	const [bookingInput, setBookingInput] = useState<BookingInput>(bookingToInput(booking));
 
@@ -60,6 +72,15 @@ const SessionPageBooking: FC<PropTypes> = ({
 		});
 	};
 
+	const handleCheckIn = () => {
+		void checkInBooking({
+			variables: {
+				bookingID: booking.bookingID,
+				value: !booking.hasCheckedIn,
+			},
+		});
+	};
+
 	useEffect(() => {
 		if (updateBookingResult.data) {
 			closeUpdateModal();
@@ -74,18 +95,36 @@ const SessionPageBooking: FC<PropTypes> = ({
 		}
 	}, [deleteBookingResult.data]);
 
+	useEffect(() => {
+		if (checkInBookingResult.data) {
+			closeCheckInModal();
+			onBookingUpdated();
+		}
+	}, [checkInBookingResult.data]);
+
+	const paymentDescription =
+		booking.paymentMethod === null && booking.cost === null
+			? "Paid in full with COUPON"
+			: bookingInput.paymentMethod === PaymentMethod.CASH && booking.cost
+			? `Will pay ${currencyDollarsFormatter.format(centsToDollars(booking.cost))} in CASH`
+			: bookingInput.paymentMethod === PaymentMethod.CARD && booking.cost
+			? `Paid ${currencyDollarsFormatter.format(booking.cost / 100)} with CARD`
+			: null;
+
 	return (
 		<Entity
 			id={booking.bookingID}
-			text={
-				<Fragment>
-					<Fragment>{determineDetailsFullName(booking.student.details)}</Fragment>
-					<Fragment> </Fragment>
-					<span className="text-gray-500">{booking.student.details.mobilePhoneNumber}</span>
-				</Fragment>
-			}
+			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
 			description={
 				<Fragment>
+					{determineSessionDateLabel(session)}
+					<br />
+					{hideUpdate ? null : (
+						<Fragment>
+							{booking.student.details.mobilePhoneNumber}
+							<br />
+						</Fragment>
+					)}
 					{booking.bookingQuantity} x booking{determinePlural(booking.bookingQuantity)}
 					{booking.equipmentQuantity && (
 						<Fragment>
@@ -96,66 +135,123 @@ const SessionPageBooking: FC<PropTypes> = ({
 						</Fragment>
 					)}
 					<br />
-					{booking.paymentMethod === null && booking.cost === null
-						? "Paid in full with COUPON"
-						: bookingInput.paymentMethod === PaymentMethod.CASH && booking.cost
-						? `Paid in cash ${currencyFormatter.format(booking.cost)}`
-						: bookingInput.paymentMethod === PaymentMethod.CARD && booking.cost
-						? `Paid ${currencyFormatter.format(booking.cost)} with CARD`
-						: null}
+					{paymentDescription}
 					{booking.notes && (
 						<Fragment>
 							<br />
-							Notes: {booking.notes}
+							<span className="text-gray-500">Notes: {booking.notes}</span>
 						</Fragment>
 					)}
-					<br />
-					<span className="text-gray-500">Date: {dateTimeFormatter.format(booking.createdAt)}</span>
+					{hideUpdate ? null : (
+						<Fragment>
+							<br />
+							<span className="text-gray-500">{dateTimeFormatter.format(booking.createdAt)}</span>
+						</Fragment>
+					)}
 				</Fragment>
 			}
 			rightContent={
 				<Fragment>
-					<Button
-						transparent
-						onClick={openUpdateModal}
-						ariaLabel="Edit booking"
-						leftIcon={className => <PencilIcon className={className} />}
-					/>
-					<Modal
-						title="Update Booking"
-						isOpen={isUpdateModalOpen}
-						onClose={closeUpdateModal}
-						icon={className => <PencilIcon className={className} />}
-						subTitle={`${booking.student.details.firstName} ${booking.student.details.lastName}`}
-						contentClassName="flex flex-col gap-4"
-						children={
-							<BookingForm
-								session={session}
-								input={bookingInput}
-								onChange={setBookingInput}
-								hideEquipmentFee={hideEquipmentFee}
+					{!hideCheckIn && isAdministrator ? (
+						<Fragment>
+							<Button
+								transparent
+								onClick={openCheckInModal}
+								ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+								leftIcon={className => (
+									<CheckCircleIcon className={`${className} ${booking.hasCheckedIn ? "text-green-500" : ""}`} />
+								)}
 							/>
-						}
-						error={updateBookingResult.error}
-						buttons={
-							<Fragment>
-								<Button
-									text="Update"
-									ariaLabel="Update Booking"
-									onClick={handleUpdateBooking}
-									leftIcon={className => <PencilIcon className={className} />}
-								/>
-								<Button
-									text="Cancel"
-									ariaLabel="Cancel"
-									transparent
-									onClick={closeUpdateModal}
-									leftIcon={className => <XMarkIcon className={className} />}
-								/>
-							</Fragment>
-						}
-					/>
-					{hideAddToCalendar || <AddToCalender session={session} hideText />}
+							<Modal
+								title="Check In"
+								isOpen={isCheckInModalOpen}
+								onClose={closeCheckInModal}
+								icon={className => <CheckCircleIcon className={className} />}
+								contentClassName="flex flex-col gap-4"
+								children={
+									<Fragment>
+										<p>Are you sure you want to {booking.hasCheckedIn ? "un-check in" : "check in"} this booking?</p>
+										<p>
+											<span className="text-gray-500">Payment Details:</span>
+											<br />
+											{paymentDescription}
+										</p>
+									</Fragment>
+								}
+								error={checkInBookingResult.error}
+								subTitle={determineDetailsFullName(booking.student.details)}
+								buttons={
+									<Fragment>
+										<Button
+											onClick={handleCheckIn}
+											text={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+											leftIcon={className => <CheckCircleIcon className={className} />}
+											ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+										/>
+										<Button
+											text="Cancel"
+											transparent
+											onClick={closeCheckInModal}
+											ariaLabel="Cancel"
+											leftIcon={className => <XMarkIcon className={className} />}
+										/>
+									</Fragment>
+								}
+							/>
+						</Fragment>
+					) : booking.hasCheckedIn ? (
+						<Button
+							transparent
+							ariaLabel="Checked In"
+							leftIcon={className => <CheckCircleIcon className={`${className} text-green-500`} />}
+						/>
+					) : null}
+					{hideUpdate || (
+						<Fragment>
+							<Button
+								transparent
+								onClick={openUpdateModal}
+								ariaLabel="Edit booking"
+								leftIcon={className => <PencilIcon className={className} />}
+							/>
+							<Modal
+								title="Update Booking"
+								isOpen={isUpdateModalOpen}
+								onClose={closeUpdateModal}
+								icon={className => <PencilIcon className={className} />}
+								subTitle={`${booking.student.details.firstName} ${booking.student.details.lastName}`}
+								contentClassName="flex flex-col gap-4"
+								children={
+									<BookingForm
+										session={session}
+										input={bookingInput}
+										isEditing={isEditing}
+										onChange={setBookingInput}
+										hideQuantities={hideQuantities}
+										hideEquipmentFee={hideEquipmentFee}
+									/>
+								}
+								error={updateBookingResult.error}
+								buttons={
+									<Fragment>
+										<Button
+											text="Update"
+											ariaLabel="Update Booking"
+											onClick={handleUpdateBooking}
+											leftIcon={className => <PencilIcon className={className} />}
+										/>
+										<Button
+											text="Cancel"
+											ariaLabel="Cancel"
+											transparent
+											onClick={closeUpdateModal}
+											leftIcon={className => <XMarkIcon className={className} />}
+										/>
+									</Fragment>
+								}
+							/>
+						</Fragment>
+					)}
 					{hideDelete || (
 						<Fragment>
 							<Button
@@ -203,13 +299,18 @@ type UpdateData = UpdateBookingMutation;
 type UpdateVars = UpdateBookingMutationVariables;
 type DeleteData = DeleteBookingMutation;
 type DeleteVars = DeleteBookingMutationVariables;
+type CheckInData = CheckInBookingMutation;
+type CheckInVars = CheckInBookingMutationVariables;
 
 interface PropTypes {
 	session: Session;
 	booking: Booking;
 	hideDelete?: boolean;
+	hideCheckIn?: boolean;
+	hideUpdate?: boolean;
+	isEditing?: boolean;
+	hideQuantities?: boolean;
 	hideEquipmentFee?: boolean;
-	hideAddToCalendar?: boolean;
 	onBookingUpdated: () => void;
 }
 

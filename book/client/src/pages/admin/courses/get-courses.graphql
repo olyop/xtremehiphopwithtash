@@ -26,6 +26,7 @@ query getCourses {
 				firstName
 				lastName
 				nickName
+				emailAddress
 				mobilePhoneNumber
 			}
 		}

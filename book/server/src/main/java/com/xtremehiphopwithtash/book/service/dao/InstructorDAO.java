@@ -81,7 +81,6 @@ public class InstructorDAO
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("instructorID", instructorID);
-
 		paramSource.addValue("photo", instructor.getPhoto().toString());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);

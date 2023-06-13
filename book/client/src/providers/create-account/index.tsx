@@ -1,17 +1,10 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
 import PaperAirplaneIcon from "@heroicons/react/24/solid/PaperAirplaneIcon";
 import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
-import {
-	FC,
-	Fragment,
-	PropsWithChildren,
-	createElement,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { FC, Fragment, PropsWithChildren, createElement, useContext, useEffect, useState } from "react";
 
 import Button from "../../components/button";
 import DetailsForm from "../../components/forms/details-form";
@@ -29,7 +22,7 @@ import CREATE_STUDENT from "./create-student.graphql";
 import { initialInput } from "./initital-input";
 
 const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
-	const { isAuthenticated, logout, user, isLoading, loginWithRedirect } = useAuth0();
+	const { isAuthenticated, logout, user } = useAuth0();
 
 	const { setIsAdministrator } = useContext(IsAdministratorContext);
 	const [hasCreatedAccount, setHasCreatedAccount] = useState(true);
@@ -44,24 +37,22 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		if (user?.sub) {
 			const { data, error } = await checkStudent();
 
-			if (error) {
-				void loginWithRedirect();
-			} else {
-				if (data) {
-					setHasCreatedAccount(data.doesStudentExist);
-					setIsAdministrator(data.isStudentAdministator);
-				}
+			if (!error && data) {
+				setHasCreatedAccount(data.doesStudentExist);
+				setIsAdministrator(data.isStudentAdministator);
 			}
 		}
 	};
 
 	const handlePopulateForm = () => {
 		if (user) {
+			const doesNickNameContainDot = user.nickname?.includes(".");
+
 			setDetailsInput(prevState => ({
 				...prevState,
 				firstName: user.given_name ?? prevState.firstName,
 				lastName: user.family_name ?? prevState.lastName,
-				nickName: user.nickname ?? prevState.nickName,
+				nickName: user.nickname === undefined || doesNickNameContainDot ? prevState.nickName : user.nickname,
 				mobilePhoneNumber: user.phone_number ?? prevState.mobilePhoneNumber,
 				emailAddress: user.email ?? prevState.emailAddress,
 			}));
@@ -102,21 +93,11 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		}
 	}, [createAccountResult.data]);
 
-	useEffect(() => {
-		if (!isAuthenticated && !isLoading) {
-			void loginWithRedirect();
-		}
-	}, [isAuthenticated, isLoading]);
-
 	return hasCreatedAccount ? (
 		<Fragment>{children}</Fragment>
 	) : (
 		<div className="relative w-screen h-screen">
-			<img
-				src="/jumbotron.jpg"
-				alt="Xtreme Hip-Hop with Tash"
-				className="object-cover w-full h-full"
-			/>
+			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
 			<Modal
 				isOpen
 				isLarge
@@ -125,7 +106,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 				disableCloseOnEscape
 				title="Account Setup"
 				icon={className => <UserCircleIcon className={className} />}
-				contentClassName="flex flex-col gap-4 p-4"
+				contentClassName="flex flex-col gap-4 px-4 py-4"
 				children={
 					<Fragment>
 						<h2 className="text-xl font-bold text-center">You&apos;re nearly there!!</h2>

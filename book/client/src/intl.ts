@@ -1,4 +1,4 @@
-export const currencyFormatter = new Intl.NumberFormat(undefined, {
+export const currencyDollarsFormatter = new Intl.NumberFormat(undefined, {
 	style: "currency",
 	currency: "AUD",
 	currencyDisplay: "narrowSymbol",

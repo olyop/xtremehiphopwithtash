@@ -5,34 +5,37 @@ import Input, { InputOnChange, InputType, SelectOption } from "../../input";
 
 const BookingQuantities: FC<PropTypes> = ({
 	session,
+	isEditing,
 	bookingQuantity,
 	equipmentQuantity,
 	onBookingQuantityChange,
 	onEquipmentQuantityChange,
 }) => {
-	const maxBookingQuantity = session.capacityRemaining
+	const maxBookingQuantity = isEditing
+		? bookingQuantity
+		: session.capacityRemaining
 		? session.capacityRemaining > 5
 			? 5
 			: 5 - (5 - session.capacityRemaining)
 		: 0;
 
-	const maxEquipmentQuantity = session.equipmentRemaining ? bookingQuantity : 0;
-
 	const bookingQuantitySelectOptions: SelectOption[] = Array.from({
 		length: maxBookingQuantity,
 	}).map((_, index) => ({
 		description: `${index + 1}`,
-		optionID: String(index + 1),
+		optionID: `${index + 1}`,
 	}));
+
+	const maxEquipmentQuantity = session.equipmentRemaining ? bookingQuantity : 0;
 
 	const bookingEquipmentSelectOptions: SelectOption[] = Array.from({
 		length: maxEquipmentQuantity,
 	})
 		.map((_, index) => ({
 			description: `${index + 1}`,
-			optionID: String(index + 1),
+			optionID: `${index + 1}`,
 		}))
-		.slice(0, session.equipmentRemaining ?? 0);
+		.slice(0, isEditing ? bookingQuantity : session.equipmentRemaining ?? 0);
 
 	const handleBookingQuantityChange: InputOnChange = inputValue => {
 		if (typeof inputValue === "string") {
@@ -75,6 +78,7 @@ const BookingQuantities: FC<PropTypes> = ({
 interface PropTypes {
 	session: Session;
 	bookingQuantity: number;
+	isEditing: boolean;
 	equipmentQuantity: Maybe<number>;
 	onBookingQuantityChange: InputOnChange;
 	onEquipmentQuantityChange: InputOnChange;

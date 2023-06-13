@@ -14,8 +14,8 @@ export const initialCourseDefaultInput: Pick<
 > = {
 	title: "",
 	notes: "",
-	price: 20,
-	equipmentFee: 0,
+	price: 10,
+	equipmentFee: 2,
 	capacityAvailable: 20,
 	equipmentAvailable: 10,
 	locationID: "",

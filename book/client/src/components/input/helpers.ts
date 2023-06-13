@@ -93,7 +93,7 @@ export const determineInputType = (type: InputType): HTMLInputTypeAttribute =>
 
 export const mapListToChips = <T>(
 	list: readonly string[],
-	allItems: readonly T[] | undefined,
+	allItems: readonly T[] | null | undefined,
 	getID: (item: T) => string,
 	mapper: (item: T) => ChipInput,
 ): ChipInput[] => {
@@ -113,10 +113,10 @@ export const mapListToChips = <T>(
 };
 
 export const mapListToSelectOptions = <T>(
-	list: readonly T[] | undefined,
+	list: readonly T[] | null | undefined,
 	mapper: (item: T) => SelectOption,
 ): InputSelectOptions => {
-	if (list === undefined) {
+	if (list === undefined || list === null) {
 		return undefined;
 	}
 

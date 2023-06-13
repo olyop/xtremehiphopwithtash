@@ -1,4 +1,4 @@
-import { ApolloError } from "@apollo/client";
+import { ApolloError } from "@apollo/client/errors";
 import { FC, Fragment, createElement } from "react";
 
 const FormError: FC<PropTypes> = ({ error }) => (

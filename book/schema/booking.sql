@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS booking (
 	equipment_quantity SMALLINT,
 	payment_method booking_payment_method,
 	cost INTEGER,
+	has_checked_in BOOLEAN NOT NULL DEFAULT FALSE,
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
 	CONSTRAINT booking_pk

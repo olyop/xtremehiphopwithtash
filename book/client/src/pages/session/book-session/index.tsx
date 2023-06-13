@@ -1,6 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import ChevronDoubleRightIcon from "@heroicons/react/24/solid/ChevronDoubleRightIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ import { BookingInput, Session } from "../../../generated-types";
 import { determineSessionDateLabel } from "../../../helpers";
 import { useModal } from "../../../hooks";
 import { initialInput } from "./initial-input";
+import ToPaymentButton from "./to-payment-button";
 
 const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	const navigate = useNavigate();
@@ -117,12 +117,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 				}
 				buttons={
 					<Fragment>
-						<Button
-							text="To Payment"
-							ariaLabel="To Payment"
-							onClick={handleToPaymentScreenClick}
-							rightIcon={className => <ChevronDoubleRightIcon className={className} />}
-						/>
+						<ToPaymentButton onClick={handleToPaymentScreenClick} />
 						<Button
 							transparent
 							text="Cancel"

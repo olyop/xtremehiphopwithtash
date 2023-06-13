@@ -13,18 +13,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BookingDAO
-	implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO<Booking, UUID>, EntityDeleteDAO<UUID> {
+public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO<Booking, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final BookingQuery query;
 	private final BookingRowMapper rowMapper;
 
-	public BookingDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		BookingQuery query,
-		BookingRowMapper rowMapper
-	) {
+	public BookingDAO(NamedParameterJdbcTemplate jdbcTemplate, BookingQuery query, BookingRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;
@@ -67,10 +62,7 @@ public class BookingDAO
 		paramSource.addValue("studentID", value.getStudentID());
 		paramSource.addValue("bookingQuantity", value.getBookingQuantity());
 		paramSource.addValue("equipmentQuantity", value.getEquipmentQuantity());
-		paramSource.addValue(
-			"paymentMethod",
-			value.getPaymentMethod() == null ? null : value.getPaymentMethod().name()
-		);
+		paramSource.addValue("paymentMethod", value.getPaymentMethod() == null ? null : value.getPaymentMethod().name());
 		paramSource.addValue("cost", value.getCost());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
@@ -103,7 +95,7 @@ public class BookingDAO
 	}
 
 	public List<Booking> selectByStudentID(String studentID) {
-		String sql = query.SELECT_BOOKINGS_BY_STUDENT_ID;
+		String sql = query.SELECT_BY_STUDENT_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
 
@@ -178,5 +170,15 @@ public class BookingDAO
 		paramSource.addValue("sessionID", sessionID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public void updateHasCheckedIn(UUID bookingID, boolean hasCheckedIn) {
+		String sql = query.UPDATE_HAS_CHECKED_IN_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("bookingID", bookingID);
+		paramSource.addValue("hasCheckedIn", hasCheckedIn);
+
+		jdbcTemplate.update(sql, paramSource);
 	}
 }

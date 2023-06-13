@@ -16,11 +16,7 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 	private final StudentQuery query;
 	private final StudentRowMapper rowMapper;
 
-	public StudentDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		StudentQuery query,
-		StudentRowMapper rowMapper
-	) {
+	public StudentDAO(NamedParameterJdbcTemplate jdbcTemplate, StudentQuery query, StudentRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;
@@ -33,6 +29,7 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("studentID", value.getStudentID());
 		paramSource.addValue("detailsID", value.getDetailsID());
+		paramSource.addValue("stripeCustomerID", value.getStripeCustomerID());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
 	}

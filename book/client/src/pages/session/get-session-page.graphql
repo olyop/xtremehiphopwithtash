@@ -40,6 +40,7 @@ query getSessionPage($sessionID: UUID!) {
 				firstName
 				lastName
 				nickName
+				emailAddress
 				mobilePhoneNumber
 				instagramUsername
 				createdAt

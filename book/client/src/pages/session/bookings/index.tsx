@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import { FC, Fragment, createElement, useEffect } from "react";
 
 import SessionPageBooking from "../../../components/booking";
@@ -38,8 +38,8 @@ const SessionBookings: FC<PropTypes> = ({ session }) => {
 						<div>
 							{bookingsResult.data.getSessionByID.bookings.map(booking => (
 								<SessionPageBooking
+									isEditing
 									session={session}
-									hideAddToCalendar
 									hideEquipmentFee
 									booking={booking as Booking}
 									key={booking.bookingID}

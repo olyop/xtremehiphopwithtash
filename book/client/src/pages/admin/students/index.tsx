@@ -1,11 +1,7 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { FC, createElement } from "react";
 
-import {
-	GetStudentsQuery,
-	GetStudentsQueryVariables,
-	Student as StudentType,
-} from "../../../generated-types";
+import { GetStudentsQuery, GetStudentsQueryVariables, Student as StudentType } from "../../../generated-types";
 import Section from "../section";
 import GET_STUDENTS from "./get-students.graphql";
 import Student from "./student";
@@ -15,7 +11,7 @@ const Students: FC = () => {
 	return (
 		<Section<StudentType>
 			title="Students"
-			items={data?.getStudents as StudentType[] | undefined}
+			items={data?.getStudents as StudentType[] | null | undefined}
 			renderItem={student => <Student student={student} key={student.studentID} />}
 		/>
 	);

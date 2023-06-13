@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
+import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods;
+import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
@@ -24,7 +27,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class StripeService {
 
-	private final String currency;
+	private final String currency = "AUD";
+
 	private final String webhookSecret;
 	private final ObjectMapper objectMapper;
 
@@ -32,7 +36,6 @@ public class StripeService {
 	private final SessionService sessionService;
 
 	public StripeService(
-		@Value("${stripe.currency}") String currency,
 		@Value("${stripe.live.key}") String secretKey,
 		@Value("${stripe.webhook.secret}") String webhookSecret,
 		BookingService bookingService,
@@ -40,7 +43,6 @@ public class StripeService {
 	) {
 		Stripe.apiKey = secretKey;
 
-		this.currency = currency;
 		this.webhookSecret = webhookSecret;
 		this.objectMapper = new ObjectMapper();
 		this.objectMapper.registerModule(new Jdk8Module());
@@ -48,9 +50,35 @@ public class StripeService {
 		this.sessionService = sessionService;
 	}
 
+	public String createCustomer(String studentID, Details details) {
+		try {
+			String name = String.format("%s %s", details.getFirstName(), details.getLastName());
+
+			Map<String, String> metadata = new HashMap<>();
+			metadata.put("studentID", studentID);
+
+			CustomerCreateParams params = CustomerCreateParams
+				.builder()
+				.setName(name)
+				.setEmail(details.getEmailAddress())
+				.setPhone(details.getMobilePhoneNumber())
+				.setMetadata(metadata)
+				.build();
+
+			Customer customer = Customer.create(params);
+
+			return customer.getId();
+		} catch (StripeException se) {
+			throw new ResolutionException("Unable to create customer");
+		}
+	}
+
 	public CreatePaymentIntentResponse createPaymentIntent(
 		BookingInput bookingInput,
-		String studentID
+		String studentID,
+		String emailAddress,
+		String stripeCustomerID,
+		String bookingDescription
 	) {
 		try {
 			Session session = sessionService.retreiveByID(bookingInput.sessionID());
@@ -63,17 +91,15 @@ public class StripeService {
 			metadata.put("studentID", studentID);
 			metadata.put("bookingInput", objectMapper.writeValueAsString(bookingInput));
 
-			System.out.println("createPaymentIntent: " + bookingInput);
-
-			AutomaticPaymentMethods automaticPaymentMethods = AutomaticPaymentMethods
-				.builder()
-				.setEnabled(true)
-				.build();
+			AutomaticPaymentMethods automaticPaymentMethods = AutomaticPaymentMethods.builder().setEnabled(true).build();
 
 			PaymentIntentCreateParams params = PaymentIntentCreateParams
 				.builder()
 				.setCurrency(currency)
 				.setAmount(amount)
+				.setCustomer(stripeCustomerID)
+				.setReceiptEmail(emailAddress)
+				.setDescription(bookingDescription)
 				.setAutomaticPaymentMethods(automaticPaymentMethods)
 				.putAllMetadata(metadata)
 				.build();

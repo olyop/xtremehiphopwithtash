@@ -6,6 +6,6 @@ export const initialInput: DetailsInput = {
 	lastName: "",
 	gender: null,
 	mobilePhoneNumber: "",
-	emailAddress: null,
+	emailAddress: "",
 	instagramUsername: null,
 };

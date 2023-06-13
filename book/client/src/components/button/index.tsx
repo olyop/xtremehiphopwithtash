@@ -52,7 +52,7 @@ export interface ButtonPropTypes {
 	ariaLabel: string;
 	childrenNode?: ReactNode;
 	rightIcon?: (className: string) => ReactNode;
-	onClick?: () => void;
+	onClick?: (() => void) | undefined;
 	className?: string;
 	iconClassName?: string;
 	textClassName?: string;

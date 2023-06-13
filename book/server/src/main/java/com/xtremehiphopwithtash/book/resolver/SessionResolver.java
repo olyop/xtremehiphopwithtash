@@ -14,7 +14,6 @@ import com.xtremehiphopwithtash.book.service.InstructorService;
 import com.xtremehiphopwithtash.book.service.LocationService;
 import com.xtremehiphopwithtash.book.service.SessionService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
-import com.xtremehiphopwithtash.book.util.CurrencyUtil;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -35,7 +34,6 @@ public class SessionResolver {
 	private final BookingService bookingService;
 	private final Auth0JwtService auth0JwtService;
 	private final SessionValidator sessionValidator;
-	private final CurrencyUtil currencyUtil;
 
 	public SessionResolver(
 		SessionService sessionService,
@@ -44,8 +42,7 @@ public class SessionResolver {
 		InstructorService instructorService,
 		BookingService bookingService,
 		Auth0JwtService auth0JwtService,
-		SessionValidator sessionValidator,
-		CurrencyUtil currencyUtil
+		SessionValidator sessionValidator
 	) {
 		this.sessionService = sessionService;
 		this.courseService = courseService;
@@ -54,7 +51,6 @@ public class SessionResolver {
 		this.bookingService = bookingService;
 		this.auth0JwtService = auth0JwtService;
 		this.sessionValidator = sessionValidator;
-		this.currencyUtil = currencyUtil;
 	}
 
 	@QueryMapping
@@ -67,16 +63,6 @@ public class SessionResolver {
 	@QueryMapping
 	public Session getSessionByID(@Argument UUID sessionID) {
 		return sessionService.retreiveByID(sessionID);
-	}
-
-	@SchemaMapping(typeName = "Session", field = "price")
-	public Integer getDefaultPrice(Session session) {
-		return currencyUtil.centsToDollars(session.getPrice());
-	}
-
-	@SchemaMapping(typeName = "Session", field = "equipmentFee")
-	public Integer getDefaultEquipmentFee(Session session) {
-		return currencyUtil.centsToDollars(session.getEquipmentFee());
 	}
 
 	@SchemaMapping(typeName = "Session", field = "course")

@@ -1,17 +1,9 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
-import {
-	GetSessionFormDataQuery,
-	Instructor,
-	SessionInput as SessionInputType,
-} from "../../../generated-types";
-import Input, {
-	InputOnChange,
-	InputType,
-	mapListToChips,
-	mapListToSelectOptions,
-} from "../../input";
+import { GetSessionFormDataQuery, Instructor, SessionInput as SessionInputType } from "../../../generated-types";
+import { centsToDollars } from "../../../utils";
+import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions } from "../../input";
 import SessionFormCapacityAndEquipment from "./capacity-and-equipment";
 import GET_SESSION_FORM_DATA from "./get-session-form-data.graphql";
 
@@ -29,20 +21,20 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 
 	const handleCourseChange: InputOnChange = value => {
 		if (data && typeof value === "string" && onCourseReset) {
-			const course = data.getCourses.find(({ courseID }) => courseID === value);
+			const course = data.getCourses?.find(({ courseID }) => courseID === value);
 			if (course) {
 				onChange(prevState => ({
 					...prevState,
 					courseID: value,
 					title: course.name,
 					notes: null,
-					price: course.defaultPrice,
-					equipmentFee: course.defaultEquipmentFee,
 					locationID: course.defaultLocation.locationID,
 					capacityAvailable: course.defaultCapacityAvailable,
 					equipmentAvailable: course.defaultEquipmentAvailable,
 					endTime: prevState.startTime + course.defaultDuration * 1000,
 					instructorIDs: course.defaultInstructors.map(({ instructorID }) => instructorID),
+					price: course.defaultPrice === null ? null : centsToDollars(course.defaultPrice),
+					equipmentFee: course.defaultEquipmentFee === null ? null : centsToDollars(course.defaultEquipmentFee),
 				}));
 			} else {
 				onChange(prevState => ({
@@ -66,7 +58,7 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 		handleChange("startTime")(value);
 
 		if (typeof value === "number" && data) {
-			const course = data.getCourses.find(({ courseID }) => courseID === input.courseID);
+			const course = data.getCourses?.find(({ courseID }) => courseID === input.courseID);
 			if (course) {
 				handleChange("endTime")(value + course.defaultDuration * 1000);
 			}

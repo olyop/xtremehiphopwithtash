@@ -1,11 +1,8 @@
-import { MutationResult } from "@apollo/client";
+import { MutationResult } from "@apollo/client/react/types/types";
 import { FC, createElement, useState } from "react";
 
 import InstructorInput from "../../../components/forms/instructor-form";
-import {
-	InstructorInput as InstructorInputType,
-	Instructor as InstructorType,
-} from "../../../generated-types";
+import { InstructorInput as InstructorInputType, Instructor as InstructorType } from "../../../generated-types";
 import { determineDetailsName } from "../../../helpers";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapInstructorToInput } from "../map-entity-to-input";
@@ -26,9 +23,7 @@ const Instructor: FC<PropTypes> = ({
 			photo={instructor.photo}
 			typeName={instructor.__typename}
 			isLargeEditModal
-			editModalContent={
-				<InstructorInput input={input} onChange={setInput} hideEmailAddress={false} />
-			}
+			editModalContent={<InstructorInput input={input} onChange={setInput} />}
 			onEdit={onUpdate(input)}
 			onDelete={onDelete}
 			isUpdating={isUpdating}

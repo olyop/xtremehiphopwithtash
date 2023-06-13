@@ -15,22 +15,21 @@ public class BookingRowMapper implements RowMapper<Booking> {
 	@Override
 	@Nullable
 	public Booking mapRow(ResultSet rs, int rowNum) throws SQLException {
-		Booking booking = new Booking();
+		Booking b = new Booking();
 
-		booking.setBookingID(MapRowUtil.mapUUID(rs.getString("booking_id")));
+		b.setBookingID(MapRowUtil.mapUUID(rs.getString("booking_id")));
 
-		booking.setNotes(rs.getString("notes"));
-		booking.setSessionID(MapRowUtil.mapUUID(rs.getString("session_id")));
-		booking.setStudentID(rs.getString("student_id"));
-		booking.setBookingQuantity(MapRowUtil.mapInteger(rs.getInt("booking_quantity")));
-		booking.setEquipmentQuantity(MapRowUtil.mapInteger(rs.getInt("equipment_quantity")));
-		booking.setPaymentMethod(
-			MapRowUtil.mapEnum(PaymentMethod.class, rs.getString("payment_method"))
-		);
-		booking.setCost(MapRowUtil.mapInteger(rs.getInt("cost")));
+		b.setNotes(rs.getString("notes"));
+		b.setSessionID(MapRowUtil.mapUUID(rs.getString("session_id")));
+		b.setStudentID(rs.getString("student_id"));
+		b.setBookingQuantity(MapRowUtil.mapInteger(rs.getInt("booking_quantity")));
+		b.setEquipmentQuantity(MapRowUtil.mapInteger(rs.getInt("equipment_quantity")));
+		b.setPaymentMethod(MapRowUtil.mapEnum(PaymentMethod.class, rs.getString("payment_method")));
+		b.setCost(MapRowUtil.mapInteger(rs.getInt("cost")));
+		b.setHasCheckedIn(rs.getBoolean("has_checked_in"));
 
-		booking.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
+		b.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 
-		return booking;
+		return b;
 	}
 }

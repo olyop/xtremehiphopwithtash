@@ -9,7 +9,7 @@ import {
 	MutationDeleteCourseByIdArgs,
 	MutationUpdateCourseByIdArgs,
 } from "../../../generated-types";
-import { ArrayElement } from "../../../utils";
+import { ArrayElement, dollarsToCents } from "../../../utils";
 import { OnEditAndUpdate } from "../entity";
 import Section from "../section";
 import Course from "./course";
@@ -32,8 +32,8 @@ const Courses: FC = () => {
 				name: input.name,
 				description: input.description,
 				photo: input.photo,
-				defaultPrice: input.defaultPrice === 0 ? null : input.defaultPrice,
-				defaultEquipmentFee: input.defaultEquipmentFee === 0 ? null : input.defaultEquipmentFee,
+				defaultPrice: input.defaultPrice === null ? null : dollarsToCents(input.defaultPrice),
+				defaultEquipmentFee: input.defaultEquipmentFee === null ? null : dollarsToCents(input.defaultEquipmentFee),
 				defaultDuration: input.defaultDuration,
 				defaultCapacityAvailable: input.defaultCapacityAvailable,
 				defaultEquipmentAvailable: input.defaultEquipmentAvailable,

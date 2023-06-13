@@ -7,6 +7,7 @@ mutation updateInstructor($instructorID: UUID!, $input: InstructorInput!) {
 			firstName
 			lastName
 			nickName
+			emailAddress
 			mobilePhoneNumber
 			instagramUsername
 			createdAt

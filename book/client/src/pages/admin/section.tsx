@@ -5,8 +5,8 @@ const Section = <T,>({ title, items, renderItem, create }: PropTypes<T>) => (
 	<div className="flex flex-col items-start gap-2">
 		<h2 className="text-2xl">{title}</h2>
 		<div className="self-stretch bg-white shadow-md">
-			{items ? (
-				items.length === 0 ? (
+			{items !== undefined ? (
+				items === null ? (
 					<p className="p-2 text-gray-500">None found</p>
 				) : (
 					items.map(item => renderItem(item))
@@ -21,7 +21,7 @@ const Section = <T,>({ title, items, renderItem, create }: PropTypes<T>) => (
 
 interface PropTypes<T> {
 	title: string;
-	items: readonly T[] | undefined;
+	items: readonly T[] | null | undefined;
 	renderItem: (item: T) => ReactNode;
 	create?: ReactNode;
 }

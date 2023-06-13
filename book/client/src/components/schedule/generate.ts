@@ -1,4 +1,4 @@
-import { ApolloClient } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { Session } from "../../generated-types";
 import { determineSessionDateLabel } from "../../helpers";

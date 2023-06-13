@@ -6,7 +6,7 @@ type Details {
 	nickName: String
 	gender: String
 	mobilePhoneNumber: String!
-	emailAddress: String
+	emailAddress: String!
 	instagramUsername: String
 
 	createdAt: UnixTime!
@@ -111,6 +111,7 @@ type Booking {
 	bookingQuantity: PositiveInt!
 	equipmentQuantity: PositiveInt
 	cost: Float
+	hasCheckedIn: Boolean!
 
 	student: Student!
 	session: Session!
@@ -119,13 +120,19 @@ type Booking {
 }
 
 type BookingCost {
-	bookingCost: NonNegativeInt!
+	sessionCost: PositiveInt!
 	equipmentCost: NonNegativeInt!
-	fullCost: NonNegativeInt!
+	bookingCost: NonNegativeInt!
 	couponDiscountPercentage: NonNegativeInt!
+	couponAmountToDiscount: NonNegativeInt!
 	couponDiscount: Int!
-	finalCost: NonNegativeInt!
+	cost: NonNegativeInt!
 	isFreeFromCoupon: Boolean!
+	cardSurchargeRatio: Float!
+	cardFee: PositiveInt!
+	cardSurcharge: NonNegativeInt!
+	cardSurchargeWithoutFee: NonNegativeInt!
+	finalCost: NonNegativeInt!
 }
 
 type Review {

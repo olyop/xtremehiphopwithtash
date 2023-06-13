@@ -1,5 +1,5 @@
-import { useMutation } from "@apollo/client";
-import { Dispatch, FC, SetStateAction, createElement, useEffect, useState } from "react";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
+import { Dispatch, FC, SetStateAction, createElement, useEffect, useRef, useState } from "react";
 
 import {
 	BookingInput,
@@ -12,11 +12,10 @@ import CardForm from "./card-form";
 import CREATE_PAYMENT_INTENT from "./create-payment-intent.graphql";
 
 const PaymentPageStripe: FC<PropTypes> = ({ bookingInput, setIsPaying }) => {
+	const paymentMethodRef = useRef<PaymentMethod | null>(null);
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
 
-	const [createPaymentIntent, { data, loading }] = useMutation<IntentData, IntentVars>(
-		CREATE_PAYMENT_INTENT,
-	);
+	const [createPaymentIntent, { data }] = useMutation<IntentData, IntentVars>(CREATE_PAYMENT_INTENT);
 
 	const handleCreatePaymentIntent = () => {
 		if (bookingInput) {
@@ -29,8 +28,13 @@ const PaymentPageStripe: FC<PropTypes> = ({ bookingInput, setIsPaying }) => {
 	};
 
 	useEffect(() => {
-		if (!loading && bookingInput.paymentMethod === PaymentMethod.CARD) {
+		if (bookingInput.paymentMethod === PaymentMethod.CARD && paymentMethodRef.current !== bookingInput.paymentMethod) {
+			paymentMethodRef.current = bookingInput.paymentMethod;
 			void handleCreatePaymentIntent();
+		}
+
+		if (paymentMethodRef.current === null) {
+			paymentMethodRef.current = bookingInput.paymentMethod;
 		}
 	}, [bookingInput.paymentMethod]);
 

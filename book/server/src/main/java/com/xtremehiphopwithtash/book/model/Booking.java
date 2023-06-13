@@ -13,6 +13,7 @@ public class Booking extends Base {
 	private Integer equipmentQuantity;
 	private PaymentMethod paymentMethod;
 	private Integer cost;
+	private Boolean hasCheckedIn;
 
 	public UUID getBookingID() {
 		return bookingID;
@@ -76,5 +77,13 @@ public class Booking extends Base {
 
 	public void setCost(Integer cost) {
 		this.cost = cost;
+	}
+
+	public Boolean getHasCheckedIn() {
+		return hasCheckedIn;
+	}
+
+	public void setHasCheckedIn(Boolean hasCheckedIn) {
+		this.hasCheckedIn = hasCheckedIn;
 	}
 }

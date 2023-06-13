@@ -10,7 +10,7 @@ import { cache } from "./cache";
 import { httpLink } from "./http-link";
 
 export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
-	const { getAccessTokenSilently, loginWithRedirect, isLoading } = useAuth0();
+	const { getAccessTokenSilently, isLoading, loginWithRedirect } = useAuth0();
 
 	const addJWTToken = setContext(async () => {
 		try {
@@ -22,7 +22,7 @@ export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
 				},
 			};
 		} catch (error) {
-			loginWithRedirect();
+			await loginWithRedirect();
 			return {};
 		}
 	});

@@ -1,4 +1,5 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import ArrowLeftOnRectangleIcon from "@heroicons/react/24/outline/ArrowLeftOnRectangleIcon";
 import HomeIcon from "@heroicons/react/24/outline/HomeIcon";
@@ -41,9 +42,7 @@ const AccountPage: FC = () => {
 
 	const [getAccountPage, queryResult] = useLazyQuery<QueryData>(GET_ACCOUNT_PAGE);
 
-	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(
-		UPDATE_STUDENT,
-	);
+	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(UPDATE_STUDENT);
 
 	const { data: queryData, loading, called, refetch } = queryResult;
 
@@ -195,12 +194,15 @@ const AccountPage: FC = () => {
 					{bookings ? (
 						bookings.map(booking => (
 							<SessionPageBooking
-								booking={booking as Booking}
-								key={booking.bookingID}
 								hideDelete
+								hideCheckIn
+								hideUpdate
+								hideQuantities
 								hideEquipmentFee
+								key={booking.bookingID}
+								booking={booking as Booking}
 								session={booking.session as Session}
-								onBookingUpdated={() => {}}
+								onBookingUpdated={queryResult.refetch}
 							/>
 						))
 					) : (

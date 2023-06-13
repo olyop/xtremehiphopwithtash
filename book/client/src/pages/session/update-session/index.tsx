@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
@@ -6,15 +6,10 @@ import { FC, Fragment, createElement, useEffect, useState } from "react";
 import Button from "../../../components/button";
 import SessionForm from "../../../components/forms/session-form";
 import Modal from "../../../components/modal";
-import {
-	Session,
-	SessionInput,
-	UpdateSessionMutation,
-	UpdateSessionMutationVariables,
-} from "../../../generated-types";
+import { Session, SessionInput, UpdateSessionMutation, UpdateSessionMutationVariables } from "../../../generated-types";
 import { determineSessionDateLabel } from "../../../helpers";
 import { useModal } from "../../../hooks";
-import { millisecondsToSeconds } from "../../../utils";
+import { centsToDollars, dollarsToCents, millisecondsToSeconds } from "../../../utils";
 import GET_SESSION_PAGE from "../get-session-page.graphql";
 import SessionSubtitle from "../session-subtitle";
 import UPDATE_SESSION from "./update-session.graphql";
@@ -27,8 +22,8 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 	const [updateInput, setUpdateInput] = useState<SessionInput>({
 		title: session.title,
 		notes: session.notes,
-		price: session.price,
-		equipmentFee: session.equipmentFee,
+		price: session.price === null ? null : centsToDollars(session.price),
+		equipmentFee: session.equipmentFee === null ? null : centsToDollars(session.equipmentFee),
 		startTime: session.startTime,
 		endTime: session.endTime,
 		capacityAvailable: session.capacityAvailable,
@@ -47,6 +42,8 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 					...updateInput,
 					startTime: millisecondsToSeconds(updateInput.startTime),
 					endTime: millisecondsToSeconds(updateInput.endTime),
+					price: updateInput.price === null ? null : dollarsToCents(updateInput.price),
+					equipmentFee: updateInput.equipmentFee === null ? null : dollarsToCents(updateInput.equipmentFee),
 				},
 			},
 		});

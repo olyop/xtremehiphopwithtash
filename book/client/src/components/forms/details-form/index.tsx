@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 import { DetailsInput } from "../../../generated-types";
 import Input, { InputOnChange, InputType } from "../../input";
 
-const DetailsForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = true }) => {
+const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false }) => {
 	const handleChange =
 		(key: keyof DetailsInput): InputOnChange =>
 		value => {
@@ -40,32 +40,31 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = true }
 				name="Nick Name"
 				autoComplete="nickname"
 				placeHolder="Nick Name"
-				note="This will be used instead of your first name"
 				value={input.nickName ?? ""}
 				type={InputType.TEXT}
 				onChange={handleChange("nickName")}
+				note={hideNotes ? undefined : "This will be used instead of your first name"}
 			/>
 			<Input
 				id="mobilePhoneNumber"
 				name="Mobile Number"
 				autoComplete="tel"
-				note="We may need to contact you regarding your bookings"
 				value={input.mobilePhoneNumber}
 				type={InputType.MOBILE}
 				onChange={handleChange("mobilePhoneNumber")}
 				placeHolder="Mobile Number"
+				note={hideNotes ? undefined : "We may need to contact you regarding your bookings"}
 			/>
-			{hideEmailAddress || (
-				<Input
-					id="emailAddress"
-					name="Email Address"
-					autoComplete="email"
-					value={input.emailAddress}
-					type={InputType.TEXT}
-					onChange={handleChange("emailAddress")}
-					placeHolder="Email Address"
-				/>
-			)}
+			<Input
+				id="emailAddress"
+				name="Email Address"
+				autoComplete="email"
+				value={input.emailAddress}
+				type={InputType.TEXT}
+				onChange={handleChange("emailAddress")}
+				placeHolder="Email Address"
+				note={hideNotes ? undefined : "Used for receiving booking confirmations"}
+			/>
 			<Input
 				optional
 				id="instagramUsername"
@@ -81,7 +80,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideEmailAddress = true }
 
 interface PropTypes {
 	input: DetailsInput;
-	hideEmailAddress?: boolean;
+	hideNotes?: boolean;
 	onChange: (input: DetailsInput) => void;
 }
 

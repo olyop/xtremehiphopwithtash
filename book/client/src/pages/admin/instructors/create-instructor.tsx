@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
@@ -6,11 +6,7 @@ import { FC, Fragment, createElement, useEffect, useState } from "react";
 import Button from "../../../components/button";
 import InstructorForm from "../../../components/forms/instructor-form";
 import Modal from "../../../components/modal";
-import {
-	CreateInstructorMutation,
-	InstructorInput,
-	MutationCreateInstructorArgs,
-} from "../../../generated-types";
+import { CreateInstructorMutation, InstructorInput, MutationCreateInstructorArgs } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import CREATE_INSTRUCTOR from "./create-instructor.graphql";
 import GET_INSTRUCTORS from "./get-instructors.graphql";
@@ -59,7 +55,7 @@ const AddInstructor: FC = () => {
 				isOpen={isOpen}
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
-				children={<InstructorForm input={input} onChange={setInput} hideEmailAddress={false} />}
+				children={<InstructorForm input={input} onChange={setInput} />}
 				error={error}
 				buttons={
 					<Fragment>

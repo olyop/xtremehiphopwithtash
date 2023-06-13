@@ -1,11 +1,10 @@
 type Query {
-	getStudents: [Student!]!
-	getInstructors: [Instructor!]!
-	getLocations: [Location!]!
-	getCourses: [Course!]!
 	getSessionsInPeriod(input: GetSessionsInput!): [Session!]!
-	getBookings: [Booking!]!
-	getGenders: [String!]!
+
+	getStudents: [Student!]
+	getInstructors: [Instructor!]
+	getLocations: [Location!]
+	getCourses: [Course!]
 
 	getInstructorByID(instructorID: UUID!): Instructor!
 	getCourseByID(courseID: UUID!): Course!

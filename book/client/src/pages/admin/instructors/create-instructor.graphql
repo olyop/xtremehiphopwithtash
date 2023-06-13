@@ -9,6 +9,7 @@ mutation createInstructor($input: InstructorInput!) {
 			lastName
 			nickName
 			mobilePhoneNumber
+			emailAddress
 			instagramUsername
 			createdAt
 		}

@@ -20,6 +20,7 @@ query getAccountPage {
 			equipmentQuantity
 			paymentMethod
 			cost
+			hasCheckedIn
 			session {
 				sessionID
 				title
@@ -44,6 +45,7 @@ query getAccountPage {
 						firstName
 						lastName
 						nickName
+						emailAddress
 						mobilePhoneNumber
 						instagramUsername
 					}
@@ -56,6 +58,7 @@ query getAccountPage {
 					firstName
 					lastName
 					nickName
+					emailAddress
 					mobilePhoneNumber
 					instagramUsername
 				}
