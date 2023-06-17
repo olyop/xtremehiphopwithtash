@@ -133,9 +133,7 @@ public class BookingService {
 			input.bookingQuantity() != 1 &&
 			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : true)
 		) {
-			throw new ResolverException(
-				"When paying with cash you can only book one session and hire one step."
-			);
+			throw new ResolverException("When paying with cash you can only book one session and hire one step.");
 		}
 	}
 

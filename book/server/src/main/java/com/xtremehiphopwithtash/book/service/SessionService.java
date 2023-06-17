@@ -116,19 +116,11 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 		return sessionDAO.selectInTimePeriod(startTime, endTime);
 	}
 
-	public List<Session> retreiveInTimePeriodExcludeSession(
-		Instant startTime,
-		Instant endTime,
-		UUID sessionID
-	) {
+	public List<Session> retreiveInTimePeriodExcludeSession(Instant startTime, Instant endTime, UUID sessionID) {
 		return sessionDAO.selectInTimePeriodExcludeSession(startTime, endTime, sessionID);
 	}
 
-	public List<Session> retreiveInTimePeriodByCourseID(
-		Instant startTime,
-		Instant endTime,
-		UUID courseID
-	) {
+	public List<Session> retreiveInTimePeriodByCourseID(Instant startTime, Instant endTime, UUID courseID) {
 		courseValidator.validateID(courseID);
 
 		return sessionDAO.selectInTimePeriodAndCourseID(startTime, endTime, courseID);

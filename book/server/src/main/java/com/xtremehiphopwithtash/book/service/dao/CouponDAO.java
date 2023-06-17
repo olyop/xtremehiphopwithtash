@@ -19,11 +19,7 @@ public class CouponDAO implements EntityBaseDAO<Coupon, String>, EntityUpdateDAO
 	private final CouponQuery query;
 	private final CouponRowMapper rowMapper;
 
-	public CouponDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		CouponQuery query,
-		CouponRowMapper rowMapper
-	) {
+	public CouponDAO(NamedParameterJdbcTemplate jdbcTemplate, CouponQuery query, CouponRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;

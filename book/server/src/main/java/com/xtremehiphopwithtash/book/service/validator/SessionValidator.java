@@ -89,11 +89,7 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	}
 
 	private void validateSessionInPeriodExcludeSession(UUID sessionID, SessionInput input) {
-		List<Session> sessions = sessionDAO.selectInTimePeriodExcludeSession(
-			input.startTime(),
-			input.endTime(),
-			sessionID
-		);
+		List<Session> sessions = sessionDAO.selectInTimePeriodExcludeSession(input.startTime(), input.endTime(), sessionID);
 
 		if (!sessions.isEmpty()) {
 			throw new ResolverException("Session already exists in time period");

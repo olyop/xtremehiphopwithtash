@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 
 export enum Breakpoint {
-	SMALL = 0,
-	MEDIUM = 1,
-	LARGE = 2,
+	TINY,
+	SMALL,
+	MEDIUM,
+	LARGE,
 }
 
 const determineBreakpoint = (): Breakpoint => {
-	if (window.innerWidth < 768) {
+	if (window.innerWidth < 400) {
+		return Breakpoint.TINY;
+	} else if (window.innerWidth < 768) {
 		return Breakpoint.SMALL;
 	} else if (window.innerWidth < 1024) {
 		return Breakpoint.MEDIUM;

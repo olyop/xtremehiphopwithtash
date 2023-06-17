@@ -10,9 +10,7 @@ const BackButton: FC<PropTypes> = ({ onClick, invisible }) => (
 		onClick={onClick}
 		ariaLabel="Go Back"
 		leftIcon={className => <ArrowSmallLeftIcon className={className} />}
-		className={`items-center gap-1 md:gap-4 h-full rounded-none ${
-			invisible ? "invisible" : "visible"
-		}`}
+		className={`items-center gap-1 md:gap-4 h-full rounded-none ${invisible ? "invisible" : "visible"}`}
 	/>
 );
 

@@ -10,11 +10,7 @@ const className = "!shadow-xl !hover:shadow-2xl";
 
 const AccountButton: FC = () => {
 	const breakpoint = useBreakpoint();
-	const { user, isAuthenticated, loginWithRedirect } = useAuth0();
-
-	const handleLogin = () => {
-		void loginWithRedirect();
-	};
+	const { user, isAuthenticated } = useAuth0();
 
 	const userHasImage = user?.picture !== undefined;
 
@@ -27,21 +23,11 @@ const AccountButton: FC = () => {
 				className={userHasImage ? `!p-0 ${className}` : className}
 				leftIcon={c => (userHasImage ? undefined : <UserCircleIcon className={c} />)}
 				childrenNode={
-					userHasImage && (
-						<img src={user.picture} alt="User Profile" className="w-full h-full rounded-full" />
-					)
+					userHasImage && <img src={user.picture} alt="User Profile" className="w-full h-full rounded-full" />
 				}
 			/>
 		</Link>
-	) : (
-		<Button
-			text="Log In"
-			ariaLabel="Log In"
-			onClick={handleLogin}
-			className={`${className} ${breakpoint === Breakpoint.SMALL ? "!p-2 !gap-1" : ""}`}
-			leftIcon={c => <UserCircleIcon className={c} />}
-		/>
-	);
+	) : null;
 };
 
 export default AccountButton;

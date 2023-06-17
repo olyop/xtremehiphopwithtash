@@ -2,10 +2,7 @@ import { MutationResult } from "@apollo/client/react/types/types";
 import { FC, createElement, useState } from "react";
 
 import LocationInput from "../../../components/forms/location-form";
-import {
-	LocationInput as LocationInputType,
-	Location as LocationType,
-} from "../../../generated-types";
+import { LocationInput as LocationInputType, Location as LocationType } from "../../../generated-types";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapLocationToInput } from "../map-entity-to-input";
 
@@ -26,9 +23,7 @@ const Location: FC<PropTypes> = ({
 			description={location.address}
 			typeName={location.__typename}
 			isLargeEditModal
-			editModalContent={
-				<LocationInput input={input} onChange={setInput} coordinates={location.coordinates} />
-			}
+			editModalContent={<LocationInput input={input} onChange={setInput} coordinates={location.coordinates} />}
 			onEdit={onUpdate(input)}
 			onDelete={onDelete}
 			isUpdating={isUpdating}

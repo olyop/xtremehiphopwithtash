@@ -2,7 +2,7 @@ import { Auth0Provider, AuthorizationParams } from "@auth0/auth0-react";
 import { FC, PropsWithChildren, createElement } from "react";
 
 const authorizationParams: AuthorizationParams = {
-	scope: "openid profile email",
+	scope: "openid profile email phone",
 	redirect_uri: window.location.origin,
 	audience: import.meta.env.VITE_AUTH0_API_AUDIENCE,
 };

@@ -21,11 +21,7 @@ const ShareButton: FC<PropTypes> = ({ url, isSessionInPast }) => {
 			text={shareText}
 			className="!h-14 items-center justify-center rounded-xl"
 			leftIcon={className =>
-				hasShared ? (
-					<CheckIcon className={className} />
-				) : (
-					<ShareIcon className={`${className} mr-0.5 h-7 w-7`} />
-				)
+				hasShared ? <CheckIcon className={className} /> : <ShareIcon className={`${className} mr-0.5 h-7 w-7`} />
 			}
 		/>
 	);

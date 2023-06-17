@@ -1,22 +1,17 @@
 import {
 	Children,
-	cloneElement,
-	createElement,
 	FC,
 	Fragment,
-	isValidElement,
 	PropsWithChildren,
+	cloneElement,
+	createElement,
+	isValidElement,
 	useEffect,
 	useRef,
 	useState,
 } from "react";
 
-export const Map: FC<PropsWithChildren<PropTypes>> = ({
-	onClick,
-	children,
-	className,
-	...options
-}) => {
+export const Map: FC<PropsWithChildren<PropTypes>> = ({ onClick, children, className, ...options }) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const [map, setMap] = useState<google.maps.Map>();
 

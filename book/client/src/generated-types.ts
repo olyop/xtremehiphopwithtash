@@ -503,35 +503,6 @@ export type GetSessionFormDataQuery = {
 	> | null;
 } & { readonly __typename: "Query" };
 
-export type CreateSessionMutationVariables = Exact<{
-	input: SessionInput;
-}>;
-
-export type CreateSessionMutation = {
-	readonly createSession: { readonly sessionID: string } & { readonly __typename: "Session" };
-} & { readonly __typename: "Mutation" };
-
-export type GetSessionsInPeriodQueryVariables = Exact<{
-	input: GetSessionsInput;
-}>;
-
-export type GetSessionsInPeriodQuery = {
-	readonly getSessionsInPeriod: ReadonlyArray<
-		{
-			readonly sessionID: string;
-			readonly title: string;
-			readonly startTime: number;
-			readonly endTime: number;
-			readonly price: number | null;
-			readonly capacityRemaining: number | null;
-			readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
-			readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
-				readonly __typename: "Course";
-			};
-		} & { readonly __typename: "Session" }
-	>;
-} & { readonly __typename: "Query" };
-
 export type GetAccountPageQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetAccountPageQuery = {
@@ -1034,6 +1005,35 @@ export type VerifyCouponQueryVariables = Exact<{
 }>;
 
 export type VerifyCouponQuery = { readonly verifyCoupon: string | null } & { readonly __typename: "Query" };
+
+export type CreateSessionMutationVariables = Exact<{
+	input: SessionInput;
+}>;
+
+export type CreateSessionMutation = {
+	readonly createSession: { readonly sessionID: string } & { readonly __typename: "Session" };
+} & { readonly __typename: "Mutation" };
+
+export type GetSessionsInPeriodQueryVariables = Exact<{
+	input: GetSessionsInput;
+}>;
+
+export type GetSessionsInPeriodQuery = {
+	readonly getSessionsInPeriod: ReadonlyArray<
+		{
+			readonly sessionID: string;
+			readonly title: string;
+			readonly startTime: number;
+			readonly endTime: number;
+			readonly price: number | null;
+			readonly capacityRemaining: number | null;
+			readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
+			readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
+				readonly __typename: "Course";
+			};
+		} & { readonly __typename: "Session" }
+	>;
+} & { readonly __typename: "Query" };
 
 export type GetSessionBookingsQueryVariables = Exact<{
 	sessionID: Scalars["UUID"]["input"];

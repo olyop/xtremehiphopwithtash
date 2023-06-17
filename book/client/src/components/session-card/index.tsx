@@ -5,12 +5,7 @@ import { Session } from "../../generated-types";
 import SessionStartTime from "../session-start-end-time";
 import SessionCardChips from "./chips";
 
-const SessionCard: FC<PropTypes> = ({
-	session,
-	className,
-	imageClassName,
-	disableLink = false,
-}) => {
+const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disableLink = false }) => {
 	const content = (
 		<div
 			data-id={session.sessionID}
@@ -27,9 +22,7 @@ const SessionCard: FC<PropTypes> = ({
 			<img
 				src={session.course.photo}
 				alt={session.course.name}
-				className={`block object-cover object-top w-full h-[2.75rem] rounded-t-lg select-none ${
-					imageClassName ?? ""
-				}`}
+				className={`block object-cover object-top w-full h-[2.75rem] rounded-t-lg select-none ${imageClassName ?? ""}`}
 			/>
 			<div className="flex flex-col px-2 pb-1 pt-0.5 justify-between overflow-hidden">
 				<h3 className="font-bold whitespace-nowrap">{session.title}</h3>

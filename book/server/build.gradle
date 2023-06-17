@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'com.stripe:stripe-java:22.19.0'
 	implementation 'com.graphql-java:graphql-java-extended-scalars:20.0'
 	implementation 'com.graphql-java:graphql-java-extended-validation:20.0'

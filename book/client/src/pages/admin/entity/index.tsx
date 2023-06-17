@@ -56,11 +56,7 @@ const AdminEntity: FC<PropTypes> = ({
 								ariaLabel={`Edit ${typeName}`}
 								onClick={openEditModal}
 								leftIcon={className =>
-									isUpdating ? (
-										<ArrowPathIcon className={className} />
-									) : (
-										<PencilIcon className={className} />
-									)
+									isUpdating ? <ArrowPathIcon className={className} /> : <PencilIcon className={className} />
 								}
 							/>
 							<Modal
@@ -100,11 +96,7 @@ const AdminEntity: FC<PropTypes> = ({
 								ariaLabel={`Delete ${typeName}`}
 								onClick={openDeleteModal}
 								leftIcon={className =>
-									isDeleting ? (
-										<ArrowPathIcon className={className} />
-									) : (
-										<TrashIcon className={className} />
-									)
+									isDeleting ? <ArrowPathIcon className={className} /> : <TrashIcon className={className} />
 								}
 							/>
 							<Modal

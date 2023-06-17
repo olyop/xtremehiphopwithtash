@@ -6,10 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class InstructorQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(
-		SQLColumnNamesUtil.INSTRUCTOR,
-		"instructor"
-	);
+	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.INSTRUCTOR, "instructor");
 
 	public final String SELECT = String.format(
 		"SELECT %s FROM instructor ORDER BY instructor.created_at DESC;",
@@ -31,8 +28,7 @@ public class InstructorQuery {
 		columnNames
 	);
 
-	public final String EXISTS_BY_ID =
-		"SELECT EXISTS (SELECT 1 FROM instructor WHERE instructor_id = :instructorID);";
+	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM instructor WHERE instructor_id = :instructorID);";
 
 	public final String DELETE_BY_ID = "DELETE FROM instructor WHERE instructor_id = :instructorID;";
 

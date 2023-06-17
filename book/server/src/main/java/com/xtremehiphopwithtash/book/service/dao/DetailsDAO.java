@@ -13,18 +13,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DetailsDAO
-	implements EntityBaseDAO<Details, UUID>, EntityUpdateDAO<Details, UUID>, EntityDeleteDAO<UUID> {
+public class DetailsDAO implements EntityBaseDAO<Details, UUID>, EntityUpdateDAO<Details, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final DetailsQuery query;
 	private final DetailsRowMapper rowMapper;
 
-	public DetailsDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		DetailsQuery query,
-		DetailsRowMapper rowMapper
-	) {
+	public DetailsDAO(NamedParameterJdbcTemplate jdbcTemplate, DetailsQuery query, DetailsRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;

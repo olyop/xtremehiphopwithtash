@@ -25,9 +25,7 @@ public class CourseRowMapper implements RowMapper<Course> {
 		course.setDefaultEquipmentFee(MapRowUtil.mapInteger(rs.getInt("default_equipment_fee")));
 		course.setDefaultDuration(rs.getInt("default_duration"));
 		course.setDefaultCapacityAvailable(rs.getInt("default_capacity_available"));
-		course.setDefaultEquipmentAvailable(
-			MapRowUtil.mapInteger(rs.getInt("default_equipment_available"))
-		);
+		course.setDefaultEquipmentAvailable(MapRowUtil.mapInteger(rs.getInt("default_equipment_available")));
 		course.setDefaultLocationID(MapRowUtil.mapUUID(rs.getString("default_location_id")));
 
 		course.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));

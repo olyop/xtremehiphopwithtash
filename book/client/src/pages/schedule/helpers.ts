@@ -1,10 +1,6 @@
 import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
-import {
-	GetSessionsInPeriodQuery,
-	QueryGetSessionsInPeriodArgs,
-	Session,
-} from "../../generated-types";
+import { GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs, Session } from "../../generated-types";
 import { Breakpoint } from "../../hooks";
 import GET_SESSIONS_IN_PERIOD from "./get-sessions-in-period.graphql";
 
@@ -102,7 +98,7 @@ export const isInPast = (date: Date): boolean => {
 };
 
 export const determineDecrementAction = (breakpoint: Breakpoint) => {
-	if (breakpoint === Breakpoint.SMALL) {
+	if (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) {
 		return minusTwoDays;
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return minusThreeDays;
@@ -114,7 +110,7 @@ export const determineDecrementAction = (breakpoint: Breakpoint) => {
 };
 
 export const determineIncrementAction = (breakpoint: Breakpoint) => {
-	if (breakpoint === Breakpoint.SMALL) {
+	if (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) {
 		return addTwoDays;
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return addThreeDays;

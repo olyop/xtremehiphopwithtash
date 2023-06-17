@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SessionPageBooking from "../../components/booking";
 import Button from "../../components/button";
 import DetailsForm from "../../components/forms/details-form";
+import Loading from "../../components/loading";
 import Modal from "../../components/modal";
 import {
 	Booking,
@@ -103,14 +104,8 @@ const AccountPage: FC = () => {
 
 	if (!queryData || !user) {
 		return (
-			<div>
-				<p className="p-4">Loading...</p>
-				<Button
-					text="Log Out"
-					ariaLabel="Log Out"
-					onClick={handleLogOut}
-					leftIcon={className => <ArrowLeftOnRectangleIcon className={className} />}
-				/>
+			<div className="h-content-height w-full flex items-center justify-center">
+				<Loading />
 			</div>
 		);
 	}

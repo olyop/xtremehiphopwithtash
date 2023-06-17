@@ -3,6 +3,9 @@ import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
+import Button from "../../../components/button";
+import SessionInput from "../../../components/forms/session-form";
+import Modal from "../../../components/modal";
 import {
 	CreateSessionMutation,
 	CreateSessionMutationVariables,
@@ -10,9 +13,6 @@ import {
 } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import { dollarsToCents, millisecondsToSeconds } from "../../../utils";
-import Button from "../../button";
-import SessionInput from "../../forms/session-form";
-import Modal from "../../modal";
 import { Day } from "../types";
 import CREATE_SESSION from "./create-session.graphql";
 import { initialCourseDefaultInput, initialInput } from "./initital-input";

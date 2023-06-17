@@ -5,6 +5,8 @@ import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import FormError from "../../components/form-error";
+import FullscreenSpinner from "../../components/fullscreen-spinner/fullscreen-spinner";
+import Loading from "../../components/loading";
 import {
 	BookingCost,
 	BookingInput,
@@ -21,9 +23,7 @@ import PaymentCoupon from "./coupon";
 import CREATE_BOOKING from "./create-booking.graphql";
 import GET_PAYMENT_SCREEN from "./get-payment-screen-data.graphql";
 import PaymentOverview from "./overview";
-import PayingSpinner from "./paying-spinner";
 import PaymentButton from "./payment-button";
-import PaymentLoading from "./payment-loading";
 import PaymentMethodForm from "./payment-method-form";
 import { mapSearchParamsToBookingInput, syncSearchParams } from "./search-paramaters";
 import PaymentPageStripe from "./stripe";
@@ -112,7 +112,11 @@ const PaymentPage: FC = () => {
 		!isAuthenticated || user === null || bookingInput === null || bookingCost === null || session === null;
 
 	if (showSpinner) {
-		return <PaymentLoading />;
+		return (
+			<div className="h-content-height w-full flex items-center justify-center">
+				<Loading />
+			</div>
+		);
 	}
 
 	const handleCreateBooking = () => {
@@ -127,7 +131,7 @@ const PaymentPage: FC = () => {
 
 	return (
 		<Page className="h-full flex flex-col gap-12 pb-16">
-			<PayingSpinner isPaying={isPaying} />
+			<FullscreenSpinner isLoading={isPaying} />
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
 			<div className="flex flex-col gap-12 px-4 pb-52">
 				{bookingCost.bookingCost === 0 || (

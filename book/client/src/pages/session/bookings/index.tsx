@@ -2,12 +2,7 @@ import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import { FC, Fragment, createElement, useEffect } from "react";
 
 import SessionPageBooking from "../../../components/booking";
-import {
-	Booking,
-	GetSessionBookingsQuery,
-	GetSessionBookingsQueryVariables,
-	Session,
-} from "../../../generated-types";
+import { Booking, GetSessionBookingsQuery, GetSessionBookingsQueryVariables, Session } from "../../../generated-types";
 import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
 
 const SessionBookings: FC<PropTypes> = ({ session }) => {

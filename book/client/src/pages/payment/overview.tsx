@@ -32,7 +32,7 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 			<h5 className="font-bold text-3xl mb-1">Price</h5>
 			<div
 				className={`grid grid-rows-[1fr,${input.equipmentQuantity ? "1fr" : ""},${input.couponCode ? "1fr" : ""},${
-					input.paymentMethod === PaymentMethod[PaymentMethod.CARD] ? "1fr,1fr" : ""
+					input.paymentMethod === PaymentMethod[PaymentMethod.CARD] ? "1fr" : ""
 				},18px,1fr] grid-cols-[3fr,1fr] font-mono text-lg select-none`}
 			>
 				<p className="text-sm truncate">
@@ -54,20 +54,16 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 						<p className="text-sm truncate">1 x Coupon ({bookingCost.couponDiscountPercentage}%)</p>
 						<p className="text-sm justify-self-end">
 							<Fragment>-</Fragment>
-							{currencyDollarsFormatter.format(centsToDollars(bookingCost.couponDiscount))}
+							{currencyDollarsFormatter.format(bookingCost.couponDiscount / 100)}
 						</p>
 					</Fragment>
 				)}
 				{input.paymentMethod === PaymentMethod.CARD && (
 					<Fragment>
-						<p className="text-sm truncate">1 x Surcharge ({(bookingCost.cardSurchargeRatio * 100).toFixed(2)}%)</p>
+						<p className="text-sm truncate">1 x Card Processing Fee</p>
 						<p className="text-sm justify-self-end">
-							{currencyDollarsFormatter.format(bookingCost.cardSurchargeWithoutFee / 100)}
+							{currencyDollarsFormatter.format(bookingCost.cardSurcharge / 100)}
 						</p>
-						<p className="text-sm truncate">
-							1 x Transaction Fee ({currencyDollarsFormatter.format(bookingCost.cardFee / 100)})
-						</p>
-						<p className="text-sm justify-self-end">{currencyDollarsFormatter.format(bookingCost.cardFee / 100)}</p>
 					</Fragment>
 				)}
 				<div className="h-[2px] w-full bg-gray-500 my-[8px]" />

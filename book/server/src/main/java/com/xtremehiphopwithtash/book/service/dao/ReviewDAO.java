@@ -9,8 +9,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ReviewDAO
-	implements EntityBaseDAO<Review, UUID>, EntityUpdateDAO<Review, UUID>, EntityDeleteDAO<UUID> {
+public class ReviewDAO implements EntityBaseDAO<Review, UUID>, EntityUpdateDAO<Review, UUID>, EntityDeleteDAO<UUID> {
 
 	@Override
 	public Review selectByID(UUID id) {

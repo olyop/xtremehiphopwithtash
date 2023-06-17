@@ -118,16 +118,10 @@ public class CouponService {
 	private boolean hasCodeBeenUsed(String code) {
 		Coupon coupon = couponDAO.selectByID(code);
 
-		if (
-			coupon.getUsedAt() == null &&
-			coupon.getUsedByStudentID() == null &&
-			coupon.getUsedOnBookingID() == null
-		) {
+		if (coupon.getUsedAt() == null && coupon.getUsedByStudentID() == null && coupon.getUsedOnBookingID() == null) {
 			return false;
 		} else if (
-			coupon.getUsedAt() != null &&
-			coupon.getUsedByStudentID() != null &&
-			coupon.getUsedOnBookingID() != null
+			coupon.getUsedAt() != null && coupon.getUsedByStudentID() != null && coupon.getUsedOnBookingID() != null
 		) {
 			return true;
 		} else {

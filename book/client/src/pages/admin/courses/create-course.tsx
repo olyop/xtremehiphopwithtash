@@ -6,11 +6,7 @@ import { FC, Fragment, createElement, useEffect, useState } from "react";
 import Button from "../../../components/button";
 import CourseForm from "../../../components/forms/course-form";
 import Modal from "../../../components/modal";
-import {
-	CourseInput,
-	CreateCourseMutation,
-	MutationCreateCourseArgs,
-} from "../../../generated-types";
+import { CourseInput, CreateCourseMutation, MutationCreateCourseArgs } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import CREATE_LOCATION from "./create-course.graphql";
 import GET_COURSES from "./get-courses.graphql";

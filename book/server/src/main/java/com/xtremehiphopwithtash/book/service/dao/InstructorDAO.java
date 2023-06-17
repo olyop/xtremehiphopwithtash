@@ -14,18 +14,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class InstructorDAO
-	implements
-		EntityBaseDAO<Instructor, UUID>, EntityUpdateDAO<Instructor, UUID>, EntityDeleteDAO<UUID> {
+	implements EntityBaseDAO<Instructor, UUID>, EntityUpdateDAO<Instructor, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final InstructorQuery query;
 	private final InstructorRowMapper rowMapper;
 
-	public InstructorDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		InstructorQuery query,
-		InstructorRowMapper rowMapper
-	) {
+	public InstructorDAO(NamedParameterJdbcTemplate jdbcTemplate, InstructorQuery query, InstructorRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;

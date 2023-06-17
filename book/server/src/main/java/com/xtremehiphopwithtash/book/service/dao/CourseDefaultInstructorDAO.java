@@ -11,8 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CourseDefaultInstructorDAO
-	implements EntityRelationshipDAO<CourseDefaultInstructor, UUID, Short> {
+public class CourseDefaultInstructorDAO implements EntityRelationshipDAO<CourseDefaultInstructor, UUID, Short> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final CourseDefaultInstructorQuery query;

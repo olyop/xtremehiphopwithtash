@@ -1,11 +1,11 @@
 import { FC, createElement } from "react";
 import { RouteObject, useLocation, useRoutes } from "react-router-dom";
 
-import Schedule from "./components/schedule";
 import AccountPage from "./pages/account";
 import AdminPage from "./pages/admin";
 import PaymentPage from "./pages/payment";
 import PaymentSuccessPage from "./pages/payment-success";
+import Schedule from "./pages/schedule";
 import SessionPage from "./pages/session";
 
 const routes: RouteObject[] = [

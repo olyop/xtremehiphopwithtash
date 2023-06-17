@@ -40,21 +40,21 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 		<div
 			className={`inset-0 w-screen h-screen fixed z-[100] transition-opacity overflow-hidden ${
 				isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-			} ${className || ""}`}
+			} ${className ?? ""}`}
 		>
 			<div
 				aria-hidden
 				onClick={disableCloseOnEscape ? undefined : onClose}
 				className={`inset-0 cursor-pointer absolute z-[110] bg-gray-900 transition-opacity ${
 					isOpen ? "opacity-50 visible" : "opacity-0 invisible"
-				} ${backgroundClassName || ""}`}
+				} ${backgroundClassName ?? ""}`}
 			/>
 			{isOpen && (
 				<div
 					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-4 md:top-1/2 left-1/2 z-[120] absolute ${
 						isLarge ? "md:w-booking-modal lg:w-booking-modal" : "md:w-96 lg:w-96"
 					} w-[calc(100vw_-_2rem)] max-h-[calc(100vh_-_6rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
-						modalClassName || ""
+						modalClassName ?? ""
 					}`}
 				>
 					{!disableCloseOnEscape && !hideCloseButton && onClose && title && (
@@ -103,7 +103,7 @@ interface ModalPropTypes {
 	errorClassName?: string;
 
 	buttons?: ReactNode;
-	className?: string;
+	className?: string | undefined;
 	modalClassName?: string;
 	contentClassName?: string;
 	buttonClassName?: string;

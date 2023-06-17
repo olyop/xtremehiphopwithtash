@@ -30,12 +30,10 @@ public class SessionInstructorQuery {
 		columnNames
 	);
 
-	public final String DELETE_BY_ID =
-		"DELETE FROM session_instructor WHERE session_id = :sessionID AND index = :index;";
+	public final String DELETE_BY_ID = "DELETE FROM session_instructor WHERE session_id = :sessionID AND index = :index;";
 
 	public final String EXISTS_BY_ID =
 		"SELECT EXISTS (SELECT 1 FROM session_instructor WHERE session_id = :sessionID AND index = :index);";
 
-	public final String DELETE_BY_SESSION_ID =
-		"DELETE FROM session_instructor WHERE session_id = :sessionID;";
+	public final String DELETE_BY_SESSION_ID = "DELETE FROM session_instructor WHERE session_id = :sessionID;";
 }

@@ -51,9 +51,7 @@ export const syncSearchParams = <T>(
 	});
 };
 
-export const mapSearchParamsToBookingInput = (
-	searchParams: URLSearchParams,
-): BookingInput | null => {
+export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): BookingInput | null => {
 	const sessionIDParam = searchParams.get("sessionID");
 	const notesParam = searchParams.get("notes");
 	const couponParam = searchParams.get("coupon");

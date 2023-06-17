@@ -15,22 +15,15 @@ export const determineSessionDateLabel = ({ startTime }: Pick<Session, "startTim
 	const dayName = date.toLocaleDateString(undefined, { weekday: "short" });
 
 	const dateLabel =
-		date.getFullYear() === currentYear
-			? thisYearDateFormatter.format(date)
-			: fullYearDateFormatter.format(date);
+		date.getFullYear() === currentYear ? thisYearDateFormatter.format(date) : fullYearDateFormatter.format(date);
 
 	return `${dayName} — ${dateLabel}`;
 };
 
-export const determineDetailsFullName = ({
-	firstName,
-	lastName,
-}: Pick<Details, "firstName" | "lastName">) => `${firstName} ${lastName}`;
+export const determineDetailsFullName = ({ firstName, lastName }: Pick<Details, "firstName" | "lastName">) =>
+	`${firstName} ${lastName}`;
 
-export const isSessionInProgress = ({
-	startTime,
-	endTime,
-}: Pick<Session, "startTime" | "endTime">) => {
+export const isSessionInProgress = ({ startTime, endTime }: Pick<Session, "startTime" | "endTime">) => {
 	const now = new Date();
 	const time = now.getTime();
 	return startTime <= time && time <= endTime;

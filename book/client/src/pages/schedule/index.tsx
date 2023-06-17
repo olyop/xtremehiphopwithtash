@@ -1,43 +1,37 @@
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
+import { useAuth0 } from "@auth0/auth0-react";
 import { FC, createElement, useEffect, useRef, useState } from "react";
 
 import { useBreakpoint, useHasMounted } from "../../hooks";
 import Controls from "./controls";
 import Days from "./days";
-import { determineStartAndEndDate, generateDays, generateDaysWithSessions } from "./generate";
-import {
-	determineDecrementAction,
-	determineIncrementAction,
-	getStartingTime,
-	setStartingTime,
-} from "./helpers";
+import { determineStartAndEndDate, generateDays, generateDaysWithSessions as generateSchedule } from "./generate";
+import { determineDecrementAction, determineIncrementAction, getStartingTime, setStartingTime } from "./helpers";
 import { Day as DayType } from "./types";
 import WeekDays from "./week-days";
 
 const Schedule: FC = () => {
-	const loading = useRef(false);
 	const apollo = useApolloClient();
 	const breakpoint = useBreakpoint();
 	const hasMounted = useHasMounted();
+	const { isAuthenticated } = useAuth0();
 	const relativeDate = useRef(Date.now());
 
+	const [loading, setLoading] = useState(false);
 	const [days, setDays] = useState<DayType[]>(() => {
-		const [startingDate, endingDate] = determineStartAndEndDate(
-			new Date(getStartingTime()),
-			breakpoint,
-		);
+		const [startingDate, endingDate] = determineStartAndEndDate(new Date(getStartingTime()), breakpoint);
 
 		return generateDays(breakpoint, startingDate, endingDate, []);
 	});
 
 	const handleSchedule = async (date: Date) => {
-		loading.current = true;
+		setLoading(true);
 		const unixTime = date.getTime();
 		relativeDate.current = unixTime;
 		setStartingTime(unixTime);
-		const schedule = await generateDaysWithSessions(apollo)(unixTime, breakpoint);
+		const schedule = await generateSchedule(apollo)(unixTime, breakpoint);
 		setDays(schedule);
-		loading.current = false;
+		setLoading(false);
 	};
 
 	const handleResetClick = () => {
@@ -63,14 +57,14 @@ const Schedule: FC = () => {
 	};
 
 	useEffect(() => {
-		if (hasMounted) {
+		if (hasMounted && isAuthenticated) {
 			const date = new Date(getStartingTime());
 			void handleSchedule(date);
 		}
-	}, [breakpoint]);
+	}, [breakpoint, isAuthenticated]);
 
 	useEffect(() => {
-		if (!loading.current) {
+		if (!loading && isAuthenticated) {
 			const date = new Date(getStartingTime());
 			void handleSchedule(date);
 		}
@@ -83,6 +77,7 @@ const Schedule: FC = () => {
 				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
 			</div>
 			<Controls
+				loading={loading}
 				breakpoint={breakpoint}
 				onReset={handleResetClick}
 				onBackOneWeek={handleBackOneWeekClick}

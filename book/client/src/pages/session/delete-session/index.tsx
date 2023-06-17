@@ -6,11 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import Button from "../../../components/button";
 import Modal from "../../../components/modal";
-import {
-	DeleteSessionMutation,
-	DeleteSessionMutationVariables,
-	Session,
-} from "../../../generated-types";
+import { DeleteSessionMutation, DeleteSessionMutationVariables, Session } from "../../../generated-types";
 import { useModal } from "../../../hooks";
 import SessionSubtitle from "../session-subtitle";
 import DELETE_SESSION from "./delete-session.graphql";
@@ -52,9 +48,7 @@ const DeleteSession: FC<PropTypes> = ({ session }) => {
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
 				icon={className => <TrashIcon className={className} />}
-				subTitle={
-					<SessionSubtitle startTime={session.startTime} endTime={session.endTime} label="" />
-				}
+				subTitle={<SessionSubtitle startTime={session.startTime} endTime={session.endTime} label="" />}
 				children={<p>Are you sure?</p>}
 				error={error}
 				buttons={

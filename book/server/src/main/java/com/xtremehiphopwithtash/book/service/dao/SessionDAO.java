@@ -14,18 +14,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class SessionDAO
-	implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO<Session, UUID>, EntityDeleteDAO<UUID> {
+public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO<Session, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final SessionQuery query;
 	private final SessionRowMapper rowMapper;
 
-	public SessionDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		SessionQuery query,
-		SessionRowMapper rowMapper
-	) {
+	public SessionDAO(NamedParameterJdbcTemplate jdbcTemplate, SessionQuery query, SessionRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = rowMapper;
@@ -121,11 +116,7 @@ public class SessionDAO
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 
-	public List<Session> selectInTimePeriodExcludeSession(
-		Instant startTime,
-		Instant endTime,
-		UUID sessionID
-	) {
+	public List<Session> selectInTimePeriodExcludeSession(Instant startTime, Instant endTime, UUID sessionID) {
 		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_EXCLUDE_SESSION;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
@@ -136,11 +127,7 @@ public class SessionDAO
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 
-	public List<Session> selectInTimePeriodAndCourseID(
-		Instant startTime,
-		Instant endTime,
-		UUID courseID
-	) {
+	public List<Session> selectInTimePeriodAndCourseID(Instant startTime, Instant endTime, UUID courseID) {
 		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_AND_COURSE_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();

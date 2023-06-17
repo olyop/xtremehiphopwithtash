@@ -47,8 +47,7 @@ public class DetailsQuery {
 		columnNames
 	);
 
-	public final String EXISTS_BY_ID =
-		"SELECT EXISTS(SELECT 1 FROM details WHERE details_id = :detailsID);";
+	public final String EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM details WHERE details_id = :detailsID);";
 
 	public final String DELETE_BY_ID = "DELETE FROM details WHERE details_id = :detailsID;";
 

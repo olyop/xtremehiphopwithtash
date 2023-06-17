@@ -10,10 +10,7 @@ public class CourseQuery {
 
 	public final String SELECT = String.format("SELECT %s FROM course;", columnNames);
 
-	public final String SELECT_BY_ID = String.format(
-		"SELECT %s FROM course WHERE course_id = :courseID;",
-		columnNames
-	);
+	public final String SELECT_BY_ID = String.format("SELECT %s FROM course WHERE course_id = :courseID;", columnNames);
 
 	public final String INSERT = String.format(
 		"""
@@ -65,8 +62,7 @@ public class CourseQuery {
 		columnNames
 	);
 
-	public final String EXISTS_BY_ID =
-		"SELECT EXISTS (SELECT 1 FROM course WHERE course_id = :courseID);";
+	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM course WHERE course_id = :courseID);";
 
 	public final String EXISTS_BY_NAME = "SELECT EXISTS (SELECT 1 FROM course WHERE name = :name);";
 

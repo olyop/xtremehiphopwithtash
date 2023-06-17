@@ -8,9 +8,7 @@ const InstructorsChip: FC<PropTypes> = ({ instructors }) => (
 		{instructors.map((instructor, index) => (
 			<Fragment key={instructor.instructorID}>
 				{index > 0 && (
-					<span className="mb-0.5 mx-[0.4rem] text-gray-500">
-						{index === instructors.length - 1 ? "and" : ","}
-					</span>
+					<span className="mb-0.5 mx-[0.4rem] text-gray-500">{index === instructors.length - 1 ? "and" : ","}</span>
 				)}
 				<InstructorChip instructor={instructor} />
 			</Fragment>

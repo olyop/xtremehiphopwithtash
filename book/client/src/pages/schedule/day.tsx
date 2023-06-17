@@ -1,7 +1,7 @@
 import { FC, createElement, useContext } from "react";
 
+import SessionCard from "../../components/session-card";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
-import SessionCard from "../session-card";
 import CreateSession from "./create-session";
 import { Day as DayType } from "./types";
 
@@ -15,12 +15,8 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 			}`}
 		>
 			<div className="flex justify-between">
-				<p className="text-sm select-none justify-self-center whitespace-nowrap overflow-hidden">
-					{day.label}
-				</p>
-				{isAdministrator && (day.isToday || !day.isInPast) && (
-					<CreateSession day={day} onSubmit={onSessionUpdate} />
-				)}
+				<p className="text-sm select-none justify-self-center whitespace-nowrap overflow-hidden">{day.label}</p>
+				{isAdministrator && (day.isToday || !day.isInPast) && <CreateSession day={day} onSubmit={onSessionUpdate} />}
 			</div>
 			{day.sessions ? (
 				<div className="flex flex-col gap-1">

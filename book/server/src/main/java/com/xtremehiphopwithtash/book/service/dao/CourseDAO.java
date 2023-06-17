@@ -13,18 +13,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CourseDAO
-	implements EntityBaseDAO<Course, UUID>, EntityUpdateDAO<Course, UUID>, EntityDeleteDAO<UUID> {
+public class CourseDAO implements EntityBaseDAO<Course, UUID>, EntityUpdateDAO<Course, UUID>, EntityDeleteDAO<UUID> {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final CourseQuery query;
 	private final CourseRowMapper rowMapper;
 
-	public CourseDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		CourseQuery courseQuery,
-		CourseRowMapper rowMapper
-	) {
+	public CourseDAO(NamedParameterJdbcTemplate jdbcTemplate, CourseQuery courseQuery, CourseRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = courseQuery;
 		this.rowMapper = rowMapper;

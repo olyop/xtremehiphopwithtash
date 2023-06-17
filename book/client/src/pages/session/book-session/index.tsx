@@ -106,12 +106,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 				icon={className => <CalendarIcon className={className} />}
 				children={
 					<Fragment>
-						<SessionCard
-							session={session}
-							disableLink
-							className="!h-36 shadow-none mb-2"
-							imageClassName="!h-20"
-						/>
+						<SessionCard session={session} disableLink className="!h-36 shadow-none mb-2" imageClassName="!h-20" />
 						<BookingForm session={session} input={input} onChange={setInput} />
 					</Fragment>
 				}

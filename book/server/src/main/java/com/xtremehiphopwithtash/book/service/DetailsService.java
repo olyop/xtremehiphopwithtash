@@ -17,11 +17,7 @@ public class DetailsService implements EntityServiceInter<Details, DetailsInput,
 	private final DetailsInputMapper inputMapper;
 	private final DetailsValidator validator;
 
-	public DetailsService(
-		DetailsDAO detailsDAO,
-		DetailsInputMapper inputMapper,
-		DetailsValidator validator
-	) {
+	public DetailsService(DetailsDAO detailsDAO, DetailsInputMapper inputMapper, DetailsValidator validator) {
 		this.detailsDAO = detailsDAO;
 		this.inputMapper = inputMapper;
 		this.validator = validator;

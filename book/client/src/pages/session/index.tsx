@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 import CourseChip from "../../components/course-chip";
 import InstructorsChip from "../../components/instructors-chip";
+import Loading from "../../components/loading";
 import LocationChip from "../../components/location-chip";
 import SessionStartTime from "../../components/session-start-end-time";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
@@ -34,9 +35,7 @@ const SessionPage: FC = () => {
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
-	const [getQuery, result] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
-		GET_SESSION_PAGE,
-	);
+	const [getQuery, result] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(GET_SESSION_PAGE);
 
 	const handleRefetch = () => {
 		if (sessionID) {
@@ -59,7 +58,11 @@ const SessionPage: FC = () => {
 	}
 
 	if (!result.data) {
-		return <p className="p-4">Loading...</p>;
+		return (
+			<div className="h-content-height w-full flex items-center justify-center">
+				<Loading />
+			</div>
+		);
 	}
 
 	const { getSessionByID: session } = result.data;
@@ -105,10 +108,10 @@ const SessionPage: FC = () => {
 								</p>
 							</Fragment>
 						)}
-						{breakpoint !== Breakpoint.SMALL && <div />}
+						{breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : <div />}
 						<div
 							className={`"flex flex-col gap-8 pt-3 ${
-								breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
+								breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
 							}`}
 						>
 							<div className="flex flex-col gap-4">

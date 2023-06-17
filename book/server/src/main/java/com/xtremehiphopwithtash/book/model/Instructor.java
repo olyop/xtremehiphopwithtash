@@ -37,14 +37,6 @@ public class Instructor extends Base {
 
 	@Override
 	public String toString() {
-		return (
-			"Instructor [instructorID=" +
-			instructorID +
-			", photo=" +
-			photo +
-			", detailsID=" +
-			detailsID +
-			"]"
-		);
+		return ("Instructor [instructorID=" + instructorID + ", photo=" + photo + ", detailsID=" + detailsID + "]");
 	}
 }

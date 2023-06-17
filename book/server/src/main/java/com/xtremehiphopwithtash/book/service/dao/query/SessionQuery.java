@@ -68,8 +68,7 @@ public class SessionQuery {
 		columnNames
 	);
 
-	public final String EXISTS_BY_ID =
-		"SELECT EXISTS (SELECT 1 FROM session WHERE session_id = :sessionID);";
+	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM session WHERE session_id = :sessionID);";
 
 	public final String DELETE_BY_ID = "DELETE FROM session WHERE session_id = :sessionID;";
 

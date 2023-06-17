@@ -1,8 +1,8 @@
-package com.xtremehiphopwithtash.book.service.inputmapper.transform;
+package com.xtremehiphopwithtash.book.service.inputmapper;
 
 import java.util.Optional;
 
-public final class CommonTransform {
+final class CommonTransform {
 
 	public static final String transformText(Optional<String> value) {
 		if (value.isEmpty()) {
@@ -36,5 +36,9 @@ public final class CommonTransform {
 		String trimmedName = transformText(name);
 
 		return trimmedName.substring(0, 1).toUpperCase() + trimmedName.substring(1);
+	}
+
+	public static final String transformMobilePhoneNumber(String value) {
+		return transformText(value).replace(" ", "");
 	}
 }

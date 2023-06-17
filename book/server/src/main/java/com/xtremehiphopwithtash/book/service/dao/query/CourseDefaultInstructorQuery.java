@@ -11,10 +11,7 @@ public class CourseDefaultInstructorQuery {
 		"course_default_instructor"
 	);
 
-	public final String SELECT = String.format(
-		"SELECT %s FROM course_default_instructor;",
-		columnNames
-	);
+	public final String SELECT = String.format("SELECT %s FROM course_default_instructor;", columnNames);
 
 	public final String SELECT_BY_ID = String.format(
 		"SELECT %s FROM course_default_instructor WHERE course_id = :courseID AND index = :index;",
@@ -32,8 +29,7 @@ public class CourseDefaultInstructorQuery {
 	public final String DELETE_BY_ID =
 		"DELETE FROM course_default_instructor WHERE course_id = :courseID AND index = :index;";
 
-	public final String DELETE_BY_COURSE_ID =
-		"DELETE FROM course_default_instructor WHERE course_id = :courseID;";
+	public final String DELETE_BY_COURSE_ID = "DELETE FROM course_default_instructor WHERE course_id = :courseID;";
 
 	public final String SELECT_BY_COURSE_ID = String.format(
 		"SELECT %s FROM course_default_instructor WHERE course_id = :courseID;",

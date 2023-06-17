@@ -56,9 +56,7 @@ const Coupons: FC = () => {
 				contentClassName="flex flex-col gap-2"
 				children={
 					<Fragment>
-						<p className="text-sm mb-2">
-							Generates a one-time code that will discount the booking fee.
-						</p>
+						<p className="text-sm mb-2">Generates a one-time code that will discount the booking fee.</p>
 						<Input
 							id="discount"
 							name="Discount"

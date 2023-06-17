@@ -8,6 +8,8 @@ import { FC, Fragment, PropsWithChildren, createElement, useContext, useEffect, 
 
 import Button from "../../components/button";
 import DetailsForm from "../../components/forms/details-form";
+import FullscreenSpinner from "../../components/fullscreen-spinner/fullscreen-spinner";
+import Loading from "../../components/loading";
 import Modal from "../../components/modal";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
 import {
@@ -17,27 +19,29 @@ import {
 	CreateStudentMutationVariables,
 	DetailsInput,
 } from "../../generated-types";
+import Header from "../../layouts/header";
 import CHECK_STUDENT from "./check-student.graphql";
 import CREATE_STUDENT from "./create-student.graphql";
 import { initialInput } from "./initital-input";
 
 const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
-	const { isAuthenticated, logout, user } = useAuth0();
-
 	const { setIsAdministrator } = useContext(IsAdministratorContext);
-	const [hasCreatedAccount, setHasCreatedAccount] = useState(true);
-
-	const [checkStudent] = useLazyQuery<CheckData, CheckVars>(CHECK_STUDENT);
-
-	const [createAccount, createAccountResult] = useMutation<CreateData, CreateVars>(CREATE_STUDENT);
+	const { isLoading, isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
 	const [detailsInput, setDetailsInput] = useState<DetailsInput>(initialInput);
+	const [hasCreatedAccount, setHasCreatedAccount] = useState<boolean | null>(null);
+
+	const [checkStudent, checkStudentResult] = useLazyQuery<CheckData, CheckVars>(CHECK_STUDENT);
+	const [createAccount, createAccountResult] = useMutation<CreateData, CreateVars>(CREATE_STUDENT);
 
 	const handleCheck = async () => {
 		if (user?.sub) {
 			const { data, error } = await checkStudent();
 
-			if (!error && data) {
+			if (error) {
+				setHasCreatedAccount(null);
+				setIsAdministrator(false);
+			} else if (data) {
 				setHasCreatedAccount(data.doesStudentExist);
 				setIsAdministrator(data.isStudentAdministator);
 			}
@@ -46,13 +50,13 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 
 	const handlePopulateForm = () => {
 		if (user) {
-			const doesNickNameContainDot = user.nickname?.includes(".");
+			const shouldUseNickname = user.nickname ? user.nickname.includes(".") || user.nickname.includes(" ") : false;
 
 			setDetailsInput(prevState => ({
 				...prevState,
 				firstName: user.given_name ?? prevState.firstName,
 				lastName: user.family_name ?? prevState.lastName,
-				nickName: user.nickname === undefined || doesNickNameContainDot ? prevState.nickName : user.nickname,
+				nickName: user.nickname === undefined || shouldUseNickname ? prevState.nickName : user.nickname,
 				mobilePhoneNumber: user.phone_number ?? prevState.mobilePhoneNumber,
 				emailAddress: user.email ?? prevState.emailAddress,
 			}));
@@ -60,11 +64,21 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 	};
 
 	const handleCreateAccountClick = () => {
-		void createAccount({
-			variables: {
-				input: detailsInput,
-			},
-		});
+		if (!createAccountResult.loading) {
+			void createAccount({
+				variables: {
+					input: {
+						...detailsInput,
+						firstName: detailsInput.firstName.trim(),
+						lastName: detailsInput.lastName.trim(),
+						nickName: detailsInput.nickName ? detailsInput.nickName.trim() : null,
+						mobilePhoneNumber: detailsInput.mobilePhoneNumber.trim(),
+						emailAddress: detailsInput.emailAddress.trim(),
+						instagramUsername: detailsInput.instagramUsername ? detailsInput.instagramUsername.trim() : null,
+					},
+				},
+			});
+		}
 	};
 
 	const handleCancel = () => {
@@ -76,10 +90,19 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 	};
 
 	useEffect(() => {
-		if (isAuthenticated) {
+		if (isAuthenticated && hasCreatedAccount === null && !checkStudentResult.loading) {
 			void handleCheck();
 		}
-	}, [isAuthenticated]);
+	}, [isAuthenticated, hasCreatedAccount, checkStudentResult.loading]);
+
+	useEffect(() => {
+		const isNotLoading = !isLoading;
+		const isNotAuthenticated = !isAuthenticated;
+
+		if (isNotLoading && isNotAuthenticated) {
+			void loginWithRedirect();
+		}
+	}, [isLoading, isAuthenticated]);
 
 	useEffect(() => {
 		if (isAuthenticated) {
@@ -93,11 +116,23 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		}
 	}, [createAccountResult.data]);
 
+	if (isLoading || !isAuthenticated || hasCreatedAccount === null) {
+		return (
+			<div className="h-content-height w-full bg-stone-150 overflow-hidden">
+				<Header />
+				<div className="h-full flex items-center justify-center">
+					<Loading />
+				</div>
+			</div>
+		);
+	}
+
 	return hasCreatedAccount ? (
 		<Fragment>{children}</Fragment>
 	) : (
 		<div className="relative w-screen h-screen">
 			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
+			<FullscreenSpinner isLoading={createAccountResult.loading} className="z-[200]" />
 			<Modal
 				isOpen
 				isLarge
@@ -107,6 +142,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 				title="Account Setup"
 				icon={className => <UserCircleIcon className={className} />}
 				contentClassName="flex flex-col gap-4 px-4 py-4"
+				backgroundClassName="cursor-default"
 				children={
 					<Fragment>
 						<h2 className="text-xl font-bold text-center">You&apos;re nearly there!!</h2>
@@ -126,7 +162,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 				buttons={
 					<Fragment>
 						<Button
-							text="Complete"
+							text={createAccountResult.loading ? "Creating..." : "Complete"}
 							onClick={handleCreateAccountClick}
 							ariaLabel="Create Account"
 							rightIcon={className => <PaperAirplaneIcon className={className} />}

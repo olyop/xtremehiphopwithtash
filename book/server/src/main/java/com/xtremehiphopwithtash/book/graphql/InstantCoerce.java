@@ -39,9 +39,7 @@ public class InstantCoerce implements Coercing<Instant, Integer> {
 			try {
 				return Instant.ofEpochSecond(intValue);
 			} catch (DateTimeException dte) {
-				throw new CoercingParseValueException(
-					"Expected a valid epoch second value but was '" + intValue + "'."
-				);
+				throw new CoercingParseValueException("Expected a valid epoch second value but was '" + intValue + "'.");
 			}
 		}
 
@@ -49,15 +47,11 @@ public class InstantCoerce implements Coercing<Instant, Integer> {
 			try {
 				return Instant.ofEpochSecond(intValue.getValue().intValue());
 			} catch (DateTimeException dte) {
-				throw new CoercingParseValueException(
-					"Expected a valid epoch second value but was '" + intValue + "'."
-				);
+				throw new CoercingParseValueException("Expected a valid epoch second value but was '" + intValue + "'.");
 			}
 		}
 
-		throw new CoercingParseValueException(
-			"Expected a 'Integer' but was '" + Kit.typeName(input) + "'."
-		);
+		throw new CoercingParseValueException("Expected a 'Integer' but was '" + Kit.typeName(input) + "'.");
 	}
 
 	@Override
@@ -70,9 +64,7 @@ public class InstantCoerce implements Coercing<Instant, Integer> {
 			try {
 				return Instant.ofEpochSecond(intValue);
 			} catch (DateTimeException dte) {
-				throw new CoercingParseValueException(
-					"Expected a valid epoch second value but was '" + intValue + "'."
-				);
+				throw new CoercingParseValueException("Expected a valid epoch second value but was '" + intValue + "'.");
 			}
 		}
 
@@ -80,14 +72,10 @@ public class InstantCoerce implements Coercing<Instant, Integer> {
 			try {
 				return Instant.ofEpochSecond(intValue.getValue().intValue());
 			} catch (DateTimeException dte) {
-				throw new CoercingParseLiteralException(
-					"Expected a valid epoch second value but was '" + intValue + "'."
-				);
+				throw new CoercingParseLiteralException("Expected a valid epoch second value but was '" + intValue + "'.");
 			}
 		}
 
-		throw new CoercingParseLiteralException(
-			"Expected a 'Integer' but was '" + Kit.typeName(input) + "'."
-		);
+		throw new CoercingParseLiteralException("Expected a 'Integer' but was '" + Kit.typeName(input) + "'.");
 	}
 }

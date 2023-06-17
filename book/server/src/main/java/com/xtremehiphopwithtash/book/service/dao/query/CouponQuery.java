@@ -10,10 +10,7 @@ public final class CouponQuery {
 
 	public final String SELECT = String.format("SELECT %s FROM coupon;", columnNames);
 
-	public final String SELECT_BY_CODE = String.format(
-		"SELECT %s FROM coupon WHERE code = :code;",
-		columnNames
-	);
+	public final String SELECT_BY_CODE = String.format("SELECT %s FROM coupon WHERE code = :code;", columnNames);
 
 	public final String INSERT = String.format(
 		"""

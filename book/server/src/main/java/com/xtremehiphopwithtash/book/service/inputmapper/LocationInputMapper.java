@@ -2,7 +2,6 @@ package com.xtremehiphopwithtash.book.service.inputmapper;
 
 import com.xtremehiphopwithtash.book.model.Location;
 import com.xtremehiphopwithtash.book.resolver.input.LocationInput;
-import com.xtremehiphopwithtash.book.service.inputmapper.transform.CommonTransform;
 import org.springframework.stereotype.Component;
 
 @Component

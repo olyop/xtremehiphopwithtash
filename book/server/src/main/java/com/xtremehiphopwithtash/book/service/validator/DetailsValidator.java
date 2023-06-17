@@ -54,6 +54,13 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 			if (!mobilePhoneNumber.matches("^[0-9]*$")) {
 				throw new ResolverException("Invalid mobile number - must only contain numbers");
 			}
+		} else if (mobilePhoneNumber.length() == 12) {
+			if (!mobilePhoneNumber.startsWith("04")) {
+				throw new ResolverException("Invalid mobile number - must start with 04");
+			}
+			if (mobilePhoneNumber.charAt(4) != ' ' || mobilePhoneNumber.charAt(8) != ' ') {
+				throw new ResolverException("Invalid mobile number - must contain two spaces");
+			}
 		} else if (mobilePhoneNumber.length() == 13) {
 			if (!mobilePhoneNumber.startsWith("+61 4")) {
 				throw new ResolverException("Invalid mobile number - must bestart with +61 4");

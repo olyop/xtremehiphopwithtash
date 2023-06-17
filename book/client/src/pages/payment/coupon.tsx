@@ -84,11 +84,7 @@ const PaymentCoupon: FC<PropTypes> = ({ bookingInput, onApplyCoupon }) => {
 					text={bookingInput.couponCode ? "Coupon Applied" : "Apply Coupon"}
 					ariaLabel={bookingInput.couponCode ? "Coupon Applied" : "Apply Coupon"}
 					leftIcon={className =>
-						bookingInput.couponCode ? (
-							<CheckIcon className={className} />
-						) : (
-							<PlusIcon className={className} />
-						)
+						bookingInput.couponCode ? <CheckIcon className={className} /> : <PlusIcon className={className} />
 					}
 				/>
 				<Modal

@@ -39,9 +39,7 @@ const CopyButton: FC<PropTypes> = ({
 			text={buttonText && hasCopied ? "Copied" : buttonText}
 			ariaLabel={ariaLabel}
 			onClick={handleClick}
-			className={`${buttonText ? "p-4" : `!w-${buttonDimension} !p-0`} !h-${buttonDimension} ${
-				className ?? ""
-			}`}
+			className={`${buttonText ? "p-4" : `!w-${buttonDimension} !p-0`} !h-${buttonDimension} ${className ?? ""}`}
 			iconClassName={`!w-${iconDimension} !h-${iconDimension}`}
 			leftIcon={iconClassName =>
 				error ? (

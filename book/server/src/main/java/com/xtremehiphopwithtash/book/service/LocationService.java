@@ -17,11 +17,7 @@ public class LocationService implements EntityServiceInter<Location, LocationInp
 	private final LocationValidator validator;
 	private final LocationInputMapper inputMapper;
 
-	public LocationService(
-		LocationDAO locationDAO,
-		LocationValidator validator,
-		LocationInputMapper inputMapper
-	) {
+	public LocationService(LocationDAO locationDAO, LocationValidator validator, LocationInputMapper inputMapper) {
 		this.locationDAO = locationDAO;
 		this.validator = validator;
 		this.inputMapper = inputMapper;

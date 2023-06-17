@@ -111,6 +111,7 @@ public class BookingCostService {
 		bc.setCost(cost);
 		bc.setFreeFromCoupon(isFreeFromCoupon);
 		bc.setCardFee(cardFee);
+		bc.setCardSurcharge(cardSurcharge);
 		bc.setCardSurchargeRatio(cardSurchargePercentage);
 		bc.setCardSurchargeWithoutFee(cardSurchargeWithoutFee);
 		bc.setFinalCost(finalCost);

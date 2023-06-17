@@ -20,11 +20,7 @@ public class LocationDAO
 	private final LocationQuery query;
 	private final LocationRowMapper rowMapper;
 
-	public LocationDAO(
-		NamedParameterJdbcTemplate jdbcTemplate,
-		LocationQuery query,
-		LocationRowMapper locationMapper
-	) {
+	public LocationDAO(NamedParameterJdbcTemplate jdbcTemplate, LocationQuery query, LocationRowMapper locationMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.query = query;
 		this.rowMapper = locationMapper;

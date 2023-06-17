@@ -1,16 +1,8 @@
 import { GetSessionPageQuery, SessionInput } from "../../generated-types";
 
 export const sessionToInput = (session: GetSessionPageQuery["getSessionByID"]): SessionInput => {
-	const {
-		sessionID,
-		capacityAvailable,
-		__typename,
-		createdAt,
-		course,
-		location,
-		instructors,
-		...sessionInput
-	} = session;
+	const { sessionID, capacityAvailable, __typename, createdAt, course, location, instructors, ...sessionInput } =
+		session;
 	return {
 		...sessionInput,
 		startTime: sessionInput.startTime,

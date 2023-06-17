@@ -16,9 +16,7 @@ const SessionCardChips: FC<PropTypes> = ({ session }) => (
 						{session.capacityRemaining <= 5 && (
 							<SessionCardChip
 								colorClassName="bg-amber-500"
-								text={`${session.capacityRemaining} spot${determinePlural(
-									session.capacityRemaining,
-								)} left`}
+								text={`${session.capacityRemaining} spot${determinePlural(session.capacityRemaining)} left`}
 							/>
 						)}
 					</Fragment>

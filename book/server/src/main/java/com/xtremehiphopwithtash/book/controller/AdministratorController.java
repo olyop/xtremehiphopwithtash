@@ -19,14 +19,8 @@ public class AdministratorController {
 		this.couponService = couponService;
 	}
 
-	@PostMapping(
-		path = "/generate-coupon",
-		consumes = "application/json",
-		produces = "application/json"
-	)
-	public GenerateCouponResponse generateCoupon(
-		@Validated @RequestBody GenerateCouponBody generateCoupon
-	) {
+	@PostMapping(path = "/generate-coupon", consumes = "application/json", produces = "application/json")
+	public GenerateCouponResponse generateCoupon(@Validated @RequestBody GenerateCouponBody generateCoupon) {
 		String couponCode = couponService.create(generateCoupon.discount());
 		return new GenerateCouponResponse(couponCode);
 	}

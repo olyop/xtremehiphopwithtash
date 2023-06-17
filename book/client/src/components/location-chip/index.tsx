@@ -76,12 +76,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 								<p className="whitespace-nowrap">
 									Plus Code: <span className="text-gray-500">{location.plusCode}</span>
 								</p>
-								<CopyButton
-									ariaLabel="Copy Plus Code"
-									text={location.plusCode}
-									buttonDimension={6}
-									iconDimension={4}
-								/>
+								<CopyButton ariaLabel="Copy Plus Code" text={location.plusCode} buttonDimension={6} iconDimension={4} />
 							</div>
 							<Chip
 								chip={{
@@ -93,12 +88,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 						</div>
 						<div className="flex gap-1 items-center">
 							<p className="text-sm">{location.address}</p>
-							<CopyButton
-								ariaLabel="Copy Address"
-								text={location.address}
-								buttonDimension={6}
-								iconDimension={4}
-							/>
+							<CopyButton ariaLabel="Copy Address" text={location.address} buttonDimension={6} iconDimension={4} />
 						</div>
 						<div className="flex flex-col items-start gap-4">
 							<div className="w-full overflow-hidden bg-gray-100 rounded h-[28rem]">

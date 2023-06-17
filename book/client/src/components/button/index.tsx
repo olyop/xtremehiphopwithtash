@@ -53,8 +53,8 @@ export interface ButtonPropTypes {
 	childrenNode?: ReactNode;
 	rightIcon?: (className: string) => ReactNode;
 	onClick?: (() => void) | undefined;
-	className?: string;
-	iconClassName?: string;
+	className?: string | undefined;
+	iconClassName?: string | undefined;
 	textClassName?: string;
 	disabled?: boolean;
 }

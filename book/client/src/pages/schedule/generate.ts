@@ -27,7 +27,7 @@ export const determineStartAndEndDate = (
 	let startingDate: Date;
 	let endingDate: Date;
 
-	if (breakpoint === Breakpoint.SMALL) {
+	if (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) {
 		startingDate = startOfDay;
 		endingDate = addSixDays(startOfDay);
 	} else if (breakpoint === Breakpoint.MEDIUM) {
@@ -45,7 +45,7 @@ export const determineStartAndEndDate = (
 };
 
 const determineNumberOfDays = (breakpoint: Breakpoint) => {
-	if (breakpoint === Breakpoint.SMALL) {
+	if (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) {
 		return 6;
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return 12;
@@ -71,8 +71,7 @@ export const generateDays = (
 		day.setDate(day.getDate() + index);
 
 		const daySessions = sessions.filter(
-			({ startTime, endTime }) =>
-				startTime >= day.getTime() && endTime <= getEndOfDay(day).getTime(),
+			({ startTime, endTime }) => startTime >= day.getTime() && endTime <= getEndOfDay(day).getTime(),
 		);
 
 		days.push({
