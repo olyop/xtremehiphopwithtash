@@ -5,9 +5,8 @@ node_modules
 
 book/client/.env
 book/client/.env.local
-book/client/.env.production
-book/client/.env.development
-book/client/.env.testing
+book/client/.env.production.local
+book/client/.env.development.local
 book/client/stats.html
 book/client/dist
 book/client/node_modules
@@ -16,9 +15,10 @@ book/server/build
 book/server/.gradle
 book/server/bin
 book/server/.project
+book/server/.classpath
+book/server/.settings
 book/server/src/main/resources/.classpath
 book/server/src/main/resources/public
 book/server/src/main/resources/application-global.properties
 book/server/src/main/resources/application-development.properties
-book/server/src/main/resources/application-testing.properties
 book/server/src/main/resources/application-production.properties

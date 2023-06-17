@@ -63,6 +63,7 @@ export type BookingInput = {
 	readonly equipmentQuantity: InputMaybe<Scalars["PositiveInt"]["input"]>;
 	readonly notes: InputMaybe<Scalars["String"]["input"]>;
 	readonly paymentMethod: InputMaybe<PaymentMethod>;
+	readonly reCaptchaToken: InputMaybe<Scalars["String"]["input"]>;
 	readonly sessionID: Scalars["UUID"]["input"];
 };
 

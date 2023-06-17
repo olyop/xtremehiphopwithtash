@@ -33,8 +33,8 @@ const PaymentPage: FC = () => {
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
 	const { isAuthenticated, user } = useAuth0();
-	const reCaptchaToken = useGetReCaptchaToken();
 	const [searchParams, setSearchParams] = useSearchParams();
+	const [getReCaptchaToken, isReCaptchaLoading] = useGetReCaptchaToken();
 
 	const [isPaying, setIsPaying] = useState(false);
 	const [session, setSession] = useState<Session | null>(null);
@@ -61,6 +61,7 @@ const PaymentPage: FC = () => {
 		setBookingInput({
 			...input,
 			paymentMethod: getBookingCost.cost === 0 ? null : input.paymentMethod,
+			reCaptchaToken: isReCaptchaLoading.current ? input.reCaptchaToken : await getReCaptchaToken(),
 		});
 	};
 
@@ -89,7 +90,7 @@ const PaymentPage: FC = () => {
 			prevState =>
 				prevState && {
 					...prevState,
-					couponCode: couponCode,
+					couponCode,
 				},
 		);
 	};
@@ -105,6 +106,11 @@ const PaymentPage: FC = () => {
 	useEffect(() => {
 		if (createBookingResult.error) {
 			setIsPaying(false);
+
+			if (createBookingResult.error.message.includes("Invalid ReCaptcha")) {
+				void refetchPageData(bookingInput as BookingInput);
+				createBookingResult.reset();
+			}
 		}
 	}, [createBookingResult.error]);
 
@@ -145,7 +151,11 @@ const PaymentPage: FC = () => {
 				) : bookingCost.finalCost === 0 || bookingInput.paymentMethod === PaymentMethod.CASH ? (
 					<Fragment>
 						<FormError error={createBookingResult.error} />
-						<PaymentButton text="Book Now" onClick={handleCreateBooking} disabled={reCaptchaToken === null} />
+						<PaymentButton
+							text="Book Now"
+							onClick={handleCreateBooking}
+							disabled={bookingInput.reCaptchaToken === null}
+						/>
 					</Fragment>
 				) : null}
 			</div>

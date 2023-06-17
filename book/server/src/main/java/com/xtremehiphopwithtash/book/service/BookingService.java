@@ -24,6 +24,7 @@ public class BookingService {
 	private final BookingCostService bookingCostService;
 	private final SessionService sessionService;
 	private final CouponService couponService;
+	private final ReCaptchaService reCaptchaService;
 
 	private final BookingInputMapper bookingInputMapper;
 	private final StudentValidator studentValidator;
@@ -35,6 +36,7 @@ public class BookingService {
 		BookingCostService bookingCostService,
 		SessionService sessionService,
 		CouponService couponService,
+		ReCaptchaService reCaptchaService,
 		BookingInputMapper bookingInputMapper,
 		StudentValidator studentValidator,
 		SessionValidator sessionValidator,
@@ -44,6 +46,7 @@ public class BookingService {
 		this.bookingCostService = bookingCostService;
 		this.sessionService = sessionService;
 		this.couponService = couponService;
+		this.reCaptchaService = reCaptchaService;
 		this.bookingInputMapper = bookingInputMapper;
 		this.studentValidator = studentValidator;
 		this.sessionValidator = sessionValidator;
@@ -62,10 +65,12 @@ public class BookingService {
 		booking.setStudentID(studentID);
 
 		if (isBookingFree(bookingCost)) {
+			validateReCaptcha(input.reCaptchaToken());
 			booking.setCost(null);
 		} else if (isPayingWithCash(input)) {
+			validateReCaptcha(input.reCaptchaToken());
 			validateStudentHasNotBookedSession(studentID, input);
-			validateQuantiesAreOne(input);
+			validateQuantitiesAreOne(input);
 			booking.setCost(bookingCost.getCost());
 		} else if (isPayingWithCard(input, paymentIntent)) {
 			booking.setCost(paymentIntent.getAmount().intValue());
@@ -120,6 +125,12 @@ public class BookingService {
 		}
 	}
 
+	private void validateReCaptcha(Optional<String> reCaptchaToken) {
+		if (reCaptchaToken.isEmpty() || !reCaptchaService.verifyResponse(reCaptchaToken.get())) {
+			throw new ResolverException("Invalid ReCaptcha");
+		}
+	}
+
 	private void validateStudentHasNotBookedSession(String studentID, BookingInput input) {
 		if (bookingDAO.existsByStudentIDAndSessionID(studentID, input.sessionID())) {
 			throw new ResolverException(
@@ -128,7 +139,7 @@ public class BookingService {
 		}
 	}
 
-	private void validateQuantiesAreOne(BookingInput input) {
+	private void validateQuantitiesAreOne(BookingInput input) {
 		if (
 			input.bookingQuantity() != 1 &&
 			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : true)

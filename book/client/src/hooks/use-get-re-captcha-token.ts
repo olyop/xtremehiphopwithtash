@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export const useGetReCaptchaToken = () => {
+	const isLoadingRef = useRef(false);
 	const { executeRecaptcha } = useGoogleReCaptcha();
 
-	const [reCaptchaToken, setReCaptchaToken] = useState<string | null>(null);
-
-	const handleReCaptchaVerify = async () => {
+	const getReCaptchaToken = async () => {
 		if (executeRecaptcha) {
-			const token = await executeRecaptcha("book");
-			setReCaptchaToken(token);
+			try {
+				isLoadingRef.current = true;
+				console.log("executeRecaptcha");
+				return await executeRecaptcha("book");
+			} catch {
+				return null;
+			} finally {
+				isLoadingRef.current = false;
+			}
+		} else {
+			return null;
 		}
 	};
 
-	useEffect(() => {
-		if (reCaptchaToken === null) {
-			void handleReCaptchaVerify();
-		}
-	});
-
-	return reCaptchaToken;
+	return [getReCaptchaToken, isLoadingRef] as const;
 };

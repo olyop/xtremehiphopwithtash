@@ -31,7 +31,7 @@ const verifyPaymenMethodParam = (value: string | null, required: boolean) => {
 	}
 };
 
-export const syncSearchParams = <T>(
+export const syncSearchParams = (
 	key: string,
 	value: string | null | undefined,
 	setSearchParams: SetURLSearchParams,
@@ -69,6 +69,7 @@ export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): Bo
 		return {
 			sessionID: sessionIDParam,
 			notes: notesParam,
+			reCaptchaToken: null,
 			bookingQuantity: Number.parseInt(bookingQuantityParam),
 			equipmentQuantity: equipmentQuantityParam ? Number.parseInt(equipmentQuantityParam) : null,
 			couponCode: couponParam,
