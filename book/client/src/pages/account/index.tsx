@@ -135,20 +135,27 @@ const AccountPage: FC = () => {
 				<h2 className="text-2xl underline">Details:</h2>
 				<div className={detailsClassName}>
 					<p>
-						First Name: <span className="text-gray-500">{details.firstName}</span>
+						Name:{" "}
+						<span className="text-gray-500">
+							{details.firstName} {details.lastName}{" "}
+						</span>
 					</p>
-					<p>
-						Last Name: <span className="text-gray-500">{details.lastName}</span>
-					</p>
-					<p>
-						Nick Name: <span className="text-gray-500">{details.nickName ?? ""}</span>
-					</p>
+					{details.nickName && (
+						<p>
+							Nick Name: <span className="text-gray-500">{details.nickName}</span>
+						</p>
+					)}
 					<p>
 						Mobile Number: <span className="text-gray-500">{details.mobilePhoneNumber ?? ""}</span>
 					</p>
 					<p>
-						Instagram: <span className="text-gray-500">{details.instagramUsername ?? ""}</span>
+						Email: <span className="text-gray-500">{details.emailAddress ?? ""}</span>
 					</p>
+					{details.instagramUsername && (
+						<p>
+							Instagram: <span className="text-gray-500">{details.instagramUsername ?? ""}</span>
+						</p>
+					)}
 				</div>
 				<div className="flex gap-2">
 					<Button
@@ -195,8 +202,10 @@ const AccountPage: FC = () => {
 							<SessionPageBooking
 								hideUpdate
 								hideCheckIn
+								hideCallNow
 								hideQuantities
 								hideEquipmentFee
+								hideStripePaymentLink
 								key={booking.bookingID}
 								booking={booking as Booking}
 								session={booking.session as Session}

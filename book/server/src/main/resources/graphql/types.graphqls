@@ -107,11 +107,13 @@ type Booking {
 	bookingID: UUID!
 
 	notes: String
-	paymentMethod: PaymentMethod
 	bookingQuantity: PositiveInt!
 	equipmentQuantity: PositiveInt
+	paymentMethod: PaymentMethod
+	paymentIntentID: String
 	cost: Float
 	hasCheckedIn: Boolean!
+	hasCancelled: Boolean!
 
 	student: Student!
 	session: Session!

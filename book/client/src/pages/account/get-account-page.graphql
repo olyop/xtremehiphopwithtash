@@ -21,6 +21,7 @@ query getAccountPage {
 			paymentMethod
 			cost
 			hasCheckedIn
+			hasCancelled
 			session {
 				sessionID
 				title

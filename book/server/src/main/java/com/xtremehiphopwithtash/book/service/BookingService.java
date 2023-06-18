@@ -3,7 +3,6 @@ package com.xtremehiphopwithtash.book.service;
 import com.stripe.model.PaymentIntent;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
@@ -13,13 +12,17 @@ import com.xtremehiphopwithtash.book.service.validator.CommonValidator;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import com.xtremehiphopwithtash.book.service.validator.StudentValidator;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BookingService {
+
+	private final int minimumHoursBeforeSessionToCancel;
 
 	private final BookingDAO bookingDAO;
 	private final BookingCostService bookingCostService;
@@ -39,7 +42,8 @@ public class BookingService {
 		BookingInputMapper bookingInputMapper,
 		StudentValidator studentValidator,
 		SessionValidator sessionValidator,
-		CommonValidator commonValidator
+		CommonValidator commonValidator,
+		@Value("${booking.cancel.minimum.hours.before.session}") int minimumHoursBeforeSessionToCancel
 	) {
 		this.bookingDAO = bookingDAO;
 		this.bookingCostService = bookingCostService;
@@ -49,6 +53,8 @@ public class BookingService {
 		this.studentValidator = studentValidator;
 		this.sessionValidator = sessionValidator;
 		this.commonValidator = commonValidator;
+
+		this.minimumHoursBeforeSessionToCancel = minimumHoursBeforeSessionToCancel;
 	}
 
 	public Booking create(BookingInput input, String studentID) {
@@ -97,21 +103,10 @@ public class BookingService {
 		return bookingDAO.updateByID(bookingID, booking);
 	}
 
-	public void cancelByID(UUID bookingID, String studentID, String reCaptcha) {
-		validateID(bookingID);
-		studentValidator.validateID(studentID);
+	public void cancelByID(UUID bookingID, String studentID, String reCaptcha, boolean isAdministrator) {
+		validateCancel(bookingID, studentID, reCaptcha, isAdministrator);
 
-		Booking booking = bookingDAO.selectByID(bookingID);
-
-		if (!booking.getStudentID().equals(studentID)) {
-			throw new ResolverException("Can only cancel your own bookings");
-		}
-
-		if (booking.getPaymentMethod() != PaymentMethod.CASH) {
-			throw new ResolverException("Can only cancel cash bookings");
-		}
-
-		bookingDAO.deleteByID(bookingID);
+		bookingDAO.cancelByID(bookingID);
 	}
 
 	public void validateCreate(BookingInput input) {
@@ -123,6 +118,44 @@ public class BookingService {
 	public void validateUpdate(UUID bookingID, BookingInput input) {
 		validateID(bookingID);
 		validateInput(input);
+	}
+
+	public void validateCancel(UUID bookingID, String studentID, String reCaptcha, boolean isAdministrator) {
+		validateID(bookingID);
+		studentValidator.validateID(studentID);
+
+		Booking booking = bookingDAO.selectByID(bookingID);
+
+		if (booking.isHasCancelled()) {
+			throw new ResolverException("Booking has already been cancelled");
+		}
+
+		if (!isAdministrator) {
+			if (!booking.getStudentID().equals(studentID)) {
+				throw new ResolverException("Can only cancel your own bookings");
+			}
+
+			Session session = sessionService.retreiveByID(booking.getSessionID());
+
+			Instant startTime = session.getStartTime();
+			Instant now = Instant.now();
+			Instant nowPlusMinimumBookingCancelTime = now.plusSeconds(minimumHoursBeforeSessionToCancel * 60 * 60);
+
+			if (startTime.isBefore(nowPlusMinimumBookingCancelTime)) {
+				throw new ResolverException(
+					"Can only cancel bookings " + minimumHoursBeforeSessionToCancel + " hours before the session starts."
+				);
+			}
+
+			boolean canCancel =
+				(booking.getPaymentMethod() == null && booking.getCost() == 0) ||
+				booking.getPaymentMethod() == PaymentMethod.COUPON ||
+				booking.getPaymentMethod() == PaymentMethod.CASH;
+
+			if (!canCancel) {
+				throw new ResolverException("Can only cancel cash or free bookings");
+			}
+		}
 	}
 
 	private void validateID(UUID bookingID) {

@@ -3,6 +3,8 @@ import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
+import PhoneIcon from "@heroicons/react/24/solid/PhoneIcon";
+import XCircleIcon from "@heroicons/react/24/solid/XCircleIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
@@ -38,11 +40,14 @@ const SessionPageBooking: FC<PropTypes> = ({
 	booking,
 	onBookingUpdated,
 	isEditing = false,
-	hideRefund = false,
+	hideCancel = false,
 	hideUpdate = false,
+	hideCallNow = false,
 	hideCheckIn = false,
+	hideDateLabel = false,
 	hideQuantities = false,
 	hideEquipmentFee = false,
+	hideStripePaymentLink = false,
 }) => {
 	const [reCaptchaToken, setReCaptchaToken, executeReCaptcha] = useReCaptcha();
 
@@ -104,6 +109,13 @@ const SessionPageBooking: FC<PropTypes> = ({
 	}, [cancelBookingResult.data]);
 
 	useEffect(() => {
+		if (cancelBookingResult.error?.message.includes("reCAPTCHA")) {
+			void handleReCaptcha();
+			cancelBookingResult.reset();
+		}
+	}, [cancelBookingResult.error]);
+
+	useEffect(() => {
 		if (checkInBookingResult.data) {
 			closeCheckInModal();
 			onBookingUpdated();
@@ -134,7 +146,9 @@ const SessionPageBooking: FC<PropTypes> = ({
 	const sessionDateAndTimeLabel = (
 		<Fragment>
 			<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
-			<span className="text-gray-500"> / </span>
+			<Fragment> </Fragment>
+			<span className="text-gray-500">on</span>
+			<Fragment> </Fragment>
 			{determineSessionDateLabel(session)}
 		</Fragment>
 	);
@@ -144,17 +158,17 @@ const SessionPageBooking: FC<PropTypes> = ({
 			id={booking.bookingID}
 			isLeftALink
 			leftLink={`/session/${session.sessionID}`}
-			rightClassName="p-2 pr-3"
+			rightClassName="p-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
-			className={`!p-0 ${isSessionInPast ? "bg-gray-100 opacity-60 pointer-events-none select-none" : ""}`}
+			className={`!p-0 ${
+				isSessionInPast ? `bg-gray-100 opacity-60 ${hideUpdate ? "" : "pointer-events-none select-none"}` : ""
+			}`}
 			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
 			description={
 				<Fragment>
-					{sessionDateAndTimeLabel}
-					<br />
-					{hideUpdate ? null : (
+					{hideDateLabel || (
 						<Fragment>
-							{booking.student.details.mobilePhoneNumber}
+							{sessionDateAndTimeLabel}
 							<br />
 						</Fragment>
 					)}
@@ -185,15 +199,71 @@ const SessionPageBooking: FC<PropTypes> = ({
 			}
 			rightContent={
 				<Fragment>
-					{isSessionInPast || hideRefund || (
+					{hideCheckIn || (
+						<Fragment>
+							<Button
+								transparent
+								text={booking.hasCheckedIn ? "Checked In" : "Check In"}
+								onClick={openCheckInModal}
+								className={`!px-2 !text-xs !h-7 text-white ${
+									booking.hasCheckedIn ? " bg-green-600 hover:bg-green-800" : "bg-orange-600 hover:bg-orange-800"
+								}`}
+								ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+								leftIcon={className =>
+									booking.hasCheckedIn ? (
+										<CheckCircleIcon className={`!h-4 !w-4 text-white ${className}}`} />
+									) : (
+										<XCircleIcon className={`!h-4 !w-4 text-white ${className}}`} />
+									)
+								}
+							/>
+							<Modal
+								title="Check In"
+								isOpen={isCheckInModalOpen}
+								onClose={closeCheckInModal}
+								icon={className => <CheckCircleIcon className={className} />}
+								contentClassName="flex flex-col gap-4"
+								children={
+									<Fragment>
+										<p>Are you sure you want to {booking.hasCheckedIn ? "un-check in" : "check in"} this booking?</p>
+										<p>
+											<span className="text-gray-500">Payment Details:</span>
+											<br />
+											{paymentDescription}
+										</p>
+									</Fragment>
+								}
+								error={checkInBookingResult.error}
+								subTitle={determineDetailsFullName(booking.student.details)}
+								buttons={
+									<Fragment>
+										<Button
+											onClick={handleCheckIn}
+											text={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+											leftIcon={className => <CheckCircleIcon className={className} />}
+											ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+										/>
+										<Button
+											text="Cancel"
+											transparent
+											onClick={closeCheckInModal}
+											ariaLabel="Cancel"
+											leftIcon={className => <XMarkIcon className={className} />}
+										/>
+									</Fragment>
+								}
+							/>
+						</Fragment>
+					)}
+					{!hideCancel && !isSessionInPast && !booking.hasCancelled && (
 						<Fragment>
 							<Button
 								transparent
 								text="Cancel"
 								ariaLabel="Cancel"
-								className="!px-1 !text-xs !h-7"
+								className="!px-2 !text-xs !h-7"
 								onClick={openCancelModal}
-								leftIcon={className => <CurrencyDollarIcon className={`!h-4 !w-4 ${className}}`} />}
+								leftIcon={className => <XMarkIcon className={`!h-4 !w-4 ${className}}`} />}
 							/>
 							<Modal
 								title="Cancel Booking"
@@ -238,61 +308,41 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</Fragment>
 					)}
-					{hideCheckIn || (
-						<Fragment>
+					{!hideStripePaymentLink && booking.paymentMethod === PaymentMethod.CARD && booking.paymentIntentID && (
+						<a
+							target="_blank"
+							rel="noreferrer"
+							href={`${import.meta.env.VITE_STRIPE_PAYMENT_DASHBOARD_URL}${booking.paymentIntentID}`}
+						>
 							<Button
 								transparent
-								onClick={openCheckInModal}
-								ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
-								leftIcon={className => (
-									<CheckCircleIcon className={`${className} ${booking.hasCheckedIn ? "text-green-500" : ""}`} />
-								)}
+								text="Stripe"
+								ariaLabel="Open In Stripe"
+								className="!px-2 !text-xs !h-7"
+								leftIcon={className => <CurrencyDollarIcon className={`!h-4 !w-4 ${className}}`} />}
 							/>
-							<Modal
-								title="Check In"
-								isOpen={isCheckInModalOpen}
-								onClose={closeCheckInModal}
-								icon={className => <CheckCircleIcon className={className} />}
-								contentClassName="flex flex-col gap-4"
-								children={
-									<Fragment>
-										<p>Are you sure you want to {booking.hasCheckedIn ? "un-check in" : "check in"} this booking?</p>
-										<p>
-											<span className="text-gray-500">Payment Details:</span>
-											<br />
-											{paymentDescription}
-										</p>
-									</Fragment>
-								}
-								error={checkInBookingResult.error}
-								subTitle={determineDetailsFullName(booking.student.details)}
-								buttons={
-									<Fragment>
-										<Button
-											onClick={handleCheckIn}
-											text={booking.hasCheckedIn ? "Un-check In" : "Check In"}
-											leftIcon={className => <CheckCircleIcon className={className} />}
-											ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
-										/>
-										<Button
-											text="Cancel"
-											transparent
-											onClick={closeCheckInModal}
-											ariaLabel="Cancel"
-											leftIcon={className => <XMarkIcon className={className} />}
-										/>
-									</Fragment>
-								}
+						</a>
+					)}
+					{!hideCallNow && !isSessionInPast && (
+						<a href={`tel:${booking.student.details.mobilePhoneNumber}`}>
+							<Button
+								transparent
+								text="Call"
+								className="!px-2 !text-xs !h-7"
+								ariaLabel="Call Mobile Phone Number"
+								leftIcon={className => <PhoneIcon className={`!h-4 !w-4 ${className}}`} />}
 							/>
-						</Fragment>
+						</a>
 					)}
 					{hideUpdate || (
 						<Fragment>
 							<Button
 								transparent
+								text="Edit"
 								onClick={openUpdateModal}
+								className="!px-2 !text-xs !h-7"
 								ariaLabel="Edit booking"
-								leftIcon={className => <PencilIcon className={className} />}
+								leftIcon={className => <PencilIcon className={`!h-4 !w-4 ${className}}`} />}
 							/>
 							<Modal
 								title="Update Booking"
@@ -350,10 +400,13 @@ interface PropTypes {
 	booking: Booking;
 	isEditing?: boolean;
 	hideUpdate?: boolean;
-	hideRefund?: boolean;
+	hideCancel?: boolean;
 	hideCheckIn?: boolean;
+	hideDateLabel?: boolean;
+	hideCallNow?: boolean;
 	hideQuantities?: boolean;
 	hideEquipmentFee?: boolean;
+	hideStripePaymentLink?: boolean;
 	onBookingUpdated: () => void;
 }
 

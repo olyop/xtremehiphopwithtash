@@ -34,7 +34,7 @@ const SessionBookings: FC<PropTypes> = ({ session }) => {
 							{bookingsResult.data.getSessionByID.bookings.map(booking => (
 								<SessionPageBooking
 									isEditing
-									hideRefund
+									hideDateLabel
 									hideEquipmentFee
 									session={session}
 									key={booking.bookingID}

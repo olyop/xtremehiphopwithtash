@@ -113,7 +113,7 @@ const PaymentPage: FC = () => {
 		if (createBookingResult.error) {
 			setIsPaying(false);
 
-			if (createBookingResult.error.message.includes("ReCaptcha")) {
+			if (createBookingResult.error.message.includes("reCAPTCHA")) {
 				if (bookingInput) {
 					void refetchPageData(bookingInput);
 				}

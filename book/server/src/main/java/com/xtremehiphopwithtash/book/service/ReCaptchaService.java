@@ -115,7 +115,7 @@ public class ReCaptchaService {
 	private class ReCaptchaError extends RuntimeException {
 
 		public ReCaptchaError(String message) {
-			super("Failed to verify ReCaptcha: " + message);
+			super("Failed to verify reCAPTCHA: " + message);
 		}
 	}
 

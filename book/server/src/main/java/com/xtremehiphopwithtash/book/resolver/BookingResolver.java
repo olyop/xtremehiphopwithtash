@@ -83,12 +83,18 @@ public class BookingResolver {
 	}
 
 	@MutationMapping
-	public UUID cancelBookingByID(@Argument UUID bookingID, @Argument String reCaptcha, Principal principal) {
+	public UUID cancelBookingByID(
+		@Argument UUID bookingID,
+		@Argument String reCaptcha,
+		@AuthenticationPrincipal Jwt jwt,
+		Principal principal
+	) {
 		reCaptchaService.validateResponse(reCaptcha);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
+		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
 
-		bookingService.cancelByID(bookingID, studentID, reCaptcha);
+		bookingService.cancelByID(bookingID, studentID, reCaptcha, isAdministrator);
 
 		return bookingID;
 	}

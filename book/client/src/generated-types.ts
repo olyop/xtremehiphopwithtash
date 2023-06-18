@@ -33,8 +33,10 @@ export type Booking = {
 	readonly cost: Maybe<Scalars["Float"]["output"]>;
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly equipmentQuantity: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly hasCancelled: Scalars["Boolean"]["output"];
 	readonly hasCheckedIn: Scalars["Boolean"]["output"];
 	readonly notes: Maybe<Scalars["String"]["output"]>;
+	readonly paymentIntentID: Maybe<Scalars["String"]["output"]>;
 	readonly paymentMethod: Maybe<PaymentMethod>;
 	readonly session: Session;
 	readonly student: Student;
@@ -534,6 +536,7 @@ export type GetAccountPageQuery = {
 				readonly paymentMethod: PaymentMethod | null;
 				readonly cost: number | null;
 				readonly hasCheckedIn: boolean;
+				readonly hasCancelled: boolean;
 				readonly session: {
 					readonly sessionID: string;
 					readonly title: string;
@@ -1057,8 +1060,10 @@ export type GetSessionBookingsQuery = {
 				readonly bookingQuantity: number;
 				readonly equipmentQuantity: number | null;
 				readonly paymentMethod: PaymentMethod | null;
+				readonly paymentIntentID: string | null;
 				readonly cost: number | null;
 				readonly hasCheckedIn: boolean;
+				readonly hasCancelled: boolean;
 				readonly session: { readonly sessionID: string } & { readonly __typename: "Session" };
 				readonly student: {
 					readonly studentID: string;

@@ -36,11 +36,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 
 	@Override
 	public void deleteByID(UUID bookingID) {
-		String sql = query.DELETE_BY_ID;
-
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("bookingID", bookingID);
-
-		jdbcTemplate.update(sql, paramSource);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -85,6 +81,14 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		paramSource.addValue("equipmentQuantity", value.getEquipmentQuantity());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
+	}
+
+	public void cancelByID(UUID bookingID) {
+		String sql = query.CANCEL_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("bookingID", bookingID);
+
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	public List<Booking> selectBySessionID(UUID sessionID) {

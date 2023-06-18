@@ -58,7 +58,7 @@ public class BookingQuery {
 
 	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM booking WHERE booking_id = :bookingID);";
 
-	public final String DELETE_BY_ID = "DELETE FROM booking WHERE booking_id = :bookingID;";
+	public final String CANCEL_BY_ID = "UPDATE booking SET has_cancelled = true WHERE booking_id = :bookingID;";
 
 	public final String SELECT_BY_SESSION_ID = String.format(
 		"SELECT %s FROM booking WHERE session_id = :sessionID ORDER BY has_checked_in ASC, created_at DESC;",
@@ -66,13 +66,13 @@ public class BookingQuery {
 	);
 
 	public final String SELECT_CAPACITY_BOOKED_BY_SESSION_ID =
-		"SELECT coalesce(sum(booking_quantity), 0) AS capacity_booked FROM booking WHERE session_id = :sessionID;";
+		"SELECT coalesce(sum(booking_quantity), 0) AS capacity_booked FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE;";
 
 	public final String SELECT_CAPACITY_REMAINING_BY_SESSION_ID =
 		"""
 		SELECT
 			(SELECT capacity_available FROM session WHERE session_id = :sessionID) -
-			(SELECT coalesce(sum(booking_quantity), 0) FROM booking WHERE session_id = :sessionID) AS capacity_remianing;
+			(SELECT coalesce(sum(booking_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) AS capacity_remianing;
 		""";
 
 	public final String SELECT_IS_CAPACITY_REMAINING_BY_SESSION_ID =
@@ -81,20 +81,20 @@ public class BookingQuery {
 			(
 				(
 					(SELECT capacity_available FROM session WHERE session_id = :sessionID) -
-					(SELECT coalesce(sum(booking_quantity), 0) FROM booking WHERE session_id = :sessionID) -
+					(SELECT coalesce(sum(booking_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) -
 					:bookingQuantity
 				) >= 0
 			) as is_capacity_remaining;
 		""";
 
 	public final String SELECT_EQUIPMENT_HIRED_BY_SESSION_ID =
-		"SELECT coalesce(sum(equipment_quantity), 0) AS equipment_hired FROM booking WHERE session_id = :sessionID;";
+		"SELECT coalesce(sum(equipment_quantity), 0) AS equipment_hired FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE;";
 
 	public final String SELECT_EQUIPMENT_REMAINING_BY_SESSION_ID =
 		"""
 		SELECT
 			(SELECT coalesce(equipment_available, 0) FROM session WHERE session_id = :sessionID) -
-			(SELECT coalesce(sum(equipment_quantity), 0) FROM booking WHERE session_id = :sessionID) AS equipment_remianing;
+			(SELECT coalesce(sum(equipment_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) AS equipment_remianing;
 		""";
 
 	public final String SELECT_IS_EQUIPMENT_REMAINING_BY_SESSION_ID =
@@ -103,7 +103,7 @@ public class BookingQuery {
 			(
 				(
 					(SELECT coalesce(equipment_available, 0) FROM session WHERE session_id = :sessionID) -
-					(SELECT coalesce(sum(equipment_quantity), 0) FROM booking WHERE session_id = :sessionID) -
+					(SELECT coalesce(sum(equipment_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) -
 					:equipmentQuantity
 				) >= 0
 			) as is_equipment_remaining;
