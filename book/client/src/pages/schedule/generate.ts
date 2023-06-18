@@ -1,21 +1,21 @@
 import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { Session } from "../../generated-types";
-import { determineSessionDateLabel } from "../../helpers";
-import { Breakpoint } from "../../hooks";
 import {
 	addNineDays,
 	addOneMonth,
 	addSixDays,
 	getEndOfDay,
 	getMonday,
-	getSessions,
 	getStartOfDay,
 	isInPast,
 	isToday,
 	minusOneWeek,
 	minusThreeDays,
-} from "./helpers";
+} from "../../helpers/date";
+import { determineSessionDateLabel } from "../../helpers/util";
+import { Breakpoint } from "../../hooks";
+import { getSessions } from "./helpers";
 import { Day } from "./types";
 
 export const determineStartAndEndDate = (

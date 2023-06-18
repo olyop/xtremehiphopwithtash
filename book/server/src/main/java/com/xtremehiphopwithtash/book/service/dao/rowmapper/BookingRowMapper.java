@@ -1,8 +1,7 @@
-package com.xtremehiphopwithtash.book.service.dao.mapper;
+package com.xtremehiphopwithtash.book.service.dao.rowmapper;
 
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
-import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,8 +24,10 @@ public class BookingRowMapper implements RowMapper<Booking> {
 		b.setBookingQuantity(MapRowUtil.mapInteger(rs.getInt("booking_quantity")));
 		b.setEquipmentQuantity(MapRowUtil.mapInteger(rs.getInt("equipment_quantity")));
 		b.setPaymentMethod(MapRowUtil.mapEnum(PaymentMethod.class, rs.getString("payment_method")));
+		b.setPaymentIntentID(rs.getString("payment_intent_id"));
 		b.setCost(MapRowUtil.mapInteger(rs.getInt("cost")));
 		b.setHasCheckedIn(rs.getBoolean("has_checked_in"));
+		b.setHasCancelled(rs.getBoolean("has_cancelled"));
 
 		b.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 

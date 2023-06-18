@@ -17,7 +17,7 @@ import {
 	Location,
 	Session,
 } from "../../generated-types";
-import { determineSessionDateLabel } from "../../helpers";
+import { determineSessionDateLabel } from "../../helpers/util";
 import { Breakpoint, useBreakpoint } from "../../hooks";
 import Page from "../page";
 import BookSession from "./book-session";

@@ -1,4 +1,4 @@
-import { Details, Session } from "./generated-types";
+import { Details, Session } from "../generated-types";
 import { fullYearDateFormatter, thisYearDateFormatter } from "./intl";
 
 export const determineDetailsName = ({

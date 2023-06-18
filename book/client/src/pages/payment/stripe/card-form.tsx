@@ -75,11 +75,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 			/>
 			{errorMessage && <p className="text-red-500 rounded border border-red-500 bg-red-50 px-4 py-3">{errorMessage}</p>}
 			{hasCardFormLoaded && (
-				<PaymentButton
-					text="Pay Now"
-					onClick={handleSubmit}
-					disabled={!stripe || !elements || !isCardFormComplete || bookingInput.reCaptchaToken === null}
-				/>
+				<PaymentButton text="Pay Now" onClick={handleSubmit} disabled={!stripe || !elements || !isCardFormComplete} />
 			)}
 		</div>
 	);

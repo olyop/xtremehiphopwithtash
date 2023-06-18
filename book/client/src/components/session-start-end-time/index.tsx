@@ -1,7 +1,7 @@
 import { FC, Fragment, createElement } from "react";
 
 import { Session } from "../../generated-types";
-import { timeFormatter } from "../../intl";
+import { timeFormatter } from "../../helpers/intl";
 
 const SessionStartTime: FC<Pick<Session, "startTime" | "endTime">> = ({ startTime, endTime }) => (
 	<Fragment>

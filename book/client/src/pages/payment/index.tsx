@@ -17,7 +17,7 @@ import {
 	PaymentMethod,
 	Session,
 } from "../../generated-types";
-import { useGetReCaptchaToken, useHasMounted } from "../../hooks";
+import { useHasMounted, useReCaptcha } from "../../hooks";
 import Page from "../page";
 import PaymentCoupon from "./coupon";
 import CREATE_BOOKING from "./create-booking.graphql";
@@ -34,7 +34,7 @@ const PaymentPage: FC = () => {
 	const hasMounted = useHasMounted();
 	const { isAuthenticated, user } = useAuth0();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [getReCaptchaToken, isReCaptchaLoading] = useGetReCaptchaToken();
+	const [reCaptchaToken, setReCaptchaToken, executeReCaptcha] = useReCaptcha();
 
 	const [isPaying, setIsPaying] = useState(false);
 	const [session, setSession] = useState<Session | null>(null);
@@ -44,6 +44,8 @@ const PaymentPage: FC = () => {
 	const [createBooking, createBookingResult] = useMutation<CreateData, CreateVars>(CREATE_BOOKING);
 
 	const refetchPageData = async (input: BookingInput) => {
+		const token = await executeReCaptcha();
+
 		const { data } = await apollo.query<PageData, PageVars>({
 			query: GET_PAYMENT_SCREEN,
 			fetchPolicy: "network-only",
@@ -57,11 +59,15 @@ const PaymentPage: FC = () => {
 
 		setBookingCost(getBookingCost);
 		setSession(getSessionByID as Session);
-
+		setReCaptchaToken(token);
 		setBookingInput({
 			...input,
-			paymentMethod: getBookingCost.cost === 0 ? null : input.paymentMethod,
-			reCaptchaToken: isReCaptchaLoading.current ? input.reCaptchaToken : await getReCaptchaToken(),
+			paymentMethod:
+				getBookingCost.cost === 0
+					? getBookingCost.isFreeFromCoupon
+						? PaymentMethod.COUPON
+						: null
+					: input.paymentMethod,
 		});
 	};
 
@@ -107,8 +113,11 @@ const PaymentPage: FC = () => {
 		if (createBookingResult.error) {
 			setIsPaying(false);
 
-			if (createBookingResult.error.message.includes("Invalid ReCaptcha")) {
-				void refetchPageData(bookingInput as BookingInput);
+			if (createBookingResult.error.message.includes("ReCaptcha")) {
+				if (bookingInput) {
+					void refetchPageData(bookingInput);
+				}
+
 				createBookingResult.reset();
 			}
 		}
@@ -128,11 +137,14 @@ const PaymentPage: FC = () => {
 	const handleCreateBooking = () => {
 		setIsPaying(true);
 
-		void createBooking({
-			variables: {
-				input: bookingInput,
-			},
-		});
+		if (reCaptchaToken) {
+			void createBooking({
+				variables: {
+					input: bookingInput,
+					reCaptcha: reCaptchaToken,
+				},
+			});
+		}
 	};
 
 	return (
@@ -140,22 +152,18 @@ const PaymentPage: FC = () => {
 			<FullscreenSpinner isLoading={isPaying} />
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
 			<div className="flex flex-col gap-12 px-4 pb-52">
-				{bookingCost.bookingCost === 0 || (
+				{bookingCost.bookingCost !== 0 && (
 					<PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />
 				)}
-				{bookingCost.finalCost === 0 || (
+				{bookingCost.finalCost !== 0 && (
 					<PaymentMethodForm setBookingInput={setBookingInput} paymentMethod={bookingInput.paymentMethod} />
 				)}
-				{bookingInput.paymentMethod === PaymentMethod.CARD ? (
-					<PaymentPageStripe bookingInput={bookingInput} setIsPaying={setIsPaying} />
-				) : bookingCost.finalCost === 0 || bookingInput.paymentMethod === PaymentMethod.CASH ? (
+				{bookingInput.paymentMethod === PaymentMethod.CARD && reCaptchaToken ? (
+					<PaymentPageStripe bookingInput={bookingInput} setIsPaying={setIsPaying} reCaptcha={reCaptchaToken} />
+				) : bookingInput.paymentMethod === PaymentMethod.COUPON || bookingInput.paymentMethod === PaymentMethod.CASH ? (
 					<Fragment>
 						<FormError error={createBookingResult.error} />
-						<PaymentButton
-							text="Book Now"
-							onClick={handleCreateBooking}
-							disabled={bookingInput.reCaptchaToken === null}
-						/>
+						<PaymentButton text="Book Now" onClick={handleCreateBooking} disabled={reCaptchaToken === null} />
 					</Fragment>
 				) : null}
 			</div>

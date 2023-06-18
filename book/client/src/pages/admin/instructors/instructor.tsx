@@ -3,7 +3,7 @@ import { FC, createElement, useState } from "react";
 
 import InstructorInput from "../../../components/forms/instructor-form";
 import { InstructorInput as InstructorInputType, Instructor as InstructorType } from "../../../generated-types";
-import { determineDetailsName } from "../../../helpers";
+import { determineDetailsName } from "../../../helpers/util";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapInstructorToInput } from "../map-entity-to-input";
 

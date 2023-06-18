@@ -69,7 +69,6 @@ export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): Bo
 		return {
 			sessionID: sessionIDParam,
 			notes: notesParam,
-			reCaptchaToken: null,
 			bookingQuantity: Number.parseInt(bookingQuantityParam),
 			equipmentQuantity: equipmentQuantityParam ? Number.parseInt(equipmentQuantityParam) : null,
 			couponCode: couponParam,

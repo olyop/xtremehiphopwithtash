@@ -52,11 +52,6 @@ input SessionInput {
 	instructorIDs: [UUID!]!
 }
 
-enum PaymentMethod {
-	CASH
-	CARD
-}
-
 input BookingInput {
 	notes: String
 	sessionID: UUID!
@@ -64,5 +59,4 @@ input BookingInput {
 	equipmentQuantity: PositiveInt
 	paymentMethod: PaymentMethod
 	couponCode: String
-	reCaptchaToken: String
 }

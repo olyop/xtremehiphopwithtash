@@ -2,7 +2,7 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { BookingInput, Session } from "../../../generated-types";
-import { currencyDollarsFormatter } from "../../../intl";
+import { currencyDollarsFormatter } from "../../../helpers/intl";
 import { centsToDollars } from "../../../utils";
 import Input, { InputOnChange, InputType } from "../../input";
 import BookingQuantities from "./quantities";

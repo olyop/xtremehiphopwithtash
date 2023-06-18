@@ -1,57 +1,58 @@
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
+import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
+import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
-import { FC, Fragment, createElement, useContext, useEffect, useState } from "react";
+import { FC, Fragment, createElement, useEffect, useState } from "react";
 
-import { IsAdministratorContext } from "../../contexts/is-administrator";
 import {
 	Booking,
 	BookingInput,
+	CancelBookingMutation,
+	CancelBookingMutationVariables,
 	CheckInBookingMutation,
 	CheckInBookingMutationVariables,
-	DeleteBookingMutation,
-	DeleteBookingMutationVariables,
 	PaymentMethod,
 	Session,
 	UpdateBookingMutation,
 	UpdateBookingMutationVariables,
 } from "../../generated-types";
-import { determineDetailsFullName, determineSessionDateLabel } from "../../helpers";
-import { useModal } from "../../hooks";
-import { currencyDollarsFormatter, dateTimeFormatter } from "../../intl";
+import { isInPast } from "../../helpers/date";
+import { currencyDollarsFormatter, dateTimeFormatter } from "../../helpers/intl";
+import { determineDetailsFullName, determineSessionDateLabel } from "../../helpers/util";
+import { useModal, useReCaptcha } from "../../hooks";
 import { centsToDollars, determinePlural } from "../../utils";
 import Button from "../button";
 import Entity from "../entity";
 import BookingForm from "../forms/booking-form";
 import Modal from "../modal";
+import SessionStartTime from "../session-start-end-time";
 import { bookingToInput } from "./booking-to-input";
-import BOOKING_CHECK_IN from "./check-in-booking.graphql";
-import DELETE_BOOKING from "./delete-booking.graphql";
+import CANCEL_BOOKING from "./cancel-booking.graphql";
+import CHECK_IN_BOOKING from "./check-in-booking.graphql";
 import UPDATE_BOOKING from "./update-booking.graphql";
 
 const SessionPageBooking: FC<PropTypes> = ({
 	session,
 	booking,
-	isEditing = false,
 	onBookingUpdated,
-	hideDelete = false,
+	isEditing = false,
+	hideRefund = false,
 	hideUpdate = false,
 	hideCheckIn = false,
 	hideQuantities = false,
 	hideEquipmentFee = false,
 }) => {
-	const { isAdministrator } = useContext(IsAdministratorContext);
+	const [reCaptchaToken, setReCaptchaToken, executeReCaptcha] = useReCaptcha();
 
 	const [isUpdateModalOpen, openUpdateModal, closeUpdateModal] = useModal();
-	const [isDeleteModalOpen, openDeleteModal, closeDeleteModal] = useModal();
+	const [isCancelModalOpen, openCancelModal, closeCancelModal] = useModal();
 	const [isCheckInModalOpen, openCheckInModal, closeCheckInModal] = useModal();
 
 	const [updateBooking, updateBookingResult] = useMutation<UpdateData, UpdateVars>(UPDATE_BOOKING);
-	const [deleteBooking, deleteBookingResult] = useMutation<DeleteData, DeleteVars>(DELETE_BOOKING);
-
-	const [checkInBooking, checkInBookingResult] = useMutation<CheckInData, CheckInVars>(BOOKING_CHECK_IN);
+	const [cancelBooking, cancelBookingResult] = useMutation<CancelData, CancelVars>(CANCEL_BOOKING);
+	const [checkInBooking, checkInBookingResult] = useMutation<CheckInData, CheckInVars>(CHECK_IN_BOOKING);
 
 	const [bookingInput, setBookingInput] = useState<BookingInput>(bookingToInput(booking));
 
@@ -64,12 +65,15 @@ const SessionPageBooking: FC<PropTypes> = ({
 		});
 	};
 
-	const handleDeleteBooking = () => {
-		void deleteBooking({
-			variables: {
-				bookingID: booking.bookingID,
-			},
-		});
+	const handleCancelBooking = () => {
+		if (booking.paymentMethod === PaymentMethod.CASH && reCaptchaToken) {
+			void cancelBooking({
+				variables: {
+					reCaptcha: reCaptchaToken,
+					bookingID: booking.bookingID,
+				},
+			});
+		}
 	};
 
 	const handleCheckIn = () => {
@@ -81,6 +85,10 @@ const SessionPageBooking: FC<PropTypes> = ({
 		});
 	};
 
+	const handleReCaptcha = async () => {
+		setReCaptchaToken(await executeReCaptcha());
+	};
+
 	useEffect(() => {
 		if (updateBookingResult.data) {
 			closeUpdateModal();
@@ -89,11 +97,11 @@ const SessionPageBooking: FC<PropTypes> = ({
 	}, [updateBookingResult.data]);
 
 	useEffect(() => {
-		if (deleteBookingResult.data) {
-			closeDeleteModal();
+		if (cancelBookingResult.data) {
+			closeCancelModal();
 			onBookingUpdated();
 		}
-	}, [deleteBookingResult.data]);
+	}, [cancelBookingResult.data]);
 
 	useEffect(() => {
 		if (checkInBookingResult.data) {
@@ -102,22 +110,47 @@ const SessionPageBooking: FC<PropTypes> = ({
 		}
 	}, [checkInBookingResult.data]);
 
+	useEffect(() => {
+		if (isCancelModalOpen) {
+			void handleReCaptcha();
+		}
+	}, [isCancelModalOpen]);
+
+	const isSessionInPast = isInPast(new Date(session.startTime));
+
 	const paymentDescription =
-		booking.paymentMethod === null && booking.cost === null
+		bookingInput.paymentMethod === null
+			? "FREE session"
+			: booking.paymentMethod === PaymentMethod.COUPON
 			? "Paid in full with COUPON"
 			: bookingInput.paymentMethod === PaymentMethod.CASH && booking.cost
-			? `Will pay ${currencyDollarsFormatter.format(centsToDollars(booking.cost))} in CASH`
+			? `${isSessionInPast ? "Paid" : "Will pay"} ${currencyDollarsFormatter.format(
+					centsToDollars(booking.cost),
+			  )} in CASH`
 			: bookingInput.paymentMethod === PaymentMethod.CARD && booking.cost
 			? `Paid ${currencyDollarsFormatter.format(booking.cost / 100)} with CARD`
 			: null;
 
+	const sessionDateAndTimeLabel = (
+		<Fragment>
+			<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
+			<span className="text-gray-500"> / </span>
+			{determineSessionDateLabel(session)}
+		</Fragment>
+	);
+
 	return (
 		<Entity
 			id={booking.bookingID}
+			isLeftALink
+			leftLink={`/session/${session.sessionID}`}
+			rightClassName="p-2 pr-3"
+			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
+			className={`!p-0 ${isSessionInPast ? "bg-gray-100 opacity-60 pointer-events-none select-none" : ""}`}
 			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
 			description={
 				<Fragment>
-					{determineSessionDateLabel(session)}
+					{sessionDateAndTimeLabel}
 					<br />
 					{hideUpdate ? null : (
 						<Fragment>
@@ -152,7 +185,60 @@ const SessionPageBooking: FC<PropTypes> = ({
 			}
 			rightContent={
 				<Fragment>
-					{!hideCheckIn && isAdministrator ? (
+					{isSessionInPast || hideRefund || (
+						<Fragment>
+							<Button
+								transparent
+								text="Cancel"
+								ariaLabel="Cancel"
+								className="!px-1 !text-xs !h-7"
+								onClick={openCancelModal}
+								leftIcon={className => <CurrencyDollarIcon className={`!h-4 !w-4 ${className}}`} />}
+							/>
+							<Modal
+								title="Cancel Booking"
+								isOpen={isCancelModalOpen}
+								onClose={closeCancelModal}
+								error={cancelBookingResult.error}
+								subTitle={sessionDateAndTimeLabel}
+								contentClassName="flex flex-col gap-2"
+								icon={className => <CheckCircleIcon className={className} />}
+								children={
+									booking.paymentMethod === PaymentMethod.CARD ? (
+										<Fragment>
+											<p>Card payments cannot be cancelled.</p>
+											<p>Please contact us if you need to cancel this booking.</p>
+										</Fragment>
+									) : (
+										<Fragment>
+											<p>Are you sure you want to cancel this booking?</p>
+											<p>Bookings to be paid in cash can be cancelled up to 3 hours before the session starts.</p>
+										</Fragment>
+									)
+								}
+								buttons={
+									booking.paymentMethod === PaymentMethod.CARD ? null : (
+										<Fragment>
+											<Button
+												text="Confirm"
+												onClick={handleCancelBooking}
+												ariaLabel="Yes - Cancel Booking"
+												leftIcon={className => <CheckIcon className={className} />}
+											/>
+											<Button
+												text="Cancel"
+												transparent
+												ariaLabel="Cancel"
+												onClick={closeCancelModal}
+												leftIcon={className => <XMarkIcon className={className} />}
+											/>
+										</Fragment>
+									)
+								}
+							/>
+						</Fragment>
+					)}
+					{hideCheckIn || (
 						<Fragment>
 							<Button
 								transparent
@@ -199,13 +285,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 								}
 							/>
 						</Fragment>
-					) : booking.hasCheckedIn ? (
-						<Button
-							transparent
-							ariaLabel="Checked In"
-							leftIcon={className => <CheckCircleIcon className={`${className} text-green-500`} />}
-						/>
-					) : null}
+					)}
 					{hideUpdate || (
 						<Fragment>
 							<Button
@@ -252,43 +332,6 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</Fragment>
 					)}
-					{hideDelete || (
-						<Fragment>
-							<Button
-								onClick={openDeleteModal}
-								transparent
-								ariaLabel="Delete booking"
-								leftIcon={className => <TrashIcon className={className} />}
-							/>
-							<Modal
-								isOpen={isDeleteModalOpen}
-								onClose={closeDeleteModal}
-								icon={className => <TrashIcon className={className} />}
-								title="Delete Booking"
-								contentClassName="flex flex-col gap-4"
-								children={<p>Are you sure you want to delete this booking?</p>}
-								error={deleteBookingResult.error}
-								subTitle={`${booking.student.details.firstName} ${booking.student.details.lastName}`}
-								buttons={
-									<Fragment>
-										<Button
-											text="Delete"
-											onClick={handleDeleteBooking}
-											leftIcon={className => <TrashIcon className={className} />}
-											ariaLabel="Delete booking"
-										/>
-										<Button
-											text="Cancel"
-											transparent
-											onClick={closeDeleteModal}
-											ariaLabel="Cancel"
-											leftIcon={className => <XMarkIcon className={className} />}
-										/>
-									</Fragment>
-								}
-							/>
-						</Fragment>
-					)}
 				</Fragment>
 			}
 		/>
@@ -297,18 +340,18 @@ const SessionPageBooking: FC<PropTypes> = ({
 
 type UpdateData = UpdateBookingMutation;
 type UpdateVars = UpdateBookingMutationVariables;
-type DeleteData = DeleteBookingMutation;
-type DeleteVars = DeleteBookingMutationVariables;
+type CancelData = CancelBookingMutation;
+type CancelVars = CancelBookingMutationVariables;
 type CheckInData = CheckInBookingMutation;
 type CheckInVars = CheckInBookingMutationVariables;
 
 interface PropTypes {
 	session: Session;
 	booking: Booking;
-	hideDelete?: boolean;
-	hideCheckIn?: boolean;
-	hideUpdate?: boolean;
 	isEditing?: boolean;
+	hideUpdate?: boolean;
+	hideRefund?: boolean;
+	hideCheckIn?: boolean;
 	hideQuantities?: boolean;
 	hideEquipmentFee?: boolean;
 	onBookingUpdated: () => void;

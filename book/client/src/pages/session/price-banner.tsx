@@ -3,7 +3,7 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { FC, createElement } from "react";
 
 import { Session } from "../../generated-types";
-import { currencyDollarsFormatter } from "../../intl";
+import { currencyDollarsFormatter } from "../../helpers/intl";
 import { centsToDollars } from "../../utils";
 
 const SessionPriceBanner: FC<PropTypes> = ({ session }) => {

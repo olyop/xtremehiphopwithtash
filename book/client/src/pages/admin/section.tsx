@@ -5,14 +5,12 @@ const Section = <T,>({ title, items, renderItem, create }: PropTypes<T>) => (
 	<div className="flex flex-col items-start gap-2">
 		<h2 className="text-2xl">{title}</h2>
 		<div className="self-stretch bg-white shadow-md">
-			{items !== undefined ? (
-				items === null ? (
-					<p className="p-2 text-gray-500">None found</p>
-				) : (
-					items.map(item => renderItem(item))
-				)
-			) : (
+			{items === undefined ? (
 				<p className="p-2 text-gray-500">Loading...</p>
+			) : items === null ? (
+				<p className="p-2 text-gray-500">None found</p>
+			) : (
+				items.map(item => renderItem(item))
 			)}
 		</div>
 		{create}

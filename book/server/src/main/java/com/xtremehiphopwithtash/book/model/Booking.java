@@ -12,8 +12,10 @@ public class Booking extends Base {
 	private Integer bookingQuantity;
 	private Integer equipmentQuantity;
 	private PaymentMethod paymentMethod;
+	private String paymentIntentID;
 	private Integer cost;
-	private Boolean hasCheckedIn;
+	private boolean hasCheckedIn;
+	private boolean hasCancelled;
 
 	public UUID getBookingID() {
 		return bookingID;
@@ -71,6 +73,14 @@ public class Booking extends Base {
 		this.paymentMethod = paymentMethod;
 	}
 
+	public String getPaymentIntentID() {
+		return paymentIntentID;
+	}
+
+	public void setPaymentIntentID(String paymentIntentID) {
+		this.paymentIntentID = paymentIntentID;
+	}
+
 	public Integer getCost() {
 		return cost;
 	}
@@ -85,5 +95,13 @@ public class Booking extends Base {
 
 	public void setHasCheckedIn(Boolean hasCheckedIn) {
 		this.hasCheckedIn = hasCheckedIn;
+	}
+
+	public boolean isHasCancelled() {
+		return hasCancelled;
+	}
+
+	public void setHasCancelled(boolean hasCancelled) {
+		this.hasCancelled = hasCancelled;
 	}
 }

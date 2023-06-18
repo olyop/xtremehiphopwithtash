@@ -54,7 +54,7 @@ export type BookingCost = {
 	readonly equipmentCost: Scalars["NonNegativeInt"]["output"];
 	readonly finalCost: Scalars["NonNegativeInt"]["output"];
 	readonly isFreeFromCoupon: Scalars["Boolean"]["output"];
-	readonly sessionCost: Scalars["PositiveInt"]["output"];
+	readonly sessionCost: Scalars["NonNegativeInt"]["output"];
 };
 
 export type BookingInput = {
@@ -63,7 +63,6 @@ export type BookingInput = {
 	readonly equipmentQuantity: InputMaybe<Scalars["PositiveInt"]["input"]>;
 	readonly notes: InputMaybe<Scalars["String"]["input"]>;
 	readonly paymentMethod: InputMaybe<PaymentMethod>;
-	readonly reCaptchaToken: InputMaybe<Scalars["String"]["input"]>;
 	readonly sessionID: Scalars["UUID"]["input"];
 };
 
@@ -168,6 +167,7 @@ export type LocationInput = {
 
 export type Mutation = {
 	readonly __typename: "Mutation";
+	readonly cancelBookingByID: Scalars["UUID"]["output"];
 	readonly checkInBooking: Scalars["UUID"]["output"];
 	readonly createBooking: Booking;
 	readonly createCourse: Course;
@@ -176,7 +176,6 @@ export type Mutation = {
 	readonly createPaymentIntent: CreatePaymentIntentResponse;
 	readonly createSession: Session;
 	readonly createStudent: Student;
-	readonly deleteBookingByID: Scalars["UUID"]["output"];
 	readonly deleteCourseByID: Scalars["UUID"]["output"];
 	readonly deleteInstructorByID: Scalars["UUID"]["output"];
 	readonly deleteLocationByID: Scalars["UUID"]["output"];
@@ -189,6 +188,11 @@ export type Mutation = {
 	readonly updateStudentByID: Student;
 };
 
+export type MutationCancelBookingByIdArgs = {
+	bookingID: Scalars["UUID"]["input"];
+	reCaptcha: Scalars["String"]["input"];
+};
+
 export type MutationCheckInBookingArgs = {
 	bookingID: Scalars["UUID"]["input"];
 	value: Scalars["Boolean"]["input"];
@@ -196,6 +200,7 @@ export type MutationCheckInBookingArgs = {
 
 export type MutationCreateBookingArgs = {
 	input: BookingInput;
+	reCaptcha: Scalars["String"]["input"];
 };
 
 export type MutationCreateCourseArgs = {
@@ -212,6 +217,7 @@ export type MutationCreateLocationArgs = {
 
 export type MutationCreatePaymentIntentArgs = {
 	input: BookingInput;
+	reCaptcha: Scalars["String"]["input"];
 };
 
 export type MutationCreateSessionArgs = {
@@ -220,10 +226,6 @@ export type MutationCreateSessionArgs = {
 
 export type MutationCreateStudentArgs = {
 	input: DetailsInput;
-};
-
-export type MutationDeleteBookingByIdArgs = {
-	bookingID: Scalars["UUID"]["input"];
 };
 
 export type MutationDeleteCourseByIdArgs = {
@@ -274,6 +276,7 @@ export type MutationUpdateStudentByIdArgs = {
 export enum PaymentMethod {
 	CARD = "CARD",
 	CASH = "CASH",
+	COUPON = "COUPON",
 }
 
 export type Place = {
@@ -411,18 +414,19 @@ export type Student = {
 	readonly studentID: Scalars["String"]["output"];
 };
 
+export type CancelBookingMutationVariables = Exact<{
+	bookingID: Scalars["UUID"]["input"];
+	reCaptcha: Scalars["String"]["input"];
+}>;
+
+export type CancelBookingMutation = { readonly cancelBookingByID: string } & { readonly __typename: "Mutation" };
+
 export type CheckInBookingMutationVariables = Exact<{
 	bookingID: Scalars["UUID"]["input"];
 	value: Scalars["Boolean"]["input"];
 }>;
 
 export type CheckInBookingMutation = { readonly checkInBooking: string } & { readonly __typename: "Mutation" };
-
-export type DeleteBookingMutationVariables = Exact<{
-	bookingID: Scalars["UUID"]["input"];
-}>;
-
-export type DeleteBookingMutation = { readonly deleteBookingByID: string } & { readonly __typename: "Mutation" };
 
 export type UpdateBookingMutationVariables = Exact<{
 	bookingID: Scalars["UUID"]["input"];
@@ -926,6 +930,7 @@ export type GetPaymentSuccessDataQuery = {
 
 export type CreateBookingMutationVariables = Exact<{
 	input: BookingInput;
+	reCaptcha: Scalars["String"]["input"];
 }>;
 
 export type CreateBookingMutation = {
@@ -993,6 +998,7 @@ export type GetPaymentScreenDataQuery = {
 
 export type CreatePaymentIntentMutationVariables = Exact<{
 	input: BookingInput;
+	reCaptcha: Scalars["String"]["input"];
 }>;
 
 export type CreatePaymentIntentMutation = {

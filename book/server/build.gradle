@@ -46,3 +46,7 @@ tasks.named('bootJar') {
 bootJar {
 	archiveFileName = 'book.jar'
 }
+
+compileJava {
+	exclude "build"
+}

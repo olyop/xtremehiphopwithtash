@@ -1,6 +1,5 @@
 package com.xtremehiphopwithtash.book.service.dao.query;
 
-import com.xtremehiphopwithtash.book.service.dao.util.SQLColumnNamesUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +23,7 @@ public class BookingQuery {
 			booking_quantity,
 			equipment_quantity,
 			payment_method,
+			payment_intent_id,
 			cost
 		) VALUES (
 			:notes,
@@ -32,6 +32,7 @@ public class BookingQuery {
 			:bookingQuantity,
 			:equipmentQuantity,
 			:paymentMethod::booking_payment_method,
+			:paymentIntentID,
 			:cost
 		) RETURNING
 			%s;

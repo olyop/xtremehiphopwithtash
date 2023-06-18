@@ -1,3 +1,0 @@
-mutation deleteBooking($bookingID: UUID!) {
-	deleteBookingByID(bookingID: $bookingID)
-}

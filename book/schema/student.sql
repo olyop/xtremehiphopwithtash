@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS student (
 		ON DELETE CASCADE,
 
 	CONSTRAINT student_check_stripe_customer_id_starts_with_cus
-		CHECK (stripe_customer_id LIKE 'cus%'),
+		CHECK (stripe_customer_id LIKE 'cus_%'),
 
 	CONSTRAINT student_check_created_at
 		CHECK (created_at <= get_now())

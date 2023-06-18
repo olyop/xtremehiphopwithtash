@@ -98,6 +98,7 @@ const PaymentCoupon: FC<PropTypes> = ({ bookingInput, onApplyCoupon }) => {
 							<Input
 								id="couponCode"
 								name="Coupon"
+								autoComplete="off"
 								type={InputType.TEXT}
 								value={code}
 								onChange={handleCodeChange}

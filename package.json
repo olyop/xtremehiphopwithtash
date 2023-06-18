@@ -20,7 +20,7 @@
 	"scripts": {
 		"book-codegen": "graphql-codegen-esm -w",
 		"book-clean": "rimraf book/server/src/main/resources/public",
-		"book-client-tsc": "cd book/client && tsc --watch --noEmit",
+		"book-client-tsc": "cd book/client && npm run tsc",
 		"book-client-dev": "cd book/client && npm run dev",
 		"book-client-test": "cd book/client && npm run test",
 		"book-client-build": "cd book/client && npm run build",
@@ -38,7 +38,8 @@
 		"book-deploy": "npm run book-scp",
 		"book-build-deploy": "npm run book-build && npm run book-deploy",
 		"git-push": "git add -A && git commit -m 'Update' && git push",
-		"prettier": "prettier --ignore-path .gitignore -w ."
+		"eslint-check": "eslint --ext .ts,.tsx .",
+		"prettier-write": "prettier --ignore-path .gitignore -w ."
 	},
 	"devDependencies": {
 		"@graphql-codegen/add": "5.0.0",

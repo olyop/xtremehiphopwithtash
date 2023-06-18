@@ -1,5 +1,5 @@
-mutation createPaymentIntent($input: BookingInput!) {
-	createPaymentIntent(input: $input) {
+mutation createPaymentIntent($input: BookingInput!, $reCaptcha: String!) {
+	createPaymentIntent(input: $input, reCaptcha: $reCaptcha) {
 		clientSecret
 	}
 }

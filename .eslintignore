@@ -1,1 +1,5 @@
 book/server
+book/schema
+node_modules
+book/client/vite.config.ts
+book/client/node_modules

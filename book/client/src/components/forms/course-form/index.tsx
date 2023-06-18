@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { CourseInput, GetCourseFormDataQuery, Instructor } from "../../../generated-types";
-import { determineDetailsName } from "../../../helpers";
+import { determineDetailsName } from "../../../helpers/util";
 import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions } from "../../input";
 import DefaultDurationInput from "./default-duration";
 import GET_COURSE_FORM_DATA from "./get-course-form-data.graphql";

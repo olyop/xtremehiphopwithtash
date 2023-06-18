@@ -3,7 +3,7 @@ import { FC, Fragment, createElement, useState } from "react";
 
 import CourseInput from "../../../components/forms/course-form";
 import { CourseInput as CourseInputType, Course as CourseType } from "../../../generated-types";
-import { currencyDollarsFormatter, listFormatter } from "../../../intl";
+import { currencyDollarsFormatter, listFormatter } from "../../../helpers/intl";
 import { centsToDollars } from "../../../utils";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapCourseToInput } from "../map-entity-to-input";

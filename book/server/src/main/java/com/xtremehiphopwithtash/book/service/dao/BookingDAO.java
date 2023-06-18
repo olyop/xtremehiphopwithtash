@@ -4,8 +4,8 @@ import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityBaseDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityDeleteDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityUpdateDAO;
-import com.xtremehiphopwithtash.book.service.dao.mapper.BookingRowMapper;
 import com.xtremehiphopwithtash.book.service.dao.query.BookingQuery;
+import com.xtremehiphopwithtash.book.service.dao.rowmapper.BookingRowMapper;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -63,6 +63,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		paramSource.addValue("bookingQuantity", value.getBookingQuantity());
 		paramSource.addValue("equipmentQuantity", value.getEquipmentQuantity());
 		paramSource.addValue("paymentMethod", value.getPaymentMethod() == null ? null : value.getPaymentMethod().name());
+		paramSource.addValue("paymentIntentID", value.getPaymentIntentID());
 		paramSource.addValue("cost", value.getCost());
 
 		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);

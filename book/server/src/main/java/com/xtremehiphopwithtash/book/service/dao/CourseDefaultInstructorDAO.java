@@ -2,8 +2,8 @@ package com.xtremehiphopwithtash.book.service.dao;
 
 import com.xtremehiphopwithtash.book.model.CourseDefaultInstructor;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityRelationshipDAO;
-import com.xtremehiphopwithtash.book.service.dao.mapper.CourseDefaultInstructorRowMapper;
 import com.xtremehiphopwithtash.book.service.dao.query.CourseDefaultInstructorQuery;
+import com.xtremehiphopwithtash.book.service.dao.rowmapper.CourseDefaultInstructorRowMapper;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

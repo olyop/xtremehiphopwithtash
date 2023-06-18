@@ -1,5 +1,6 @@
 package com.xtremehiphopwithtash.book.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.stripe.Stripe;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StripeService {
 
-	private final String currency = "AUD";
+	private final String currency;
 
 	private final String webhookSecret;
 	private final ObjectMapper objectMapper;
@@ -36,6 +37,7 @@ public class StripeService {
 	private final SessionService sessionService;
 
 	public StripeService(
+		@Value("${stripe.currency}") String currency,
 		@Value("${stripe.live.key}") String secretKey,
 		@Value("${stripe.webhook.secret}") String webhookSecret,
 		BookingService bookingService,
@@ -43,11 +45,13 @@ public class StripeService {
 	) {
 		Stripe.apiKey = secretKey;
 
+		this.currency = currency;
 		this.webhookSecret = webhookSecret;
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.registerModule(new Jdk8Module());
 		this.bookingService = bookingService;
 		this.sessionService = sessionService;
+
+		this.objectMapper = new ObjectMapper();
+		this.objectMapper.registerModule(new Jdk8Module());
 	}
 
 	public String createCustomer(String studentID, Details details) {
@@ -80,16 +84,15 @@ public class StripeService {
 		String stripeCustomerID,
 		String bookingDescription
 	) {
+		validateCustomerExists(stripeCustomerID);
+
 		try {
 			Session session = sessionService.retreiveByID(bookingInput.sessionID());
 			BookingCost bookingCost = bookingService.getBookingCost(bookingInput, session);
 
 			long amount = bookingCost.getFinalCost();
 
-			Map<String, String> metadata = new HashMap<>();
-
-			metadata.put("studentID", studentID);
-			metadata.put("bookingInput", objectMapper.writeValueAsString(bookingInput));
+			Map<String, String> metadata = constructPaymentIntentMetadata(studentID, bookingInput);
 
 			AutomaticPaymentMethods automaticPaymentMethods = AutomaticPaymentMethods.builder().setEnabled(true).build();
 
@@ -107,16 +110,30 @@ public class StripeService {
 			PaymentIntent paymentIntent = PaymentIntent.create(params);
 
 			return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
-		} catch (StripeException e) {
-			e.printStackTrace();
-			throw new ResolutionException("Unable to create payment intent");
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ResolutionException("Unable to parse booking input");
+			throw new ResolutionException("Unable to create payment intent", e);
 		}
 	}
 
-	public Event createPaymentEvent(String payload, String signature) {
+	private void validateCustomerExists(String stripeCustomerID) {
+		try {
+			Customer.retrieve(stripeCustomerID);
+		} catch (StripeException se) {
+			throw new ResolutionException("Customer does not exist");
+		}
+	}
+
+	private Map<String, String> constructPaymentIntentMetadata(String studentID, BookingInput bookingInput)
+		throws JsonProcessingException {
+		Map<String, String> metadata = new HashMap<>();
+
+		metadata.put("studentID", studentID);
+		metadata.put("bookingInput", objectMapper.writeValueAsString(bookingInput));
+
+		return metadata;
+	}
+
+	public Event constructPaymentEvent(String payload, String signature) {
 		try {
 			return Webhook.constructEvent(payload, signature, webhookSecret);
 		} catch (Exception e) {

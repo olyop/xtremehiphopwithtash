@@ -7,7 +7,7 @@ import Button from "../../../components/button";
 import SessionForm from "../../../components/forms/session-form";
 import Modal from "../../../components/modal";
 import { Session, SessionInput, UpdateSessionMutation, UpdateSessionMutationVariables } from "../../../generated-types";
-import { determineSessionDateLabel } from "../../../helpers";
+import { determineSessionDateLabel } from "../../../helpers/util";
 import { useModal } from "../../../hooks";
 import { centsToDollars, dollarsToCents, millisecondsToSeconds } from "../../../utils";
 import GET_SESSION_PAGE from "../get-session-page.graphql";

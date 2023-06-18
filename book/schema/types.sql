@@ -7,6 +7,5 @@ CREATE TYPE details_gender AS ENUM (
 CREATE TYPE booking_payment_method AS ENUM (
 	'CASH',
 	'CARD',
-	'COUPON',
-	'FREE'
+	'COUPON'
 );

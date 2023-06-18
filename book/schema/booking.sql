@@ -8,8 +8,11 @@ CREATE TABLE IF NOT EXISTS booking (
 	booking_quantity SMALLINT NOT NULL,
 	equipment_quantity SMALLINT,
 	payment_method booking_payment_method,
+	payment_intent_id VARCHAR(255),
 	cost INTEGER,
 	has_checked_in BOOLEAN NOT NULL DEFAULT FALSE,
+	has_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
+
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
 	CONSTRAINT booking_pk
@@ -33,6 +36,26 @@ CREATE TABLE IF NOT EXISTS booking (
 
 	CONSTRAINT booking_check_quantities
 		CHECK (booking_quantity >= equipment_quantity),
+
+	CONSTRAINT booking_check_payment_intent_id
+		CHECK (payment_intent_id LIKE 'pi_%'),
+
+	CONSTRAINT booking_check_cost
+		CHECK (cost >= 0),
+
+	CONSTRAINT booking_check_cost_and_payment_method
+		CHECK (
+			(payment_method IS NULL AND cost IS NULL) OR
+			(payment_method = 'COUPON'::booking_payment_method AND cost IS NULL) OR
+			((payment_method = 'CARD'::booking_payment_method OR payment_method = 'CASH'::booking_payment_method) AND cost IS NOT NULL)
+		),
+
+	CONSTRAINT booking_check_has_cancelled_and_has_checked_in
+		CHECK (
+			(has_cancelled = FALSE AND has_checked_in = FALSE) OR
+			(has_cancelled = TRUE AND has_checked_in = FALSE) OR
+			(has_cancelled = FALSE AND has_checked_in = TRUE)
+		),
 
 	CONSTRAINT booking_check_created_at
 		CHECK (created_at <= get_now())

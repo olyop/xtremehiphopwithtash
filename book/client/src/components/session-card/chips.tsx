@@ -1,7 +1,7 @@
 import { FC, Fragment, createElement } from "react";
 
 import { Session } from "../../generated-types";
-import { isSessionInProgress } from "../../helpers";
+import { isSessionInProgress } from "../../helpers/util";
 import { determinePlural } from "../../utils";
 import SessionCardChip from "./chip";
 

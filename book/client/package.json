@@ -5,6 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite --mode development --force",
+		"tsc": "tsc --watch --noEmit",
+		"eslint": "eslint --ext .ts,.tsx .",
 		"test": "tsc && vite build --mode testing --force",
 		"build": "tsc && vite build --mode production --force"
 	},

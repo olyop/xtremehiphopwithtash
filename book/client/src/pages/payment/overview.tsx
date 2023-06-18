@@ -2,7 +2,7 @@ import { FC, Fragment, createElement } from "react";
 
 import SessionCard from "../../components/session-card";
 import { BookingCost, BookingInput, PaymentMethod, Session } from "../../generated-types";
-import { currencyDollarsFormatter } from "../../intl";
+import { currencyDollarsFormatter } from "../../helpers/intl";
 import { centsToDollars, determinePlural } from "../../utils";
 
 const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (

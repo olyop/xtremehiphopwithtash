@@ -3,6 +3,7 @@ package com.xtremehiphopwithtash.book.service;
 import com.stripe.model.PaymentIntent;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
+import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
@@ -24,7 +25,6 @@ public class BookingService {
 	private final BookingCostService bookingCostService;
 	private final SessionService sessionService;
 	private final CouponService couponService;
-	private final ReCaptchaService reCaptchaService;
 
 	private final BookingInputMapper bookingInputMapper;
 	private final StudentValidator studentValidator;
@@ -36,7 +36,6 @@ public class BookingService {
 		BookingCostService bookingCostService,
 		SessionService sessionService,
 		CouponService couponService,
-		ReCaptchaService reCaptchaService,
 		BookingInputMapper bookingInputMapper,
 		StudentValidator studentValidator,
 		SessionValidator sessionValidator,
@@ -46,17 +45,19 @@ public class BookingService {
 		this.bookingCostService = bookingCostService;
 		this.sessionService = sessionService;
 		this.couponService = couponService;
-		this.reCaptchaService = reCaptchaService;
 		this.bookingInputMapper = bookingInputMapper;
 		this.studentValidator = studentValidator;
 		this.sessionValidator = sessionValidator;
 		this.commonValidator = commonValidator;
 	}
 
-	public Booking createBooking(BookingInput input, String studentID, PaymentIntent paymentIntent) {
+	public Booking create(BookingInput input, String studentID) {
+		return create(input, studentID, null);
+	}
+
+	public Booking create(BookingInput input, String studentID, PaymentIntent paymentIntent) {
 		studentValidator.validateID(studentID);
-		validateInput(input);
-		validateCoupon(input.couponCode());
+		validateCreate(input);
 
 		Session session = sessionService.retreiveByID(input.sessionID());
 		BookingCost bookingCost = getBookingCost(input, session);
@@ -64,18 +65,18 @@ public class BookingService {
 		Booking booking = bookingInputMapper.map(input);
 		booking.setStudentID(studentID);
 
-		if (isBookingFree(bookingCost)) {
-			validateReCaptcha(input.reCaptchaToken());
+		if (isBookingFree(bookingCost, input)) {
 			booking.setCost(null);
 		} else if (isPayingWithCash(input)) {
-			validateReCaptcha(input.reCaptchaToken());
 			validateStudentHasNotBookedSession(studentID, input);
 			validateQuantitiesAreOne(input);
-			booking.setCost(bookingCost.getCost());
+
+			booking.setCost(bookingCost.getFinalCost());
 		} else if (isPayingWithCard(input, paymentIntent)) {
+			booking.setPaymentIntentID(paymentIntent.getId());
 			booking.setCost(paymentIntent.getAmount().intValue());
 		} else {
-			throw new ResolverException("Invalid payment method");
+			throw new IllegalStateException("Invalid payment method");
 		}
 
 		Booking savedBooking = bookingDAO.insert(booking);
@@ -88,14 +89,40 @@ public class BookingService {
 		return savedBooking;
 	}
 
-	public Booking updateBooking(UUID bookingID, BookingInput input) {
-		validateID(bookingID);
-
-		validateInput(input);
+	public Booking update(UUID bookingID, BookingInput input) {
+		validateUpdate(bookingID, input);
 
 		Booking booking = bookingInputMapper.map(input);
 
 		return bookingDAO.updateByID(bookingID, booking);
+	}
+
+	public void cancelByID(UUID bookingID, String studentID, String reCaptcha) {
+		validateID(bookingID);
+		studentValidator.validateID(studentID);
+
+		Booking booking = bookingDAO.selectByID(bookingID);
+
+		if (!booking.getStudentID().equals(studentID)) {
+			throw new ResolverException("Can only cancel your own bookings");
+		}
+
+		if (booking.getPaymentMethod() != PaymentMethod.CASH) {
+			throw new ResolverException("Can only cancel cash bookings");
+		}
+
+		bookingDAO.deleteByID(bookingID);
+	}
+
+	public void validateCreate(BookingInput input) {
+		validateInput(input);
+		validateSessionCapacity(input);
+		validateCoupon(input.couponCode());
+	}
+
+	public void validateUpdate(UUID bookingID, BookingInput input) {
+		validateID(bookingID);
+		validateInput(input);
 	}
 
 	private void validateID(UUID bookingID) {
@@ -125,9 +152,16 @@ public class BookingService {
 		}
 	}
 
-	private void validateReCaptcha(Optional<String> reCaptchaToken) {
-		if (reCaptchaToken.isEmpty() || !reCaptchaService.verifyResponse(reCaptchaToken.get())) {
-			throw new ResolverException("Invalid ReCaptcha");
+	private void validateSessionCapacity(BookingInput input) {
+		int capacityRemaining = retreiveCapacityRemaining(input.sessionID());
+		int equipmentRemaining = retreiveEquipmentRemaining(input.sessionID());
+
+		if (input.bookingQuantity() > capacityRemaining) {
+			throw new ResolverException("No capacity remaining");
+		}
+
+		if (input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() > equipmentRemaining : false) {
+			throw new ResolverException("No equipment remaining");
 		}
 	}
 
@@ -142,16 +176,15 @@ public class BookingService {
 	private void validateQuantitiesAreOne(BookingInput input) {
 		if (
 			input.bookingQuantity() != 1 &&
-			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : true)
+			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : false)
 		) {
 			throw new ResolverException("When paying with cash you can only book one session and hire one step.");
 		}
 	}
 
 	public BookingCost getBookingCost(BookingInput input, Session session) {
-		Optional<String> coupon = input.couponCode();
-		Optional<Integer> couponDiscountPercentage = coupon.isPresent()
-			? Optional.of(couponService.getDiscount(coupon.get()))
+		Optional<Integer> couponDiscountPercentage = input.couponCode().isPresent()
+			? Optional.of(couponService.getDiscount(input.couponCode().get()))
 			: Optional.empty();
 
 		return bookingCostService.getBookingCost(
@@ -165,8 +198,20 @@ public class BookingService {
 		);
 	}
 
-	private boolean isBookingFree(BookingCost bookingCost) {
-		return bookingCost.getCost() == 0;
+	private boolean isBookingFree(BookingCost bookingCost, BookingInput input) {
+		if (bookingCost.getFinalCost() == 0) {
+			if (input.paymentMethod().isEmpty()) {
+				// Free session
+				return true;
+			} else if (input.paymentMethod().get().equals(PaymentMethod.COUPON) && bookingCost.isFreeFromCoupon()) {
+				// Free session from coupon
+				return true;
+			} else {
+				throw new IllegalStateException("Invalid payment method");
+			}
+		} else {
+			return false;
+		}
 	}
 
 	private boolean isPayingWithCash(BookingInput input) {
@@ -190,20 +235,6 @@ public class BookingService {
 		validateID(bookingID);
 
 		return bookingDAO.selectByID(bookingID);
-	}
-
-	public UUID deleteByID(UUID bookingID) {
-		validateID(bookingID);
-
-		Booking booking = bookingDAO.selectByID(bookingID);
-		Session session = sessionService.retreiveByID(booking.getSessionID());
-
-		sessionValidator.validateIsNotInPast(session.getStartTime());
-
-		couponService.delete(booking.getStudentID(), booking.getBookingID());
-		bookingDAO.deleteByID(bookingID);
-
-		return bookingID;
 	}
 
 	public List<Booking> retreiveByStudentID(String studentID) {

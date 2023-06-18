@@ -69,6 +69,10 @@ const AccountPage: FC = () => {
 		}
 	};
 
+	const handleBookingUpdated = () => {
+		void refetch();
+	};
+
 	useEffect(() => {
 		if (user?.sub) {
 			void getAccountPage();
@@ -189,15 +193,14 @@ const AccountPage: FC = () => {
 					{bookings ? (
 						bookings.map(booking => (
 							<SessionPageBooking
-								hideDelete
-								hideCheckIn
 								hideUpdate
+								hideCheckIn
 								hideQuantities
 								hideEquipmentFee
 								key={booking.bookingID}
 								booking={booking as Booking}
 								session={booking.session as Session}
-								onBookingUpdated={queryResult.refetch}
+								onBookingUpdated={handleBookingUpdated}
 							/>
 						))
 					) : (

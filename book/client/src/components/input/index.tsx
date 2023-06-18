@@ -1,7 +1,7 @@
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import { ChangeEventHandler, FC, Fragment, ReactNode, createElement } from "react";
 
-import { currencyDollarsFormatter } from "../../intl";
+import { currencyDollarsFormatter } from "../../helpers/intl";
 import { capitalizeFirstLetter } from "../../utils";
 import Chip, { ChipInput } from "../chip";
 import {

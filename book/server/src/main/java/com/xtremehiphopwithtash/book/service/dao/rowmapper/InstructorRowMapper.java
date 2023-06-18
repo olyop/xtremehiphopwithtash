@@ -1,7 +1,6 @@
-package com.xtremehiphopwithtash.book.service.dao.mapper;
+package com.xtremehiphopwithtash.book.service.dao.rowmapper;
 
 import com.xtremehiphopwithtash.book.model.Instructor;
-import com.xtremehiphopwithtash.book.service.dao.util.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;

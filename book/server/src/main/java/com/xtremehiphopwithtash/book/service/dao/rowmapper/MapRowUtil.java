@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.dao.util;
+package com.xtremehiphopwithtash.book.service.dao.rowmapper;
 
 import com.xtremehiphopwithtash.book.other.LikertScale;
 import java.net.MalformedURLException;
@@ -6,10 +6,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.UUID;
-import org.springframework.stereotype.Component;
 
-@Component
-public class MapRowUtil {
+class MapRowUtil {
 
 	public static final UUID mapUUID(String value) {
 		if (value == null) {

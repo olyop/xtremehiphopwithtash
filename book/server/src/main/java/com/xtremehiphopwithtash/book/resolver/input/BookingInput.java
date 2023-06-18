@@ -10,6 +10,5 @@ public record BookingInput(
 	Integer bookingQuantity,
 	Optional<Integer> equipmentQuantity,
 	Optional<PaymentMethod> paymentMethod,
-	Optional<String> couponCode,
-	Optional<String> reCaptchaToken
+	Optional<String> couponCode
 ) {}

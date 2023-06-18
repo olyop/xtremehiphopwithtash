@@ -9,7 +9,6 @@ type Mutation {
 	deleteInstructorByID(instructorID: UUID!): UUID!
 	deleteCourseByID(courseID: UUID!): UUID!
 	deleteSessionByID(sessionID: UUID!): UUID!
-	deleteBookingByID(bookingID: UUID!): UUID!
 
 	updateStudentByID(input: DetailsInput!): Student!
 	updateLocationByID(locationID: UUID!, input: LocationInput!): Location!
@@ -18,8 +17,10 @@ type Mutation {
 	updateSessionByID(sessionID: UUID!, input: SessionInput!): Session!
 	updateBookingByID(bookingID: UUID!, input: BookingInput!): Booking!
 
-	createPaymentIntent(input: BookingInput!): CreatePaymentIntentResponse!
-	createBooking(input: BookingInput!): Booking!
+	createPaymentIntent(input: BookingInput!, reCaptcha: String!): CreatePaymentIntentResponse!
+	createBooking(input: BookingInput!, reCaptcha: String!): Booking!
 
 	checkInBooking(bookingID: UUID!, value: Boolean!): UUID!
+
+	cancelBookingByID(bookingID: UUID!, reCaptcha: String!): UUID!
 }

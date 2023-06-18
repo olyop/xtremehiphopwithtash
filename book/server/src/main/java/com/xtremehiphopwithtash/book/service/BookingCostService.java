@@ -57,24 +57,28 @@ public class BookingCostService {
 		return fullCost - couponDiscount;
 	}
 
-	private boolean isFreeFromCoupon(int fullCost, int couponDiscount) {
+	private boolean isFreeFromCoupon(int fullCost, Optional<String> couponCode, int couponDiscount) {
+		if (couponCode.isEmpty()) {
+			return false;
+		}
+
 		return fullCost - couponDiscount == 0;
 	}
 
 	private int calculateCardSurcharge(int cost, Optional<PaymentMethod> paymentMethod) {
-		if (paymentMethod.isEmpty() || paymentMethod.get().equals(PaymentMethod.CASH)) {
-			return 0;
+		if (paymentMethod.isPresent() && paymentMethod.get().equals(PaymentMethod.CARD)) {
+			return (int) Math.round(((cost + cardFee) / (1 - cardSurchargePercentage)) - cost);
 		}
 
-		return (int) Math.round(((cost + cardFee) / (1 - cardSurchargePercentage)) - cost);
+		return 0;
 	}
 
 	private int calculateCardSurchargeWithoutFee(int cardSurcharge, Optional<PaymentMethod> paymentMethod) {
-		if (paymentMethod.isEmpty() || paymentMethod.get().equals(PaymentMethod.CASH)) {
-			return 0;
+		if (paymentMethod.isPresent() && paymentMethod.get().equals(PaymentMethod.CARD)) {
+			return cardSurcharge - cardFee;
 		}
 
-		return cardSurcharge - cardFee;
+		return 0;
 	}
 
 	private int calculateFinalCost(int cost, int cardSurchargeAmount) {
@@ -96,7 +100,7 @@ public class BookingCostService {
 		int couponAmountToDiscount = calculateCouponAmountToDiscount(price, equipmentFee, equipmentQuantity);
 		int couponDiscount = calculateCouponDiscount(couponAmountToDiscount, couponDiscountPercentage);
 		int cost = calculateCost(fullCost, couponDiscount);
-		boolean isFreeFromCoupon = isFreeFromCoupon(fullCost, couponDiscount);
+		boolean isFreeFromCoupon = isFreeFromCoupon(fullCost, couponCode, couponDiscount);
 		int cardSurcharge = calculateCardSurcharge(cost, paymentMethod);
 		int cardSurchargeWithoutFee = calculateCardSurchargeWithoutFee(cardSurcharge, paymentMethod);
 		int finalCost = calculateFinalCost(cost, cardSurcharge);

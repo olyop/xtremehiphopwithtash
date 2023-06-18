@@ -9,7 +9,7 @@ import BookingForm from "../../../components/forms/booking-form";
 import Modal from "../../../components/modal";
 import SessionCard from "../../../components/session-card";
 import { BookingInput, Session } from "../../../generated-types";
-import { determineSessionDateLabel } from "../../../helpers";
+import { determineSessionDateLabel } from "../../../helpers/util";
 import { useModal } from "../../../hooks";
 import { initialInput } from "./initial-input";
 import ToPaymentButton from "./to-payment-button";

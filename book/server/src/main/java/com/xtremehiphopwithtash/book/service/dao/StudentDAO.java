@@ -2,8 +2,8 @@ package com.xtremehiphopwithtash.book.service.dao;
 
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityBaseDAO;
-import com.xtremehiphopwithtash.book.service.dao.mapper.StudentRowMapper;
 import com.xtremehiphopwithtash.book.service.dao.query.StudentQuery;
+import com.xtremehiphopwithtash.book.service.dao.rowmapper.StudentRowMapper;
 import java.util.List;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

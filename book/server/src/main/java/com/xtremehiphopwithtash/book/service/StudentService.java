@@ -1,6 +1,5 @@
 package com.xtremehiphopwithtash.book.service;
 
-import com.stripe.model.Customer;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;

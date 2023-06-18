@@ -120,7 +120,7 @@ type Booking {
 }
 
 type BookingCost {
-	sessionCost: PositiveInt!
+	sessionCost: NonNegativeInt!
 	equipmentCost: NonNegativeInt!
 	bookingCost: NonNegativeInt!
 	couponDiscountPercentage: NonNegativeInt!

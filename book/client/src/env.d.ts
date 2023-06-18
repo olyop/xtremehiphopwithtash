@@ -2,6 +2,7 @@
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 interface ImportMetaEnv {
+	readonly VITE_GOOGLE_RECAPTCHA_ACTION: string;
 	readonly VITE_GOOGLE_RECAPTCHA_SITE_KEY: string;
 	readonly VITE_GOOGLE_MAPS_API_KEY: string;
 	readonly VITE_AUTH0_REDIRECT_URL: string;

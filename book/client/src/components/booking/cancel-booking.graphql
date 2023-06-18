@@ -1,0 +1,3 @@
+mutation cancelBooking($bookingID: UUID!, $reCaptcha: String!) {
+	cancelBookingByID(bookingID: $bookingID, reCaptcha: $reCaptcha)
+}
