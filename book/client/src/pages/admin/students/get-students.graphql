@@ -2,6 +2,10 @@ query getStudents {
 	getStudents {
 		studentID
 		bookingsTotal
+		bookingsTotalPaymentMethodFree
+		bookingsTotalPaymentMethodCard
+		bookingsTotalPaymentMethodCash
+		# bookingsTotalPaymentMethodCoupon
 		details {
 			detailsID
 			firstName

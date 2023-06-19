@@ -5,6 +5,7 @@ query getSessionsInPeriod($input: GetSessionsInput!) {
 		startTime
 		endTime
 		price
+		hasBooked
 		capacityRemaining
 		location {
 			locationID

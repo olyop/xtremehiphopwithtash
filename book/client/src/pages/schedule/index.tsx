@@ -77,7 +77,6 @@ const Schedule: FC = () => {
 				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
 			</div>
 			<Controls
-				loading={loading}
 				breakpoint={breakpoint}
 				onReset={handleResetClick}
 				onBackOneWeek={handleBackOneWeekClick}

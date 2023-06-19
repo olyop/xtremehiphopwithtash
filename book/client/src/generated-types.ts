@@ -372,6 +372,7 @@ export type Session = {
 	readonly equipmentFee: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly equipmentHired: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly equipmentRemaining: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly hasBooked: Scalars["Boolean"]["output"];
 	readonly instructors: ReadonlyArray<Instructor>;
 	readonly isCapacityRemaining: Scalars["Boolean"]["output"];
 	readonly isEquipmentRemaining: Scalars["Boolean"]["output"];
@@ -409,6 +410,9 @@ export type Student = {
 	readonly __typename: "Student";
 	readonly bookings: Maybe<ReadonlyArray<Booking>>;
 	readonly bookingsTotal: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly bookingsTotalPaymentMethodCard: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly bookingsTotalPaymentMethodCash: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly bookingsTotalPaymentMethodFree: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly details: Details;
 	readonly isAdministrator: Scalars["Boolean"]["output"];
@@ -875,6 +879,9 @@ export type GetStudentsQuery = {
 		{
 			readonly studentID: string;
 			readonly bookingsTotal: number | null;
+			readonly bookingsTotalPaymentMethodFree: number | null;
+			readonly bookingsTotalPaymentMethodCard: number | null;
+			readonly bookingsTotalPaymentMethodCash: number | null;
 			readonly details: {
 				readonly detailsID: string;
 				readonly firstName: string;
@@ -1036,6 +1043,7 @@ export type GetSessionsInPeriodQuery = {
 			readonly startTime: number;
 			readonly endTime: number;
 			readonly price: number | null;
+			readonly hasBooked: boolean;
 			readonly capacityRemaining: number | null;
 			readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
 			readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {

@@ -3,6 +3,7 @@ package com.xtremehiphopwithtash.book.resolver;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Student;
+import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
 import com.xtremehiphopwithtash.book.service.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.BookingService;
@@ -105,6 +106,53 @@ public class StudentResolver {
 	@SchemaMapping(typeName = "Student", field = "bookingsTotal")
 	public Integer getStudentBookingsTotal(Student student) {
 		int bookingsTotal = bookingService.retreiveStudentTotal(student.getStudentID());
+
+		if (bookingsTotal == 0) {
+			return null;
+		}
+
+		return bookingsTotal;
+	}
+
+	@SchemaMapping(typeName = "Student", field = "bookingsTotalPaymentMethodFree")
+	public Integer getStudentBookingsTotalPaymentMethodFree(Student student) {
+		int bookingsTotal = bookingService.retreiveStudentTotalAndFree(student.getStudentID());
+
+		if (bookingsTotal == 0) {
+			return null;
+		}
+
+		return bookingsTotal;
+	}
+
+	@SchemaMapping(typeName = "Student", field = "bookingsTotalPaymentMethodCard")
+	public Integer getStudentBookingsTotalPaymentMethod(Student student) {
+		int bookingsTotal = bookingService.retreiveStudentTotalAndPaymentMethod(student.getStudentID(), PaymentMethod.CARD);
+
+		if (bookingsTotal == 0) {
+			return null;
+		}
+
+		return bookingsTotal;
+	}
+
+	@SchemaMapping(typeName = "Student", field = "bookingsTotalPaymentMethodCash")
+	public Integer getStudentBookingsTotalPaymentMethodCash(Student student) {
+		int bookingsTotal = bookingService.retreiveStudentTotalAndPaymentMethod(student.getStudentID(), PaymentMethod.CASH);
+
+		if (bookingsTotal == 0) {
+			return null;
+		}
+
+		return bookingsTotal;
+	}
+
+	@SchemaMapping(typeName = "Student", field = "bookingsTotalPaymentMethodCoupon")
+	public Integer getStudentBookingsTotalPaymentMethodCoupon(Student student) {
+		int bookingsTotal = bookingService.retreiveStudentTotalAndPaymentMethod(
+			student.getStudentID(),
+			PaymentMethod.COUPON
+		);
 
 		if (bookingsTotal == 0) {
 			return null;

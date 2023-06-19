@@ -14,6 +14,7 @@ import com.xtremehiphopwithtash.book.service.InstructorService;
 import com.xtremehiphopwithtash.book.service.LocationService;
 import com.xtremehiphopwithtash.book.service.SessionService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -81,7 +82,9 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "bookings")
-	public List<Booking> getBookings(Session session) {
+	public List<Booking> getBookings(@AuthenticationPrincipal Jwt jwt, Session session) {
+		auth0JwtService.validateAdministrator(jwt);
+
 		List<Booking> bookings = bookingService.retreiveBySessionID(session.getSessionID());
 
 		if (bookings.isEmpty()) {
@@ -143,6 +146,13 @@ public class SessionResolver {
 	@SchemaMapping(typeName = "Session", field = "isEquipmentRemaining")
 	public Boolean getIsEquipmentRemaining(@Argument short equipmentQuantity, Session session) {
 		return bookingService.retreiveIsEquipmentRemaining(session.getSessionID(), equipmentQuantity);
+	}
+
+	@SchemaMapping(typeName = "Session", field = "hasBooked")
+	public Boolean getHasBooked(Principal principal, Session session) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		return bookingService.retreiveHasBooked(session.getSessionID(), studentID);
 	}
 
 	@MutationMapping

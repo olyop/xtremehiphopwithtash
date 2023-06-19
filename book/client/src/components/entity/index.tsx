@@ -30,12 +30,12 @@ const Entity: FC<EntityPropTypes> = ({
 			className={`flex items-start justify-between h-full p-2 border-b last:border-b-0 ${className ?? ""}`}
 		>
 			{isLeftALink && leftLink ? (
-				<Link className={`"flex items-center gap-2 ${leftClassName ?? ""}`} to={leftLink}>
+				<Link className={`flex items-center gap-2 ${leftClassName ?? ""}`} to={leftLink}>
 					{photoNode}
 					<div>{textNode}</div>
 				</Link>
 			) : (
-				<div className={`"flex items-center gap-2 ${leftClassName ?? ""}`}>
+				<div className={`flex items-center gap-2 ${leftClassName ?? ""}`}>
 					{photoNode}
 					<div>{textNode}</div>
 				</div>
@@ -51,7 +51,7 @@ export interface EntityPropTypes {
 	text: ReactNode;
 	description: ReactNode;
 	isLeftALink?: boolean;
-	leftLink?: string;
+	leftLink?: string | undefined;
 	rightContent?: ReactNode;
 	className?: string | undefined;
 	leftClassName?: string | undefined;

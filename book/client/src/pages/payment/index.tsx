@@ -104,7 +104,9 @@ const PaymentPage: FC = () => {
 	useEffect(() => {
 		if (createBookingResult.data) {
 			setTimeout(() => {
-				navigate("/payment-success");
+				navigate("/payment-success", {
+					replace: true,
+				});
 			}, 1500);
 		}
 	}, [createBookingResult.data]);
@@ -160,7 +162,9 @@ const PaymentPage: FC = () => {
 				)}
 				{bookingInput.paymentMethod === PaymentMethod.CARD && reCaptchaToken ? (
 					<PaymentPageStripe bookingInput={bookingInput} setIsPaying={setIsPaying} reCaptcha={reCaptchaToken} />
-				) : bookingInput.paymentMethod === PaymentMethod.COUPON || bookingInput.paymentMethod === PaymentMethod.CASH ? (
+				) : bookingInput.paymentMethod === PaymentMethod.COUPON ||
+				  bookingInput.paymentMethod === PaymentMethod.CASH ||
+				  bookingCost.finalCost === 0 ? (
 					<Fragment>
 						<FormError error={createBookingResult.error} />
 						<PaymentButton text="Book Now" onClick={handleCreateBooking} disabled={reCaptchaToken === null} />

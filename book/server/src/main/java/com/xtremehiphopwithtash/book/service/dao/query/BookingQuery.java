@@ -128,7 +128,7 @@ public class BookingQuery {
 	public final String SELECT_SUM_BOOKINGS_BY_STUDENT_ID = String.format(
 		"""
 			SELECT
-				sum(booking_quantity) as booking_quantity
+				coalesce(sum(booking_quantity), 0) as booking_quantity
 			FROM
 				booking
 			WHERE
@@ -136,6 +136,35 @@ public class BookingQuery {
 		""",
 		columnNames
 	);
+
+	public final String SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_FREE = String.format(
+		"""
+			SELECT
+				coalesce(sum(booking_quantity), 0) as booking_quantity
+			FROM
+				booking
+			WHERE
+				student_id = :studentID AND
+				(payment_method = NULL OR payment_method = 'COUPON'::booking_payment_method);
+		""",
+		columnNames
+	);
+
+	public final String SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_PAYMENT_METHOD = String.format(
+		"""
+			SELECT
+				coalesce(sum(booking_quantity), 0) as booking_quantity
+			FROM
+				booking
+			WHERE
+				student_id = :studentID AND
+				payment_method = :paymentMethod::booking_payment_method;
+		""",
+		columnNames
+	);
+
+	public final String SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID =
+		"SELECT EXISTS (SELECT 1 FROM booking WHERE session_id = :sessionID AND student_id = :studentID);";
 
 	public final String SELECT_PAYMENT_METHODS = "SELECT UNNEST(ENUM_RANGE(NULL::payment_methods)) AS payment_methods;";
 

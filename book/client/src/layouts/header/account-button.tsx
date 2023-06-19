@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 import Button from "../../components/button";
 import { Breakpoint, useBreakpoint } from "../../hooks";
 
-const className = "!shadow-xl !hover:shadow-2xl";
-
 const AccountButton: FC = () => {
 	const breakpoint = useBreakpoint();
 	const { user, isAuthenticated } = useAuth0();
@@ -23,7 +21,7 @@ const AccountButton: FC = () => {
 				transparent
 				ariaLabel="Account Page"
 				text={userHasImage || breakpoint === Breakpoint.SMALL ? undefined : "Account"}
-				className={userHasImage ? `!p-0 ${className}` : className}
+				className={`!shadow-2xl ${userHasImage ? "!p-0 " : ""}`}
 				leftIcon={c => (userHasImage ? undefined : <UserCircleIcon className={c} />)}
 				childrenNode={
 					userHasImage && (

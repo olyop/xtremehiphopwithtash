@@ -115,13 +115,13 @@ const AccountPage: FC = () => {
 	}
 
 	const {
-		getStudentByID: { details, bookings, createdAt },
+		getStudentByID: { studentID, details, bookings, createdAt },
 	} = queryData;
 
 	const detailsClassName = "flex flex-col gap-1";
 
 	return (
-		<Page className="p-4 flex flex-col gap-6 pb-56">
+		<Page id={studentID} className="p-4 flex flex-col gap-6 pb-56">
 			<h1 className="text-3xl py-2 font-bold text-center md:text-left">My Account</h1>
 			<div className={detailsClassName}>
 				<p>

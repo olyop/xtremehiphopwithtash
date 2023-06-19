@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.dao;
 
 import com.xtremehiphopwithtash.book.model.Booking;
+import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityBaseDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityDeleteDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityUpdateDAO;
@@ -115,6 +116,25 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
 
+	public int selectSumByStudentIDAndFree(String studentID) {
+		String sql = query.SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_FREE;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("studentID", studentID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+	}
+
+	public int selectSumByStudentIDAndPaymentMethod(String studentID, PaymentMethod paymentMethod) {
+		String sql = query.SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_PAYMENT_METHOD;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("studentID", studentID);
+		paramSource.addValue("paymentMethod", paymentMethod.name());
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+	}
+
 	public int selectCapacityBooked(UUID sessionID) {
 		String sql = query.SELECT_CAPACITY_BOOKED_BY_SESSION_ID;
 
@@ -185,5 +205,15 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		paramSource.addValue("hasCheckedIn", hasCheckedIn);
 
 		jdbcTemplate.update(sql, paramSource);
+	}
+
+	public boolean existsBySessionAndStudent(UUID sessionID, String studentID) {
+		String sql = query.SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("sessionID", sessionID);
+		paramSource.addValue("studentID", studentID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 }

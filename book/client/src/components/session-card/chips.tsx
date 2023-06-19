@@ -24,6 +24,7 @@ const SessionCardChips: FC<PropTypes> = ({ session }) => (
 					<SessionCardChip text="Fully Booked" colorClassName="bg-purple-500" />
 				)}
 				{session.price === null && <SessionCardChip text="Free" colorClassName="bg-green-500" />}
+				{session.hasBooked && <SessionCardChip text="Booked" colorClassName="bg-blue-500" />}
 			</Fragment>
 		)}
 	</div>

@@ -19,10 +19,32 @@ const Student: FC<PropTypes> = ({ student }) => (
 		}
 		description={
 			<Fragment>
-				{student.details.mobilePhoneNumber} :{" "}
+				{student.details.mobilePhoneNumber}
+				<Fragment> : </Fragment>
+				{student.details.emailAddress}
+				<br />
 				{student.bookingsTotal ? (
 					<Fragment>
-						{student.bookingsTotal} booking{determinePlural(student.bookingsTotal)}
+						{student.bookingsTotal}
+						<Fragment> booking{determinePlural(student.bookingsTotal)}</Fragment>
+						{student.bookingsTotalPaymentMethodCard && (
+							<Fragment>
+								<Fragment>, </Fragment>
+								<Fragment>{student.bookingsTotalPaymentMethodCard} card</Fragment>
+							</Fragment>
+						)}
+						{student.bookingsTotalPaymentMethodCash && (
+							<Fragment>
+								<Fragment>, </Fragment>
+								<Fragment>{student.bookingsTotalPaymentMethodCash} cash</Fragment>
+							</Fragment>
+						)}
+						{student.bookingsTotalPaymentMethodFree && (
+							<Fragment>
+								<Fragment>, </Fragment>
+								<Fragment>{student.bookingsTotalPaymentMethodFree} free</Fragment>
+							</Fragment>
+						)}
 					</Fragment>
 				) : (
 					<span className="text-gray-500">No bookings</span>

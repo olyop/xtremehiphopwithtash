@@ -1,4 +1,4 @@
-import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
+import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import ChevronUpIcon from "@heroicons/react/24/solid/ChevronUpIcon";
 import { FC, createElement } from "react";
@@ -30,19 +30,18 @@ const determineBackLabel = (breakpoint: Breakpoint) => {
 	}
 };
 
-const ScheduleControls: FC<PropTypes> = ({ loading, onReset, breakpoint, onBackOneWeek, onForwardOneWeek }) => {
+const ScheduleControls: FC<PropTypes> = ({ onReset, breakpoint, onBackOneWeek, onForwardOneWeek }) => {
 	const isMobile =
 		breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL || breakpoint === Breakpoint.MEDIUM;
 	return (
 		<div className="flex flex-row justify-between w-full gap-2 p-2 lg:pl-4 lg:p-4 lg:gap-3 lg:justify-between lg:flex-col">
 			<Button
 				transparent
-				className="px-1.5"
+				className="!px-2"
 				onClick={onReset}
 				ariaLabel="Reset to today"
 				text={isMobile ? "Today" : undefined}
-				iconClassName={loading ? "animate-spin" : undefined}
-				leftIcon={className => <ArrowPathIcon className={className} />}
+				leftIcon={className => <CalendarIcon className={className} />}
 			/>
 			<div className="hidden w-full h-px lg:block lg:h-px bg-slate-300" />
 			<div className="grid flex-grow grid-cols-2 grid-rows-1 gap-2 lg:grid-cols-1 lg:grid-rows-2 lg:gap-2">
@@ -68,7 +67,6 @@ const ScheduleControls: FC<PropTypes> = ({ loading, onReset, breakpoint, onBackO
 };
 
 interface PropTypes {
-	loading: boolean;
 	onReset: () => void;
 	breakpoint: Breakpoint;
 	onBackOneWeek: () => void;

@@ -20,6 +20,9 @@ type Student {
 
 	bookings: [Booking!]
 	bookingsTotal: PositiveInt
+	bookingsTotalPaymentMethodFree: PositiveInt
+	bookingsTotalPaymentMethodCard: PositiveInt
+	bookingsTotalPaymentMethodCash: PositiveInt
 	reviews: [Review!]!
 
 	createdAt: UnixTime!
@@ -99,6 +102,8 @@ type Session {
 	course: Course!
 	instructors: [Instructor!]!
 	bookings: [Booking!]
+
+	hasBooked: Boolean!
 
 	createdAt: UnixTime!
 }

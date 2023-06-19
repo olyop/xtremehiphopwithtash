@@ -1,13 +1,15 @@
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
+import ArrowRightOnRectangleIcon from "@heroicons/react/24/solid/ArrowRightOnRectangleIcon";
 import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
+import MinusIcon from "@heroicons/react/24/solid/MinusIcon";
 import PhoneIcon from "@heroicons/react/24/solid/PhoneIcon";
-import XCircleIcon from "@heroicons/react/24/solid/XCircleIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
-import { FC, Fragment, createElement, useEffect, useState } from "react";
+import { FC, Fragment, createElement, useContext, useEffect, useState } from "react";
 
+import { IsAdministratorContext } from "../../contexts/is-administrator";
 import {
 	Booking,
 	BookingInput,
@@ -49,6 +51,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	hideEquipmentFee = false,
 	hideStripePaymentLink = false,
 }) => {
+	const { isAdministrator } = useContext(IsAdministratorContext);
 	const [reCaptchaToken, setReCaptchaToken, executeReCaptcha] = useReCaptcha();
 
 	const [isUpdateModalOpen, openUpdateModal, closeUpdateModal] = useModal();
@@ -70,8 +73,10 @@ const SessionPageBooking: FC<PropTypes> = ({
 		});
 	};
 
+	const canCancel = !booking.hasCancelled && (isAdministrator || booking.paymentMethod !== PaymentMethod.CARD);
+
 	const handleCancelBooking = () => {
-		if (booking.paymentMethod === PaymentMethod.CASH && reCaptchaToken) {
+		if (canCancel && reCaptchaToken) {
 			void cancelBooking({
 				variables: {
 					reCaptcha: reCaptchaToken,
@@ -156,12 +161,14 @@ const SessionPageBooking: FC<PropTypes> = ({
 	return (
 		<Entity
 			id={booking.bookingID}
-			isLeftALink
-			leftLink={`/session/${session.sessionID}`}
+			isLeftALink={!booking.hasCancelled}
+			leftLink={booking.hasCancelled ? undefined : `/session/${session.sessionID}`}
 			rightClassName="p-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
 			className={`!p-0 ${
-				isSessionInPast ? `bg-gray-100 opacity-60 ${hideUpdate ? "" : "pointer-events-none select-none"}` : ""
+				isSessionInPast || booking.hasCancelled
+					? `bg-gray-100 opacity-60 ${hideUpdate ? "" : "pointer-events-none select-none"}`
+					: ""
 			}`}
 			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
 			description={
@@ -199,21 +206,20 @@ const SessionPageBooking: FC<PropTypes> = ({
 			}
 			rightContent={
 				<Fragment>
-					{hideCheckIn || (
+					{!hideCheckIn && !booking.hasCancelled && (
 						<Fragment>
 							<Button
-								transparent
 								text={booking.hasCheckedIn ? "Checked In" : "Check In"}
 								onClick={openCheckInModal}
 								className={`!px-2 !text-xs !h-7 text-white ${
-									booking.hasCheckedIn ? " bg-green-600 hover:bg-green-800" : "bg-orange-600 hover:bg-orange-800"
+									booking.hasCheckedIn ? "!bg-green-600" : "!bg-orange-500"
 								}`}
 								ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
 								leftIcon={className =>
 									booking.hasCheckedIn ? (
 										<CheckCircleIcon className={`!h-4 !w-4 text-white ${className}}`} />
 									) : (
-										<XCircleIcon className={`!h-4 !w-4 text-white ${className}}`} />
+										<ArrowRightOnRectangleIcon className={`!h-4 !w-4 text-white ${className}}`} />
 									)
 								}
 							/>
@@ -255,15 +261,22 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</Fragment>
 					)}
-					{!hideCancel && !isSessionInPast && !booking.hasCancelled && (
+					{!hideCancel && !isSessionInPast && (
 						<Fragment>
 							<Button
 								transparent
-								text="Cancel"
 								ariaLabel="Cancel"
-								className="!px-2 !text-xs !h-7"
+								disabled={booking.hasCancelled}
 								onClick={openCancelModal}
-								leftIcon={className => <XMarkIcon className={`!h-4 !w-4 ${className}}`} />}
+								text={booking.hasCancelled ? "Cancelled" : "Cancel"}
+								className={`!px-2 !text-xs !h-7 ${booking.hasCancelled ? "hover:bg-transparent select-none" : ""}`}
+								leftIcon={className =>
+									booking.hasCancelled ? (
+										<MinusIcon className={`!h-4 !w-4 ${className}}`} />
+									) : (
+										<XMarkIcon className={`!h-4 !w-4 ${className}}`} />
+									)
+								}
 							/>
 							<Modal
 								title="Cancel Booking"
@@ -287,7 +300,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 									)
 								}
 								buttons={
-									booking.paymentMethod === PaymentMethod.CARD ? null : (
+									canCancel && reCaptchaToken ? (
 										<Fragment>
 											<Button
 												text="Confirm"
@@ -303,7 +316,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 												leftIcon={className => <XMarkIcon className={className} />}
 											/>
 										</Fragment>
-									)
+									) : null
 								}
 							/>
 						</Fragment>

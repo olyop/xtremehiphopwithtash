@@ -148,7 +148,7 @@ public class BookingService {
 			}
 
 			boolean canCancel =
-				(booking.getPaymentMethod() == null && booking.getCost() == 0) ||
+				(booking.getPaymentMethod() == null && booking.getCost() == null) ||
 				booking.getPaymentMethod() == PaymentMethod.COUPON ||
 				booking.getPaymentMethod() == PaymentMethod.CASH;
 
@@ -280,6 +280,18 @@ public class BookingService {
 		return bookingDAO.selectSumByStudentID(studentID);
 	}
 
+	public int retreiveStudentTotalAndFree(String studentID) {
+		studentValidator.validateID(studentID);
+
+		return bookingDAO.selectSumByStudentIDAndFree(studentID);
+	}
+
+	public int retreiveStudentTotalAndPaymentMethod(String studentID, PaymentMethod paymentMethod) {
+		studentValidator.validateID(studentID);
+
+		return bookingDAO.selectSumByStudentIDAndPaymentMethod(studentID, paymentMethod);
+	}
+
 	public List<Booking> retreiveBySessionID(UUID sessionID) {
 		sessionValidator.validateID(sessionID);
 
@@ -320,6 +332,12 @@ public class BookingService {
 		sessionValidator.validateID(sessionID);
 
 		return bookingDAO.selectEquipmentRemaining(sessionID);
+	}
+
+	public boolean retreiveHasBooked(UUID sessionID, String studentID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.existsBySessionAndStudent(sessionID, studentID);
 	}
 
 	public void checkIn(UUID bookingID, boolean hasCheckedIn) {
