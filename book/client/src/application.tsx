@@ -12,8 +12,8 @@ import Routes from "./routes";
 
 const Application: FC = () => (
 	<StrictMode>
-		<ReCaptcha>
-			<BrowserRouter>
+		<BrowserRouter>
+			<ReCaptcha>
 				<Auth0>
 					<ApolloProvider>
 						<IsAdministratorProvider>
@@ -25,8 +25,8 @@ const Application: FC = () => (
 						</IsAdministratorProvider>
 					</ApolloProvider>
 				</Auth0>
-			</BrowserRouter>
-		</ReCaptcha>
+			</ReCaptcha>
+		</BrowserRouter>
 	</StrictMode>
 );
 

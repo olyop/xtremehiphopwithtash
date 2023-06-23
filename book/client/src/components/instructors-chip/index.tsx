@@ -3,8 +3,8 @@ import { FC, Fragment, createElement } from "react";
 import { Instructor } from "../../generated-types";
 import InstructorChip from "../instructor-chip";
 
-const InstructorsChip: FC<PropTypes> = ({ instructors }) => (
-	<div className="flex items-center self-end">
+const InstructorsChip: FC<PropTypes> = ({ className, instructors }) => (
+	<div className={`flex items-center self-end ${className ?? ""}`}>
 		{instructors.map((instructor, index) => (
 			<Fragment key={instructor.instructorID}>
 				{index > 0 && (
@@ -17,6 +17,7 @@ const InstructorsChip: FC<PropTypes> = ({ instructors }) => (
 );
 
 interface PropTypes {
+	className?: string;
 	instructors: Instructor[];
 }
 

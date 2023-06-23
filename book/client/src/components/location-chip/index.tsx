@@ -81,7 +81,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 							<Chip
 								chip={{
 									chipID: location.locationID,
-									text: "Paste this code into Maps",
+									text: "Paste into Google Maps",
 									icon: iconClassName => <InformationCircleIcon className={iconClassName} />,
 								}}
 							/>

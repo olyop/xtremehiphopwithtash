@@ -20,8 +20,8 @@ query getAccountPage {
 			equipmentQuantity
 			paymentMethod
 			cost
-			hasCheckedIn
-			hasCancelled
+			isCheckedIn
+			isCancelled
 			session {
 				sessionID
 				title

@@ -16,6 +16,7 @@ public class Session extends Base {
 	private UUID courseID;
 	private Integer capacityAvailable;
 	private Integer equipmentAvailable;
+	private boolean isCancelled;
 
 	public UUID getSessionID() {
 		return sessionID;
@@ -103,5 +104,13 @@ public class Session extends Base {
 
 	public void setEquipmentAvailable(Integer equipmentAvailable) {
 		this.equipmentAvailable = equipmentAvailable;
+	}
+
+	public boolean isCancelled() {
+		return isCancelled;
+	}
+
+	public void setCancelled(boolean isCancelled) {
+		this.isCancelled = isCancelled;
 	}
 }

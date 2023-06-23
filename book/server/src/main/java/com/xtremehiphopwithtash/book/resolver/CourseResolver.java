@@ -84,6 +84,6 @@ public class CourseResolver {
 	public UUID deleteCourseByID(@Argument UUID courseID, @AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
-		return courseService.deleteByID(courseID);
+		return courseService.cancelByID(courseID);
 	}
 }

@@ -44,7 +44,7 @@ public class LocationValidator implements ValidatorCRUD<UUID, LocationInput> {
 	}
 
 	@Override
-	public void validateDelete(UUID locationID) {
+	public void validateCancel(UUID locationID) {
 		validateID(locationID);
 		validateCourses(locationID);
 		validateSessions(locationID);

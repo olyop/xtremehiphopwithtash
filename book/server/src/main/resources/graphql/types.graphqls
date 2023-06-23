@@ -99,6 +99,8 @@ type Session {
 	equipmentRemaining: PositiveInt
 	isEquipmentRemaining(equipmentQuantity: PositiveInt): Boolean!
 
+	isCancelled: Boolean!
+
 	course: Course!
 	instructors: [Instructor!]!
 	bookings: [Booking!]
@@ -117,8 +119,8 @@ type Booking {
 	paymentMethod: PaymentMethod
 	paymentIntentID: String
 	cost: Float
-	hasCheckedIn: Boolean!
-	hasCancelled: Boolean!
+	isCheckedIn: Boolean!
+	isCancelled: Boolean!
 
 	student: Student!
 	session: Session!

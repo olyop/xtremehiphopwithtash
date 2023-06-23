@@ -101,7 +101,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 				isOpen={isModalOpen}
 				onClose={handleModalClose}
 				title="Book Session"
-				subTitle={determineSessionDateLabel(session)}
+				subTitle={determineSessionDateLabel(session, true, true)}
 				contentClassName="flex flex-col gap-4"
 				icon={className => <CalendarIcon className={className} />}
 				children={

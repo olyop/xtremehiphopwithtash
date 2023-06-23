@@ -21,7 +21,7 @@ const AccountButton: FC = () => {
 				transparent
 				ariaLabel="Account Page"
 				text={userHasImage || breakpoint === Breakpoint.SMALL ? undefined : "Account"}
-				className={`!shadow-2xl ${userHasImage ? "!p-0 " : ""}`}
+				className={`${userHasImage ? "!p-0 " : ""} !w-12 !h-12 !shadow-3xl`}
 				leftIcon={c => (userHasImage ? undefined : <UserCircleIcon className={c} />)}
 				childrenNode={
 					userHasImage && (

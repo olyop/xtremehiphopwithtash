@@ -10,8 +10,8 @@ query getSessionBookings($sessionID: UUID!) {
 			paymentMethod
 			paymentIntentID
 			cost
-			hasCheckedIn
-			hasCancelled
+			isCheckedIn
+			isCancelled
 			session {
 				sessionID
 			}

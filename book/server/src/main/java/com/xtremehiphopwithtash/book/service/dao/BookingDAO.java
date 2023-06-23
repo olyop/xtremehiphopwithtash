@@ -100,6 +100,14 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 
+	public List<Booking> selectBySessionIDNotCancelled(UUID sessionID) {
+		String sql = query.SELECT_BY_SESSION_ID_AND_NOT_CANCELLED;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
 	public List<Booking> selectByStudentID(String studentID) {
 		String sql = query.SELECT_BY_STUDENT_ID;
 
@@ -187,8 +195,8 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
-	public boolean existsByStudentIDAndSessionID(String studentID, UUID sessionID) {
-		String sql = query.SELECT_EXISTS_BY_STUDENT_ID_AND_SESSION_ID;
+	public boolean existsByCashFreeAndStudentIDAndSessionID(String studentID, UUID sessionID) {
+		String sql = query.SELECT_EXISTS_BY_CASH_FREE_AND_STUDENT_ID_AND_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("studentID", studentID);

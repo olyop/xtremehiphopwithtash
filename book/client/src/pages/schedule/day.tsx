@@ -10,7 +10,7 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 	return (
 		<div
 			data-unix={day.unix}
-			className={`bg-white p-1 overflow-y-auto overflow-x-hidden transition-colors grid grid-rows-[1.25rem,_1fr] grid-cols-[calc((100vw_/_2)_-_0.5rem)] md:grid-cols-1 gap-0.5 ${
+			className={`bg-white p-1 pt-0.5 overflow-y-auto overflow-x-hidden transition-colors grid grid-rows-[1.25rem,_1fr] grid-cols-[calc((100vw_/_2)_-_0.5rem)] md:grid-cols-1 gap-0.5 ${
 				day.isToday ? "!bg-gray-200" : day.isInPast ? "opacity-60" : ""
 			}`}
 		>
@@ -20,9 +20,11 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 			</div>
 			{day.sessions ? (
 				<div className="flex flex-col gap-1">
-					{day.sessions?.map(session => (
-						<SessionCard key={session.sessionID} session={session} />
-					))}
+					{day.sessions
+						.filter(({ isCancelled }) => isAdministrator || !isCancelled)
+						.map(session => (
+							<SessionCard key={session.sessionID} session={session} />
+						))}
 				</div>
 			) : (
 				<p className="text-xs text-gray-500 select-none">No sessions</p>

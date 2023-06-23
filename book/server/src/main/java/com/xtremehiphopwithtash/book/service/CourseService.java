@@ -73,8 +73,8 @@ public class CourseService implements EntityServiceInter<Course, CourseInput, UU
 	}
 
 	@Override
-	public UUID deleteByID(UUID courseID) {
-		validator.validateDelete(courseID);
+	public UUID cancelByID(UUID courseID) {
+		validator.validateCancel(courseID);
 
 		courseDefaultInstructorDAO.deleteByCourseID(courseID);
 		courseDAO.deleteByID(courseID);

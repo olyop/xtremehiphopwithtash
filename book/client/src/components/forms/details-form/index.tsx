@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 import { DetailsInput } from "../../../generated-types";
 import Input, { InputOnChange, InputType } from "../../input";
 
-const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false }) => {
+const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCreateAccount = false }) => {
 	const handleChange =
 		(key: keyof DetailsInput): InputOnChange =>
 		value => {
@@ -15,36 +15,40 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false }) => {
 
 	return (
 		<Fragment>
-			<Input
-				id="firstName"
-				name="First Name"
-				autoComplete="given-name"
-				placeHolder="First Name"
-				value={input.firstName}
-				type={InputType.TEXT}
-				onChange={handleChange("firstName")}
-			/>
-			<Input
-				id="lastName"
-				name="Last Name"
-				autoComplete="family-name"
-				placeHolder="Last Name"
-				value={input.lastName}
-				type={InputType.TEXT}
-				onChange={handleChange("lastName")}
-			/>
-			<Input
-				optional
-				nullable
-				id="nickName"
-				name="Nick Name"
-				autoComplete="nickname"
-				placeHolder="Nick Name"
-				value={input.nickName ?? ""}
-				type={InputType.TEXT}
-				onChange={handleChange("nickName")}
-				note={hideNotes ? undefined : "This will be used instead of your first name"}
-			/>
+			<div className="grid grid-cols-2 gap-3">
+				<Input
+					id="firstName"
+					name="First Name"
+					autoComplete="given-name"
+					placeHolder="First Name"
+					value={input.firstName}
+					type={InputType.TEXT}
+					onChange={handleChange("firstName")}
+				/>
+				<Input
+					id="lastName"
+					name="Last Name"
+					autoComplete="family-name"
+					placeHolder="Last Name"
+					value={input.lastName}
+					type={InputType.TEXT}
+					onChange={handleChange("lastName")}
+				/>
+			</div>
+			{!isCreateAccount && (
+				<Input
+					optional
+					nullable
+					id="nickName"
+					name="Nick Name"
+					autoComplete="nickname"
+					placeHolder="Nick Name"
+					value={input.nickName ?? ""}
+					type={InputType.TEXT}
+					onChange={handleChange("nickName")}
+					note={hideNotes ? undefined : "This will be used instead of your first name"}
+				/>
+			)}
 			<Input
 				id="mobilePhoneNumber"
 				name="Mobile Number"
@@ -63,6 +67,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false }) => {
 				type={InputType.TEXT}
 				onChange={handleChange("emailAddress")}
 				placeHolder="Email Address"
+				disabled={isCreateAccount && input.emailAddress !== undefined}
 				note={hideNotes ? undefined : "Used for receiving booking confirmations"}
 			/>
 			<Input
@@ -81,6 +86,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false }) => {
 interface PropTypes {
 	input: DetailsInput;
 	hideNotes?: boolean;
+	isCreateAccount?: boolean;
 	onChange: (input: DetailsInput) => void;
 }
 

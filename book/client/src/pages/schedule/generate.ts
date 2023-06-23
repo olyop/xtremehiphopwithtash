@@ -79,7 +79,7 @@ export const generateDays = (
 			isToday: isToday(day),
 			isInPast: isInPast(day),
 			sessions: daySessions.length > 0 ? daySessions : null,
-			label: determineSessionDateLabel({ startTime: day.getTime() }),
+			label: determineSessionDateLabel({ startTime: day.getTime() }, false, true),
 		});
 	}
 

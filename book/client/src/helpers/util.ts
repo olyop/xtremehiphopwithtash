@@ -9,15 +9,19 @@ export const determineDetailsName = ({
 
 const currentYear = new Date().getFullYear();
 
-export const determineSessionDateLabel = ({ startTime }: Pick<Session, "startTime">) => {
+export const determineSessionDateLabel = (
+	{ startTime }: Pick<Session, "startTime">,
+	fullVersion: boolean,
+	useDash: boolean,
+) => {
 	const date = new Date(startTime);
 
-	const dayName = date.toLocaleDateString(undefined, { weekday: "short" });
+	const dayName = date.toLocaleDateString(undefined, { weekday: fullVersion ? "long" : "short" });
 
 	const dateLabel =
 		date.getFullYear() === currentYear ? thisYearDateFormatter.format(date) : fullYearDateFormatter.format(date);
 
-	return `${dayName} — ${dateLabel}`;
+	return `${dayName}${useDash ? " — " : " "}${dateLabel}`;
 };
 
 export const determineDetailsFullName = ({ firstName, lastName }: Pick<Details, "firstName" | "lastName">) =>

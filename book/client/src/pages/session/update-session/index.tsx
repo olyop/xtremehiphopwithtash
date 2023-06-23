@@ -72,7 +72,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 					<SessionSubtitle
 						startTime={session.startTime}
 						endTime={session.endTime}
-						label={determineSessionDateLabel(session)}
+						label={determineSessionDateLabel(session, false, false)}
 					/>
 				}
 				icon={className => <PencilIcon className={className} />}

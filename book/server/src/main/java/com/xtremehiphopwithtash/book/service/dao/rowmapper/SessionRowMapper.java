@@ -27,6 +27,7 @@ public class SessionRowMapper implements RowMapper<Session> {
 		session.setCourseID(MapRowUtil.mapUUID(rs.getString("course_id")));
 		session.setLocationID(MapRowUtil.mapUUID(rs.getString("location_id")));
 		session.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
+		session.setCancelled(rs.getBoolean("is_cancelled"));
 
 		return session;
 	}

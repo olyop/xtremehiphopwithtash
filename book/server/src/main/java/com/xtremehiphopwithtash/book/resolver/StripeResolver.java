@@ -61,9 +61,11 @@ public class StripeResolver {
 		Principal principal
 	) {
 		reCaptchaService.validateResponse(reCaptcha);
-		bookingService.validateCreate(input);
-
+		
 		String studentID = auth0JwtService.extractStudentID(principal);
+	
+		bookingService.validateCreate(input, studentID);
+
 
 		Student student = studentService.retreiveByID(studentID);
 		Details details = detailsService.retreiveByID(student.getDetailsID());

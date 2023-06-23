@@ -26,8 +26,8 @@ public class BookingRowMapper implements RowMapper<Booking> {
 		b.setPaymentMethod(MapRowUtil.mapEnum(PaymentMethod.class, rs.getString("payment_method")));
 		b.setPaymentIntentID(rs.getString("payment_intent_id"));
 		b.setCost(MapRowUtil.mapInteger(rs.getInt("cost")));
-		b.setHasCheckedIn(rs.getBoolean("has_checked_in"));
-		b.setHasCancelled(rs.getBoolean("has_cancelled"));
+		b.setIsCheckedIn(rs.getBoolean("has_checked_in"));
+		b.setIsCancelled(rs.getBoolean("has_cancelled"));
 
 		b.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 

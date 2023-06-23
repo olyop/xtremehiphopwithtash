@@ -174,10 +174,10 @@ public class SessionResolver {
 	}
 
 	@MutationMapping
-	public UUID deleteSessionByID(@Argument UUID sessionID, @AuthenticationPrincipal Jwt jwt) {
+	public UUID cancelSessionByID(@Argument UUID sessionID, @AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
-		return sessionService.deleteByID(sessionID);
+		return sessionService.cancelByID(sessionID);
 	}
 
 	@QueryMapping

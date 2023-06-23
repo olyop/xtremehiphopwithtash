@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS session (
 	location_id UUID NOT NULL,
 	capacity_available SMALLINT NOT NULL,
 	equipment_available SMALLINT,
+	is_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 

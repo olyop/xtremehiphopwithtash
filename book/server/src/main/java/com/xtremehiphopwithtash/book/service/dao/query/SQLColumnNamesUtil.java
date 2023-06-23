@@ -50,6 +50,7 @@ final class SQLColumnNamesUtil {
 		"equipment_available",
 		"course_id",
 		"location_id",
+		"is_cancelled",
 		CREATED_AT
 	);
 

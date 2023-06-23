@@ -61,7 +61,12 @@ public class BookingQuery {
 	public final String CANCEL_BY_ID = "UPDATE booking SET has_cancelled = true WHERE booking_id = :bookingID;";
 
 	public final String SELECT_BY_SESSION_ID = String.format(
-		"SELECT %s FROM booking WHERE session_id = :sessionID ORDER BY has_checked_in ASC, created_at DESC;",
+		"SELECT %s FROM booking WHERE session_id = :sessionID ORDER BY has_cancelled ASC, has_checked_in ASC, created_at DESC;",
+		columnNames
+	);
+
+	public final String SELECT_BY_SESSION_ID_AND_NOT_CANCELLED = String.format(
+		"SELECT %s FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE;",
 		columnNames
 	);
 
@@ -120,7 +125,7 @@ public class BookingQuery {
 			ORDER BY
 				created_at DESC
 			LIMIT
-				30;
+				50;
 		""",
 		columnNames
 	);
@@ -164,12 +169,15 @@ public class BookingQuery {
 	);
 
 	public final String SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID =
-		"SELECT EXISTS (SELECT 1 FROM booking WHERE session_id = :sessionID AND student_id = :studentID);";
+		"SELECT EXISTS (SELECT 1 FROM booking WHERE session_id = :sessionID AND student_id = :studentID AND has_cancelled = FALSE);";
 
 	public final String SELECT_PAYMENT_METHODS = "SELECT UNNEST(ENUM_RANGE(NULL::payment_methods)) AS payment_methods;";
 
 	public final String SELECT_EXISTS_BY_STUDENT_ID_AND_SESSION_ID =
 		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID AND payment_method = 'CASH');";
+
+	public final String SELECT_EXISTS_BY_CASH_FREE_AND_STUDENT_ID_AND_SESSION_ID =
+		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID AND (payment_method = 'CASH' OR payment_method IS NULL));";
 
 	public final String UPDATE_HAS_CHECKED_IN_BY_ID =
 		"UPDATE booking SET has_checked_in = :hasCheckedIn WHERE booking_id = :bookingID;";

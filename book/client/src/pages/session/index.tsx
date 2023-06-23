@@ -21,9 +21,11 @@ import { determineSessionDateLabel } from "../../helpers/util";
 import { Breakpoint, useBreakpoint } from "../../hooks";
 import Page from "../page";
 import BookSession from "./book-session";
+import SessionBookedBanner from "./booked-banner";
 import SessionBookings from "./bookings";
+import DeleteSession from "./cancel-session";
+import SessionCancelledBanner from "./cancelled-banner";
 import SessionCapacityBanner from "./capacity-banner";
-import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
 import SessionPriceBanner from "./price-banner";
@@ -69,8 +71,14 @@ const SessionPage: FC = () => {
 
 	const isInPast = isSessionInPast(session);
 
+	if (session.isCancelled && !isAdministrator) {
+		return null;
+	}
+
 	return (
 		<Page className="flex flex-col">
+			<SessionCancelledBanner session={session as Session} />
+			<SessionBookedBanner session={session as Session} />
 			<SessionCapacityBanner session={session as Session} />
 			<SessionPriceBanner session={session as Session} />
 			<img
@@ -89,7 +97,7 @@ const SessionPage: FC = () => {
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">at</p>
 						<LocationChip location={session.location as Location} />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">on</p>
-						<p className="text-l pl-0.5">{determineSessionDateLabel(session)}</p>
+						<p className="text-l pl-0.5">{determineSessionDateLabel(session, true, true)}</p>
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">from</p>
 						<p>
 							<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
@@ -109,28 +117,30 @@ const SessionPage: FC = () => {
 							</Fragment>
 						)}
 						{breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : <div />}
-						<div
-							className={`"flex flex-col gap-8 pt-3 ${
-								breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
-							}`}
-						>
-							<div className="flex flex-col gap-4">
-								<div className="flex gap-4 items-start flex-col md:flex-row">
-									<BookSession session={session as Session} isSessionInPast={isInPast} />
-									<ShareButton url={location.href} isSessionInPast={isInPast} />
-								</div>
-								{isAdministrator && (
-									<div className="flex">
-										{session && (
-											<Fragment>
-												<UpdateSession session={session as Session} onEdit={handleRefetch} />
-												{!isInPast && <DeleteSession session={session as Session} />}
-											</Fragment>
-										)}
+						{session.isCancelled || (
+							<div
+								className={`"flex flex-col gap-8 pt-3 ${
+									breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
+								}`}
+							>
+								<div className="flex flex-col gap-4">
+									<div className="flex gap-4 items-start flex-col md:flex-row">
+										<BookSession session={session as Session} isSessionInPast={isInPast} />
+										<ShareButton url={location.href} isSessionInPast={isInPast} />
 									</div>
-								)}
+									{isAdministrator && (
+										<div className="flex">
+											{session && (
+												<Fragment>
+													<UpdateSession session={session as Session} onEdit={handleRefetch} />
+													{!isInPast && <DeleteSession session={session as Session} />}
+												</Fragment>
+											)}
+										</div>
+									)}
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 				{session.notes && (
@@ -142,6 +152,10 @@ const SessionPage: FC = () => {
 				<div className="flex flex-col gap-1">
 					<h3>Course Description</h3>
 					<p className="text-gray-500">{session.course.description}</p>
+				</div>
+				<div className="flex flex-col justify-start gap-1">
+					<h3>Contact Instructors</h3>
+					<InstructorsChip instructors={session.instructors as Instructor[]} className="!self-start" />
 				</div>
 				{isAdministrator && <SessionBookings session={session as Session} />}
 			</div>

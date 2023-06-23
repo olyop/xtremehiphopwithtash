@@ -8,7 +8,13 @@ import { centsToDollars, determinePlural } from "../../utils";
 const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 	<div className="p-6 flex flex-col gap-4 items-stretch md:items-center border-b shadow-xl">
 		<h1 className="text-2xl underline font-bold">Overview</h1>
-		<SessionCard session={session} className="md:!w-[30rem] !h-40 !shadow-none" imageClassName="!h-24" disableLink />
+		<SessionCard
+			session={session}
+			className="md:!w-[30rem] !h-44 !shadow-none"
+			imageClassName="!h-24"
+			disableLink
+			showDate
+		/>
 		<div className="flex flex-col gap-2 w-full">
 			<div>
 				<h4 className="text-gray-500">{input.bookingQuantity === 1 ? "Quantity" : "Quantities"}</h4>

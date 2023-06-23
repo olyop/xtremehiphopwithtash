@@ -37,11 +37,7 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 
 	@Override
 	public void deleteByID(UUID sessionID) {
-		String sql = query.DELETE_BY_ID;
-
-		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
-
-		jdbcTemplate.update(sql, paramSource);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -116,6 +112,16 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 
+	public List<Session> selectInTimePeriodNotCancelled(Instant startTime, Instant endTime) {
+		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_NOT_CANCELLED;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("startTime", startTime.getEpochSecond());
+		paramSource.addValue("endTime", endTime.getEpochSecond());
+
+		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
 	public List<Session> selectInTimePeriodExcludeSession(Instant startTime, Instant endTime, UUID sessionID) {
 		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_EXCLUDE_SESSION;
 
@@ -152,5 +158,14 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("locationID", locationID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
+	public void cancelByID(UUID sessionID) {
+		String sql = query.CANCEL_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("sessionID", sessionID);
+
+		jdbcTemplate.update(sql, paramSource);
 	}
 }

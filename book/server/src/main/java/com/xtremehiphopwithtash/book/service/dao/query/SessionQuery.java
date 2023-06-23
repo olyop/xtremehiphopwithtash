@@ -69,7 +69,7 @@ public class SessionQuery {
 
 	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM session WHERE session_id = :sessionID);";
 
-	public final String DELETE_BY_ID = "DELETE FROM session WHERE session_id = :sessionID;";
+	public final String CANCEL_BY_ID = "UPDATE session SET is_cancelled = TRUE WHERE session_id = :sessionID;";
 
 	public final String SELECT_BY_COURSE_ID = String.format(
 		"""
@@ -119,6 +119,22 @@ public class SessionQuery {
 			WHERE
 				start_time < :endTime AND
 				end_time > :startTime
+			ORDER BY
+				start_time ASC;
+		""",
+		columnNames
+	);
+
+	public final String SELECT_SESSIONS_IN_TIME_PERIOD_NOT_CANCELLED = String.format(
+		"""
+			SELECT
+				%s
+			FROM
+				session
+			WHERE
+				start_time < :endTime AND
+				end_time > :startTime AND
+				is_cancelled = FALSE
 			ORDER BY
 				start_time ASC;
 		""",

@@ -38,6 +38,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 
 	return (
 		<div
+			data-test={isLarge}
 			className={`inset-0 w-screen h-screen fixed z-[100] transition-opacity overflow-hidden ${
 				isOpen ? "opacity-100 visible" : "opacity-0 invisible"
 			} ${className ?? ""}`}
@@ -51,9 +52,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-8 md:top-1/2 left-1/2 z-[120] absolute ${
-						isLarge ? "md:w-booking-modal lg:w-booking-modal" : "md:w-96 lg:w-96"
-					} w-[calc(100vw_-_3rem)] max-h-[calc(100vh_-_6rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
+					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-8 md:top-1/2 left-1/2 z-[120] absolute md:w-booking-modal lg:w-booking-modal w-[calc(100vw_-_3rem)] max-h-[calc(100vh_-_6rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
 						modalClassName ?? ""
 					}`}
 				>

@@ -9,7 +9,7 @@ import { centsToDollars } from "../../utils";
 const SessionPriceBanner: FC<PropTypes> = ({ session }) => {
 	const isFree = session.price === null;
 	return (
-		<div className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-gray-700"}`}>
+		<div className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-gray-700"} shadow-2xl`}>
 			{isFree ? (
 				<CheckCircleIcon className="w-6 h-6 text-white" />
 			) : (

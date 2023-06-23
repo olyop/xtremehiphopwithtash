@@ -2,10 +2,10 @@ import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import FormError from "../../components/form-error";
-import FullscreenSpinner from "../../components/fullscreen-spinner/fullscreen-spinner";
+import FullscreenSpinner from "../../components/fullscreen-spinner";
 import Loading from "../../components/loading";
 import {
 	BookingCost,
@@ -19,6 +19,7 @@ import {
 } from "../../generated-types";
 import { useHasMounted, useReCaptcha } from "../../hooks";
 import Page from "../page";
+import { isSessionInPast } from "../session/helpers";
 import PaymentCoupon from "./coupon";
 import CREATE_BOOKING from "./create-booking.graphql";
 import GET_PAYMENT_SCREEN from "./get-payment-screen-data.graphql";
@@ -29,7 +30,6 @@ import { mapSearchParamsToBookingInput, syncSearchParams } from "./search-parama
 import PaymentPageStripe from "./stripe";
 
 const PaymentPage: FC = () => {
-	const navigate = useNavigate();
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
 	const { isAuthenticated, user } = useAuth0();
@@ -104,9 +104,7 @@ const PaymentPage: FC = () => {
 	useEffect(() => {
 		if (createBookingResult.data) {
 			setTimeout(() => {
-				navigate("/payment-success", {
-					replace: true,
-				});
+				window.location.href = "/payment-success";
 			}, 1500);
 		}
 	}, [createBookingResult.data]);
@@ -134,6 +132,10 @@ const PaymentPage: FC = () => {
 				<Loading />
 			</div>
 		);
+	}
+
+	if (session.isCancelled || isSessionInPast(session) || session.capacityRemaining === null) {
+		return null;
 	}
 
 	const handleCreateBooking = () => {

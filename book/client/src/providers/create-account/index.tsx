@@ -8,7 +8,7 @@ import { FC, Fragment, PropsWithChildren, createElement, useContext, useEffect, 
 
 import Button from "../../components/button";
 import DetailsForm from "../../components/forms/details-form";
-import FullscreenSpinner from "../../components/fullscreen-spinner/fullscreen-spinner";
+import FullscreenSpinner from "../../components/fullscreen-spinner";
 import Loading from "../../components/loading";
 import Modal from "../../components/modal";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
@@ -36,7 +36,9 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 
 	const handleCheck = async () => {
 		if (user?.sub) {
-			const { data, error } = await checkStudent();
+			const { data, error } = await checkStudent({
+				fetchPolicy: "network-only",
+			});
 
 			if (error) {
 				setHasCreatedAccount(null);
@@ -152,7 +154,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 							to create your account :)
 						</h2>
 						<div className="flex flex-col gap-4 pt-4">
-							<DetailsForm input={detailsInput} onChange={setDetailsInput} />
+							<DetailsForm input={detailsInput} onChange={setDetailsInput} isCreateAccount />
 						</div>
 					</Fragment>
 				}

@@ -1,0 +1,3 @@
+mutation cancelSession($sessionID: UUID!) {
+	cancelSessionByID(sessionID: $sessionID)
+}

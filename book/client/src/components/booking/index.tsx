@@ -54,13 +54,13 @@ const SessionPageBooking: FC<PropTypes> = ({
 	const { isAdministrator } = useContext(IsAdministratorContext);
 	const [reCaptchaToken, setReCaptchaToken, executeReCaptcha] = useReCaptcha();
 
-	const [isUpdateModalOpen, openUpdateModal, closeUpdateModal] = useModal();
-	const [isCancelModalOpen, openCancelModal, closeCancelModal] = useModal();
-	const [isCheckInModalOpen, openCheckInModal, closeCheckInModal] = useModal();
-
 	const [updateBooking, updateBookingResult] = useMutation<UpdateData, UpdateVars>(UPDATE_BOOKING);
 	const [cancelBooking, cancelBookingResult] = useMutation<CancelData, CancelVars>(CANCEL_BOOKING);
 	const [checkInBooking, checkInBookingResult] = useMutation<CheckInData, CheckInVars>(CHECK_IN_BOOKING);
+
+	const [isUpdateModalOpen, openUpdateModal, closeUpdateModal] = useModal(() => updateBookingResult.reset());
+	const [isCancelModalOpen, openCancelModal, closeCancelModal] = useModal(() => cancelBookingResult.reset());
+	const [isCheckInModalOpen, openCheckInModal, closeCheckInModal] = useModal(() => checkInBookingResult.reset());
 
 	const [bookingInput, setBookingInput] = useState<BookingInput>(bookingToInput(booking));
 
@@ -73,7 +73,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 		});
 	};
 
-	const canCancel = !booking.hasCancelled && (isAdministrator || booking.paymentMethod !== PaymentMethod.CARD);
+	const canCancel = !booking.isCancelled && (isAdministrator || booking.paymentMethod !== PaymentMethod.CARD);
 
 	const handleCancelBooking = () => {
 		if (canCancel && reCaptchaToken) {
@@ -90,7 +90,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 		void checkInBooking({
 			variables: {
 				bookingID: booking.bookingID,
-				value: !booking.hasCheckedIn,
+				value: !booking.isCheckedIn,
 			},
 		});
 	};
@@ -133,7 +133,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 		}
 	}, [isCancelModalOpen]);
 
-	const isSessionInPast = isInPast(new Date(session.startTime));
+	const isSessionInPast = isInPast(new Date(session.endTime));
 
 	const paymentDescription =
 		bookingInput.paymentMethod === null
@@ -150,24 +150,25 @@ const SessionPageBooking: FC<PropTypes> = ({
 
 	const sessionDateAndTimeLabel = (
 		<Fragment>
+			<span className="text-gray-500">from </span>
 			<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
+			<br />
+			<span className="text-gray-500">on </span>
 			<Fragment> </Fragment>
-			<span className="text-gray-500">on</span>
-			<Fragment> </Fragment>
-			{determineSessionDateLabel(session)}
+			{determineSessionDateLabel(session, true, true)}
 		</Fragment>
 	);
 
 	return (
 		<Entity
 			id={booking.bookingID}
-			isLeftALink={!booking.hasCancelled}
-			leftLink={booking.hasCancelled ? undefined : `/session/${session.sessionID}`}
-			rightClassName="p-2 pr-3 flex flex-col gap-1 !items-end"
+			isLeftALink={!booking.isCancelled}
+			leftLink={booking.isCancelled ? undefined : `/session/${session.sessionID}`}
+			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
 			className={`!p-0 ${
-				isSessionInPast || booking.hasCancelled
-					? `bg-gray-100 opacity-60 ${hideUpdate ? "" : "pointer-events-none select-none"}`
+				isSessionInPast || booking.isCancelled
+					? `bg-gray-100 opacity-60 ${hideUpdate || isAdministrator ? "" : "pointer-events-none select-none"}`
 					: ""
 			}`}
 			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
@@ -206,17 +207,15 @@ const SessionPageBooking: FC<PropTypes> = ({
 			}
 			rightContent={
 				<Fragment>
-					{!hideCheckIn && !booking.hasCancelled && (
+					{!hideCheckIn && !booking.isCancelled && (
 						<Fragment>
 							<Button
-								text={booking.hasCheckedIn ? "Checked In" : "Check In"}
+								text={booking.isCheckedIn ? "Checked In" : "Check In"}
 								onClick={openCheckInModal}
-								className={`!px-2 !text-xs !h-7 text-white ${
-									booking.hasCheckedIn ? "!bg-green-600" : "!bg-orange-500"
-								}`}
-								ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+								className={`!px-2 !text-xs !h-7 text-white ${booking.isCheckedIn ? "!bg-green-600" : "!bg-orange-500"}`}
+								ariaLabel={booking.isCheckedIn ? "Un-check In" : "Check In"}
 								leftIcon={className =>
-									booking.hasCheckedIn ? (
+									booking.isCheckedIn ? (
 										<CheckCircleIcon className={`!h-4 !w-4 text-white ${className}}`} />
 									) : (
 										<ArrowRightOnRectangleIcon className={`!h-4 !w-4 text-white ${className}}`} />
@@ -231,7 +230,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 								contentClassName="flex flex-col gap-4"
 								children={
 									<Fragment>
-										<p>Are you sure you want to {booking.hasCheckedIn ? "un-check in" : "check in"} this booking?</p>
+										<p>Are you sure you want to {booking.isCheckedIn ? "un-check in" : "check in"} this booking?</p>
 										<p>
 											<span className="text-gray-500">Payment Details:</span>
 											<br />
@@ -245,9 +244,9 @@ const SessionPageBooking: FC<PropTypes> = ({
 									<Fragment>
 										<Button
 											onClick={handleCheckIn}
-											text={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+											text={booking.isCheckedIn ? "Un-check In" : "Check In"}
 											leftIcon={className => <CheckCircleIcon className={className} />}
-											ariaLabel={booking.hasCheckedIn ? "Un-check In" : "Check In"}
+											ariaLabel={booking.isCheckedIn ? "Un-check In" : "Check In"}
 										/>
 										<Button
 											text="Cancel"
@@ -266,12 +265,12 @@ const SessionPageBooking: FC<PropTypes> = ({
 							<Button
 								transparent
 								ariaLabel="Cancel"
-								disabled={booking.hasCancelled}
+								disabled={booking.isCancelled}
 								onClick={openCancelModal}
-								text={booking.hasCancelled ? "Cancelled" : "Cancel"}
-								className={`!px-2 !text-xs !h-7 ${booking.hasCancelled ? "hover:bg-transparent select-none" : ""}`}
+								text={booking.isCancelled ? "Cancelled" : "Cancel"}
+								className={`!px-2 !text-xs !h-7 ${booking.isCancelled ? "hover:bg-transparent select-none" : ""}`}
 								leftIcon={className =>
-									booking.hasCancelled ? (
+									booking.isCancelled ? (
 										<MinusIcon className={`!h-4 !w-4 ${className}}`} />
 									) : (
 										<XMarkIcon className={`!h-4 !w-4 ${className}}`} />
@@ -289,14 +288,21 @@ const SessionPageBooking: FC<PropTypes> = ({
 								children={
 									booking.paymentMethod === PaymentMethod.CARD ? (
 										<Fragment>
-											<p>Card payments cannot be cancelled.</p>
-											<p>Please contact us if you need to cancel this booking.</p>
+											<p className="text-gray-500">Cancellation Terms</p>
+											<p>
+												If cancelled at least 3 hours prior to scheduled class, you will receive a free coupon for your
+												next booked class.
+											</p>
+											<p>
+												Please contact us at{" "}
+												<a href="tel:0432617673" className="text-blue-500 underline">
+													0432617673
+												</a>{" "}
+												to cancel your booking.
+											</p>
 										</Fragment>
 									) : (
-										<Fragment>
-											<p>Are you sure you want to cancel this booking?</p>
-											<p>Bookings to be paid in cash can be cancelled up to 3 hours before the session starts.</p>
-										</Fragment>
+										<p>Are you sure you want to cancel this booking?</p>
 									)
 								}
 								buttons={
@@ -347,7 +353,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</a>
 					)}
-					{hideUpdate || (
+					{!hideUpdate && !booking.isCancelled && !isSessionInPast && (
 						<Fragment>
 							<Button
 								transparent

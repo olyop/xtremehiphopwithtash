@@ -17,3 +17,7 @@ interface ImportMetaEnv {
 interface ImportMeta {
 	readonly env: ImportMetaEnv;
 }
+
+interface Navigator extends Navigator {
+	standalone?: boolean;
+}

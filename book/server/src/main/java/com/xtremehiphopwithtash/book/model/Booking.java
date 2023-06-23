@@ -14,8 +14,8 @@ public class Booking extends Base {
 	private PaymentMethod paymentMethod;
 	private String paymentIntentID;
 	private Integer cost;
-	private boolean hasCheckedIn;
-	private boolean hasCancelled;
+	private boolean isCheckedIn;
+	private boolean isCancelled;
 
 	public UUID getBookingID() {
 		return bookingID;
@@ -89,19 +89,19 @@ public class Booking extends Base {
 		this.cost = cost;
 	}
 
-	public Boolean getHasCheckedIn() {
-		return hasCheckedIn;
+	public Boolean getIsCheckedIn() {
+		return isCheckedIn;
 	}
 
-	public void setHasCheckedIn(Boolean hasCheckedIn) {
-		this.hasCheckedIn = hasCheckedIn;
+	public void setIsCheckedIn(Boolean isCheckedIn) {
+		this.isCheckedIn = isCheckedIn;
 	}
 
-	public boolean isHasCancelled() {
-		return hasCancelled;
+	public boolean isCancelled() {
+		return isCancelled;
 	}
 
-	public void setHasCancelled(boolean hasCancelled) {
-		this.hasCancelled = hasCancelled;
+	public void setIsCancelled(boolean isCancelled) {
+		this.isCancelled = isCancelled;
 	}
 }

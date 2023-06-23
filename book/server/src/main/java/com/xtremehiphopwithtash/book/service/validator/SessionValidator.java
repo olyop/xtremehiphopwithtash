@@ -41,20 +41,21 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	public void validateCreate(SessionInput input) {
 		validateInput(input);
 		validateIsNotInPast(input.startTime());
-		validateSessionInPeriod(input);
+		// validateSessionInPeriod(input);
 	}
 
 	@Override
 	public void validateUpdate(UUID sessionID, SessionInput input) {
 		validateID(sessionID);
 		validateInput(input);
-		validateSessionInPeriodExcludeSession(sessionID, input);
+		// validateSessionInPeriodExcludeSession(sessionID, input);
 		validateCapacityIsNotLessThanBookings(sessionID, input);
 	}
 
 	@Override
-	public void validateDelete(UUID sessionID) {
+	public void validateCancel(UUID sessionID) {
 		validateID(sessionID);
+		validateNotAlreadyCancelled(sessionID);
 		validateBookings(sessionID);
 	}
 
@@ -80,21 +81,21 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 		validateEquipmentAndCapacity(input);
 	}
 
-	private void validateSessionInPeriod(SessionInput input) {
-		List<Session> sessions = sessionDAO.selectInTimePeriod(input.startTime(), input.endTime());
+	// private void validateSessionInPeriod(SessionInput input) {
+	// 	List<Session> sessions = sessionDAO.selectInTimePeriodNotCancelled(input.startTime(), input.endTime());
 
-		if (!sessions.isEmpty()) {
-			throw new ResolverException("Session already exists in time period");
-		}
-	}
+	// 	if (!sessions.isEmpty()) {
+	// 		throw new ResolverException("Session already exists in time period");
+	// 	}
+	// }
 
-	private void validateSessionInPeriodExcludeSession(UUID sessionID, SessionInput input) {
-		List<Session> sessions = sessionDAO.selectInTimePeriodExcludeSession(input.startTime(), input.endTime(), sessionID);
+	// private void validateSessionInPeriodExcludeSession(UUID sessionID, SessionInput input) {
+	// 	List<Session> sessions = sessionDAO.selectInTimePeriodExcludeSession(input.startTime(), input.endTime(), sessionID);
 
-		if (!sessions.isEmpty()) {
-			throw new ResolverException("Session already exists in time period");
-		}
-	}
+	// 	if (!sessions.isEmpty()) {
+	// 		throw new ResolverException("Session already exists in time period");
+	// 	}
+	// }
 
 	public void validateGetSessionsInput(GetSessionsInput input) {
 		if (input.startTime().isAfter(input.endTime())) {
@@ -161,10 +162,18 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	}
 
 	private void validateBookings(UUID sessionID) {
-		List<Booking> bookings = bookingDAO.selectBySessionID(sessionID);
+		List<Booking> bookings = bookingDAO.selectBySessionIDNotCancelled(sessionID);
 
 		if (!bookings.isEmpty()) {
 			throw new ResolverException("Cannot delete session with bookings");
+		}
+	}
+
+	private void validateNotAlreadyCancelled(UUID sessionID) {
+		Session session = sessionDAO.selectByID(sessionID);
+
+		if (session.isCancelled()) {
+			throw new ResolverException("Session is already cancelled");
 		}
 	}
 }

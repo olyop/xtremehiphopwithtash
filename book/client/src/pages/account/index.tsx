@@ -37,7 +37,6 @@ const createdAtFormatter = new Intl.DateTimeFormat(undefined, {
 const AccountPage: FC = () => {
 	const navigate = useNavigate();
 	const { isAuthenticated, logout, user } = useAuth0();
-	const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
 
 	const [detailsInput, setDetailsInput] = useState<DetailsInput | null>(null);
 
@@ -46,6 +45,16 @@ const AccountPage: FC = () => {
 	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(UPDATE_STUDENT);
 
 	const { data: queryData, loading, called, refetch } = queryResult;
+
+	const handleResetEditModal = () => {
+		if (queryData) {
+			const details = queryData.getStudentByID.details as Details;
+			setDetailsInput(detailsToInput(details));
+			updateStudentResult.reset();
+		}
+	};
+
+	const [isEditModalOpen, openEditModal, closeEditModal] = useModal(handleResetEditModal);
 
 	const handleGoHome = () => {
 		navigate("/");
@@ -123,21 +132,13 @@ const AccountPage: FC = () => {
 	return (
 		<Page id={studentID} className="p-4 flex flex-col gap-6 pb-56">
 			<h1 className="text-3xl py-2 font-bold text-center md:text-left">My Account</h1>
-			<div className={detailsClassName}>
-				<p>
-					OAuth Provider: <span className="text-gray-500">{user?.sub?.split("|")[0]}</span>
-				</p>
-				<p>
-					Created: <span className="text-gray-500">{createdAtFormatter.format(createdAt)}</span>
-				</p>
-			</div>
 			<div className="flex flex-col gap-2">
-				<h2 className="text-2xl underline">Details:</h2>
+				<h2 className="text-2xl underline">Details</h2>
 				<div className={detailsClassName}>
 					<p>
 						Name:{" "}
 						<span className="text-gray-500">
-							{details.firstName} {details.lastName}{" "}
+							{details.firstName} {details.lastName}
 						</span>
 					</p>
 					{details.nickName && (
@@ -156,6 +157,9 @@ const AccountPage: FC = () => {
 							Instagram: <span className="text-gray-500">{details.instagramUsername ?? ""}</span>
 						</p>
 					)}
+					<p>
+						Created: <span className="text-gray-500">{createdAtFormatter.format(createdAt)}</span>
+					</p>
 				</div>
 				<div className="flex gap-2">
 					<Button
@@ -195,7 +199,7 @@ const AccountPage: FC = () => {
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">
-				<h2 className="text-2xl underline">Bookings:</h2>
+				<h2 className="text-2xl underline">Bookings</h2>
 				<div className="bg-white flex flex-col w-full shadow-lg">
 					{bookings ? (
 						bookings.map(booking => (

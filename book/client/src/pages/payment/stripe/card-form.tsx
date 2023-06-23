@@ -66,13 +66,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 
 	return (
 		<div className="flex flex-col gap-12">
-			<PaymentElement
-				onReady={handleCardFormLoad}
-				onChange={handlePaymentElementChange}
-				options={{
-					paymentMethodOrder: ["card", "apple_pay", "google_pay"],
-				}}
-			/>
+			<PaymentElement onReady={handleCardFormLoad} onChange={handlePaymentElementChange} />
 			{errorMessage && <p className="text-red-500 rounded border border-red-500 bg-red-50 px-4 py-3">{errorMessage}</p>}
 			{hasCardFormLoaded && (
 				<PaymentButton text="Pay Now" onClick={handleSubmit} disabled={!stripe || !elements || !isCardFormComplete} />

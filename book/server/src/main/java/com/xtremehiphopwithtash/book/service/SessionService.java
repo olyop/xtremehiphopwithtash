@@ -85,11 +85,10 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 	}
 
 	@Override
-	public UUID deleteByID(UUID sessionID) {
-		validator.validateDelete(sessionID);
+	public UUID cancelByID(UUID sessionID) {
+		validator.validateCancel(sessionID);
 
-		sessionInstructorDAO.deleteBySessionID(sessionID);
-		sessionDAO.deleteByID(sessionID);
+		sessionDAO.cancelByID(sessionID);
 
 		return sessionID;
 	}

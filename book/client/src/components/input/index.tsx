@@ -17,7 +17,7 @@ import { InputOnChange, InputSelectOptions, InputType, InputValue, SelectOption 
 
 const createClassName = (type: InputType, value: InputValue, className: string | undefined, disabled: boolean) =>
 	`border cursor-pointer outline-none ${type === InputType.CHECKBOX ? "mt-[1px] ml-[1px]" : "w-full"} border-gray-200 ${
-		disabled ? "" : "hover:border-gray-400 transition-all"
+		disabled ? "text-gray-400" : "hover:border-gray-400 transition-all"
 	} rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
 		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-6") : ""
 	} ${type === InputType.TEXTAREA ? "resize-none h-[7rem]" : ""} ${className ?? ""}`;

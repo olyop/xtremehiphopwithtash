@@ -1,14 +1,19 @@
 import { ApolloError } from "@apollo/client/errors";
+import ExclamationCircleIcon from "@heroicons/react/24/outline/ExclamationCircleIcon";
 import { FC, Fragment, createElement } from "react";
 
 const FormError: FC<PropTypes> = ({ error }) => (
 	<Fragment>
 		{error && (
-			<div className="rounded border border-red-500 bg-red-50 px-4 py-3">
+			<div className="rounded border border-orange-500 bg-orange-50 px-4 py-3 flex flex-col gap-2">
+				<div className="flex gap-2 ml-[-0.3rem]">
+					<ExclamationCircleIcon className="h-6 w-6 text-orange-500" />
+					<p className="text-orange-500">Notice</p>
+				</div>
 				{error.graphQLErrors.map(({ message }) => (
-					<span key={message} className="text-red-500">
+					<p key={message} className="text-orange-500">
 						{message}
-					</span>
+					</p>
 				))}
 			</div>
 		)}

@@ -8,9 +8,11 @@ const Chip: FC<PropTypes> = ({ chip: { icon, photo, text, onRemove }, onClick, c
 		onClick={onClick}
 		role={onClick ? "button" : undefined}
 		onKeyDown={onClick ? () => {} : undefined}
-		className={`flex items-center justify-center gap-1.5 h-8 rounded-2xl text-gray-700 p-1 ${photo ? "" : "pl-2"} ${
-			onRemove ? "pr-1" : "pr-3"
-		} border ${className || ""} ${onClick ? "cursor-pointer transition-colors hover:bg-gray-200" : ""}`}
+		className={`flex items-center justify-center gap-1.5 h-8 rounded-2xl text-gray-700 p-1 shadow hover:shadow-md transition-shadow ${
+			photo ? "" : "pl-2"
+		} ${onRemove ? "pr-1" : "pr-3"} border ${className || ""} ${
+			onClick ? "cursor-pointer transition-colors hover:bg-gray-200" : ""
+		}`}
 	>
 		{icon && icon("h-6 w-6 rounded-2xl select-none")}
 		{photo && <img src={photo} alt={text} className="h-6 w-6 rounded-2xl select-none" />}

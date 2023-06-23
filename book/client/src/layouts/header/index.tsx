@@ -19,7 +19,7 @@ const Header: FC = () => {
 	const invisible = location.pathname === "/";
 
 	return (
-		<header className="flex items-stretch relative justify-between pr-2 md:pr-4 border-b h-header-height bg-white">
+		<header className="flex items-stretch relative justify-between pr-4 md:pr-4 border-b h-header-height bg-white">
 			{location.pathname === "/payment" && sessionID ? (
 				<Link to={`/session/${sessionID}`}>
 					<BackButton invisible={invisible} />

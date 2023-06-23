@@ -2,14 +2,15 @@ import { FC, createElement } from "react";
 import { Link } from "react-router-dom";
 
 import { Session } from "../../generated-types";
+import { determineSessionDateLabel } from "../../helpers/util";
 import SessionStartTime from "../session-start-end-time";
 import SessionCardChips from "./chips";
 
-const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disableLink = false }) => {
+const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disableLink = false, showDate = false }) => {
 	const content = (
 		<div
 			data-id={session.sessionID}
-			className={`group/session relative grid transition-all bg-white border border-gray-300 rounded-lg grid-rows-[1fr,3fr] items-stretch h-[6.75rem] ${
+			className={`group/session relative grid transition-all bg-white border border-gray-300 rounded-lg grid-rows-[1fr,3fr] items-stretch h-[6.3rem] ${
 				disableLink ? "" : "cursor-pointer"
 			} shadow-lg ${className ?? ""}`}
 		>
@@ -22,10 +23,10 @@ const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disabl
 			<img
 				src={session.course.photo}
 				alt={session.course.name}
-				className={`block object-cover object-top w-full h-[2.75rem] rounded-t-lg select-none ${imageClassName ?? ""}`}
+				className={`block object-cover object-top w-full h-[2.5rem] rounded-t-lg select-none ${imageClassName ?? ""}`}
 			/>
 			<div className="flex flex-col px-2 pb-1 pt-0.5 justify-between overflow-hidden">
-				<h3 className="font-bold whitespace-nowrap">{session.title}</h3>
+				<h3 className="font-bold text-[0.9rem] whitespace-nowrap">{session.title}</h3>
 				<p className="text-xs font-medium whitespace-nowrap">
 					<span className="text-gray-500">at </span>
 					{session.location.name}
@@ -34,6 +35,12 @@ const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disabl
 					<span className="text-gray-500">from </span>
 					<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
 				</p>
+				{showDate && (
+					<p className="text-xs whitespace-nowrap">
+						<span className="text-gray-500">on </span>
+						{determineSessionDateLabel(session, true, true)}
+					</p>
+				)}
 			</div>
 		</div>
 	);
@@ -51,6 +58,7 @@ interface PropTypes {
 	className?: string;
 	disableLink?: boolean;
 	imageClassName?: string;
+	showDate?: boolean;
 }
 
 export default SessionCard;

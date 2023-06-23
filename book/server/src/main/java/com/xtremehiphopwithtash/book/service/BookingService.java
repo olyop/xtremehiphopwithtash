@@ -63,7 +63,7 @@ public class BookingService {
 
 	public Booking create(BookingInput input, String studentID, PaymentIntent paymentIntent) {
 		studentValidator.validateID(studentID);
-		validateCreate(input);
+		validateCreate(input, studentID);
 
 		Session session = sessionService.retreiveByID(input.sessionID());
 		BookingCost bookingCost = getBookingCost(input, session);
@@ -72,9 +72,10 @@ public class BookingService {
 		booking.setStudentID(studentID);
 
 		if (isBookingFree(bookingCost, input)) {
+			validateStudentHasNotBookedSession(studentID, input, true);
 			booking.setCost(null);
 		} else if (isPayingWithCash(input)) {
-			validateStudentHasNotBookedSession(studentID, input);
+			validateStudentHasNotBookedSession(studentID, input, false);
 			validateQuantitiesAreOne(input);
 
 			booking.setCost(bookingCost.getFinalCost());
@@ -109,10 +110,19 @@ public class BookingService {
 		bookingDAO.cancelByID(bookingID);
 	}
 
-	public void validateCreate(BookingInput input) {
+	public void validateCreate(BookingInput input, String studentID) {
 		validateInput(input);
 		validateSessionCapacity(input);
 		validateCoupon(input.couponCode());
+		validateSessionNotCancelled(input.sessionID());
+	}
+
+	private void validateSessionNotCancelled(UUID sessionID) {
+		Session session = sessionService.retreiveByID(sessionID);
+
+		if (session.isCancelled()) {
+			throw new ResolverException("Session has been cancelled");
+		}
 	}
 
 	public void validateUpdate(UUID bookingID, BookingInput input) {
@@ -126,8 +136,12 @@ public class BookingService {
 
 		Booking booking = bookingDAO.selectByID(bookingID);
 
-		if (booking.isHasCancelled()) {
+		if (booking.isCancelled()) {
 			throw new ResolverException("Booking has already been cancelled");
+		}
+
+		if (booking.getIsCheckedIn()) {
+			throw new ResolverException("Booking has already been checked in");
 		}
 
 		if (!isAdministrator) {
@@ -198,11 +212,15 @@ public class BookingService {
 		}
 	}
 
-	private void validateStudentHasNotBookedSession(String studentID, BookingInput input) {
-		if (bookingDAO.existsByStudentIDAndSessionID(studentID, input.sessionID())) {
-			throw new ResolverException(
-				"You already booked this session. When paying with cash you can only book a session once."
-			);
+	private void validateStudentHasNotBookedSession(String studentID, BookingInput input, boolean isSessionFree) {
+		if (bookingDAO.existsByCashFreeAndStudentIDAndSessionID(studentID, input.sessionID())) {
+			if (isSessionFree) {
+				throw new ResolverException("You already booked this session. You can only book a free session once.");
+			} else {
+				throw new ResolverException(
+					"You already booked this session. When paying with cash you can only book a session once."
+				);
+			}
 		}
 	}
 

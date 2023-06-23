@@ -1,3 +1,0 @@
-mutation deleteSession($sessionID: UUID!) {
-	deleteSessionByID(sessionID: $sessionID)
-}

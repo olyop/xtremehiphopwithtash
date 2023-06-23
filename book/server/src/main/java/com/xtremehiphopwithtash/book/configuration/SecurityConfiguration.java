@@ -13,12 +13,14 @@ import org.springframework.security.web.header.Header;
 import org.springframework.security.web.header.HeaderWriter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfiguration {
 
 	private final HeaderWriter headerWriter;
-	private final CorsConfiguration corsConfiguration;
+	private final CorsConfigurationSource corsConfigurationSource;
 
 	private final String[] resources = new String[] {
 		"/",
@@ -38,16 +40,26 @@ public class SecurityConfiguration {
 	};
 
 	public SecurityConfiguration(@Value("${cors.allowed.origins}") List<String> allowedOrigins) {
-		this.corsConfiguration = buildCorsConfiguration(allowedOrigins);
+		this.corsConfigurationSource = buildCorsConfigurationSource(allowedOrigins);
 		this.headerWriter = buildHeaderWriter();
 	}
 
-	private CorsConfiguration buildCorsConfiguration(List<String> allowedOrigins) {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(allowedOrigins);
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-		configuration.setAllowCredentials(true);
-		return configuration;
+	private CorsConfigurationSource buildCorsConfigurationSource(List<String> allowedOrigins) {
+		CorsConfiguration allDomainsConfiguration = new CorsConfiguration();
+		// allDomainsConfiguration.setAllowedOrigins(List.of("*"));
+		// allDomainsConfiguration.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
+		// allDomainsConfiguration.setAllowCredentials(true);
+		allDomainsConfiguration.applyPermitDefaultValues();
+
+		// CorsConfiguration currentDomainConfiguration = new CorsConfiguration();
+		// currentDomainConfiguration.setAllowedOrigins(allowedOrigins);
+		// currentDomainConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "OPTIONS"));
+		// currentDomainConfiguration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", allDomainsConfiguration);
+
+		return source;
 	}
 
 	public HeaderWriter buildHeaderWriter() {
@@ -61,7 +73,7 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 			.csrf(csrf -> csrf.disable())
-			.cors(cors -> cors.configurationSource(request -> corsConfiguration))
+			.cors(cors -> cors.configurationSource(corsConfigurationSource))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(authorize -> {
 				authorize.requestMatchers(HttpMethod.GET, resources).permitAll();

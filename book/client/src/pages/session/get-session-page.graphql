@@ -6,6 +6,7 @@ query getSessionPage($sessionID: UUID!) {
 		startTime
 		endTime
 		price
+		hasBooked
 		equipmentFee
 		capacityAvailable
 		capacityBooked
@@ -15,6 +16,7 @@ query getSessionPage($sessionID: UUID!) {
 		equipmentRemaining
 		isCapacityRemaining(bookingQuantity: 1)
 		isEquipmentRemaining(equipmentQuantity: 1)
+		isCancelled
 		createdAt
 		location {
 			locationID

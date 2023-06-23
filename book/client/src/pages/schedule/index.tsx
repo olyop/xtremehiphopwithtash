@@ -1,7 +1,7 @@
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
-import { useAuth0 } from "@auth0/auth0-react";
 import { FC, createElement, useEffect, useRef, useState } from "react";
 
+import FullscreenSpinner from "../../components/fullscreen-spinner";
 import { useBreakpoint, useHasMounted } from "../../hooks";
 import Controls from "./controls";
 import Days from "./days";
@@ -14,7 +14,6 @@ const Schedule: FC = () => {
 	const apollo = useApolloClient();
 	const breakpoint = useBreakpoint();
 	const hasMounted = useHasMounted();
-	const { isAuthenticated } = useAuth0();
 	const relativeDate = useRef(Date.now());
 
 	const [loading, setLoading] = useState(false);
@@ -57,14 +56,14 @@ const Schedule: FC = () => {
 	};
 
 	useEffect(() => {
-		if (hasMounted && isAuthenticated) {
+		if (hasMounted) {
 			const date = new Date(getStartingTime());
 			void handleSchedule(date);
 		}
-	}, [breakpoint, isAuthenticated]);
+	}, [breakpoint]);
 
 	useEffect(() => {
-		if (!loading && isAuthenticated) {
+		if (!loading) {
 			const date = new Date(getStartingTime());
 			void handleSchedule(date);
 		}
@@ -72,6 +71,7 @@ const Schedule: FC = () => {
 
 	return (
 		<div className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
+			<FullscreenSpinner isLoading={loading} backgroundClassName="!opacity-10" />
 			<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
 				<WeekDays />
 				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
@@ -80,6 +80,7 @@ const Schedule: FC = () => {
 				breakpoint={breakpoint}
 				onReset={handleResetClick}
 				onBackOneWeek={handleBackOneWeekClick}
+				isFirstDayToday={days[0]?.isToday ?? false}
 				onForwardOneWeek={handleForwardOneWeekClick}
 			/>
 		</div>

@@ -11,7 +11,7 @@ const HeaderRight: FC = () => {
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
 	return (
-		<div className="flex items-center gap-2">
+		<div className="flex items-center gap-1">
 			{isAdministrator && location.pathname !== "/admin" && (
 				<Link to="admin">
 					<Button
