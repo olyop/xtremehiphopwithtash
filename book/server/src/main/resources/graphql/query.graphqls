@@ -1,6 +1,8 @@
 type Query {
 	getSessionsInPeriod(input: GetSessionsInput!): [Session!]!
 
+	getClassDescription: String!
+
 	getStudents: [Student!]
 	getInstructors: [Instructor!]
 	getLocations: [Location!]

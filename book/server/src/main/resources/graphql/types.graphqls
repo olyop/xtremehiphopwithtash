@@ -119,6 +119,7 @@ type Booking {
 	paymentMethod: PaymentMethod
 	paymentIntentID: String
 	cost: Float
+	receiptURL: URL
 	isCheckedIn: Boolean!
 	isCancelled: Boolean!
 

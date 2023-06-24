@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs, Session } from "../../generated-types";
@@ -31,20 +32,32 @@ export const determineIncrementAction = (breakpoint: Breakpoint) => {
 
 export const getSessions =
 	(apollo: ApolloClient<unknown>) =>
-	async (startDate: Date, endDate: Date): Promise<Session[]> => {
-		const { data } = await apollo.query<GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs>({
-			query: GET_SESSIONS_IN_PERIOD,
-			fetchPolicy: "network-only",
-			variables: {
-				input: {
-					courseID: null,
-					startTime: Math.floor(startDate.getTime() / 1000),
-					endTime: Math.floor(endDate.getTime() / 1000),
+	async (startDate: Date, endDate: Date): Promise<Session[] | ApolloError> => {
+		try {
+			const { data, error } = await apollo.query<GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs>({
+				query: GET_SESSIONS_IN_PERIOD,
+				fetchPolicy: "network-only",
+				variables: {
+					input: {
+						courseID: null,
+						startTime: Math.floor(startDate.getTime() / 1000),
+						endTime: Math.floor(endDate.getTime() / 1000),
+					},
 				},
-			},
-		});
+			});
 
-		return (data?.getSessionsInPeriod as Session[]) ?? [];
+			if (error) {
+				return error;
+			}
+
+			return (data?.getSessionsInPeriod as Session[]) ?? [];
+		} catch (error) {
+			if (error instanceof ApolloError) {
+				return error;
+			} else {
+				throw error;
+			}
+		}
 	};
 
 interface LocalStorageStartingTime {

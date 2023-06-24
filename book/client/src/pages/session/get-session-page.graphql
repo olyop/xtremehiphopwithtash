@@ -49,4 +49,5 @@ query getSessionPage($sessionID: UUID!) {
 			}
 		}
 	}
+	getClassDescription
 }

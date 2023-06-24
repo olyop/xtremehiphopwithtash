@@ -1,4 +1,6 @@
 type Mutation {
+	updateClassDescription(value: String!): String!
+
 	createStudent(input: DetailsInput!): Student!
 	createLocation(input: LocationInput!): Location!
 	createInstructor(input: InstructorInput!): Instructor!

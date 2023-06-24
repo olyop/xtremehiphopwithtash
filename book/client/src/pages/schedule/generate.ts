@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { Session } from "../../generated-types";
@@ -88,16 +89,15 @@ export const generateDays = (
 
 export const generateDaysWithSessions =
 	(apollo: ApolloClient<unknown>) =>
-	async (baseTime: number, breakpoint: Breakpoint): Promise<Day[]> => {
+	async (baseTime: number, breakpoint: Breakpoint): Promise<Day[] | ApolloError> => {
 		const baseDate = new Date(baseTime);
 
 		const [startingDate, endingDate] = determineStartAndEndDate(baseDate, breakpoint);
 
-		let sessions: Session[];
-		try {
-			sessions = await getSessions(apollo)(startingDate, endingDate);
-		} catch {
-			sessions = [];
+		const sessions = await getSessions(apollo)(startingDate, endingDate);
+
+		if (sessions instanceof Error) {
+			return sessions;
 		}
 
 		return generateDays(breakpoint, startingDate, endingDate, sessions);

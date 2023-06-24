@@ -71,8 +71,6 @@ public class ReCaptchaService {
 			throw new ReCaptchaError("Error verify response");
 		}
 
-		System.out.println(verifyResponse);
-
 		validateResponse(verifyResponse);
 	}
 

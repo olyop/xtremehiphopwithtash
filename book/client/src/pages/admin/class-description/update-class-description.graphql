@@ -1,0 +1,3 @@
+mutation updateClassDescription($value: String!) {
+	updateClassDescription(value: $value)
+}

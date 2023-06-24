@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
@@ -20,6 +21,8 @@ import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
 import java.lang.module.ResolutionException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
@@ -153,5 +156,23 @@ public class StripeService {
 		}
 
 		return stripeObject;
+	}
+
+	public URL getChargeReceiptURL(String paymentIntentID) {
+		try {
+			PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentID);
+
+			Charge charge = Charge.retrieve(paymentIntent.getLatestCharge());
+
+			if (charge == null) {
+				throw new ResolutionException("Unable to retrieve charge");
+			}
+
+			return new URL(charge.getReceiptUrl());
+		} catch (StripeException e) {
+			throw new ResolutionException("Unable to retrieve charge");
+		} catch (MalformedURLException e) {
+			throw new ResolutionException("Unable to parse charge receipt URL");
+		}
 	}
 }

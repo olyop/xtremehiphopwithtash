@@ -61,11 +61,10 @@ public class StripeResolver {
 		Principal principal
 	) {
 		reCaptchaService.validateResponse(reCaptcha);
-		
-		String studentID = auth0JwtService.extractStudentID(principal);
-	
-		bookingService.validateCreate(input, studentID);
 
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		bookingService.validateCreate(input, studentID);
 
 		Student student = studentService.retreiveByID(studentID);
 		Details details = detailsService.retreiveByID(student.getDetailsID());
@@ -78,7 +77,7 @@ public class StripeResolver {
 		String date = dateFormat.format(new Date(session.getStartTime().toEpochMilli()));
 
 		String bookingDescription = String.format(
-			"Xtreme Hip-Hop with Tash: Session '%s' at %s on %s",
+			"Xtreme Hip-Hop with Tash. Session '%s' at '%s' on %s",
 			session.getTitle(),
 			location.getName(),
 			date

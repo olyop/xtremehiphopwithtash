@@ -38,6 +38,7 @@ export type Booking = {
 	readonly notes: Maybe<Scalars["String"]["output"]>;
 	readonly paymentIntentID: Maybe<Scalars["String"]["output"]>;
 	readonly paymentMethod: Maybe<PaymentMethod>;
+	readonly receiptURL: Maybe<Scalars["URL"]["output"]>;
 	readonly session: Session;
 	readonly student: Student;
 };
@@ -183,6 +184,7 @@ export type Mutation = {
 	readonly deleteInstructorByID: Scalars["UUID"]["output"];
 	readonly deleteLocationByID: Scalars["UUID"]["output"];
 	readonly updateBookingByID: Booking;
+	readonly updateClassDescription: Scalars["String"]["output"];
 	readonly updateCourseByID: Course;
 	readonly updateInstructorByID: Instructor;
 	readonly updateLocationByID: Location;
@@ -251,6 +253,10 @@ export type MutationUpdateBookingByIdArgs = {
 	input: BookingInput;
 };
 
+export type MutationUpdateClassDescriptionArgs = {
+	value: Scalars["String"]["input"];
+};
+
 export type MutationUpdateCourseByIdArgs = {
 	courseID: Scalars["UUID"]["input"];
 	input: CourseInput;
@@ -294,6 +300,7 @@ export type Query = {
 	readonly doesStudentExist: Scalars["Boolean"]["output"];
 	readonly getBookingByID: Booking;
 	readonly getBookingCost: BookingCost;
+	readonly getClassDescription: Scalars["String"]["output"];
 	readonly getCourseByID: Course;
 	readonly getCourses: Maybe<ReadonlyArray<Course>>;
 	readonly getInstructorByID: Instructor;
@@ -540,6 +547,7 @@ export type GetAccountPageQuery = {
 				readonly equipmentQuantity: number | null;
 				readonly paymentMethod: PaymentMethod | null;
 				readonly cost: number | null;
+				readonly receiptURL: string | null;
 				readonly isCheckedIn: boolean;
 				readonly isCancelled: boolean;
 				readonly session: {
@@ -606,6 +614,18 @@ export type UpdateStudentMutation = {
 		} & { readonly __typename: "Details" };
 	} & { readonly __typename: "Student" };
 } & { readonly __typename: "Mutation" };
+
+export type GetClassDescriptionQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetClassDescriptionQuery = { readonly getClassDescription: string } & { readonly __typename: "Query" };
+
+export type UpdateClassDescriptionMutationVariables = Exact<{
+	value: Scalars["String"]["input"];
+}>;
+
+export type UpdateClassDescriptionMutation = { readonly updateClassDescription: string } & {
+	readonly __typename: "Mutation";
+};
 
 export type CreateCourseMutationVariables = Exact<{
 	input: CourseInput;
@@ -1103,6 +1123,7 @@ export type GetSessionPageQueryVariables = Exact<{
 }>;
 
 export type GetSessionPageQuery = {
+	readonly getClassDescription: string;
 	readonly getSessionByID: {
 		readonly sessionID: string;
 		readonly title: string;

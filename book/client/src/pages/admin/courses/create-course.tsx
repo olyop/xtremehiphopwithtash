@@ -43,14 +43,14 @@ const AddCourse: FC = () => {
 	return (
 		<Fragment>
 			<Button
-				text="Add course"
-				ariaLabel="Click to add a course"
+				text="Add Session"
+				ariaLabel="Click to add a session"
 				onClick={openModal}
 				leftIcon={className => <PlusIcon className={className} />}
 			/>
 			<Modal
 				isLarge
-				title="Add course"
+				title="Add session"
 				icon={className => <PlusIcon className={className} />}
 				isOpen={isOpen}
 				onClose={closeModal}
@@ -63,13 +63,13 @@ const AddCourse: FC = () => {
 							onClick={handleSubmit}
 							className="self-start"
 							leftIcon={className => <PlusIcon className={className} />}
-							text={loading ? "Adding course..." : "Add course"}
-							ariaLabel={loading ? "Adding course now" : "Click to add course"}
+							text={loading ? "Adding session..." : "Add session"}
+							ariaLabel={loading ? "Adding session now" : "Click to add session"}
 						/>
 						<Button
 							transparent
 							text="Close"
-							ariaLabel="Close Add Course"
+							ariaLabel="Close"
 							onClick={closeModal}
 							disabled={loading}
 							leftIcon={className => <XMarkIcon className={className} />}

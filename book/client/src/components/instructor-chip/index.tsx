@@ -9,7 +9,7 @@ import Chip from "../chip";
 import CopyButton from "../copy-button";
 import Modal from "../modal";
 
-const InstructorChip: FC<PropTypes> = ({ instructor }) => {
+const InstructorChip: FC<PropTypes> = ({ instructor, showFullName }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 	return (
 		<Fragment>
@@ -18,7 +18,10 @@ const InstructorChip: FC<PropTypes> = ({ instructor }) => {
 				onClick={openModal}
 				chip={{
 					chipID: instructor.instructorID,
-					text: instructor.details.nickName ?? instructor.details.firstName,
+					text:
+						showFullName || !instructor.details.nickName
+							? `${instructor.details.firstName} ${instructor.details.lastName}`
+							: instructor.details.nickName,
 					photo: instructor.photo,
 				}}
 			/>
@@ -79,6 +82,7 @@ const InstructorChip: FC<PropTypes> = ({ instructor }) => {
 
 interface PropTypes {
 	instructor: Instructor;
+	showFullName: boolean;
 }
 
 export default InstructorChip;

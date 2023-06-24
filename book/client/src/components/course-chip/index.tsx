@@ -24,12 +24,12 @@ const CourseChip: FC<PropTypes> = ({ course }) => {
 				isOpen={isOpen}
 				onClose={closeModal}
 				title={course.name}
-				icon={iconClassName => <UserCircleIcon className={iconClassName} />}
 				contentClassName="flex flex-col justify-center gap-6 px-4 py-4"
+				icon={iconClassName => <UserCircleIcon className={iconClassName} />}
 				children={
 					<Fragment>
 						<img
-							alt="Instructor"
+							alt={course.name}
 							src={course.photo}
 							className="object-cover object-top w-full h-56 rounded-md shadow-xl select-none"
 						/>

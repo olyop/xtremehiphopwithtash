@@ -8,7 +8,9 @@ import com.xtremehiphopwithtash.book.service.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.BookingService;
 import com.xtremehiphopwithtash.book.service.ReCaptchaService;
 import com.xtremehiphopwithtash.book.service.SessionService;
+import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
+import java.net.URL;
 import java.security.Principal;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class BookingResolver {
 
+	private final StripeService stripeService;
 	private final StudentService studentService;
 	private final BookingService bookingService;
 	private final SessionService sessionService;
@@ -29,12 +32,14 @@ public class BookingResolver {
 	private final ReCaptchaService reCaptchaService;
 
 	public BookingResolver(
+		StripeService stripeService,
 		StudentService studentService,
 		BookingService bookingService,
 		SessionService sessionService,
 		Auth0JwtService auth0JwtService,
 		ReCaptchaService reCaptchaService
 	) {
+		this.stripeService = stripeService;
 		this.studentService = studentService;
 		this.bookingService = bookingService;
 		this.sessionService = sessionService;
@@ -55,6 +60,15 @@ public class BookingResolver {
 	@SchemaMapping(typeName = "Booking", field = "student")
 	public Student getStudent(Booking booking) {
 		return studentService.retreiveByID(booking.getStudentID());
+	}
+
+	@SchemaMapping(typeName = "Booking", field = "receiptURL")
+	public URL getReceiptURL(Booking booking) {
+		if (booking.getPaymentIntentID() == null) {
+			return null;
+		} else {
+			return stripeService.getChargeReceiptURL(booking.getPaymentIntentID());
+		}
 	}
 
 	@MutationMapping

@@ -1,13 +1,13 @@
 import { FC, createElement } from "react";
 
-import Input, { InputOnChange, InputType, SelectOption } from "../../input";
+import Input, { InputOnChange, InputType, SelectOption } from "../input";
 
-const selectOptions: SelectOption[] = Array.from({ length: 50 }).map((_, index) => ({
+const selectOptions: SelectOption[] = Array.from({ length: 100 }).map((_, index) => ({
 	description: `${index + 1}`,
 	optionID: `${index + 1}`,
 }));
 
-const SessionFormCapacityAndEquipment: FC<PropTypes> = ({
+const CapacityAndEquipmentForm: FC<PropTypes> = ({
 	capacityAvailable,
 	equipmentAvailable,
 	onCapacityAvailableChange,
@@ -59,4 +59,4 @@ interface PropTypes {
 	onEquipmentAvailableChange: InputOnChange;
 }
 
-export default SessionFormCapacityAndEquipment;
+export default CapacityAndEquipmentForm;

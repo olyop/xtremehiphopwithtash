@@ -1,6 +1,8 @@
+import { ApolloError } from "@apollo/client";
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { FC, createElement, useEffect, useRef, useState } from "react";
 
+import FormError from "../../components/form-error";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
 import { useBreakpoint, useHasMounted } from "../../hooks";
 import Controls from "./controls";
@@ -17,6 +19,8 @@ const Schedule: FC = () => {
 	const relativeDate = useRef(Date.now());
 
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<ApolloError | null>(null);
+
 	const [days, setDays] = useState<DayType[]>(() => {
 		const [startingDate, endingDate] = determineStartAndEndDate(new Date(getStartingTime()), breakpoint);
 
@@ -25,10 +29,20 @@ const Schedule: FC = () => {
 
 	const handleSchedule = async (date: Date) => {
 		setLoading(true);
+
 		const unixTime = date.getTime();
 		relativeDate.current = unixTime;
 		setStartingTime(unixTime);
 		const schedule = await generateSchedule(apollo)(unixTime, breakpoint);
+
+		if (schedule instanceof ApolloError) {
+			setError(schedule);
+			setLoading(false);
+			return;
+		} else {
+			setError(null);
+		}
+
 		setDays(schedule);
 		setLoading(false);
 	};
@@ -72,10 +86,16 @@ const Schedule: FC = () => {
 	return (
 		<div className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
 			<FullscreenSpinner isLoading={loading} backgroundClassName="!opacity-10" />
-			<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
-				<WeekDays />
-				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
-			</div>
+			{error ? (
+				<div className="h-content-height w-full p-4 border-t">
+					<FormError error={error} />
+				</div>
+			) : (
+				<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
+					<WeekDays />
+					<Days days={days} onSessionUpdate={handleSessionsUpdate} />
+				</div>
+			)}
 			<Controls
 				breakpoint={breakpoint}
 				onReset={handleResetClick}

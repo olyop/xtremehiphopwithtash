@@ -3,6 +3,7 @@ import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { CourseInput, GetCourseFormDataQuery, Instructor } from "../../../generated-types";
 import { determineDetailsName } from "../../../helpers/util";
+import CapacityAndEquipmentForm from "../../capacity-and-equipment";
 import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions } from "../../input";
 import DefaultDurationInput from "./default-duration";
 import GET_COURSE_FORM_DATA from "./get-course-form-data.graphql";
@@ -80,27 +81,12 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 					autoComplete="off"
 				/>
 			</div>
-			<div className="grid grid-cols-2 gap-2">
-				<Input
-					id="defaultCapacity"
-					name="Default Capacity"
-					value={input.defaultCapacityAvailable}
-					type={InputType.INTEGER}
-					onChange={handleChange("defaultCapacityAvailable")}
-					placeHolder="Please enter"
-					autoComplete="off"
-				/>
-				<Input
-					nullable
-					id="defaultEquipmentAvailable"
-					name="Default Steps"
-					value={input.defaultEquipmentAvailable}
-					type={InputType.INTEGER}
-					onChange={handleChange("defaultEquipmentAvailable")}
-					placeHolder="Please enter"
-					autoComplete="off"
-				/>
-			</div>
+			<CapacityAndEquipmentForm
+				capacityAvailable={input.defaultCapacityAvailable}
+				equipmentAvailable={input.defaultEquipmentAvailable}
+				onCapacityAvailableChange={handleChange("defaultCapacityAvailable")}
+				onEquipmentAvailableChange={handleChange("defaultEquipmentAvailable")}
+			/>
 			<Input
 				id="locationID"
 				name="Default Location"

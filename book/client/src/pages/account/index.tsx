@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 import SessionPageBooking from "../../components/booking";
 import Button from "../../components/button";
+import FormError from "../../components/form-error";
 import DetailsForm from "../../components/forms/details-form";
 import Loading from "../../components/loading";
 import Modal from "../../components/modal";
@@ -44,7 +45,7 @@ const AccountPage: FC = () => {
 
 	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(UPDATE_STUDENT);
 
-	const { data: queryData, loading, called, refetch } = queryResult;
+	const { data: queryData, loading, called, refetch, error } = queryResult;
 
 	const handleResetEditModal = () => {
 		if (queryData) {
@@ -69,7 +70,7 @@ const AccountPage: FC = () => {
 	};
 
 	const handleUpdateStudent = () => {
-		if (user?.sub && detailsInput) {
+		if (user?.sub && detailsInput && !updateStudentResult.loading) {
 			void updateStudent({
 				variables: {
 					detailsInput,
@@ -115,7 +116,15 @@ const AccountPage: FC = () => {
 		);
 	}
 
-	if (!queryData || !user) {
+	if (error) {
+		return (
+			<div className="h-content-height w-full p-4">
+				<FormError error={error} />
+			</div>
+		);
+	}
+
+	if (loading || !user || !queryData) {
 		return (
 			<div className="h-content-height w-full flex items-center justify-center">
 				<Loading />
@@ -181,7 +190,7 @@ const AccountPage: FC = () => {
 								<Fragment>
 									<Button
 										ariaLabel="Edit"
-										text="Edit"
+										text={updateStudentResult.loading ? "Editing..." : "Edit"}
 										onClick={handleUpdateStudent}
 										leftIcon={className => <PencilIcon className={className} />}
 									/>

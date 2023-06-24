@@ -3,8 +3,8 @@ import { Dispatch, FC, Fragment, SetStateAction, createElement } from "react";
 
 import { GetSessionFormDataQuery, Instructor, SessionInput as SessionInputType } from "../../../generated-types";
 import { centsToDollars } from "../../../utils";
+import CapacityAndEquipmentForm from "../../capacity-and-equipment";
 import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions } from "../../input";
-import SessionFormCapacityAndEquipment from "./capacity-and-equipment";
 import GET_SESSION_FORM_DATA from "./get-session-form-data.graphql";
 
 const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
@@ -154,7 +154,7 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 									value={input.equipmentFee}
 								/>
 							</div>
-							<SessionFormCapacityAndEquipment
+							<CapacityAndEquipmentForm
 								capacityAvailable={input.capacityAvailable}
 								equipmentAvailable={input.equipmentAvailable}
 								onCapacityAvailableChange={handleChange("capacityAvailable")}

@@ -69,7 +69,7 @@ const Courses: FC = () => {
 
 	return (
 		<Section<ArrayElement<GetCoursesQuery["getCourses"]>>
-			title="Courses"
+			title="Sessions"
 			items={data?.getCourses}
 			create={<CreateInstructor />}
 			renderItem={course => (

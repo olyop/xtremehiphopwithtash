@@ -3,6 +3,7 @@ import { FC, createElement, useContext } from "react";
 
 import { IsAdministratorContext } from "../../contexts/is-administrator";
 import Page from "../page";
+import ClassDescriptionForm from "./class-description";
 import ReferralCodes from "./coupons";
 import Courses from "./courses";
 import Instructors from "./instructors";
@@ -19,6 +20,7 @@ const AdminPage: FC = () => {
 
 	return (
 		<Page className="flex flex-col gap-8 p-4">
+			<ClassDescriptionForm />
 			<Instructors />
 			<Locations />
 			<Courses />

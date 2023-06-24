@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS class_description (
+	value VARCHAR(1024) NOT NULL
+);

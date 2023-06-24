@@ -3,7 +3,9 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { FC, Fragment, createElement, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
+import Chip from "../../components/chip";
 import CourseChip from "../../components/course-chip";
+import FormError from "../../components/form-error";
 import InstructorsChip from "../../components/instructors-chip";
 import Loading from "../../components/loading";
 import LocationChip from "../../components/location-chip";
@@ -37,11 +39,13 @@ const SessionPage: FC = () => {
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
-	const [getQuery, result] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(GET_SESSION_PAGE);
+	const [getQuery, { data, error, loading, refetch }] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
+		GET_SESSION_PAGE,
+	);
 
 	const handleRefetch = () => {
 		if (sessionID) {
-			void result.refetch({
+			void refetch({
 				sessionID,
 			});
 		}
@@ -59,7 +63,15 @@ const SessionPage: FC = () => {
 		return <div>Session ID not provided</div>;
 	}
 
-	if (!result.data) {
+	if (error) {
+		return (
+			<div className="h-content-height w-full p-4">
+				<FormError error={error} />
+			</div>
+		);
+	}
+
+	if (loading || !data) {
 		return (
 			<div className="h-content-height w-full flex items-center justify-center">
 				<Loading />
@@ -67,7 +79,7 @@ const SessionPage: FC = () => {
 		);
 	}
 
-	const { getSessionByID: session } = result.data;
+	const { getSessionByID: session, getClassDescription } = data;
 
 	const isInPast = isSessionInPast(session);
 
@@ -82,8 +94,8 @@ const SessionPage: FC = () => {
 			<SessionCapacityBanner session={session as Session} />
 			<SessionPriceBanner session={session as Session} />
 			<img
-				src={session.course.photo}
 				alt={session.course.name}
+				src={session.course.photo}
 				className="object-cover object-top w-full shadow-lg h-96"
 			/>
 			<div className="flex flex-col gap-8 p-4 justify-items-start">
@@ -91,6 +103,14 @@ const SessionPage: FC = () => {
 					<h1 className="text-3xl font-bold">{session.title}</h1>
 					<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">class</p>
+						<Chip
+							chip={{
+								chipID: session.course.courseID,
+								text: "Xtreme Hip-Hop",
+								photo: "https://xtremehiphopwithtash.com/images/logo-x.png",
+							}}
+						/>
+						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">session</p>
 						<CourseChip course={session.course as Course} />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">with</p>
 						<InstructorsChip instructors={session.instructors as Instructor[]} />
@@ -150,12 +170,16 @@ const SessionPage: FC = () => {
 					</div>
 				)}
 				<div className="flex flex-col gap-1">
-					<h3>Course Description</h3>
+					<h3>Class Description</h3>
+					<p className="text-gray-500">{getClassDescription}</p>
+				</div>
+				<div className="flex flex-col gap-1">
+					<h3>Session Description</h3>
 					<p className="text-gray-500">{session.course.description}</p>
 				</div>
 				<div className="flex flex-col justify-start gap-1">
 					<h3>Contact Instructors</h3>
-					<InstructorsChip instructors={session.instructors as Instructor[]} className="!self-start" />
+					<InstructorsChip instructors={session.instructors as Instructor[]} className="!self-start" showFullName />
 				</div>
 				{isAdministrator && <SessionBookings session={session as Session} />}
 			</div>

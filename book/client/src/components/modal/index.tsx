@@ -52,7 +52,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-8 md:top-1/2 left-1/2 z-[120] absolute md:w-booking-modal lg:w-booking-modal w-[calc(100vw_-_3rem)] max-h-[calc(100vh_-_6rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
+					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-8 md:top-1/2 left-1/2 z-[120] absolute md:w-booking-modal lg:w-booking-modal w-[calc(100vw_-_3rem)] max-h-[calc(100vh_-_5rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
 						modalClassName ?? ""
 					}`}
 				>

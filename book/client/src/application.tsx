@@ -1,4 +1,4 @@
-import { FC, StrictMode, createElement } from "react";
+import { FC, createElement } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import InstagramButton from "./components/instagram-button";
@@ -11,23 +11,21 @@ import ReCaptcha from "./providers/recaptcha";
 import Routes from "./routes";
 
 const Application: FC = () => (
-	<StrictMode>
-		<BrowserRouter>
-			<ReCaptcha>
-				<Auth0>
-					<ApolloProvider>
-						<IsAdministratorProvider>
-							<CreateAccount>
-								<Header />
-								<Routes />
-								<InstagramButton />
-							</CreateAccount>
-						</IsAdministratorProvider>
-					</ApolloProvider>
-				</Auth0>
-			</ReCaptcha>
-		</BrowserRouter>
-	</StrictMode>
+	<BrowserRouter>
+		<ReCaptcha>
+			<Auth0>
+				<ApolloProvider>
+					<IsAdministratorProvider>
+						<CreateAccount>
+							<Header />
+							<Routes />
+							<InstagramButton />
+						</CreateAccount>
+					</IsAdministratorProvider>
+				</ApolloProvider>
+			</Auth0>
+		</ReCaptcha>
+	</BrowserRouter>
 );
 
 export default Application;

@@ -22,7 +22,7 @@ const Course: FC<PropTypes> = ({
 		<AdminEntity
 			id={course.courseID}
 			photo={course.photo}
-			typeName={course.__typename}
+			typeName="Session"
 			isLargeEditModal
 			editModalContent={<CourseInput input={input} onChange={setInput} />}
 			onEdit={onUpdate(input)}

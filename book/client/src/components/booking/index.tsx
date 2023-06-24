@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import ArrowRightOnRectangleIcon from "@heroicons/react/24/solid/ArrowRightOnRectangleIcon";
+import ArrowTopRightOnSquareIcon from "@heroicons/react/24/solid/ArrowTopRightOnSquareIcon";
 import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
@@ -45,6 +46,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	hideCancel = false,
 	hideUpdate = false,
 	hideCallNow = false,
+	hideReceipt = false,
 	hideCheckIn = false,
 	hideDateLabel = false,
 	hideQuantities = false,
@@ -166,11 +168,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 			leftLink={booking.isCancelled ? undefined : `/session/${session.sessionID}`}
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
-			className={`!p-0 ${
-				isSessionInPast || booking.isCancelled
-					? `bg-gray-100 opacity-60 ${hideUpdate || isAdministrator ? "" : "pointer-events-none select-none"}`
-					: ""
-			}`}
+			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100 opacity-60" : ""}`}
 			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
 			description={
 				<Fragment>
@@ -327,6 +325,28 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</Fragment>
 					)}
+					{!hideReceipt && booking.receiptURL && booking.paymentMethod === PaymentMethod.CARD && (
+						<a target="_blank" rel="noreferrer" href={booking.receiptURL}>
+							<Button
+								transparent
+								ariaLabel="View Receipt"
+								text="Receipt"
+								className="!px-2 !text-xs !h-7"
+								leftIcon={className => <ArrowTopRightOnSquareIcon className={`!h-4 !w-4 ${className}}`} />}
+							/>
+						</a>
+					)}
+					{!hideCallNow && !isSessionInPast && (
+						<a target="_blank" rel="noreferrer" href={`tel:${booking.student.details.mobilePhoneNumber}`}>
+							<Button
+								transparent
+								text="Mobile"
+								className="!px-2 !text-xs !h-7"
+								ariaLabel="Call Mobile Phone Number"
+								leftIcon={className => <PhoneIcon className={`!h-4 !w-4 ${className}}`} />}
+							/>
+						</a>
+					)}
 					{!hideStripePaymentLink && booking.paymentMethod === PaymentMethod.CARD && booking.paymentIntentID && (
 						<a
 							target="_blank"
@@ -339,17 +359,6 @@ const SessionPageBooking: FC<PropTypes> = ({
 								ariaLabel="Open In Stripe"
 								className="!px-2 !text-xs !h-7"
 								leftIcon={className => <CurrencyDollarIcon className={`!h-4 !w-4 ${className}}`} />}
-							/>
-						</a>
-					)}
-					{!hideCallNow && !isSessionInPast && (
-						<a href={`tel:${booking.student.details.mobilePhoneNumber}`}>
-							<Button
-								transparent
-								text="Call"
-								className="!px-2 !text-xs !h-7"
-								ariaLabel="Call Mobile Phone Number"
-								leftIcon={className => <PhoneIcon className={`!h-4 !w-4 ${className}}`} />}
 							/>
 						</a>
 					)}
@@ -421,8 +430,9 @@ interface PropTypes {
 	hideUpdate?: boolean;
 	hideCancel?: boolean;
 	hideCheckIn?: boolean;
-	hideDateLabel?: boolean;
+	hideReceipt?: boolean;
 	hideCallNow?: boolean;
+	hideDateLabel?: boolean;
 	hideQuantities?: boolean;
 	hideEquipmentFee?: boolean;
 	hideStripePaymentLink?: boolean;

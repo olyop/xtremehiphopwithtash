@@ -28,7 +28,6 @@ const DefaultDurationInput: FC<PropTypes> = ({ value, onChange }) => {
 			placeHolder="Please enter"
 			selectOptions={selectOptions}
 			autoComplete="off"
-			note="In Minutes"
 		/>
 	);
 };
