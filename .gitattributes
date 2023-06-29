@@ -1,0 +1,3 @@
+*.sql=linguist-detectable=true
+*.graphql=linguist-detectable=true
+*.graphqls=linguist-detectable=true
