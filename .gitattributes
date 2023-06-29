@@ -1,3 +1,5 @@
-*.sql=linguist-detectable=true
-*.graphql=linguist-detectable=true
-*.graphqls=linguist-detectable=true
+*.sql linguist-detectable=true
+*.sql linguist-language=sql
+
+*.graphql linguist-detectable=true
+*.graphqls linguist-language=graphql
