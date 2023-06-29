@@ -2,4 +2,6 @@
 *.sql linguist-language=sql
 
 *.graphql linguist-detectable=true
+*.graphqls linguist-detectable=true
+*.graphql linguist-language=graphql
 *.graphqls linguist-language=graphql
