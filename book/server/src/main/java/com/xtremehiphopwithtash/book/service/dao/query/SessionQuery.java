@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionQuery {
 
-	private final SQLUtil sqlUtil = new SQLUtil("session", SQLColumnNames.join(SQLColumnNames.BOOKING, "session"));
+	private final SQLUtil sqlUtil = new SQLUtil("session", SQLColumnNames.join(SQLColumnNames.SESSION, "session"));
 
 	public final String SELECT = sqlUtil.read("select");
 
@@ -14,6 +14,8 @@ public class SessionQuery {
 	public final String INSERT = sqlUtil.read("insert");
 
 	public final String UPDATE_BY_ID = sqlUtil.read("update-by-id");
+
+	public final String DELETE_BY_ID = sqlUtil.read("delete-by-id");
 
 	public final String EXISTS_BY_ID = sqlUtil.read("exists-by-id");
 

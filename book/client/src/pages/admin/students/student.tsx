@@ -22,6 +22,12 @@ const Student: FC<PropTypes> = ({ student }) => (
 				{student.details.mobilePhoneNumber}
 				<Fragment> : </Fragment>
 				{student.details.emailAddress}
+				{student.details.instagramUsername && (
+					<Fragment>
+						<Fragment> : </Fragment>
+						{student.details.instagramUsername}
+					</Fragment>
+				)}
 				<br />
 				{student.bookingsTotal ? (
 					<Fragment>

@@ -180,6 +180,13 @@ public class SessionResolver {
 		return sessionService.cancelByID(sessionID);
 	}
 
+	@MutationMapping
+	public UUID deleteSessionByID(@Argument UUID sessionID, @AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		return sessionService.deleteByID(sessionID);
+	}
+
 	@QueryMapping
 	public List<Session> getSessionsInPeriod(@Argument GetSessionsInput input) {
 		sessionValidator.validateGetSessionsInput(input);

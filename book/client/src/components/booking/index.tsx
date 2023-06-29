@@ -48,6 +48,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	hideCallNow = false,
 	hideReceipt = false,
 	hideCheckIn = false,
+	hideInstagram = false,
 	hideDateLabel = false,
 	hideQuantities = false,
 	hideEquipmentFee = false,
@@ -169,7 +170,15 @@ const SessionPageBooking: FC<PropTypes> = ({
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
 			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100" : ""}`}
-			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
+			text={
+				hideUpdate
+					? booking.session.title
+					: `${determineDetailsFullName(booking.student.details)}${
+							!hideInstagram && booking.student.details.instagramUsername
+								? ` (${booking.student.details.instagramUsername})`
+								: ""
+					  }`
+			}
 			description={
 				<Fragment>
 					{hideDateLabel || (
@@ -280,44 +289,55 @@ const SessionPageBooking: FC<PropTypes> = ({
 								isOpen={isCancelModalOpen}
 								onClose={closeCancelModal}
 								error={cancelBookingResult.error}
-								subTitle={sessionDateAndTimeLabel}
-								contentClassName="flex flex-col gap-2"
-								icon={className => <CheckCircleIcon className={className} />}
+								contentClassName="flex flex-col gap-6"
+								icon={className => <XMarkIcon className={className} />}
 								children={
 									booking.paymentMethod === PaymentMethod.CARD ? (
 										<Fragment>
-											<p className="text-gray-500">Cancellation Terms</p>
-											<p>
-												If cancelled at least 3 hours prior to scheduled class, you will receive a free coupon for your
-												next booked class.
-											</p>
-											<p>
-												Please contact us at{" "}
-												<a href="tel:0432617673" className="text-blue-500 underline">
-													0432617673
-												</a>{" "}
-												to cancel your booking.
-											</p>
+											<div className="p-4 border rounded bg-gray-100 flex flex-col gap-2">
+												<p className="text-gray-500">Cancellation Terms - CARD</p>
+												<div className="flex flex-col gap-2">
+													<p>
+														If cancelled at least 3 hours prior to scheduled class, you will receive a free coupon for
+														your next booked class.
+													</p>
+													<p>
+														Please contact us at{" "}
+														<a href="tel:0432617673" className="text-blue-500 underline">
+															0432617673
+														</a>{" "}
+														to cancel your booking.
+													</p>
+												</div>
+											</div>
+											{!canCancel && <p>Are you sure you want to cancel this booking?</p>}
 										</Fragment>
 									) : (
-										<p>Are you sure you want to cancel this booking?</p>
+										<Fragment>
+											<div className="p-4 border rounded bg-gray-100 flex flex-col gap-2">
+												<p className="text-gray-500">Cancellation Terms - CASH</p>
+												<p>You can cancel your booking within 3 hours of your scheduled class.</p>
+											</div>
+											<p>Are you sure you want to cancel this booking?</p>
+										</Fragment>
 									)
 								}
 								buttons={
-									canCancel && reCaptchaToken ? (
+									canCancel ? (
 										<Fragment>
 											<Button
-												text="No"
-												ariaLabel="No"
-												onClick={closeCancelModal}
-												leftIcon={className => <XMarkIcon className={className} />}
-											/>
-											<Button
-												transparent
+												disabled={!reCaptchaToken}
 												onClick={handleCancelBooking}
 												ariaLabel="Yes - Cancel Booking"
 												leftIcon={className => <CheckIcon className={className} />}
 												text={cancelBookingResult.loading ? "Cancelling..." : "Yes"}
+											/>
+											<Button
+												text="No"
+												transparent
+												ariaLabel="No"
+												onClick={closeCancelModal}
+												leftIcon={className => <XMarkIcon className={className} />}
 											/>
 										</Fragment>
 									) : null
@@ -423,6 +443,7 @@ interface PropTypes {
 	hideReceipt?: boolean;
 	hideCallNow?: boolean;
 	hideDateLabel?: boolean;
+	hideInstagram?: boolean;
 	hideQuantities?: boolean;
 	hideEquipmentFee?: boolean;
 	hideStripePaymentLink?: boolean;

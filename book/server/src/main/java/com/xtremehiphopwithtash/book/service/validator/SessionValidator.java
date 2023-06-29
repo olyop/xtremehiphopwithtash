@@ -53,10 +53,16 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	}
 
 	@Override
-	public void validateCancel(UUID sessionID) {
+	public void validateDelete(UUID sessionID) {
 		validateID(sessionID);
 		validateNotAlreadyCancelled(sessionID);
 		validateBookings(sessionID);
+	}
+
+	public void validateCancel(UUID sessionID) {
+		validateID(sessionID);
+		validateNotAlreadyCancelled(sessionID);
+		validateBookingsNotCancelled(sessionID);
 	}
 
 	@Override
@@ -161,11 +167,11 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 		}
 	}
 
-	private void validateBookings(UUID sessionID) {
+	private void validateBookingsNotCancelled(UUID sessionID) {
 		List<Booking> bookings = bookingDAO.selectBySessionIDNotCancelled(sessionID);
 
 		if (!bookings.isEmpty()) {
-			throw new ResolverException("Cannot delete session with bookings");
+			throw new ResolverException("Cannot cancel session with bookings");
 		}
 	}
 
@@ -174,6 +180,14 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 
 		if (session.isCancelled()) {
 			throw new ResolverException("Session is already cancelled");
+		}
+	}
+
+	private void validateBookings(UUID sessionID) {
+		List<Booking> bookings = bookingDAO.selectBySessionID(sessionID);
+
+		if (!bookings.isEmpty()) {
+			throw new ResolverException("Cannot delete session with bookings");
 		}
 	}
 }

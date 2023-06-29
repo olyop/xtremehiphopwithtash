@@ -24,6 +24,7 @@ query getSessionBookings($sessionID: UUID!) {
 					nickName
 					emailAddress
 					mobilePhoneNumber
+					instagramUsername
 				}
 			}
 		}

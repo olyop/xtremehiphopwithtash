@@ -196,7 +196,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	}
 
 	public boolean existsByCashFreeAndStudentIDAndSessionID(String studentID, UUID sessionID) {
-		String sql = query.SELECT_EXISTS_BY_CASH_AND_FREE_AND_STUDENT_ID_AND_SESSION_ID;
+		String sql = query.EXISTS_BY_CASH_AND_FREE_AND_STUDENT_ID_AND_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("studentID", studentID);
@@ -216,7 +216,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	}
 
 	public boolean existsBySessionAndStudent(UUID sessionID, String studentID) {
-		String sql = query.SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID;
+		String sql = query.EXISTS_BY_SESSION_ID_AND_STUDENT_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("sessionID", sessionID);

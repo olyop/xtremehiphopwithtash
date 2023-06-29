@@ -44,7 +44,7 @@ public class CourseValidator implements ValidatorCRUD<UUID, CourseInput> {
 	}
 
 	@Override
-	public void validateCancel(UUID courseID) {
+	public void validateDelete(UUID courseID) {
 		validateID(courseID);
 		validateSessions(courseID);
 	}

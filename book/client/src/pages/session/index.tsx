@@ -25,9 +25,10 @@ import Page from "../page";
 import BookSession from "./book-session";
 import SessionBookedBanner from "./booked-banner";
 import SessionBookings from "./bookings";
-import DeleteSession from "./cancel-session";
+import CancelSession from "./cancel-session";
 import SessionCancelledBanner from "./cancelled-banner";
 import SessionCapacityBanner from "./capacity-banner";
+import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
 import SessionPriceBanner from "./price-banner";
@@ -126,18 +127,18 @@ const SessionPage: FC = () => {
 							<Fragment>
 								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
 								<p>
-									{session.capacityBooked || 0} / {session.capacityAvailable}
+									{session.capacityBooked ?? 0} / {session.capacityAvailable}
 								</p>
 								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">steps</p>
 								<p>
 									{session.equipmentAvailable
-										? `${session.equipmentHired || 0} / ${session.equipmentAvailable}`
+										? `${session.equipmentHired ?? 0} / ${session.equipmentAvailable}`
 										: "No steps available"}
 								</p>
 							</Fragment>
 						)}
 						{breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : <div />}
-						{session.isCancelled || (
+						{!session.isCancelled && (
 							<div
 								className={`"flex flex-col gap-8 pt-3 ${
 									breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
@@ -149,11 +150,12 @@ const SessionPage: FC = () => {
 										<ShareButton url={location.href} isSessionInPast={isInPast} />
 									</div>
 									{isAdministrator && (
-										<div className="flex">
-											{session && (
+										<div className="flex items-center border rounded p-2">
+											<UpdateSession session={session as Session} onEdit={handleRefetch} />
+											{!isInPast && (
 												<Fragment>
-													<UpdateSession session={session as Session} onEdit={handleRefetch} />
-													{!isInPast && <DeleteSession session={session as Session} />}
+													<CancelSession session={session as Session} />
+													<DeleteSession session={session as Session} />
 												</Fragment>
 											)}
 										</div>
@@ -164,18 +166,21 @@ const SessionPage: FC = () => {
 					</div>
 				</div>
 				{session.notes && (
-					<div className="px-4 py-3 border border-yellow-500 rounded bg-yellow-50 flex gap-2">
-						<InformationCircleIcon className="h-6 w-6" />
+					<div className="rounded border px-4 py-3 flex flex-col gap-2 border-yellow-500 bg-yellow-50">
+						<div className="flex gap-2 ml-[-0.2rem] items-center">
+							<InformationCircleIcon className="h-5 w-5" />
+							<p>Notice</p>
+						</div>
 						<p>{session.notes}</p>
 					</div>
 				)}
 				<div className="flex flex-col gap-1">
-					<h3>About</h3>
-					<p className="text-gray-500">{getClassDescription}</p>
-				</div>
-				<div className="flex flex-col gap-1">
 					<h3>Session Details</h3>
 					<p className="text-gray-500">{session.course.description}</p>
+				</div>
+				<div className="flex flex-col gap-1">
+					<h3>About Xtreme Hip-Hop</h3>
+					<p className="text-gray-500">{getClassDescription}</p>
 				</div>
 				<div className="flex flex-col justify-start gap-1">
 					<h3>Contact Instructors</h3>

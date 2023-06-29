@@ -72,7 +72,7 @@ public class LocationResolver {
 	public UUID deleteLocationByID(@Argument UUID locationID, @AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
-		return locationService.cancelByID(locationID);
+		return locationService.deleteByID(locationID);
 	}
 
 	@QueryMapping

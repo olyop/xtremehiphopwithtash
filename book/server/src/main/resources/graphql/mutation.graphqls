@@ -10,6 +10,7 @@ type Mutation {
 	deleteLocationByID(locationID: UUID!): UUID!
 	deleteInstructorByID(instructorID: UUID!): UUID!
 	deleteCourseByID(courseID: UUID!): UUID!
+	deleteSessionByID(sessionID: UUID!): UUID!
 
 	updateStudentByID(input: DetailsInput!): Student!
 	updateLocationByID(locationID: UUID!, input: LocationInput!): Location!

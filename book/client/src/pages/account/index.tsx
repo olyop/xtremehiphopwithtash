@@ -216,6 +216,7 @@ const AccountPage: FC = () => {
 								hideUpdate
 								hideCheckIn
 								hideCallNow
+								hideInstagram
 								hideQuantities
 								hideEquipmentFee
 								hideStripePaymentLink

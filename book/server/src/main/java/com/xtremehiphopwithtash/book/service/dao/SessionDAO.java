@@ -37,7 +37,11 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 
 	@Override
 	public void deleteByID(UUID sessionID) {
-		throw new UnsupportedOperationException();
+		String sql = query.DELETE_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
+
+		jdbcTemplate.update(sql, paramSource);
 	}
 
 	@Override

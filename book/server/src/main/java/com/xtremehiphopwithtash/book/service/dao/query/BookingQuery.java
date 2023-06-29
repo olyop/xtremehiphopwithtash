@@ -51,12 +51,10 @@ public class BookingQuery {
 		"select-sum-by-student-id-and-payment-method"
 	);
 
-	public final String SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID = sqlUtil.read(
-		"select-exists-by-session-id-and-student-id"
-	);
+	public final String EXISTS_BY_SESSION_ID_AND_STUDENT_ID = sqlUtil.read("exists-by-session-id-and-student-id");
 
-	public final String SELECT_EXISTS_BY_CASH_AND_FREE_AND_STUDENT_ID_AND_SESSION_ID = sqlUtil.read(
-		"select-exists-by-cash-and-free-and-student-id-and-session-id"
+	public final String EXISTS_BY_CASH_AND_FREE_AND_STUDENT_ID_AND_SESSION_ID = sqlUtil.read(
+		"exists-by-cash-and-free-and-student-id-and-session-id"
 	);
 
 	public final String UPDATE_HAS_CHECKED_IN_BY_ID = sqlUtil.read("update-has-checked-in-by-id");

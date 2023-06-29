@@ -55,7 +55,7 @@ public class DetailsService implements EntityServiceInter<Details, DetailsInput,
 	}
 
 	@Override
-	public UUID cancelByID(UUID detailsID) {
+	public UUID deleteByID(UUID detailsID) {
 		validator.validateID(detailsID);
 
 		detailsDAO.deleteByID(detailsID);

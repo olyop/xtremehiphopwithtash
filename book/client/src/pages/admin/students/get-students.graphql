@@ -5,7 +5,6 @@ query getStudents {
 		bookingsTotalPaymentMethodFree
 		bookingsTotalPaymentMethodCard
 		bookingsTotalPaymentMethodCash
-		# bookingsTotalPaymentMethodCoupon
 		details {
 			detailsID
 			firstName

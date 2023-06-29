@@ -182,6 +182,7 @@ export type Mutation = {
 	readonly deleteCourseByID: Scalars["UUID"]["output"];
 	readonly deleteInstructorByID: Scalars["UUID"]["output"];
 	readonly deleteLocationByID: Scalars["UUID"]["output"];
+	readonly deleteSessionByID: Scalars["UUID"]["output"];
 	readonly updateBookingByID: Booking;
 	readonly updateClassDescription: Scalars["String"]["output"];
 	readonly updateCourseByID: Course;
@@ -245,6 +246,10 @@ export type MutationDeleteInstructorByIdArgs = {
 
 export type MutationDeleteLocationByIdArgs = {
 	locationID: Scalars["UUID"]["input"];
+};
+
+export type MutationDeleteSessionByIdArgs = {
+	sessionID: Scalars["UUID"]["input"];
 };
 
 export type MutationUpdateBookingByIdArgs = {
@@ -1056,6 +1061,7 @@ export type GetSessionsInPeriodQuery = {
 			readonly price: number | null;
 			readonly hasBooked: boolean;
 			readonly capacityRemaining: number | null;
+			readonly capacityBooked: number | null;
 			readonly isCancelled: boolean;
 			readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
 			readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
@@ -1094,6 +1100,7 @@ export type GetSessionBookingsQuery = {
 						readonly nickName: string | null;
 						readonly emailAddress: string;
 						readonly mobilePhoneNumber: string;
+						readonly instagramUsername: string | null;
 					} & { readonly __typename: "Details" };
 				} & { readonly __typename: "Student" };
 			} & { readonly __typename: "Booking" }
@@ -1106,6 +1113,12 @@ export type CancelSessionMutationVariables = Exact<{
 }>;
 
 export type CancelSessionMutation = { readonly cancelSessionByID: string } & { readonly __typename: "Mutation" };
+
+export type DeleteSessionMutationVariables = Exact<{
+	sessionID: Scalars["UUID"]["input"];
+}>;
+
+export type DeleteSessionMutation = { readonly deleteSessionByID: string } & { readonly __typename: "Mutation" };
 
 export type GetSessionPageQueryVariables = Exact<{
 	sessionID: Scalars["UUID"]["input"];

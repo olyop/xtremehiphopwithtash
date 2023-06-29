@@ -54,8 +54,8 @@ public class LocationService implements EntityServiceInter<Location, LocationInp
 	}
 
 	@Override
-	public UUID cancelByID(UUID locationID) {
-		validator.validateCancel(locationID);
+	public UUID deleteByID(UUID locationID) {
+		validator.validateDelete(locationID);
 
 		locationDAO.deleteByID(locationID);
 

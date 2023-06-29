@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { Dispatch, FC, SetStateAction, createElement, useEffect, useRef, useState } from "react";
 
 import FormError from "../../../components/form-error";
+import Loading from "../../../components/loading";
 import {
 	BookingInput,
 	CreatePaymentIntentMutation,
@@ -19,7 +20,7 @@ const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, setIsPaying
 	const [createPaymentIntent, { data, error }] = useMutation<IntentData, IntentVars>(CREATE_PAYMENT_INTENT);
 
 	const handleCreatePaymentIntent = () => {
-		if (bookingInput) {
+		if (bookingInput && reCaptcha) {
 			void createPaymentIntent({
 				variables: {
 					reCaptcha,
@@ -46,8 +47,12 @@ const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, setIsPaying
 		}
 	}, [data]);
 
-	if (!clientSecret) {
-		return null;
+	if (!clientSecret || !reCaptcha) {
+		return (
+			<div className="flex py-10 items-center justify-center">
+				<Loading />
+			</div>
+		);
 	}
 
 	if (error) {
@@ -62,7 +67,7 @@ const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, setIsPaying
 };
 
 interface PropTypes {
-	reCaptcha: string;
+	reCaptcha: string | null;
 	bookingInput: BookingInput;
 	setIsPaying: Dispatch<SetStateAction<boolean>>;
 }

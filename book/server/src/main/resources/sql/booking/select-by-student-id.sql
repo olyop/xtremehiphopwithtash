@@ -2,12 +2,13 @@ SELECT
 	%s
 FROM
 	booking
-WHERE
-	student_id = :studentID
 JOIN
 	session
-		ON session.id = booking.session_id
+		ON session.session_id = booking.session_id
+WHERE
+	student_id = :studentID
 ORDER BY
-	session.start_time DESC
+	session.start_time DESC,
+	booking.created_at DESC
 LIMIT
 	50;

@@ -73,10 +73,10 @@ public class BookingService {
 		booking.setStudentID(studentID);
 
 		if (isBookingFree(bookingCost, input)) {
-			validateStudentHasNotBookedSession(studentID, input, true);
+			validateStudentHasNotBookedSession(studentID, input, true, bookingCost.isFreeFromCoupon());
 			booking.setCost(null);
 		} else if (isPayingWithCash(input)) {
-			validateStudentHasNotBookedSession(studentID, input, false);
+			validateStudentHasNotBookedSession(studentID, input, false, false);
 			validateQuantitiesAreOne(input);
 
 			booking.setCost(bookingCost.getFinalCost());
@@ -219,14 +219,21 @@ public class BookingService {
 		}
 	}
 
-	private void validateStudentHasNotBookedSession(String studentID, BookingInput input, boolean isSessionFree) {
-		if (bookingDAO.existsByCashFreeAndStudentIDAndSessionID(studentID, input.sessionID())) {
-			if (isSessionFree) {
-				throw new ResolverException("You already booked this session. You can only book a free session once.");
-			} else {
-				throw new ResolverException(
-					"You already booked this session. When paying with cash you can only book a session once."
-				);
+	private void validateStudentHasNotBookedSession(
+		String studentID,
+		BookingInput input,
+		boolean isSessionFree,
+		boolean isFreeFromCoupon
+	) {
+		if (!isFreeFromCoupon) {
+			if (bookingDAO.existsByCashFreeAndStudentIDAndSessionID(studentID, input.sessionID())) {
+				if (isSessionFree) {
+					throw new ResolverException("You already booked this session. You can only book a free session once.");
+				} else {
+					throw new ResolverException(
+						"You already booked this session. When paying with cash you can only book a session once."
+					);
+				}
 			}
 		}
 	}

@@ -72,12 +72,12 @@ public class InstructorService implements EntityServiceInter<Instructor, Instruc
 	}
 
 	@Override
-	public UUID cancelByID(UUID instructorID) {
-		validator.validateCancel(instructorID);
+	public UUID deleteByID(UUID instructorID) {
+		validator.validateDelete(instructorID);
 
 		Instructor instructor = instructorDAO.selectByID(instructorID);
 
-		detailsService.cancelByID(instructor.getDetailsID());
+		detailsService.deleteByID(instructor.getDetailsID());
 		instructorDAO.deleteByID(instructorID);
 
 		return instructorID;

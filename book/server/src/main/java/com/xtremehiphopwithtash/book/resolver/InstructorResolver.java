@@ -56,7 +56,7 @@ public class InstructorResolver {
 	public UUID deleteInstructorByID(@Argument UUID instructorID, @AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
-		return instructorService.cancelByID(instructorID);
+		return instructorService.deleteByID(instructorID);
 	}
 
 	@QueryMapping

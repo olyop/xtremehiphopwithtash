@@ -77,7 +77,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 		: session.isCapacityRemaining
 		? showBookButtonLogIn
 			? "Please Log In"
-			: "Book Now"
+			: "Book"
 		: "Fully Booked";
 
 	return (

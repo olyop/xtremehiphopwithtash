@@ -1,0 +1,1 @@
+DELETE FROM session WHERE session_id = :sessionID;
