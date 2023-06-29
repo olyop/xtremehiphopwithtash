@@ -1,0 +1,1 @@
+SELECT %s FROM instructor ORDER BY instructor.created_at DESC;

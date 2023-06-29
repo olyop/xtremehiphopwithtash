@@ -170,18 +170,18 @@ const SessionPage: FC = () => {
 					</div>
 				)}
 				<div className="flex flex-col gap-1">
-					<h3>Class Description</h3>
+					<h3>About</h3>
 					<p className="text-gray-500">{getClassDescription}</p>
 				</div>
 				<div className="flex flex-col gap-1">
-					<h3>Session Description</h3>
+					<h3>Session Details</h3>
 					<p className="text-gray-500">{session.course.description}</p>
 				</div>
 				<div className="flex flex-col justify-start gap-1">
 					<h3>Contact Instructors</h3>
 					<InstructorsChip instructors={session.instructors as Instructor[]} className="!self-start" showFullName />
 				</div>
-				{isAdministrator && <SessionBookings session={session as Session} />}
+				{isAdministrator && <SessionBookings session={session as Session} onBookingUpdated={handleRefetch} />}
 			</div>
 		</Page>
 	);

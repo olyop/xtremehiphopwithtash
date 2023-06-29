@@ -84,7 +84,7 @@ public class LocationDAO
 	}
 
 	public boolean checkForDuplicate(String name, String plusCode, String address) {
-		String sql = query.EXISTS_CHECK_FOR_DUPLICATE;
+		String sql = query.SELECT_EXISTS_CHECK_FOR_DUPLICATE;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("name", name);

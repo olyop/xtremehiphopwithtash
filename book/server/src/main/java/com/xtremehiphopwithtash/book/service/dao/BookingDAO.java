@@ -117,7 +117,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	}
 
 	public int selectSumByStudentID(String studentID) {
-		String sql = query.SELECT_SUM_BOOKINGS_BY_STUDENT_ID;
+		String sql = query.SELECT_SUM_BY_STUDENT_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
 
@@ -125,7 +125,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	}
 
 	public int selectSumByStudentIDAndFree(String studentID) {
-		String sql = query.SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_FREE;
+		String sql = query.SELECT_SUM_BY_STUDENT_ID_AND_FREE;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("studentID", studentID);
@@ -134,7 +134,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	}
 
 	public int selectSumByStudentIDAndPaymentMethod(String studentID, PaymentMethod paymentMethod) {
-		String sql = query.SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_PAYMENT_METHOD;
+		String sql = query.SELECT_SUM_BY_STUDENT_ID_AND_PAYMENT_METHOD;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("studentID", studentID);
@@ -196,7 +196,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	}
 
 	public boolean existsByCashFreeAndStudentIDAndSessionID(String studentID, UUID sessionID) {
-		String sql = query.SELECT_EXISTS_BY_CASH_FREE_AND_STUDENT_ID_AND_SESSION_ID;
+		String sql = query.SELECT_EXISTS_BY_CASH_AND_FREE_AND_STUDENT_ID_AND_SESSION_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("studentID", studentID);

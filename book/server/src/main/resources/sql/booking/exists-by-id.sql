@@ -1,0 +1,1 @@
+SELECT EXISTS (SELECT 1 FROM booking WHERE booking_id = :bookingID);

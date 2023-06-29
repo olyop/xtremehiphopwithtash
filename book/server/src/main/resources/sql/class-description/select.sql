@@ -1,0 +1,1 @@
+SELECT class_description FROM class_description;

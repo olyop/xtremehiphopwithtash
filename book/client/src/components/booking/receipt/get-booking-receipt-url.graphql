@@ -1,0 +1,3 @@
+query getBookingReceiptURL($bookingID: UUID!) {
+	getBookingReceiptURL(bookingID: $bookingID)
+}

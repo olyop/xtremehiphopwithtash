@@ -1,0 +1,1 @@
+SELECT %s FROM location WHERE plus_code = :plusCode;

@@ -1,0 +1,1 @@
+SELECT %s FROM booking WHERE booking_id = :bookingID;

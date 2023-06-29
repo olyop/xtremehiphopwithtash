@@ -24,4 +24,5 @@ type Query {
 	verifyCoupon(code: String!): String
 
 	getBookingCost(bookingInput: BookingInput!): BookingCost!
+	getBookingReceiptURL(bookingID: UUID!): URL!
 }

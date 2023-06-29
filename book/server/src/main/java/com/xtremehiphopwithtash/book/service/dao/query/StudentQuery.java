@@ -5,36 +5,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class StudentQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.STUDENT, "student");
+	private final SQLUtil sqlUtil = new SQLUtil("student", SQLColumnNames.join(SQLColumnNames.STUDENT, "student"));
 
-	public final String SELECT = String.format(
-		"""
-			SELECT
-				%s
-			FROM
-				student
-			JOIN
-				booking
-					ON booking.student_id = student.student_id
-			GROUP BY
-				student.student_id
-			ORDER BY
-				count(booking.student_id) DESC;
-		""",
-		columnNames
-	);
+	public final String SELECT = sqlUtil.read("select");
 
-	public final String SELECT_BY_ID = String.format(
-		"SELECT %s FROM student WHERE student_id = :studentID;",
-		columnNames
-	);
+	public final String SELECT_BY_ID = sqlUtil.read("select-by-id");
 
-	public final String INSERT = String.format(
-		"INSERT INTO student (student_id, details_id, stripe_customer_id) VALUES (:studentID, :detailsID, :stripeCustomerID) RETURNING %s;",
-		columnNames
-	);
+	public final String INSERT = sqlUtil.read("insert");
 
-	public final String DELETE_BY_ID = "DELETE FROM student WHERE student_id = :studentID;";
+	public final String DELETE_BY_ID = sqlUtil.read("delete-by-id");
 
-	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM student WHERE student_id = :studentID);";
+	public final String EXISTS_BY_ID = sqlUtil.read("exists-by-id");
 }

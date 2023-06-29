@@ -103,7 +103,7 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 	}
 
 	public List<Session> selectInTimePeriod(Instant startTime, Instant endTime) {
-		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD;
+		String sql = query.SELECT_IN_TIME_PERIOD;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("startTime", startTime.getEpochSecond());
@@ -113,7 +113,7 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 	}
 
 	public List<Session> selectInTimePeriodNotCancelled(Instant startTime, Instant endTime) {
-		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_NOT_CANCELLED;
+		String sql = query.SELECT_IN_TIME_PERIOD_NOT_CANCELLED;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("startTime", startTime.getEpochSecond());
@@ -123,7 +123,7 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 	}
 
 	public List<Session> selectInTimePeriodExcludeSession(Instant startTime, Instant endTime, UUID sessionID) {
-		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_EXCLUDE_SESSION;
+		String sql = query.SELECT_IN_TIME_PERIOD_EXCLUDE_SESSION;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("startTime", startTime.getEpochSecond());
@@ -134,7 +134,7 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 	}
 
 	public List<Session> selectInTimePeriodAndCourseID(Instant startTime, Instant endTime, UUID courseID) {
-		String sql = query.SELECT_SESSIONS_IN_TIME_PERIOD_AND_COURSE_ID;
+		String sql = query.SELECT_IN_TIME_PERIOD_AND_COURSE_ID;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("startTime", startTime.getEpochSecond());

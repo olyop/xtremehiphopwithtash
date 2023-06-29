@@ -1,0 +1,1 @@
+UPDATE class_description SET class_description = :classDescription;

@@ -10,6 +10,7 @@ import com.xtremehiphopwithtash.book.service.ReCaptchaService;
 import com.xtremehiphopwithtash.book.service.SessionService;
 import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.UUID;
@@ -62,13 +63,19 @@ public class BookingResolver {
 		return studentService.retreiveByID(booking.getStudentID());
 	}
 
-	@SchemaMapping(typeName = "Booking", field = "receiptURL")
-	public URL getReceiptURL(Booking booking) {
+	@SchemaMapping(typeName = "Query", field = "getBookingReceiptURL")
+	public URL getReceiptURL(Principal principal, @Argument UUID bookingID) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		Booking booking = bookingService.retreiveByID(bookingID);
+
+		bookingService.validateBookingIsStudents(studentID, booking);
+
 		if (booking.getPaymentIntentID() == null) {
-			return null;
-		} else {
-			return stripeService.getChargeReceiptURL(booking.getPaymentIntentID());
+			throw new ResolverException("Booking was not paid with CARD.");
 		}
+
+		return stripeService.getChargeReceiptURL(booking.getPaymentIntentID());
 	}
 
 	@MutationMapping

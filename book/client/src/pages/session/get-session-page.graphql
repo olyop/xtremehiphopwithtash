@@ -15,7 +15,6 @@ query getSessionPage($sessionID: UUID!) {
 		equipmentHired
 		equipmentRemaining
 		isCapacityRemaining(bookingQuantity: 1)
-		isEquipmentRemaining(equipmentQuantity: 1)
 		isCancelled
 		createdAt
 		location {

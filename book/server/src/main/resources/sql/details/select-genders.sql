@@ -1,0 +1,1 @@
+SELECT UNNEST(ENUM_RANGE(NULL::details_gender)) AS GENDER;

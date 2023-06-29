@@ -27,6 +27,7 @@ public class SecurityConfiguration {
 		"/index.html",
 		"/health",
 		"/notFound",
+		"/favicon.ico",
 		"/favicon.png",
 		"/robots.txt",
 		"/assets/**",

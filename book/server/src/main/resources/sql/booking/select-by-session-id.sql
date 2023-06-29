@@ -1,0 +1,1 @@
+SELECT %s FROM booking WHERE session_id = :sessionID ORDER BY has_cancelled ASC, has_checked_in ASC, created_at DESC;

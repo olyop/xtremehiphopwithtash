@@ -7,7 +7,6 @@ query getAccountPage {
 			firstName
 			lastName
 			nickName
-			gender
 			emailAddress
 			mobilePhoneNumber
 			instagramUsername
@@ -20,7 +19,6 @@ query getAccountPage {
 			equipmentQuantity
 			paymentMethod
 			cost
-			receiptURL
 			isCheckedIn
 			isCancelled
 			session {
@@ -28,42 +26,6 @@ query getAccountPage {
 				title
 				startTime
 				endTime
-				course {
-					courseID
-					name
-				}
-				location {
-					locationID
-					name
-					coordinates {
-						latitude
-						longitude
-					}
-				}
-				instructors {
-					instructorID
-					details {
-						detailsID
-						firstName
-						lastName
-						nickName
-						emailAddress
-						mobilePhoneNumber
-						instagramUsername
-					}
-				}
-			}
-			student {
-				studentID
-				details {
-					detailsID
-					firstName
-					lastName
-					nickName
-					emailAddress
-					mobilePhoneNumber
-					instagramUsername
-				}
 			}
 		}
 	}

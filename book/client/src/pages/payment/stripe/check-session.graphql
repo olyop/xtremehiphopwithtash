@@ -1,0 +1,8 @@
+query getCheckSession($sessionID: UUID!, $bookingQuantity: PositiveInt!, $equipmentQuantity: PositiveInt) {
+	getSessionByID(sessionID: $sessionID) {
+		sessionID
+		isCancelled
+		isCapacityRemaining(bookingQuantity: $bookingQuantity)
+		isEquipmentRemaining(equipmentQuantity: $equipmentQuantity)
+	}
+}

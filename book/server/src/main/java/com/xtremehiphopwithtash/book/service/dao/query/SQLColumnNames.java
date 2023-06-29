@@ -2,7 +2,7 @@ package com.xtremehiphopwithtash.book.service.dao.query;
 
 import java.util.List;
 
-final class SQLColumnNamesUtil {
+final class SQLColumnNames {
 
 	private static final String CREATED_AT = "created_at";
 

@@ -23,7 +23,7 @@ public class ClassDescriptionDAO {
 	public void updateValue(String value) {
 		String sql = query.UPDATE;
 
-		MapSqlParameterSource params = new MapSqlParameterSource("value", value);
+		MapSqlParameterSource params = new MapSqlParameterSource("classDescription", value);
 
 		jdbcTemplate.update(sql, params);
 	}

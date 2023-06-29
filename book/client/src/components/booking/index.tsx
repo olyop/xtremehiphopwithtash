@@ -1,7 +1,6 @@
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import ArrowRightOnRectangleIcon from "@heroicons/react/24/solid/ArrowRightOnRectangleIcon";
-import ArrowTopRightOnSquareIcon from "@heroicons/react/24/solid/ArrowTopRightOnSquareIcon";
 import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
@@ -36,6 +35,7 @@ import SessionStartTime from "../session-start-end-time";
 import { bookingToInput } from "./booking-to-input";
 import CANCEL_BOOKING from "./cancel-booking.graphql";
 import CHECK_IN_BOOKING from "./check-in-booking.graphql";
+import BookingReceipt from "./receipt";
 import UPDATE_BOOKING from "./update-booking.graphql";
 
 const SessionPageBooking: FC<PropTypes> = ({
@@ -78,7 +78,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	const canCancel = !booking.isCancelled && (isAdministrator || booking.paymentMethod !== PaymentMethod.CARD);
 
 	const handleCancelBooking = () => {
-		if (canCancel && reCaptchaToken) {
+		if (canCancel && reCaptchaToken && !cancelBookingResult.loading) {
 			void cancelBooking({
 				variables: {
 					reCaptcha: reCaptchaToken,
@@ -168,7 +168,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 			leftLink={booking.isCancelled ? undefined : `/session/${session.sessionID}`}
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
-			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100 opacity-60" : ""}`}
+			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100" : ""}`}
 			text={hideUpdate ? booking.session.title : determineDetailsFullName(booking.student.details)}
 			description={
 				<Fragment>
@@ -189,16 +189,16 @@ const SessionPageBooking: FC<PropTypes> = ({
 					)}
 					<br />
 					{paymentDescription}
-					{booking.notes && (
-						<Fragment>
-							<br />
-							<span className="text-gray-500">Notes: {booking.notes}</span>
-						</Fragment>
-					)}
 					{hideUpdate ? null : (
 						<Fragment>
 							<br />
 							<span className="text-gray-500">{dateTimeFormatter.format(booking.createdAt)}</span>
+						</Fragment>
+					)}
+					{booking.notes && (
+						<Fragment>
+							<br />
+							<span className="text-gray-500">Notes: {booking.notes}</span>
 						</Fragment>
 					)}
 				</Fragment>
@@ -307,17 +307,17 @@ const SessionPageBooking: FC<PropTypes> = ({
 									canCancel && reCaptchaToken ? (
 										<Fragment>
 											<Button
-												text="Confirm"
+												text="No"
+												ariaLabel="No"
+												onClick={closeCancelModal}
+												leftIcon={className => <XMarkIcon className={className} />}
+											/>
+											<Button
+												transparent
 												onClick={handleCancelBooking}
 												ariaLabel="Yes - Cancel Booking"
 												leftIcon={className => <CheckIcon className={className} />}
-											/>
-											<Button
-												text="Cancel"
-												transparent
-												ariaLabel="Cancel"
-												onClick={closeCancelModal}
-												leftIcon={className => <XMarkIcon className={className} />}
+												text={cancelBookingResult.loading ? "Cancelling..." : "Yes"}
 											/>
 										</Fragment>
 									) : null
@@ -325,17 +325,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</Fragment>
 					)}
-					{!hideReceipt && booking.receiptURL && booking.paymentMethod === PaymentMethod.CARD && (
-						<a target="_blank" rel="noreferrer" href={booking.receiptURL}>
-							<Button
-								transparent
-								ariaLabel="View Receipt"
-								text="Receipt"
-								className="!px-2 !text-xs !h-7"
-								leftIcon={className => <ArrowTopRightOnSquareIcon className={`!h-4 !w-4 ${className}}`} />}
-							/>
-						</a>
-					)}
+					{!hideReceipt && booking.paymentMethod === PaymentMethod.CARD && <BookingReceipt booking={booking} />}
 					{!hideCallNow && !isSessionInPast && (
 						<a target="_blank" rel="noreferrer" href={`tel:${booking.student.details.mobilePhoneNumber}`}>
 							<Button

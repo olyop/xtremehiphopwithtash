@@ -141,27 +141,13 @@ public class BookingService {
 			throw new ResolverException("Booking has already been cancelled");
 		}
 
-		if (booking.getIsCheckedIn()) {
+		if (booking.isCheckedIn()) {
 			throw new ResolverException("Booking has already been checked in");
 		}
 
 		if (!isAdministrator) {
-			if (!booking.getStudentID().equals(studentID)) {
-				throw new ResolverException("Can only cancel your own bookings");
-			}
-
-			Session session = sessionService.retreiveByID(booking.getSessionID());
-
-			Instant startTime = session.getStartTime();
-			Instant now = Instant.now();
-			Instant nowPlusMinimumBookingCancelTime = now.plusSeconds(minimumHoursBeforeSessionToCancel * 60 * 60);
-
-			if (startTime.isBefore(nowPlusMinimumBookingCancelTime)) {
-				throw new ResolverException(
-					"Can only cancel bookings " + minimumHoursBeforeSessionToCancel + " hours before the session starts."
-				);
-			}
-
+			validateBookingIsStudents(studentID, booking);
+			validateCancelTime(booking.getSessionID());
 			boolean canCancel =
 				(booking.getPaymentMethod() == null && booking.getCost() == null) ||
 				booking.getPaymentMethod() == PaymentMethod.COUPON ||
@@ -189,6 +175,26 @@ public class BookingService {
 	private void validateSession(UUID sessionID) {
 		sessionValidator.validateID(sessionID);
 		sessionValidator.validateIsNotInPast(sessionService.retreiveByID(sessionID).getStartTime());
+	}
+
+	public void validateBookingIsStudents(String studentID, Booking booking) {
+		if (!booking.getStudentID().equals(studentID)) {
+			throw new ResolverException("Booking does not belong to student");
+		}
+	}
+
+	private void validateCancelTime(UUID sessionID) {
+		Session session = sessionService.retreiveByID(sessionID);
+
+		Instant startTime = session.getStartTime();
+		Instant now = Instant.now();
+		Instant nowPlusMinimumBookingCancelTime = now.plusSeconds(minimumHoursBeforeSessionToCancel * 60 * 60);
+
+		if (startTime.isBefore(nowPlusMinimumBookingCancelTime)) {
+			throw new ResolverException(
+				"Can only cancel bookings " + minimumHoursBeforeSessionToCancel + " hours before the session starts."
+			);
+		}
 	}
 
 	private void validateCoupon(Optional<String> couponCode) {
@@ -227,7 +233,7 @@ public class BookingService {
 
 	private void validateQuantitiesAreOne(BookingInput input) {
 		if (
-			input.bookingQuantity() != 1 &&
+			input.bookingQuantity() != 1 ||
 			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : false)
 		) {
 			throw new ResolverException("When paying with cash you can only book one session and hire one step.");
@@ -341,8 +347,12 @@ public class BookingService {
 		return bookingDAO.selectEquipmentHired(sessionID);
 	}
 
-	public boolean retreiveIsEquipmentRemaining(UUID sessionID, short equipmentQuantity) {
+	public boolean retreiveIsEquipmentRemaining(UUID sessionID, Short equipmentQuantity) {
 		sessionValidator.validateID(sessionID);
+
+		if (equipmentQuantity == null) {
+			return true;
+		}
 
 		return bookingDAO.selectIsEquipmentRemaining(sessionID, equipmentQuantity);
 	}

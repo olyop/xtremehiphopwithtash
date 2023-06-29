@@ -126,7 +126,7 @@ public class StudentResolver {
 	}
 
 	@SchemaMapping(typeName = "Student", field = "bookingsTotalPaymentMethodCard")
-	public Integer getStudentBookingsTotalPaymentMethod(Student student) {
+	public Integer getStudentBookingsTotalPaymentMethodCard(Student student) {
 		int bookingsTotal = bookingService.retreiveStudentTotalAndPaymentMethod(student.getStudentID(), PaymentMethod.CARD);
 
 		if (bookingsTotal == 0) {

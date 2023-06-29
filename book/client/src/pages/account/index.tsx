@@ -140,7 +140,7 @@ const AccountPage: FC = () => {
 
 	return (
 		<Page id={studentID} className="p-4 flex flex-col gap-6 pb-56">
-			<h1 className="text-3xl py-2 font-bold text-center md:text-left">My Account</h1>
+			<h1 className="text-3xl pt-2 pb-4 px-8 font-bold text-center md:text-left border-b self-center">My Account</h1>
 			<div className="flex flex-col gap-2">
 				<h2 className="text-2xl underline">Details</h2>
 				<div className={detailsClassName}>

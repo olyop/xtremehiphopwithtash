@@ -1,0 +1,1 @@
+UPDATE booking SET has_cancelled = true WHERE booking_id = :bookingID;

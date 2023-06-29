@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClassDescriptionQuery {
 
-	public final String SELECT = "SELECT class_description FROM class_description;";
+	private final SQLUtil sqlUtil = new SQLUtil("class-description");
 
-	public final String UPDATE = "UPDATE class_description SET class_description = :value;";
+	public final String SELECT = sqlUtil.read("select");
+	public final String UPDATE = sqlUtil.read("update");
 }

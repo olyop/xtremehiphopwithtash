@@ -1,10 +1,13 @@
 import MinusCircleIcon from "@heroicons/react/24/solid/MinusCircleIcon";
-import { FC, createElement } from "react";
+import { FC, createElement, useContext } from "react";
 
+import { IsAdministratorContext } from "../../contexts/is-administrator";
 import { Session } from "../../generated-types";
 
 const SessionCancelledBanner: FC<PropTypes> = ({ session }) => {
-	if (!session.isCancelled) {
+	const { isAdministrator } = useContext(IsAdministratorContext);
+
+	if (!isAdministrator || !session.isCancelled) {
 		return null;
 	}
 

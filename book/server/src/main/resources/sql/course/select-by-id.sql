@@ -1,0 +1,1 @@
+SELECT %s FROM course WHERE course_id = :courseID;

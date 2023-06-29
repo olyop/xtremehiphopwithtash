@@ -1,17 +1,21 @@
+import { ApolloError, useApolloClient } from "@apollo/client";
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripePaymentElementChangeEvent } from "@stripe/stripe-js";
 import { Dispatch, FC, SetStateAction, createElement, useEffect, useState } from "react";
 
+import FormError from "../../../components/form-error";
 import { BookingInput } from "../../../generated-types";
 import PaymentButton from "../payment-button";
+import { checkCanBookSession } from "./check-can-book-session";
 
 const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 	const stripe = useStripe();
 	const elements = useElements();
+	const apollo = useApolloClient();
 
 	const [hasCardFormLoaded, setHasCardFormLoaded] = useState(false);
 	const [isCardFormComplete, setIsCardFormComplete] = useState(false);
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [formError, setFormError] = useState<ApolloError | undefined>(undefined);
 
 	const handleCardFormLoad = () => {
 		setHasCardFormLoaded(true);
@@ -24,8 +28,21 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 	const confirmPayment = async () => {
 		if (stripe && elements) {
 			setIsPaying(true);
+			setFormError(undefined);
 
 			try {
+				const canBookSession = await checkCanBookSession(apollo, bookingInput);
+
+				if (canBookSession instanceof ApolloError) {
+					setFormError(canBookSession);
+					return;
+				}
+
+				if (!canBookSession) {
+					setFormError(new ApolloError({ errorMessage: "This session is no longer available." }));
+					return;
+				}
+
 				const { error } = await stripe.confirmPayment({
 					elements,
 					confirmParams: {
@@ -33,11 +50,15 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 					},
 				});
 
-				if (error.type === "card_error" || error.type === "validation_error") {
-					setErrorMessage(error.message ?? "An error occurred. Please try again.");
+				if (error) {
+					setFormError(new ApolloError({ errorMessage: error.message ?? "An error occurred. Please try again." }));
 				}
 			} catch (error) {
-				setErrorMessage(error instanceof Error ? error.message : "An error has occurred");
+				if (error instanceof ApolloError) {
+					setFormError(new ApolloError({ errorMessage: error.message }));
+				} else {
+					setFormError(new ApolloError({ errorMessage: "An error occurred. Please try again." }));
+				}
 			} finally {
 				setIsPaying(false);
 			}
@@ -51,10 +72,10 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 	useEffect(() => {
 		let timeout: NodeJS.Timeout;
 
-		if (errorMessage) {
+		if (formError) {
 			timeout = setTimeout(() => {
-				setErrorMessage(null);
-			}, 5000);
+				setFormError(undefined);
+			}, 10_000);
 		}
 
 		return () => {
@@ -62,12 +83,12 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 				clearTimeout(timeout);
 			}
 		};
-	}, [errorMessage]);
+	}, [formError]);
 
 	return (
 		<div className="flex flex-col gap-12">
 			<PaymentElement onReady={handleCardFormLoad} onChange={handlePaymentElementChange} />
-			{errorMessage && <p className="text-red-500 rounded border border-red-500 bg-red-50 px-4 py-3">{errorMessage}</p>}
+			<FormError error={formError} />
 			{hasCardFormLoaded && (
 				<PaymentButton text="Pay Now" onClick={handleSubmit} disabled={!stripe || !elements || !isCardFormComplete} />
 			)}

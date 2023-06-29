@@ -1,0 +1,1 @@
+DELETE FROM details WHERE details_id = :detailsID;

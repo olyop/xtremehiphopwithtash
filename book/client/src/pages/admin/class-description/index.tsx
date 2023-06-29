@@ -51,7 +51,7 @@ const ClassDescriptionForm: FC = () => {
 						onChange={handleClassDescriptionChange}
 						type={InputType.TEXTAREA}
 						name="Description"
-						className="!bg-white shadow h-32"
+						className="!bg-white shadow !h-36"
 						placeHolder="Please enter"
 					/>
 					<Button

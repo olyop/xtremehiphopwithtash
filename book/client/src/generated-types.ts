@@ -38,7 +38,6 @@ export type Booking = {
 	readonly notes: Maybe<Scalars["String"]["output"]>;
 	readonly paymentIntentID: Maybe<Scalars["String"]["output"]>;
 	readonly paymentMethod: Maybe<PaymentMethod>;
-	readonly receiptURL: Maybe<Scalars["URL"]["output"]>;
 	readonly session: Session;
 	readonly student: Student;
 };
@@ -300,6 +299,7 @@ export type Query = {
 	readonly doesStudentExist: Scalars["Boolean"]["output"];
 	readonly getBookingByID: Booking;
 	readonly getBookingCost: BookingCost;
+	readonly getBookingReceiptURL: Scalars["URL"]["output"];
 	readonly getClassDescription: Scalars["String"]["output"];
 	readonly getCourseByID: Course;
 	readonly getCourses: Maybe<ReadonlyArray<Course>>;
@@ -326,6 +326,10 @@ export type QueryGetBookingByIdArgs = {
 
 export type QueryGetBookingCostArgs = {
 	bookingInput: BookingInput;
+};
+
+export type QueryGetBookingReceiptUrlArgs = {
+	bookingID: Scalars["UUID"]["input"];
 };
 
 export type QueryGetCourseByIdArgs = {
@@ -442,6 +446,12 @@ export type CheckInBookingMutationVariables = Exact<{
 
 export type CheckInBookingMutation = { readonly checkInBooking: string } & { readonly __typename: "Mutation" };
 
+export type GetBookingReceiptUrlQueryVariables = Exact<{
+	bookingID: Scalars["UUID"]["input"];
+}>;
+
+export type GetBookingReceiptUrlQuery = { readonly getBookingReceiptURL: string } & { readonly __typename: "Query" };
+
 export type UpdateBookingMutationVariables = Exact<{
 	bookingID: Scalars["UUID"]["input"];
 	input: BookingInput;
@@ -533,7 +543,6 @@ export type GetAccountPageQuery = {
 			readonly firstName: string;
 			readonly lastName: string;
 			readonly nickName: string | null;
-			readonly gender: string | null;
 			readonly emailAddress: string;
 			readonly mobilePhoneNumber: string;
 			readonly instagramUsername: string | null;
@@ -547,7 +556,6 @@ export type GetAccountPageQuery = {
 				readonly equipmentQuantity: number | null;
 				readonly paymentMethod: PaymentMethod | null;
 				readonly cost: number | null;
-				readonly receiptURL: string | null;
 				readonly isCheckedIn: boolean;
 				readonly isCancelled: boolean;
 				readonly session: {
@@ -555,41 +563,7 @@ export type GetAccountPageQuery = {
 					readonly title: string;
 					readonly startTime: number;
 					readonly endTime: number;
-					readonly course: { readonly courseID: string; readonly name: string } & { readonly __typename: "Course" };
-					readonly location: {
-						readonly locationID: string;
-						readonly name: string;
-						readonly coordinates: { readonly latitude: number; readonly longitude: number } & {
-							readonly __typename: "Coordinates";
-						};
-					} & { readonly __typename: "Location" };
-					readonly instructors: ReadonlyArray<
-						{
-							readonly instructorID: string;
-							readonly details: {
-								readonly detailsID: string;
-								readonly firstName: string;
-								readonly lastName: string;
-								readonly nickName: string | null;
-								readonly emailAddress: string;
-								readonly mobilePhoneNumber: string;
-								readonly instagramUsername: string | null;
-							} & { readonly __typename: "Details" };
-						} & { readonly __typename: "Instructor" }
-					>;
 				} & { readonly __typename: "Session" };
-				readonly student: {
-					readonly studentID: string;
-					readonly details: {
-						readonly detailsID: string;
-						readonly firstName: string;
-						readonly lastName: string;
-						readonly nickName: string | null;
-						readonly emailAddress: string;
-						readonly mobilePhoneNumber: string;
-						readonly instagramUsername: string | null;
-					} & { readonly __typename: "Details" };
-				} & { readonly __typename: "Student" };
 			} & { readonly __typename: "Booking" }
 		> | null;
 	} & { readonly __typename: "Student" };
@@ -1028,6 +1002,21 @@ export type GetPaymentScreenDataQuery = {
 	} & { readonly __typename: "BookingCost" };
 } & { readonly __typename: "Query" };
 
+export type GetCheckSessionQueryVariables = Exact<{
+	sessionID: Scalars["UUID"]["input"];
+	bookingQuantity: Scalars["PositiveInt"]["input"];
+	equipmentQuantity: InputMaybe<Scalars["PositiveInt"]["input"]>;
+}>;
+
+export type GetCheckSessionQuery = {
+	readonly getSessionByID: {
+		readonly sessionID: string;
+		readonly isCancelled: boolean;
+		readonly isCapacityRemaining: boolean;
+		readonly isEquipmentRemaining: boolean;
+	} & { readonly __typename: "Session" };
+} & { readonly __typename: "Query" };
+
 export type CreatePaymentIntentMutationVariables = Exact<{
 	input: BookingInput;
 	reCaptcha: Scalars["String"]["input"];
@@ -1140,7 +1129,6 @@ export type GetSessionPageQuery = {
 		readonly equipmentHired: number | null;
 		readonly equipmentRemaining: number | null;
 		readonly isCapacityRemaining: boolean;
-		readonly isEquipmentRemaining: boolean;
 		readonly isCancelled: boolean;
 		readonly createdAt: number;
 		readonly location: {

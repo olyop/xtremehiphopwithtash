@@ -1,0 +1,1 @@
+SELECT %s FROM instructor WHERE instructor_id = :instructorID;

@@ -5,180 +5,61 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookingQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.BOOKING, "booking");
+	private final SQLUtil sqlUtil = new SQLUtil("booking", SQLColumnNames.join(SQLColumnNames.BOOKING, "booking"));
 
-	public final String SELECT = String.format("SELECT %s FROM booking;", columnNames);
+	public final String SELECT = sqlUtil.read("select");
 
-	public final String SELECT_BY_ID = String.format(
-		"SELECT %s FROM booking WHERE booking_id = :bookingID;",
-		columnNames
+	public final String INSERT = sqlUtil.read("insert");
+
+	public final String SELECT_BY_ID = sqlUtil.read("select-by-id");
+
+	public final String UPDATE_BY_ID = sqlUtil.read("update-by-id");
+
+	public final String EXISTS_BY_ID = sqlUtil.read("exists-by-id");
+
+	public final String CANCEL_BY_ID = sqlUtil.read("cancel-by-id");
+
+	public final String SELECT_BY_SESSION_ID = sqlUtil.read("select-by-session-id");
+
+	public final String SELECT_BY_SESSION_ID_AND_NOT_CANCELLED = sqlUtil.read("select-by-session-id-and-not-cancelled");
+
+	public final String SELECT_CAPACITY_BOOKED_BY_SESSION_ID = sqlUtil.read("select-capacity-booked-by-session-id");
+
+	public final String SELECT_CAPACITY_REMAINING_BY_SESSION_ID = sqlUtil.read("select-capacity-remaining-by-session-id");
+
+	public final String SELECT_IS_CAPACITY_REMAINING_BY_SESSION_ID = sqlUtil.read(
+		"select-is-capacity-remaining-by-session-id"
 	);
 
-	public final String INSERT = String.format(
-		"""
-		INSERT INTO booking (
-			notes,
-			session_id,
-			student_id,
-			booking_quantity,
-			equipment_quantity,
-			payment_method,
-			payment_intent_id,
-			cost
-		) VALUES (
-			:notes,
-			:sessionID,
-			:studentID,
-			:bookingQuantity,
-			:equipmentQuantity,
-			:paymentMethod::booking_payment_method,
-			:paymentIntentID,
-			:cost
-		) RETURNING
-			%s;
-		""",
-		columnNames
+	public final String SELECT_EQUIPMENT_HIRED_BY_SESSION_ID = sqlUtil.read("select-equipment-hired-by-session-id");
+
+	public final String SELECT_EQUIPMENT_REMAINING_BY_SESSION_ID = sqlUtil.read(
+		"select-equipment-remaining-by-session-id"
 	);
 
-	public final String UPDATE_BY_ID = String.format(
-		"""
-			UPDATE
-				booking
-			SET
-				notes = :notes,
-				booking_quantity = :bookingQuantity,
-				equipment_quantity = :equipmentQuantity
-			WHERE
-				booking_id = :bookingID
-			RETURNING
-				%s;
-		""",
-		columnNames
+	public final String SELECT_IS_EQUIPMENT_REMAINING_BY_SESSION_ID = sqlUtil.read(
+		"select-is-equipment-remaining-by-session-id"
 	);
 
-	public final String EXISTS_BY_ID = "SELECT EXISTS (SELECT 1 FROM booking WHERE booking_id = :bookingID);";
+	public final String SELECT_BY_STUDENT_ID = sqlUtil.read("select-by-student-id");
 
-	public final String CANCEL_BY_ID = "UPDATE booking SET has_cancelled = true WHERE booking_id = :bookingID;";
+	public final String SELECT_SUM_BY_STUDENT_ID = sqlUtil.read("select-sum-by-student-id");
 
-	public final String SELECT_BY_SESSION_ID = String.format(
-		"SELECT %s FROM booking WHERE session_id = :sessionID ORDER BY has_cancelled ASC, has_checked_in ASC, created_at DESC;",
-		columnNames
+	public final String SELECT_SUM_BY_STUDENT_ID_AND_FREE = sqlUtil.read("select-sum-by-student-id-and-free");
+
+	public final String SELECT_SUM_BY_STUDENT_ID_AND_PAYMENT_METHOD = sqlUtil.read(
+		"select-sum-by-student-id-and-payment-method"
 	);
 
-	public final String SELECT_BY_SESSION_ID_AND_NOT_CANCELLED = String.format(
-		"SELECT %s FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE;",
-		columnNames
+	public final String SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID = sqlUtil.read(
+		"select-exists-by-session-id-and-student-id"
 	);
 
-	public final String SELECT_CAPACITY_BOOKED_BY_SESSION_ID =
-		"SELECT coalesce(sum(booking_quantity), 0) AS capacity_booked FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE;";
-
-	public final String SELECT_CAPACITY_REMAINING_BY_SESSION_ID =
-		"""
-		SELECT
-			(SELECT capacity_available FROM session WHERE session_id = :sessionID) -
-			(SELECT coalesce(sum(booking_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) AS capacity_remianing;
-		""";
-
-	public final String SELECT_IS_CAPACITY_REMAINING_BY_SESSION_ID =
-		"""
-		SELECT
-			(
-				(
-					(SELECT capacity_available FROM session WHERE session_id = :sessionID) -
-					(SELECT coalesce(sum(booking_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) -
-					:bookingQuantity
-				) >= 0
-			) as is_capacity_remaining;
-		""";
-
-	public final String SELECT_EQUIPMENT_HIRED_BY_SESSION_ID =
-		"SELECT coalesce(sum(equipment_quantity), 0) AS equipment_hired FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE;";
-
-	public final String SELECT_EQUIPMENT_REMAINING_BY_SESSION_ID =
-		"""
-		SELECT
-			(SELECT coalesce(equipment_available, 0) FROM session WHERE session_id = :sessionID) -
-			(SELECT coalesce(sum(equipment_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) AS equipment_remianing;
-		""";
-
-	public final String SELECT_IS_EQUIPMENT_REMAINING_BY_SESSION_ID =
-		"""
-		SELECT
-			(
-				(
-					(SELECT coalesce(equipment_available, 0) FROM session WHERE session_id = :sessionID) -
-					(SELECT coalesce(sum(equipment_quantity), 0) FROM booking WHERE session_id = :sessionID AND has_cancelled = FALSE) -
-					:equipmentQuantity
-				) >= 0
-			) as is_equipment_remaining;
-	""";
-
-	public final String SELECT_BY_STUDENT_ID = String.format(
-		"""
-			SELECT
-				%s
-			FROM
-				booking
-			WHERE
-				student_id = :studentID
-			ORDER BY
-				created_at DESC
-			LIMIT
-				50;
-		""",
-		columnNames
+	public final String SELECT_EXISTS_BY_CASH_AND_FREE_AND_STUDENT_ID_AND_SESSION_ID = sqlUtil.read(
+		"select-exists-by-cash-and-free-and-student-id-and-session-id"
 	);
 
-	public final String SELECT_SUM_BOOKINGS_BY_STUDENT_ID = String.format(
-		"""
-			SELECT
-				coalesce(sum(booking_quantity), 0) as booking_quantity
-			FROM
-				booking
-			WHERE
-				student_id = :studentID;
-		""",
-		columnNames
-	);
+	public final String UPDATE_HAS_CHECKED_IN_BY_ID = sqlUtil.read("update-has-checked-in-by-id");
 
-	public final String SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_FREE = String.format(
-		"""
-			SELECT
-				coalesce(sum(booking_quantity), 0) as booking_quantity
-			FROM
-				booking
-			WHERE
-				student_id = :studentID AND
-				(payment_method = NULL OR payment_method = 'COUPON'::booking_payment_method);
-		""",
-		columnNames
-	);
-
-	public final String SELECT_SUM_BOOKINGS_BY_STUDENT_ID_AND_PAYMENT_METHOD = String.format(
-		"""
-			SELECT
-				coalesce(sum(booking_quantity), 0) as booking_quantity
-			FROM
-				booking
-			WHERE
-				student_id = :studentID AND
-				payment_method = :paymentMethod::booking_payment_method;
-		""",
-		columnNames
-	);
-
-	public final String SELECT_EXISTS_BY_SESSION_ID_AND_STUDENT_ID =
-		"SELECT EXISTS (SELECT 1 FROM booking WHERE session_id = :sessionID AND student_id = :studentID AND has_cancelled = FALSE);";
-
-	public final String SELECT_PAYMENT_METHODS = "SELECT UNNEST(ENUM_RANGE(NULL::payment_methods)) AS payment_methods;";
-
-	public final String SELECT_EXISTS_BY_STUDENT_ID_AND_SESSION_ID =
-		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID AND payment_method = 'CASH');";
-
-	public final String SELECT_EXISTS_BY_CASH_FREE_AND_STUDENT_ID_AND_SESSION_ID =
-		"SELECT EXISTS (SELECT 1 FROM booking WHERE student_id = :studentID AND session_id = :sessionID AND (payment_method = 'CASH' OR payment_method IS NULL));";
-
-	public final String UPDATE_HAS_CHECKED_IN_BY_ID =
-		"UPDATE booking SET has_checked_in = :hasCheckedIn WHERE booking_id = :bookingID;";
+	public final String SELECT_PAYMENT_METHODS = sqlUtil.read("select-payment-methods");
 }

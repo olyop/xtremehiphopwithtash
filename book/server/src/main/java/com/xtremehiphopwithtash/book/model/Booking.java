@@ -89,7 +89,7 @@ public class Booking extends Base {
 		this.cost = cost;
 	}
 
-	public Boolean getIsCheckedIn() {
+	public Boolean isCheckedIn() {
 		return isCheckedIn;
 	}
 

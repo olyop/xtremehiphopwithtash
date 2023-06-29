@@ -2,7 +2,6 @@ package com.xtremehiphopwithtash.book.service.dao;
 
 import com.xtremehiphopwithtash.book.model.Coupon;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityBaseDAO;
-import com.xtremehiphopwithtash.book.service.dao.inter.EntityDeleteDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityUpdateDAO;
 import com.xtremehiphopwithtash.book.service.dao.query.CouponQuery;
 import com.xtremehiphopwithtash.book.service.dao.rowmapper.CouponRowMapper;
@@ -52,7 +51,7 @@ public class CouponDAO implements EntityBaseDAO<Coupon, String>, EntityUpdateDAO
 
 	@Override
 	public boolean existsByID(String code) {
-		String sql = query.EXISTS_BY_CODE;
+		String sql = query.SELECT_EXISTS_BY_CODE;
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("code", code);
 

@@ -9,6 +9,9 @@ const FormError: FC<PropTypes> = ({ error }) => (
 			<Fragment>
 				{error.graphQLErrors.length > 0 && <Error errors={error.graphQLErrors.map(({ message }) => message)} />}
 				{error.networkError && <Error isBadError errors={[error.networkError.message]} />}
+				{error.graphQLErrors.length === 0 && error.networkError === null && error.message && (
+					<Error errors={[error.message]} />
+				)}
 			</Fragment>
 		)}
 	</Fragment>

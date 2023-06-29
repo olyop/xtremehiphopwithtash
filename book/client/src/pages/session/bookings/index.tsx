@@ -5,10 +5,11 @@ import SessionPageBooking from "../../../components/booking";
 import { Booking, GetSessionBookingsQuery, GetSessionBookingsQueryVariables, Session } from "../../../generated-types";
 import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
 
-const SessionBookings: FC<PropTypes> = ({ session }) => {
+const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
 	const [getBookings, bookingsResult] = useLazyQuery<Data, Vars>(GET_SESSION_BOOKINGS);
 
 	const handleRefetch = () => {
+		onBookingUpdated();
 		void bookingsResult.refetch();
 	};
 
@@ -58,6 +59,7 @@ type Vars = GetSessionBookingsQueryVariables;
 
 interface PropTypes {
 	session: Session;
+	onBookingUpdated: () => void;
 }
 
 export default SessionBookings;

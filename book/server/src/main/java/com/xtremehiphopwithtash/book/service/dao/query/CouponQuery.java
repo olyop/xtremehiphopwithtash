@@ -5,48 +5,17 @@ import org.springframework.stereotype.Component;
 @Component
 public final class CouponQuery {
 
-	private final String columnNames = SQLColumnNamesUtil.join(SQLColumnNamesUtil.COUPON, "coupon");
+	private final SQLUtil sqlUtil = new SQLUtil("coupon", SQLColumnNames.join(SQLColumnNames.COUPON, "coupon"));
 
-	public final String SELECT = String.format("SELECT %s FROM coupon;", columnNames);
+	public final String SELECT = sqlUtil.read("select");
 
-	public final String SELECT_BY_CODE = String.format("SELECT %s FROM coupon WHERE code = :code;", columnNames);
+	public final String SELECT_BY_CODE = sqlUtil.read("select-by-code");
 
-	public final String INSERT = String.format(
-		"""
-			INSERT INTO coupon
-				(code, discount)
-			VALUES
-				(:code, :discount)
-			RETURNING
-				%s;
-		""",
-		columnNames
-	);
+	public final String INSERT = sqlUtil.read("insert");
 
-	public final String UPDATE_BY_CODE = String.format(
-		"""
-			UPDATE
-				coupon
-			SET
-				used_at = :usedAt,
-				used_by_student_id = :usedByStudentID,
-				used_on_booking_id = :usedOnBookingID
-			WHERE
-				code = :code
-			RETURNING
-				%s;
-		""",
-		columnNames
-	);
+	public final String UPDATE_BY_CODE = sqlUtil.read("update-by-code");
 
-	public final String EXISTS_BY_CODE = "SELECT EXISTS (SELECT 1 FROM coupon WHERE code = :code);";
+	public final String SELECT_EXISTS_BY_CODE = sqlUtil.read("select-exists-by-code");
 
-	public final String DELETE_BY_STUDENT_AND_BOOKING =
-		"""
-			DELETE FROM
-				coupon
-			WHERE
-				used_by_student_id = :studentID AND
-				used_on_booking_id = :bookingID
-			""";
+	public final String DELETE_BY_STUDENT_AND_BOOKING = sqlUtil.read("delete-by-student-and-booking");
 }

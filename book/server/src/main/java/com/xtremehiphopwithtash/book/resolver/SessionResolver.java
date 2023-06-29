@@ -144,7 +144,7 @@ public class SessionResolver {
 	}
 
 	@SchemaMapping(typeName = "Session", field = "isEquipmentRemaining")
-	public Boolean getIsEquipmentRemaining(@Argument short equipmentQuantity, Session session) {
+	public Boolean getIsEquipmentRemaining(@Argument Short equipmentQuantity, Session session) {
 		return bookingService.retreiveIsEquipmentRemaining(session.getSessionID(), equipmentQuantity);
 	}
 
