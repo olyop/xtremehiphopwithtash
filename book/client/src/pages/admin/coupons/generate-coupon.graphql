@@ -1,0 +1,3 @@
+mutation generateCoupon($discount: PositiveInt!) {
+	generateCoupon(discount: $discount)
+}

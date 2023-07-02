@@ -60,7 +60,7 @@ export const getSessions =
 		}
 	};
 
-interface LocalStorageStartingTime {
+interface SessionStorageStartingTime {
 	startingTime: number;
 	setAt: number;
 }
@@ -68,18 +68,18 @@ interface LocalStorageStartingTime {
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const setStartingTime = (time: number) => {
-	const item: LocalStorageStartingTime = {
+	const item: SessionStorageStartingTime = {
 		startingTime: time,
 		setAt: Date.now(),
 	};
 
-	localStorage.setItem("startingTime", JSON.stringify(item));
+	sessionStorage.setItem("startingTime", JSON.stringify(item));
 };
 
 export const getStartingTime = () => {
-	const item = localStorage.getItem("startingTime");
+	const item = sessionStorage.getItem("startingTime");
 	if (item) {
-		const { setAt, startingTime } = JSON.parse(item) as LocalStorageStartingTime;
+		const { setAt, startingTime } = JSON.parse(item) as SessionStorageStartingTime;
 		if (Date.now() - setAt > ONE_DAY) {
 			const newStartingTime = Date.now();
 			setStartingTime(newStartingTime);

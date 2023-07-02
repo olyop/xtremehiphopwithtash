@@ -183,6 +183,7 @@ export type Mutation = {
 	readonly deleteInstructorByID: Scalars["UUID"]["output"];
 	readonly deleteLocationByID: Scalars["UUID"]["output"];
 	readonly deleteSessionByID: Scalars["UUID"]["output"];
+	readonly generateCoupon: Scalars["String"]["output"];
 	readonly updateBookingByID: Booking;
 	readonly updateClassDescription: Scalars["String"]["output"];
 	readonly updateCourseByID: Course;
@@ -250,6 +251,10 @@ export type MutationDeleteLocationByIdArgs = {
 
 export type MutationDeleteSessionByIdArgs = {
 	sessionID: Scalars["UUID"]["input"];
+};
+
+export type MutationGenerateCouponArgs = {
+	discount: Scalars["PositiveInt"]["input"];
 };
 
 export type MutationUpdateBookingByIdArgs = {
@@ -605,6 +610,12 @@ export type UpdateClassDescriptionMutationVariables = Exact<{
 export type UpdateClassDescriptionMutation = { readonly updateClassDescription: string } & {
 	readonly __typename: "Mutation";
 };
+
+export type GenerateCouponMutationVariables = Exact<{
+	discount: Scalars["PositiveInt"]["input"];
+}>;
+
+export type GenerateCouponMutation = { readonly generateCoupon: string } & { readonly __typename: "Mutation" };
 
 export type CreateCourseMutationVariables = Exact<{
 	input: CourseInput;

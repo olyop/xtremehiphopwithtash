@@ -102,6 +102,7 @@ const Schedule: FC = () => {
 				onBackOneWeek={handleBackOneWeekClick}
 				isFirstDayToday={days[0]?.isToday ?? false}
 				onForwardOneWeek={handleForwardOneWeekClick}
+				isFirstDayInPast={days[0]?.isInPast ?? false}
 			/>
 		</div>
 	);

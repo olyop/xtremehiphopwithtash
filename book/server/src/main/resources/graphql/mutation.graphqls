@@ -26,4 +26,6 @@ type Mutation {
 
 	cancelSessionByID(sessionID: UUID!): UUID!
 	cancelBookingByID(bookingID: UUID!, reCaptcha: String!): UUID!
+
+	generateCoupon(discount: PositiveInt!): String!
 }

@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client";
 import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useState } from "react";
@@ -6,8 +7,9 @@ import Button from "../../../components/button";
 import CopyButton from "../../../components/copy-button";
 import Input, { InputOnChange, InputType, SelectOption } from "../../../components/input";
 import Modal from "../../../components/modal";
+import { GenerateCouponMutation, GenerateCouponMutationVariables } from "../../../generated-types";
 import { useModal } from "../../../hooks";
-import { useApi } from "../../../hooks/use-api";
+import GENERATE_COUPON from "./generate-coupon.graphql";
 
 const discountSelectOptions: SelectOption[] = Array.from({ length: 20 }).map((_, index) => ({
 	description: `${5 * (index + 1)}%`,
@@ -15,17 +17,23 @@ const discountSelectOptions: SelectOption[] = Array.from({ length: 20 }).map((_,
 }));
 
 const Coupons: FC = () => {
-	const { fetchAPI } = useApi();
+	const apollo = useApolloClient();
+
 	const [discount, setDiscount] = useState<number>(100);
 	const [isModalOpen, openModal, closeModal] = useModal();
 	const [coupons, setCoupons] = useState<[string, number][] | null>(null);
 
-	const generateCode = async () => {
-		const { couponCode } = await fetchAPI<Body, Response>("/generate-coupon", {
-			discount,
+	const generateCoupon = async () => {
+		const { data } = await apollo.mutate<GenerateCouponMutation, GenerateCouponMutationVariables>({
+			mutation: GENERATE_COUPON,
+			variables: {
+				discount,
+			},
 		});
 
-		setCoupons(prevState => [...(prevState ?? []), [couponCode, discount]]);
+		if (data) {
+			setCoupons(prevState => [...(prevState ?? []), [data.generateCoupon, discount]]);
+		}
 	};
 
 	const handleDiscountChange: InputOnChange = value => {
@@ -34,8 +42,8 @@ const Coupons: FC = () => {
 		}
 	};
 
-	const handleGenerate = () => {
-		void generateCode();
+	const handleGenerateCoupon = () => {
+		void generateCoupon();
 	};
 
 	return (
@@ -94,7 +102,7 @@ const Coupons: FC = () => {
 						<Button
 							text={coupons && coupons.length > 0 ? "Regenerate" : "Generate"}
 							ariaLabel="Generate Coupon Code"
-							onClick={handleGenerate}
+							onClick={handleGenerateCoupon}
 							leftIcon={className => <ArrowPathIcon className={className} />}
 						/>
 						<Button
@@ -110,13 +118,5 @@ const Coupons: FC = () => {
 		</div>
 	);
 };
-
-interface Body {
-	discount: number;
-}
-
-interface Response {
-	couponCode: string;
-}
 
 export default Coupons;

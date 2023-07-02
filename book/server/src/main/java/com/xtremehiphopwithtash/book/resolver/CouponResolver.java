@@ -2,6 +2,7 @@ package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.service.CouponService;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -17,5 +18,10 @@ public class CouponResolver {
 	@QueryMapping
 	public String verifyCoupon(@Argument String code) {
 		return couponService.canUseErrorMessage(code);
+	}
+
+	@MutationMapping
+	public String generateCoupon(@Argument Integer discount) {
+		return couponService.create(discount);
 	}
 }

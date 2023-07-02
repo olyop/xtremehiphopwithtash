@@ -175,7 +175,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 					? booking.session.title
 					: `${determineDetailsFullName(booking.student.details)}${
 							!hideInstagram && booking.student.details.instagramUsername
-								? ` (${booking.student.details.instagramUsername})`
+								? ` @${booking.student.details.instagramUsername}`
 								: ""
 					  }`
 			}
@@ -219,7 +219,9 @@ const SessionPageBooking: FC<PropTypes> = ({
 							<Button
 								text={booking.isCheckedIn ? "Checked In" : "Check In"}
 								onClick={openCheckInModal}
-								className={`!px-2 !text-xs !h-7 text-white ${booking.isCheckedIn ? "!bg-green-600" : "!bg-orange-500"}`}
+								className={`!px-2 !text-xs !h-7 text-white whitespace-nowrap ${
+									booking.isCheckedIn ? "!bg-green-600" : "!bg-orange-500"
+								}`}
 								ariaLabel={booking.isCheckedIn ? "Un-check In" : "Check In"}
 								leftIcon={className =>
 									booking.isCheckedIn ? (

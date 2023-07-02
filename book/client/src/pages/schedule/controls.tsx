@@ -1,5 +1,7 @@
 import ArrowPathIcon from "@heroicons/react/24/solid/ArrowPathIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
+import ChevronDoubleDownIcon from "@heroicons/react/24/solid/ChevronDoubleDownIcon";
+import ChevronDoubleUpIcon from "@heroicons/react/24/solid/ChevronDoubleUpIcon";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import ChevronUpIcon from "@heroicons/react/24/solid/ChevronUpIcon";
 import { FC, createElement } from "react";
@@ -11,7 +13,7 @@ const determineForwardLabel = (breakpoint: Breakpoint) => {
 	if (breakpoint === Breakpoint.TINY) {
 		return "Future";
 	} else if (breakpoint === Breakpoint.SMALL) {
-		return "+2 day";
+		return "+2 days";
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return "+3 days";
 	} else {
@@ -23,7 +25,7 @@ const determineBackLabel = (breakpoint: Breakpoint) => {
 	if (breakpoint === Breakpoint.TINY) {
 		return "Past";
 	} else if (breakpoint === Breakpoint.SMALL) {
-		return "-2 day";
+		return "-2 days";
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return "-3 days";
 	} else {
@@ -31,7 +33,14 @@ const determineBackLabel = (breakpoint: Breakpoint) => {
 	}
 };
 
-const ScheduleControls: FC<PropTypes> = ({ isFirstDayToday, onReset, breakpoint, onBackOneWeek, onForwardOneWeek }) => {
+const ScheduleControls: FC<PropTypes> = ({
+	isFirstDayToday,
+	isFirstDayInPast,
+	onReset,
+	breakpoint,
+	onBackOneWeek,
+	onForwardOneWeek,
+}) => {
 	const isMobile =
 		breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL || breakpoint === Breakpoint.MEDIUM;
 	return (
@@ -46,8 +55,10 @@ const ScheduleControls: FC<PropTypes> = ({ isFirstDayToday, onReset, breakpoint,
 					isMobile ? (
 						isFirstDayToday ? (
 							<CheckIcon className={className} />
+						) : isFirstDayInPast ? (
+							<ChevronDoubleDownIcon className={className} />
 						) : (
-							<ArrowPathIcon className={className} />
+							<ChevronDoubleUpIcon className={className} />
 						)
 					) : (
 						<ArrowPathIcon className={className} />
@@ -57,16 +68,18 @@ const ScheduleControls: FC<PropTypes> = ({ isFirstDayToday, onReset, breakpoint,
 			<div className="hidden w-full h-px lg:block lg:h-px bg-slate-300" />
 			<div className="grid flex-grow grid-cols-2 grid-rows-1 gap-2 lg:grid-cols-1 lg:grid-rows-2 lg:gap-2">
 				<Button
-					className="px-1.5"
+					className="px-1.5 gap-3"
 					onClick={onBackOneWeek}
+					textClassName="tracking-widest"
 					transparent={breakpoint === Breakpoint.LARGE}
 					text={isMobile ? determineBackLabel(breakpoint) : undefined}
 					ariaLabel={`Go back ${determineBackLabel(breakpoint)}`}
 					leftIcon={className => <ChevronUpIcon className={className} />}
 				/>
 				<Button
-					className="px-1.5"
+					className="px-1.5 gap-3"
 					onClick={onForwardOneWeek}
+					textClassName="tracking-widest"
 					transparent={breakpoint === Breakpoint.LARGE}
 					text={isMobile ? determineForwardLabel(breakpoint) : undefined}
 					ariaLabel={`Go forward ${determineForwardLabel(breakpoint)}`}
@@ -82,6 +95,7 @@ interface PropTypes {
 	breakpoint: Breakpoint;
 	onBackOneWeek: () => void;
 	isFirstDayToday: boolean;
+	isFirstDayInPast: boolean;
 	onForwardOneWeek: () => void;
 }
 
