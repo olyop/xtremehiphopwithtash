@@ -170,7 +170,11 @@ public class SessionResolver {
 	) {
 		auth0JwtService.validateAdministrator(jwt);
 
-		return sessionService.updateByID(sessionID, input);
+		Session session = sessionService.updateByID(sessionID, input);
+
+		bookingService.updateDescriptionsBySessionID(sessionID, sessionService.createBookingDescription(sessionID));
+
+		return session;
 	}
 
 	@MutationMapping

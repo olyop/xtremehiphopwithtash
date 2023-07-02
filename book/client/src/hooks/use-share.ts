@@ -25,7 +25,7 @@ export const useShare = () => {
 				handleCannotShare();
 			}
 		} catch {
-			handleCannotShare();
+			setText("Cancelled");
 		}
 	};
 

@@ -1,5 +1,6 @@
 package com.xtremehiphopwithtash.book.service;
 
+import com.xtremehiphopwithtash.book.model.Location;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.SessionInstructor;
 import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
@@ -10,8 +11,11 @@ import com.xtremehiphopwithtash.book.service.inter.EntityServiceInter;
 import com.xtremehiphopwithtash.book.service.validator.CourseValidator;
 import com.xtremehiphopwithtash.book.service.validator.LocationValidator;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,7 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 	private final CourseValidator courseValidator;
 	private final LocationValidator locationValidator;
 	private final SessionInputMapper sessionInputMapper;
+	private final LocationService locationService;
 
 	public SessionService(
 		SessionDAO sessionDAO,
@@ -31,7 +36,8 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 		SessionValidator validator,
 		CourseValidator courseValidator,
 		LocationValidator locationValidator,
-		SessionInputMapper sessionInputMapper
+		SessionInputMapper sessionInputMapper,
+		LocationService locationService
 	) {
 		this.sessionDAO = sessionDAO;
 		this.sessionInstructorDAO = sessionInstructorDAO;
@@ -39,6 +45,7 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 		this.courseValidator = courseValidator;
 		this.locationValidator = locationValidator;
 		this.sessionInputMapper = sessionInputMapper;
+		this.locationService = locationService;
 	}
 
 	@Override
@@ -100,6 +107,19 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 		sessionDAO.cancelByID(sessionID);
 
 		return sessionID;
+	}
+
+	public String createBookingDescription(UUID sessionID) {
+		validator.validateID(sessionID);
+
+		Session session = sessionDAO.selectByID(sessionID);
+		Location location = locationService.retreiveByID(session.getLocationID());
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Australia/Sydney"));
+		String date = dateFormat.format(new Date(session.getStartTime().toEpochMilli()));
+
+		return String.format("Session: '%s' at '%s' on %s", session.getTitle(), location.getName(), date);
 	}
 
 	public List<Session> retreiveByCourseID(UUID courseID) {

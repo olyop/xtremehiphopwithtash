@@ -40,6 +40,7 @@ const DeleteSession: FC<PropTypes> = ({ session }) => {
 				text="Delete"
 				ariaLabel="Delete"
 				onClick={openModal}
+				className="!px-2 !gap-1"
 				leftIcon={className => <TrashIcon className={className} />}
 			/>
 			<Modal

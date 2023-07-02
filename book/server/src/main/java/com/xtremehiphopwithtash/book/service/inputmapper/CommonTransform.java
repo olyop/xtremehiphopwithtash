@@ -5,7 +5,7 @@ import java.util.Optional;
 final class CommonTransform {
 
 	public static final String transformText(Optional<String> value) {
-		if (value.isEmpty()) {
+		if (value.isEmpty() || value.get().isEmpty() || value.get().isBlank()) {
 			return null;
 		}
 
@@ -21,7 +21,7 @@ final class CommonTransform {
 	}
 
 	public static final String transformName(Optional<String> name) {
-		if (name.isEmpty()) {
+		if (name.isEmpty() || name.get().isEmpty() || name.get().isBlank()) {
 			return null;
 		}
 
@@ -40,5 +40,17 @@ final class CommonTransform {
 
 	public static final String transformMobilePhoneNumber(String value) {
 		return transformText(value).replace(" ", "");
+	}
+
+	public static final String transformToLower(Optional<String> value) {
+		if (value.isEmpty() || value.get().isEmpty() || value.get().isBlank()) {
+			return null;
+		}
+
+		return transformToLower(value.get());
+	}
+
+	public static final String transformToLower(String value) {
+		return transformText(value).toLowerCase();
 	}
 }

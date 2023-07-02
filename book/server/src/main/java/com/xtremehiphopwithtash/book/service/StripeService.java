@@ -12,18 +12,21 @@ import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
+import com.stripe.param.ChargeUpdateParams;
 import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods;
+import com.stripe.param.PaymentIntentUpdateParams;
 import com.xtremehiphopwithtash.book.model.Details;
-import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.lang.module.ResolutionException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,22 +39,15 @@ public class StripeService {
 	private final String webhookSecret;
 	private final ObjectMapper objectMapper;
 
-	private final BookingService bookingService;
-	private final SessionService sessionService;
-
 	public StripeService(
 		@Value("${stripe.currency}") String currency,
 		@Value("${stripe.live.key}") String secretKey,
-		@Value("${stripe.webhook.secret}") String webhookSecret,
-		BookingService bookingService,
-		SessionService sessionService
+		@Value("${stripe.webhook.secret}") String webhookSecret
 	) {
 		Stripe.apiKey = secretKey;
 
 		this.currency = currency;
 		this.webhookSecret = webhookSecret;
-		this.bookingService = bookingService;
-		this.sessionService = sessionService;
 
 		this.objectMapper = new ObjectMapper();
 		this.objectMapper.registerModule(new Jdk8Module());
@@ -76,7 +72,27 @@ public class StripeService {
 
 			return customer.getId();
 		} catch (StripeException se) {
-			throw new ResolutionException("Unable to create customer");
+			throw new ResolverException("Unable to create Stripe customer");
+		}
+	}
+
+	public void updateCustomer(String stripeCustomerID, Details details) {
+		try {
+			String name = String.format("%s %s", details.getFirstName(), details.getLastName());
+
+			Customer customer = Customer.retrieve(stripeCustomerID);
+
+			CustomerUpdateParams params = CustomerUpdateParams
+				.builder()
+				.setName(name)
+				.setEmail(details.getEmailAddress())
+				.setPhone(details.getMobilePhoneNumber())
+				.build();
+
+			customer.update(params);
+		} catch (StripeException se) {
+			se.printStackTrace();
+			throw new ResolverException("Unable to update Stripe customer");
 		}
 	}
 
@@ -85,16 +101,12 @@ public class StripeService {
 		String studentID,
 		String emailAddress,
 		String stripeCustomerID,
-		String bookingDescription
+		String bookingDescription,
+		long amount
 	) {
 		validateCustomerExists(stripeCustomerID);
 
 		try {
-			Session session = sessionService.retreiveByID(bookingInput.sessionID());
-			BookingCost bookingCost = bookingService.getBookingCost(bookingInput, session);
-
-			long amount = bookingCost.getFinalCost();
-
 			Map<String, String> metadata = constructPaymentIntentMetadata(studentID, bookingInput);
 
 			AutomaticPaymentMethods automaticPaymentMethods = AutomaticPaymentMethods.builder().setEnabled(true).build();
@@ -104,7 +116,6 @@ public class StripeService {
 				.setCurrency(currency)
 				.setAmount(amount)
 				.setCustomer(stripeCustomerID)
-				.setReceiptEmail(emailAddress)
 				.setDescription(bookingDescription)
 				.setAutomaticPaymentMethods(automaticPaymentMethods)
 				.putAllMetadata(metadata)
@@ -114,7 +125,7 @@ public class StripeService {
 
 			return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
 		} catch (Exception e) {
-			throw new ResolutionException("Unable to create payment intent", e);
+			throw new ResolverException("Unable to create payment intent");
 		}
 	}
 
@@ -122,7 +133,7 @@ public class StripeService {
 		try {
 			Customer.retrieve(stripeCustomerID);
 		} catch (StripeException se) {
-			throw new ResolutionException("Customer does not exist");
+			throw new ResolverException("Customer does not exist");
 		}
 	}
 
@@ -165,14 +176,43 @@ public class StripeService {
 			Charge charge = Charge.retrieve(paymentIntent.getLatestCharge());
 
 			if (charge == null) {
-				throw new ResolutionException("Unable to retrieve charge");
+				throw new ResolverException("Unable to retrieve charge");
 			}
 
 			return new URL(charge.getReceiptUrl());
 		} catch (StripeException e) {
-			throw new ResolutionException("Unable to retrieve charge");
+			throw new ResolverException("Unable to retrieve charge");
 		} catch (MalformedURLException e) {
-			throw new ResolutionException("Unable to parse charge receipt URL");
+			throw new ResolverException("Unable to parse charge receipt URL");
+		}
+	}
+
+	public void updatePaymentIntentDescriptions(List<String> paymentIntentIDs, String description) {
+		paymentIntentIDs.forEach(paymentIntentID -> updatePaymentIntentDescription(paymentIntentID, description));
+	}
+
+	private void updatePaymentIntentDescription(String paymentIntentID, String description) {
+		try {
+			PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentID);
+
+			PaymentIntentUpdateParams paymentIntentParams = PaymentIntentUpdateParams
+				.builder()
+				.setDescription(description)
+				.build();
+
+			Charge charge = Charge.retrieve(paymentIntent.getLatestCharge());
+
+			if (charge == null) {
+				throw new ResolverException("Unable to retrieve charge");
+			}
+
+			ChargeUpdateParams chargeParams = ChargeUpdateParams.builder().setDescription(description).build();
+
+			paymentIntent.update(paymentIntentParams);
+			charge.update(chargeParams);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ResolverException("Unable to update invoice description");
 		}
 	}
 }

@@ -74,6 +74,8 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 
 		detailsService.updateByID(details.getDetailsID(), input);
 
+		stripeService.updateCustomer(student.getStripeCustomerID(), details);
+
 		return student;
 	}
 

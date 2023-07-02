@@ -63,6 +63,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 				text="Edit"
 				ariaLabel="Edit session"
 				onClick={openModal}
+				className="!px-2 !gap-1"
 				leftIcon={className => <PencilIcon className={className} />}
 			/>
 			<Modal

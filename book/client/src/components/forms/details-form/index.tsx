@@ -46,7 +46,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCrea
 					value={input.nickName ?? ""}
 					type={InputType.TEXT}
 					onChange={handleChange("nickName")}
-					note={hideNotes ? undefined : "This will be used instead of your first name"}
+					note={hideNotes ? undefined : "This will be used instead of your name"}
 				/>
 			)}
 			<Input

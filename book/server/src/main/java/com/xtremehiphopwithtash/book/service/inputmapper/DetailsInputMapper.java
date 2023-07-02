@@ -17,7 +17,7 @@ public class DetailsInputMapper implements InputMapper<DetailsInput, Details> {
 		details.setGender(input.gender().orElse(null));
 		details.setMobilePhoneNumber(CommonTransform.transformMobilePhoneNumber(input.mobilePhoneNumber()));
 		details.setEmailAddress(CommonTransform.transformText(input.emailAddress()));
-		details.setInstagramUsername(CommonTransform.transformText(input.instagramUsername()));
+		details.setInstagramUsername(CommonTransform.transformToLower(input.instagramUsername()));
 
 		return details;
 	}

@@ -85,7 +85,7 @@ public class BookingCostService {
 		return cost + cardSurchargeAmount;
 	}
 
-	public BookingCost getBookingCost(
+	public BookingCost calculate(
 		Optional<Integer> price,
 		Optional<Integer> equipmentFee,
 		Integer bookingQuantity,

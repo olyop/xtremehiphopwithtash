@@ -30,10 +30,10 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 		commonValidator.validateText(input.nickName(), "Nick Name", 255);
 		commonValidator.validateText(input.mobilePhoneNumber(), "Mobile Number", 14);
 		commonValidator.validateText(input.emailAddress(), "Email Address", 255);
-		commonValidator.validateText(input.instagramUsername(), "Instagram Username", 255);
 		validateGender(input);
 		validateMobilePhoneNumber(input);
 		validateEmailAddress(input);
+		validateInstagramUsername(input);
 	}
 
 	private void validateGender(DetailsInput input) {
@@ -83,6 +83,16 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 	private void validateEmailAddress(DetailsInput input) {
 		if (!input.emailAddress().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
 			throw new ResolverException("Invalid email address");
+		}
+	}
+
+	private void validateInstagramUsername(DetailsInput input) {
+		if (input.instagramUsername().isPresent()) {
+			String username = input.instagramUsername().get();
+
+			if (!username.matches("^([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\\.(?!\\.))){0,28}(?:[A-Za-z0-9_]))?)$")) {
+				throw new ResolverException("Invalid instagram username");
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.xtremehiphopwithtash.book.service;
 
+import com.stripe.Stripe;
 import com.stripe.model.PaymentIntent;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
@@ -12,28 +13,28 @@ import com.xtremehiphopwithtash.book.service.validator.CommonValidator;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import com.xtremehiphopwithtash.book.service.validator.StudentValidator;
-import java.net.URL;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BookingService {
 
-	private final int minimumHoursBeforeSessionToCancel;
-
 	private final BookingDAO bookingDAO;
 	private final BookingCostService bookingCostService;
 	private final SessionService sessionService;
 	private final CouponService couponService;
+	private final StripeService stripeService;
 
 	private final BookingInputMapper bookingInputMapper;
 	private final StudentValidator studentValidator;
 	private final SessionValidator sessionValidator;
 	private final CommonValidator commonValidator;
+
+	private final int minimumHoursBeforeSessionToCancel = 3;
 
 	public BookingService(
 		BookingDAO bookingDAO,
@@ -44,7 +45,7 @@ public class BookingService {
 		StudentValidator studentValidator,
 		SessionValidator sessionValidator,
 		CommonValidator commonValidator,
-		@Value("${booking.cancel.minimum.hours.before.session}") int minimumHoursBeforeSessionToCancel
+		StripeService stripeService
 	) {
 		this.bookingDAO = bookingDAO;
 		this.bookingCostService = bookingCostService;
@@ -54,8 +55,7 @@ public class BookingService {
 		this.studentValidator = studentValidator;
 		this.sessionValidator = sessionValidator;
 		this.commonValidator = commonValidator;
-
-		this.minimumHoursBeforeSessionToCancel = minimumHoursBeforeSessionToCancel;
+		this.stripeService = stripeService;
 	}
 
 	public Booking create(BookingInput input, String studentID) {
@@ -103,6 +103,20 @@ public class BookingService {
 		Booking booking = bookingInputMapper.map(input);
 
 		return bookingDAO.updateByID(bookingID, booking);
+	}
+
+	public void updateDescriptionsBySessionID(UUID sessionID, String description) {
+		List<Booking> bookings = bookingDAO.selectBySessionID(sessionID);
+
+		List<String> paymentIntentIDs = new ArrayList<>();
+
+		for (Booking booking : bookings) {
+			if (!booking.isCancelled() && booking.getPaymentIntentID() != null) {
+				paymentIntentIDs.add(booking.getPaymentIntentID());
+			}
+		}
+
+		stripeService.updatePaymentIntentDescriptions(paymentIntentIDs, description);
 	}
 
 	public void cancelByID(UUID bookingID, String studentID, String reCaptcha, boolean isAdministrator) {
@@ -252,7 +266,7 @@ public class BookingService {
 			? Optional.of(couponService.getDiscount(input.couponCode().get()))
 			: Optional.empty();
 
-		return bookingCostService.getBookingCost(
+		return bookingCostService.calculate(
 			Optional.ofNullable(session.getPrice()),
 			Optional.ofNullable(session.getEquipmentFee()),
 			input.bookingQuantity(),

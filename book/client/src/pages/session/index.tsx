@@ -3,7 +3,6 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { FC, Fragment, createElement, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import Chip from "../../components/chip";
 import CourseChip from "../../components/course-chip";
 import FormError from "../../components/form-error";
 import InstructorsChip from "../../components/instructors-chip";
@@ -20,11 +19,10 @@ import {
 	Session,
 } from "../../generated-types";
 import { determineSessionDateLabel } from "../../helpers/util";
-import { Breakpoint, useBreakpoint } from "../../hooks";
 import Page from "../page";
-import BookSession from "./book-session";
 import SessionBookedBanner from "./booked-banner";
 import SessionBookings from "./bookings";
+import SessionButtons from "./buttons";
 import CancelSession from "./cancel-session";
 import SessionCancelledBanner from "./cancelled-banner";
 import SessionCapacityBanner from "./capacity-banner";
@@ -32,11 +30,10 @@ import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
 import SessionPriceBanner from "./price-banner";
-import ShareButton from "./share-button";
 import UpdateSession from "./update-session";
+import XtremeHipHopChip from "./xtreme-hip-hop-chip";
 
 const SessionPage: FC = () => {
-	const breakpoint = useBreakpoint();
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
@@ -104,13 +101,7 @@ const SessionPage: FC = () => {
 					<h1 className="text-3xl font-bold">{session.title}</h1>
 					<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">class</p>
-						<Chip
-							chip={{
-								chipID: session.course.courseID,
-								text: "Xtreme Hip-Hop",
-								photo: "https://xtremehiphopwithtash.com/images/logo-x.png",
-							}}
-						/>
+						<XtremeHipHopChip />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">session</p>
 						<CourseChip course={session.course as Course} />
 						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">with</p>
@@ -137,34 +128,20 @@ const SessionPage: FC = () => {
 								</p>
 							</Fragment>
 						)}
-						{breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : <div />}
-						{!session.isCancelled && (
-							<div
-								className={`"flex flex-col gap-8 pt-3 ${
-									breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? "col-span-full" : ""
-								}`}
-							>
-								<div className="flex flex-col gap-4">
-									<div className="flex gap-4 items-start flex-col md:flex-row">
-										<BookSession session={session as Session} isSessionInPast={isInPast} />
-										<ShareButton url={location.href} isSessionInPast={isInPast} />
-									</div>
-									{isAdministrator && (
-										<div className="flex items-center border rounded p-2">
-											<UpdateSession session={session as Session} onEdit={handleRefetch} />
-											{!isInPast && (
-												<Fragment>
-													<CancelSession session={session as Session} />
-													<DeleteSession session={session as Session} />
-												</Fragment>
-											)}
-										</div>
-									)}
-								</div>
-							</div>
-						)}
 					</div>
 				</div>
+				<SessionButtons session={session as Session} isInPast={isInPast} />
+				{isAdministrator && (
+					<div className="flex items-start self-start border rounded p-2">
+						<UpdateSession session={session as Session} onEdit={handleRefetch} />
+						{!isInPast && (
+							<Fragment>
+								<CancelSession session={session as Session} />
+								<DeleteSession session={session as Session} />
+							</Fragment>
+						)}
+					</div>
+				)}
 				{session.notes && (
 					<div className="rounded border px-4 py-3 flex flex-col gap-2 border-yellow-500 bg-yellow-50">
 						<div className="flex gap-2 ml-[-0.2rem] items-center">
