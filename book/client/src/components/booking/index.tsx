@@ -165,8 +165,8 @@ const SessionPageBooking: FC<PropTypes> = ({
 	return (
 		<Entity
 			id={booking.bookingID}
-			isLeftALink={!booking.isCancelled}
-			leftLink={booking.isCancelled ? undefined : `/session/${session.sessionID}`}
+			isLeftALink
+			leftLink={`/session/${session.sessionID}`}
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
 			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100" : ""}`}

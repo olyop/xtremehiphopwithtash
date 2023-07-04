@@ -81,16 +81,12 @@ const SessionPage: FC = () => {
 
 	const isInPast = isSessionInPast(session);
 
-	if (session.isCancelled && !isAdministrator) {
-		return null;
-	}
-
 	return (
 		<Page className="flex flex-col">
-			<SessionCancelledBanner session={session as Session} />
+			{session.isCancelled && <SessionCancelledBanner />}
 			<SessionBookedBanner session={session as Session} />
 			<SessionCapacityBanner session={session as Session} />
-			<SessionPriceBanner session={session as Session} />
+			{!session.isCancelled && <SessionPriceBanner session={session as Session} />}
 			<img
 				alt={session.course.name}
 				src={session.course.photo}

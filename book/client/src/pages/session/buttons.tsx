@@ -10,7 +10,7 @@ const SessionButtons: FC<PropTypes> = ({ session, isInPast }) => {
 	return (
 		<div className={`flex gap-4 justify-start ${breakpoint === Breakpoint.TINY ? "flex-col" : "flex-row"}`}>
 			<BookSession session={session} isSessionInPast={isInPast} />
-			<ShareButton url={location.href} isSessionInPast={isInPast} />
+			{!session.isCancelled && <ShareButton url={location.href} isSessionInPast={isInPast} />}
 		</div>
 	);
 };

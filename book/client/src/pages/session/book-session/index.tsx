@@ -19,7 +19,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 
 	const [input, setInput] = useState<BookingInput>(initialInput(session));
 
-	const canBook = !isSessionInPast && session.isCapacityRemaining;
+	const canBook = !session.isCancelled && !isSessionInPast && session.isCapacityRemaining;
 
 	const handleBookClick = () => {
 		if (canBook) {
