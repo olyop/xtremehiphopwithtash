@@ -30,6 +30,7 @@ export type Booking = {
 	readonly __typename: "Booking";
 	readonly bookingID: Scalars["UUID"]["output"];
 	readonly bookingQuantity: Scalars["PositiveInt"]["output"];
+	readonly cancelledAt: Maybe<Scalars["UnixTime"]["output"]>;
 	readonly cost: Maybe<Scalars["Float"]["output"]>;
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly equipmentQuantity: Maybe<Scalars["PositiveInt"]["output"]>;
@@ -1101,6 +1102,7 @@ export type GetSessionBookingsQuery = {
 				readonly cost: number | null;
 				readonly isCheckedIn: boolean;
 				readonly isCancelled: boolean;
+				readonly cancelledAt: number | null;
 				readonly session: { readonly sessionID: string } & { readonly __typename: "Session" };
 				readonly student: {
 					readonly studentID: string;

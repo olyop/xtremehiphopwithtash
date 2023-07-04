@@ -61,6 +61,9 @@ export const cache = new InMemoryCache({
 		Booking: {
 			keyFields: ["bookingID"],
 			fields: {
+				cancelledAt: {
+					read: readUnixTime,
+				},
 				createdAt: {
 					read: readUnixTime,
 				},

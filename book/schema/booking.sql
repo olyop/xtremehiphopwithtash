@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS booking (
 	cost INTEGER,
 	has_checked_in BOOLEAN NOT NULL DEFAULT FALSE,
 	has_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
+	cancelled_at INTEGER,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 
@@ -56,6 +57,12 @@ CREATE TABLE IF NOT EXISTS booking (
 			(has_cancelled = TRUE AND has_checked_in = FALSE) OR
 			(has_cancelled = FALSE AND has_checked_in = TRUE)
 		),
+
+	CONSTRAINT booking_check_cancelled_at
+		CHECK (
+			(cancelled_at IS NULL AND has_cancelled = FALSE) OR
+			(cancelled_at IS NOT NULL AND has_cancelled = TRUE)
+		)
 
 	CONSTRAINT booking_check_created_at
 		CHECK (created_at <= get_now())

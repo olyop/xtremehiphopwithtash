@@ -116,16 +116,6 @@ public class SessionDAO implements EntityBaseDAO<Session, UUID>, EntityUpdateDAO
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
 	}
 
-	public List<Session> selectInTimePeriodNotCancelled(Instant startTime, Instant endTime) {
-		String sql = query.SELECT_IN_TIME_PERIOD_NOT_CANCELLED;
-
-		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("startTime", startTime.getEpochSecond());
-		paramSource.addValue("endTime", endTime.getEpochSecond());
-
-		return jdbcTemplate.query(sql, paramSource, rowMapper);
-	}
-
 	public List<Session> selectInTimePeriodExcludeSession(Instant startTime, Instant endTime, UUID sessionID) {
 		String sql = query.SELECT_IN_TIME_PERIOD_EXCLUDE_SESSION;
 

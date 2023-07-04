@@ -38,7 +38,7 @@ const Button: FC<ButtonPropTypes> = ({
 		} select-none transition-all items-center ${className ?? ""}`}
 	>
 		{leftIcon && leftIcon(`${baseIconClassName} ${iconClassName ?? ""}`)}
-		{textClassName ? <span className={textClassName}>{text}</span> : text}
+		{text && (textClassName ? <span className={textClassName}>{text}</span> : text)}
 		{rightIcon && rightIcon(`${baseIconClassName} ${iconClassName ?? ""}`)}
 		{childrenNode}
 	</button>

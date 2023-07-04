@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.model;
 
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
+import java.time.Instant;
 import java.util.UUID;
 
 public class Booking extends Base {
@@ -16,6 +17,7 @@ public class Booking extends Base {
 	private Integer cost;
 	private boolean isCheckedIn;
 	private boolean isCancelled;
+	private Instant cancelledAt;
 
 	public UUID getBookingID() {
 		return bookingID;
@@ -103,5 +105,13 @@ public class Booking extends Base {
 
 	public void setIsCancelled(boolean isCancelled) {
 		this.isCancelled = isCancelled;
+	}
+
+	public Instant getCancelledAt() {
+		return cancelledAt;
+	}
+
+	public void setCancelledAt(Instant cancelledAt) {
+		this.cancelledAt = cancelledAt;
 	}
 }

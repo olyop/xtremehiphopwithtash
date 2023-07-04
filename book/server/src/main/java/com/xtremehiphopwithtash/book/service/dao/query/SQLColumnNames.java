@@ -70,6 +70,7 @@ final class SQLColumnNames {
 		"cost",
 		"has_checked_in",
 		"has_cancelled",
+		"cancelled_at",
 		CREATED_AT
 	);
 

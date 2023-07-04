@@ -12,6 +12,7 @@ query getSessionBookings($sessionID: UUID!) {
 			cost
 			isCheckedIn
 			isCancelled
+			cancelledAt
 			session {
 				sessionID
 			}

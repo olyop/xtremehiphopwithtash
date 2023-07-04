@@ -121,6 +121,7 @@ type Booking {
 	cost: Float
 	isCheckedIn: Boolean!
 	isCancelled: Boolean!
+	cancelledAt: UnixTime
 
 	student: Student!
 	session: Session!

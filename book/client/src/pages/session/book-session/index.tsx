@@ -1,7 +1,6 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
-import { FC, Fragment, createElement, useEffect, useState } from "react";
+import { FC, Fragment, createElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../../../components/button";
@@ -16,24 +15,15 @@ import ToPaymentButton from "./to-payment-button";
 
 const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	const navigate = useNavigate();
-	const { isAuthenticated, user, isLoading } = useAuth0();
 	const [isModalOpen, openModal, closeModal] = useModal();
 
-	const [showBookButtonLogIn, setShowBookButtonLogIn] = useState(false);
 	const [input, setInput] = useState<BookingInput>(initialInput(session));
-
-	const isLoggedIn = isAuthenticated && user;
 
 	const canBook = !isSessionInPast && session.isCapacityRemaining;
 
 	const handleBookClick = () => {
-		if (isLoggedIn) {
-			setShowBookButtonLogIn(false);
-			if (canBook) {
-				openModal();
-			}
-		} else {
-			setShowBookButtonLogIn(true);
+		if (canBook) {
+			openModal();
 		}
 	};
 
@@ -64,34 +54,23 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 		setInput(initialInput(session));
 	};
 
-	useEffect(() => {
-		if (showBookButtonLogIn) {
-			setTimeout(() => {
-				setShowBookButtonLogIn(false);
-			}, 3000);
-		}
-	}, [showBookButtonLogIn]);
-
-	const bookButtonText = isSessionInPast
+	const bookButtonText = session.isCancelled
+		? "Cancelled"
+		: isSessionInPast
 		? "Elapsed"
 		: session.isCapacityRemaining
-		? showBookButtonLogIn
-			? "Please Log In"
-			: "Book"
+		? "Book"
 		: "Fully Booked";
 
 	return (
 		<Fragment>
 			<Button
+				disabled={!canBook}
 				textClassName="!text-xl"
 				text={bookButtonText}
 				onClick={handleBookClick}
-				transparent={showBookButtonLogIn}
 				ariaLabel={bookButtonText}
-				disabled={!isLoading && !canBook}
-				className={`!h-14 px-6 shadow-xl hover:shadow-xl rounded-xl ${
-					showBookButtonLogIn ? "!bg-amber-500 text-white" : ""
-				}`}
+				className="!h-14 px-6 shadow-xl hover:shadow-xl rounded-xl"
 				leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
 			/>
 			<Modal

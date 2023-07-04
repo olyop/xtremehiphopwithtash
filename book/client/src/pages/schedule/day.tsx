@@ -20,11 +20,9 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 			</div>
 			{day.sessions ? (
 				<div className="flex flex-col gap-1">
-					{day.sessions
-						.filter(({ isCancelled }) => isAdministrator || !isCancelled)
-						.map(session => (
-							<SessionCard key={session.sessionID} session={session} />
-						))}
+					{day.sessions.map(session => (
+						<SessionCard key={session.sessionID} session={session} />
+					))}
 				</div>
 			) : (
 				<p className="text-xs text-gray-500 select-none">No sessions</p>

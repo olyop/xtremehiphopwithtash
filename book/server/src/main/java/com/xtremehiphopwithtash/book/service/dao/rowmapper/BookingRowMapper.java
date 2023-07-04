@@ -28,6 +28,7 @@ public class BookingRowMapper implements RowMapper<Booking> {
 		b.setCost(MapRowUtil.mapInteger(rs.getInt("cost")));
 		b.setIsCheckedIn(rs.getBoolean("has_checked_in"));
 		b.setIsCancelled(rs.getBoolean("has_cancelled"));
+		b.setCancelledAt(MapRowUtil.mapInstant(rs.getInt("cancelled_at")));
 
 		b.setCreatedAt(MapRowUtil.mapInstant(rs.getInt("created_at")));
 

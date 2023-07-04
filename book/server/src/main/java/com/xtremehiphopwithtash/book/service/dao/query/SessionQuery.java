@@ -29,8 +29,6 @@ public class SessionQuery {
 
 	public final String SELECT_IN_TIME_PERIOD = sqlUtil.read("select-in-time-period");
 
-	public final String SELECT_IN_TIME_PERIOD_NOT_CANCELLED = sqlUtil.read("select-in-time-period-not-cancelled");
-
 	public final String SELECT_IN_TIME_PERIOD_EXCLUDE_SESSION = sqlUtil.read("select-in-time-period-exclude-session");
 
 	public final String SELECT_IN_TIME_PERIOD_AND_COURSE_ID = sqlUtil.read("select-in-time-period-and-course-id");

@@ -198,16 +198,22 @@ const SessionPageBooking: FC<PropTypes> = ({
 					)}
 					<br />
 					{paymentDescription}
-					{hideUpdate ? null : (
-						<Fragment>
-							<br />
-							<span className="text-gray-500">{dateTimeFormatter.format(booking.createdAt)}</span>
-						</Fragment>
-					)}
 					{booking.notes && (
 						<Fragment>
 							<br />
-							<span className="text-gray-500">Notes: {booking.notes}</span>
+							<span className="text-gray-500">{booking.notes}</span>
+						</Fragment>
+					)}
+					{hideUpdate ? null : (
+						<Fragment>
+							<br />
+							<span className="text-gray-500">Booking Time: {dateTimeFormatter.format(booking.createdAt)}</span>
+							{booking.isCancelled && booking.cancelledAt && (
+								<Fragment>
+									<br />
+									<span className="text-gray-500">Cancelled Time: {dateTimeFormatter.format(booking.cancelledAt)}</span>
+								</Fragment>
+							)}
 						</Fragment>
 					)}
 				</Fragment>
@@ -269,7 +275,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 							/>
 						</Fragment>
 					)}
-					{!hideCancel && !isSessionInPast && (
+					{!hideCancel && (
 						<Fragment>
 							<Button
 								transparent
