@@ -5,3 +5,6 @@
 *.graphqls linguist-detectable=true
 *.graphql linguist-language=graphql
 *.graphqls linguist-language=graphql
+
+*.tsx linguist-detectable=true
+*.tsx linguist-language=tsx
