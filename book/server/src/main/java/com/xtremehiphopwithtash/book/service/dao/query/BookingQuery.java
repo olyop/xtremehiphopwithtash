@@ -60,4 +60,6 @@ public class BookingQuery {
 	public final String UPDATE_HAS_CHECKED_IN_BY_ID = sqlUtil.read("update-has-checked-in-by-id");
 
 	public final String SELECT_PAYMENT_METHODS = sqlUtil.read("select-payment-methods");
+
+	public final String SELECT_GROSS_BY_SESSION_ID = sqlUtil.read("select-gross-by-session-id");
 }

@@ -13,8 +13,6 @@ const Student: FC<PropTypes> = ({ student }) => (
 				{student.details.firstName} {student.details.lastName}
 				<span> </span>
 				{student.details.nickName && <span className="text-gray-500">({student.details.nickName})</span>}
-				<Fragment> - </Fragment>
-				<span className="text-gray-500">{student.studentID.split("|")[0]}</span>
 			</Fragment>
 		}
 		description={

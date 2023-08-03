@@ -88,8 +88,9 @@ public class BookingResolver {
 		reCaptchaService.validateResponse(reCaptcha);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
+		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
 
-		return bookingService.create(input, studentID);
+		return bookingService.create(input, studentID, null, isAdministrator);
 	}
 
 	@MutationMapping

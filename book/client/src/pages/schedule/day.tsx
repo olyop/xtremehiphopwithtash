@@ -4,19 +4,27 @@ import SessionCard from "../../components/session-card";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
 import CreateSession from "./create-session";
 import { Day as DayType } from "./types";
+import { isDateInBetweenRange } from "../../helpers/date";
+
+const hardcodedUnavailableDayRange = [new Date("2023-08-17T00:00:00"), new Date("2023-08-27T00:00:00")] as const;
 
 const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 	const { isAdministrator } = useContext(IsAdministratorContext);
+
+	const isUnavailable = isDateInBetweenRange(day.unix, hardcodedUnavailableDayRange);
+
 	return (
 		<div
 			data-unix={day.unix}
 			className={`bg-white p-1 pt-0.5 overflow-y-auto overflow-x-hidden transition-colors grid grid-rows-[1.25rem,_1fr] grid-cols-[calc((100vw_/_2)_-_0.5rem)] md:grid-cols-1 gap-0.5 ${
-				day.isToday ? "!bg-gray-200" : day.isInPast ? "opacity-60" : ""
+				isUnavailable ? "!bg-orange-100" : day.isToday ? "!bg-gray-200" : day.isInPast ? "opacity-60" : ""
 			}`}
 		>
 			<div className="flex justify-between">
 				<p className="text-sm select-none justify-self-center whitespace-nowrap overflow-hidden">{day.label}</p>
-				{isAdministrator && (day.isToday || !day.isInPast) && <CreateSession day={day} onSubmit={onSessionUpdate} />}
+				{isAdministrator && !isUnavailable && (day.isToday || !day.isInPast) && (
+					<CreateSession day={day} onSubmit={onSessionUpdate} />
+				)}
 			</div>
 			{day.sessions ? (
 				<div className="flex flex-col gap-1">
@@ -25,7 +33,7 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 					))}
 				</div>
 			) : (
-				<p className="text-xs text-gray-500 select-none">No sessions</p>
+				<p className="text-xs text-gray-500 select-none">{isUnavailable ? "Tash on holidays" : "No sessions"}</p>
 			)}
 		</div>
 	);

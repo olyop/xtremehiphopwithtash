@@ -394,6 +394,7 @@ export type Session = {
 	readonly equipmentFee: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly equipmentHired: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly equipmentRemaining: Maybe<Scalars["PositiveInt"]["output"]>;
+	readonly gross: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly hasBooked: Scalars["Boolean"]["output"];
 	readonly instructors: ReadonlyArray<Instructor>;
 	readonly isCancelled: Scalars["Boolean"]["output"];
@@ -920,33 +921,11 @@ export type GetPaymentSuccessDataQuery = {
 		readonly startTime: number;
 		readonly endTime: number;
 		readonly capacityRemaining: number | null;
-		readonly location: {
-			readonly locationID: string;
-			readonly name: string;
-			readonly plusCode: string;
-			readonly address: string;
-			readonly coordinates: { readonly latitude: number; readonly longitude: number } & {
-				readonly __typename: "Coordinates";
-			};
-		} & { readonly __typename: "Location" };
+		readonly isCancelled: boolean;
+		readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
 		readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
 			readonly __typename: "Course";
 		};
-		readonly instructors: ReadonlyArray<
-			{
-				readonly instructorID: string;
-				readonly photo: string;
-				readonly details: {
-					readonly detailsID: string;
-					readonly firstName: string;
-					readonly lastName: string;
-					readonly nickName: string | null;
-					readonly emailAddress: string;
-					readonly mobilePhoneNumber: string;
-					readonly instagramUsername: string | null;
-				} & { readonly __typename: "Details" };
-			} & { readonly __typename: "Instructor" }
-		>;
 	} & { readonly __typename: "Session" };
 } & { readonly __typename: "Query" };
 
@@ -956,7 +935,10 @@ export type CreateBookingMutationVariables = Exact<{
 }>;
 
 export type CreateBookingMutation = {
-	readonly createBooking: { readonly bookingID: string } & { readonly __typename: "Booking" };
+	readonly createBooking: {
+		readonly bookingID: string;
+		readonly session: { readonly sessionID: string } & { readonly __typename: "Session" };
+	} & { readonly __typename: "Booking" };
 } & { readonly __typename: "Mutation" };
 
 export type GetPaymentScreenDataQueryVariables = Exact<{
@@ -973,34 +955,12 @@ export type GetPaymentScreenDataQuery = {
 		readonly startTime: number;
 		readonly endTime: number;
 		readonly capacityRemaining: number | null;
+		readonly equipmentRemaining: number | null;
 		readonly isCancelled: boolean;
-		readonly location: {
-			readonly locationID: string;
-			readonly name: string;
-			readonly plusCode: string;
-			readonly address: string;
-			readonly coordinates: { readonly latitude: number; readonly longitude: number } & {
-				readonly __typename: "Coordinates";
-			};
-		} & { readonly __typename: "Location" };
+		readonly location: { readonly locationID: string; readonly name: string } & { readonly __typename: "Location" };
 		readonly course: { readonly courseID: string; readonly name: string; readonly photo: string } & {
 			readonly __typename: "Course";
 		};
-		readonly instructors: ReadonlyArray<
-			{
-				readonly instructorID: string;
-				readonly photo: string;
-				readonly details: {
-					readonly detailsID: string;
-					readonly firstName: string;
-					readonly lastName: string;
-					readonly nickName: string | null;
-					readonly emailAddress: string;
-					readonly mobilePhoneNumber: string;
-					readonly instagramUsername: string | null;
-				} & { readonly __typename: "Details" };
-			} & { readonly __typename: "Instructor" }
-		>;
 	} & { readonly __typename: "Session" };
 	readonly getBookingCost: {
 		readonly sessionCost: number;
@@ -1090,6 +1050,7 @@ export type GetSessionBookingsQueryVariables = Exact<{
 export type GetSessionBookingsQuery = {
 	readonly getSessionByID: {
 		readonly sessionID: string;
+		readonly gross: number | null;
 		readonly bookings: ReadonlyArray<
 			{
 				readonly bookingID: string;

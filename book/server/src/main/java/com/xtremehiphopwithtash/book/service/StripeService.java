@@ -125,6 +125,7 @@ public class StripeService {
 
 			return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ResolverException("Unable to create payment intent");
 		}
 	}

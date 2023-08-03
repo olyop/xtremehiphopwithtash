@@ -1,6 +1,7 @@
 query getSessionBookings($sessionID: UUID!) {
 	getSessionByID(sessionID: $sessionID) {
 		sessionID
+		gross
 		bookings {
 			bookingID
 			notes

@@ -2,7 +2,7 @@ import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import FormError from "../../components/form-error";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
@@ -28,9 +28,9 @@ import PaymentButton from "./payment-button";
 import PaymentMethodForm from "./payment-method-form";
 import { mapSearchParamsToBookingInput, syncSearchParams } from "./search-paramaters";
 import PaymentPageStripe from "./stripe";
+import EquipmentHireWarning from "./equipment-hire-warning";
 
 const PaymentPage: FC = () => {
-	const navigate = useNavigate();
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
 	const { isAuthenticated, user } = useAuth0();
@@ -90,7 +90,7 @@ const PaymentPage: FC = () => {
 				void refetchPageData(input);
 			}
 		}
-	}, [bookingInput?.couponCode, bookingInput?.paymentMethod]);
+	}, [bookingInput?.couponCode, bookingInput?.paymentMethod, bookingInput?.equipmentQuantity]);
 
 	const handleApplyCoupon = (couponCode: string) => {
 		setBookingInput(
@@ -102,9 +102,25 @@ const PaymentPage: FC = () => {
 		);
 	};
 
+	const handleUpdateEquipmentQuantity = (equipmentQuantity: number | null) => {
+		setBookingInput(
+			prevState =>
+				prevState && {
+					...prevState,
+					equipmentQuantity,
+				},
+		);
+		syncSearchParams("equipmentQuantity", String(equipmentQuantity), setSearchParams);
+	};
+
 	useEffect(() => {
 		if (createBookingResult.data) {
-			navigate("/payment-success");
+			const searchParams = new URLSearchParams();
+			searchParams.append("bookingID", createBookingResult.data.createBooking.bookingID);
+			searchParams.append("sessionID", createBookingResult.data.createBooking.session.sessionID);
+
+			// Reload the page refresh the local cache
+			window.location.href = `/payment-success?${searchParams.toString()}`;
 		}
 	}, [createBookingResult.data]);
 
@@ -154,6 +170,11 @@ const PaymentPage: FC = () => {
 		<Page className="h-full flex flex-col gap-12 pb-16">
 			<FullscreenSpinner isLoading={isPaying} />
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
+			<EquipmentHireWarning
+				bookingInput={bookingInput}
+				onUpdateEquipmentHire={handleUpdateEquipmentQuantity}
+				session={session}
+			/>
 			<div className="flex flex-col gap-12 px-4 pb-52">
 				{bookingCost.bookingCost !== 0 && (
 					<PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />

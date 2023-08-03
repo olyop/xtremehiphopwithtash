@@ -7,33 +7,15 @@ query getPaymentSuccessData($sessionID: UUID!) {
 		startTime
 		endTime
 		capacityRemaining
+		isCancelled
 		location {
 			locationID
 			name
-			plusCode
-			address
-			coordinates {
-				latitude
-				longitude
-			}
 		}
 		course {
 			courseID
 			name
 			photo
-		}
-		instructors {
-			instructorID
-			photo
-			details {
-				detailsID
-				firstName
-				lastName
-				nickName
-				emailAddress
-				mobilePhoneNumber
-				instagramUsername
-			}
 		}
 	}
 }

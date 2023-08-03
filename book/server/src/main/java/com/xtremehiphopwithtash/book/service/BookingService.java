@@ -58,11 +58,7 @@ public class BookingService {
 		this.stripeService = stripeService;
 	}
 
-	public Booking create(BookingInput input, String studentID) {
-		return create(input, studentID, null);
-	}
-
-	public Booking create(BookingInput input, String studentID, PaymentIntent paymentIntent) {
+	public Booking create(BookingInput input, String studentID, PaymentIntent paymentIntent, boolean isAdministrator) {
 		studentValidator.validateID(studentID);
 		validateCreate(input, studentID);
 
@@ -73,10 +69,10 @@ public class BookingService {
 		booking.setStudentID(studentID);
 
 		if (isBookingFree(bookingCost, input)) {
-			validateStudentHasNotBookedSession(studentID, input, true, bookingCost.isFreeFromCoupon());
+			validateStudentHasNotBookedSession(studentID, input, true, bookingCost.isFreeFromCoupon(), isAdministrator);
 			booking.setCost(null);
 		} else if (isPayingWithCash(input)) {
-			validateStudentHasNotBookedSession(studentID, input, false, false);
+			validateStudentHasNotBookedSession(studentID, input, false, false, isAdministrator);
 			validateQuantitiesAreOne(input);
 
 			booking.setCost(bookingCost.getFinalCost());
@@ -237,16 +233,19 @@ public class BookingService {
 		String studentID,
 		BookingInput input,
 		boolean isSessionFree,
-		boolean isFreeFromCoupon
+		boolean isFreeFromCoupon,
+		boolean isAdministrator
 	) {
-		if (!isFreeFromCoupon) {
-			if (bookingDAO.existsByCashFreeAndStudentIDAndSessionID(studentID, input.sessionID())) {
-				if (isSessionFree) {
-					throw new ResolverException("You already booked this session. You can only book a free session once.");
-				} else {
-					throw new ResolverException(
-						"You already booked this session. When paying with cash you can only book a session once."
-					);
+		if (!isAdministrator) {
+			if (!isFreeFromCoupon) {
+				if (bookingDAO.existsByCashFreeAndStudentIDAndSessionID(studentID, input.sessionID())) {
+					if (isSessionFree) {
+						throw new ResolverException("You already booked this session. You can only book a free session once.");
+					} else {
+						throw new ResolverException(
+							"You already booked this session. When paying with cash you can only book a session once."
+						);
+					}
 				}
 			}
 		}
@@ -394,5 +393,11 @@ public class BookingService {
 		validateID(bookingID);
 
 		bookingDAO.updateHasCheckedIn(bookingID, hasCheckedIn);
+	}
+
+	public int retreiveGrossBySessionID(UUID sessionID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.selectGrossBySessionID(sessionID);
 	}
 }

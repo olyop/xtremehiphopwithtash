@@ -4,6 +4,7 @@ import { FC, Fragment, createElement, useEffect } from "react";
 import SessionPageBooking from "../../../components/booking";
 import { Booking, GetSessionBookingsQuery, GetSessionBookingsQueryVariables, Session } from "../../../generated-types";
 import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
+import { currencyDollarsFormatter } from "../../../helpers/intl";
 
 const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
 	const [getBookings, bookingsResult] = useLazyQuery<Data, Vars>(GET_SESSION_BOOKINGS);
@@ -26,12 +27,17 @@ const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
 	return (
 		<div className="shadow-2xl rounded">
 			<h3 className="text-xl p-2 border-b">Bookings</h3>
+			{bookingsResult.data?.getSessionByID.gross && (
+				<p className="text-sm p-2">
+					Gross: {currencyDollarsFormatter.format(bookingsResult.data.getSessionByID.gross / 100)}
+				</p>
+			)}
 			{bookingsResult.data ? (
 				<Fragment>
 					{bookingsResult.data.getSessionByID.bookings === null ? (
-						<p className="p-2">No bookings yet</p>
+						<p className="p-2 border-t">No bookings yet</p>
 					) : (
-						<div>
+						<div className="border-t">
 							{bookingsResult.data.getSessionByID.bookings.map(booking => (
 								<SessionPageBooking
 									isEditing

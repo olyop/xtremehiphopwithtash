@@ -27,7 +27,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 		}
 	};
 
-	const handleToPaymentScreenClick = () => {
+	const handleToPaymentScreen = () => {
 		if (canBook) {
 			const searchParams = new URLSearchParams();
 
@@ -91,7 +91,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 				}
 				buttons={
 					<Fragment>
-						<ToPaymentButton onClick={handleToPaymentScreenClick} />
+						<ToPaymentButton onClick={handleToPaymentScreen} />
 						<Button
 							transparent
 							text="Cancel"

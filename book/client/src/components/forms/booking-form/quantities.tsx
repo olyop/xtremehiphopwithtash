@@ -1,4 +1,4 @@
-import { FC, createElement } from "react";
+import { FC, Fragment, createElement } from "react";
 
 import { Maybe, Session } from "../../../generated-types";
 import Input, { InputOnChange, InputType, SelectOption } from "../../input";
@@ -22,7 +22,7 @@ const BookingQuantities: FC<PropTypes> = ({
 	const bookingQuantitySelectOptions: SelectOption[] = Array.from({
 		length: maxBookingQuantity,
 	}).map((_, index) => ({
-		description: `${index + 1}`,
+		description: `Book ${index + 1} spot${index + 1 > 1 ? "s" : ""}`,
 		optionID: `${index + 1}`,
 	}));
 
@@ -32,7 +32,7 @@ const BookingQuantities: FC<PropTypes> = ({
 		length: maxEquipmentQuantity,
 	})
 		.map((_, index) => ({
-			description: `${index + 1}`,
+			description: `Hire ${index + 1} step${index + 1 > 1 ? "s" : ""}`,
 			optionID: `${index + 1}`,
 		}))
 		.slice(0, isEditing ? bookingQuantity : session.equipmentRemaining ?? 0);
@@ -51,7 +51,7 @@ const BookingQuantities: FC<PropTypes> = ({
 	};
 
 	return (
-		<div className="grid grid-cols-2 gap-2">
+		<Fragment>
 			<Input
 				id="bookingQuantity"
 				name="Quantity"
@@ -71,7 +71,7 @@ const BookingQuantities: FC<PropTypes> = ({
 				selectOptions={bookingEquipmentSelectOptions}
 				type={InputType.SELECT}
 			/>
-		</div>
+		</Fragment>
 	);
 };
 

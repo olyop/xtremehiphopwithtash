@@ -202,4 +202,17 @@ public class SessionResolver {
 	public boolean doesSessionExist(@Argument UUID sessionID) {
 		return sessionService.existsByID(sessionID);
 	}
+
+	@SchemaMapping(typeName = "Session", field = "gross")
+	public Integer getGross(@AuthenticationPrincipal Jwt jwt, Session session) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		int gross = bookingService.retreiveGrossBySessionID(session.getSessionID());
+
+		if (gross == 0) {
+			return null;
+		}
+
+		return gross;
+	}
 }

@@ -36,19 +36,24 @@ export const syncSearchParams = (
 	value: string | null | undefined,
 	setSearchParams: SetURLSearchParams,
 ) => {
-	setSearchParams(prevSearchParams => {
-		if (value) {
-			if (prevSearchParams.has(key)) {
-				prevSearchParams.set(key, value);
+	setSearchParams(
+		prevSearchParams => {
+			if (value) {
+				if (prevSearchParams.has(key)) {
+					prevSearchParams.set(key, value);
+				} else {
+					prevSearchParams.append(key, value);
+				}
 			} else {
-				prevSearchParams.append(key, value);
+				prevSearchParams.delete(key);
 			}
-		} else {
-			prevSearchParams.delete(key);
-		}
 
-		return prevSearchParams;
-	});
+			return prevSearchParams;
+		},
+		{
+			replace: true,
+		},
+	);
 };
 
 export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): BookingInput | null => {

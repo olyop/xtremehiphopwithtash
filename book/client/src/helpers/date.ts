@@ -90,3 +90,6 @@ export const isInPast = (date: Date): boolean => {
 	const now = new Date();
 	return date.getTime() < now.getTime();
 };
+
+export const isDateInBetweenRange = (date: number, range: readonly [startDate: Date, endDate: Date]) =>
+	date >= range[0].getTime() && date <= range[1].getTime();

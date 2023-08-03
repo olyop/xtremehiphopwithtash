@@ -100,6 +100,7 @@ type Session {
 	isEquipmentRemaining(equipmentQuantity: PositiveInt): Boolean!
 
 	isCancelled: Boolean!
+	gross: PositiveInt
 
 	course: Course!
 	instructors: [Instructor!]!

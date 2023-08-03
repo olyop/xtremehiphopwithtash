@@ -57,7 +57,7 @@ public class StripeController {
 
 				BookingInput bookingInput = objectMapper.readValue(bookingInputJson, BookingInput.class);
 
-				bookingService.create(bookingInput, studentID, paymentIntent);
+				bookingService.create(bookingInput, studentID, paymentIntent, false);
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Invalid payment intent");
 			}

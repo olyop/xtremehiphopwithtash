@@ -48,6 +48,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 	hideCallNow = false,
 	hideReceipt = false,
 	hideCheckIn = false,
+	isLeftALink = false,
 	hideInstagram = false,
 	hideDateLabel = false,
 	hideQuantities = false,
@@ -165,11 +166,11 @@ const SessionPageBooking: FC<PropTypes> = ({
 	return (
 		<Entity
 			id={booking.bookingID}
-			isLeftALink
-			leftLink={`/session/${session.sessionID}`}
+			isLeftALink={isLeftALink}
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
-			leftClassName="p-2 pl-3 grow hover:bg-gray-100 transition-colors"
+			leftLink={isLeftALink ? `/session/${session.sessionID}` : undefined}
 			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100" : ""}`}
+			leftClassName={`p-2 pl-3 grow ${isLeftALink ? "hover:bg-gray-100 transition-colors" : ""}`}
 			text={
 				hideUpdate
 					? booking.session.title
@@ -187,7 +188,9 @@ const SessionPageBooking: FC<PropTypes> = ({
 							<br />
 						</Fragment>
 					)}
-					{booking.bookingQuantity} x booking{determinePlural(booking.bookingQuantity)}
+					<Fragment>
+						{booking.bookingQuantity} x booking{determinePlural(booking.bookingQuantity)}
+					</Fragment>
 					{booking.equipmentQuantity && (
 						<Fragment>
 							<Fragment>, </Fragment>
@@ -450,6 +453,7 @@ interface PropTypes {
 	hideCheckIn?: boolean;
 	hideReceipt?: boolean;
 	hideCallNow?: boolean;
+	isLeftALink?: boolean;
 	hideDateLabel?: boolean;
 	hideInstagram?: boolean;
 	hideQuantities?: boolean;

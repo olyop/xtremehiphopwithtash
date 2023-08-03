@@ -215,6 +215,7 @@ const AccountPage: FC = () => {
 							<SessionPageBooking
 								hideUpdate
 								hideCheckIn
+								isLeftALink
 								hideCallNow
 								hideInstagram
 								hideQuantities

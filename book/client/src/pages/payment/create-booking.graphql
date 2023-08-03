@@ -1,5 +1,8 @@
 mutation createBooking($input: BookingInput!, $reCaptcha: String!) {
 	createBooking(input: $input, reCaptcha: $reCaptcha) {
 		bookingID
+		session {
+			sessionID
+		}
 	}
 }

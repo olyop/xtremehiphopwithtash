@@ -224,4 +224,12 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
+
+	public int selectGrossBySessionID(UUID sessionID) {
+		String sql = query.SELECT_GROSS_BY_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("sessionID", sessionID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+	}
 }
