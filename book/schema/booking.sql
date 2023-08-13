@@ -30,10 +30,10 @@ CREATE TABLE IF NOT EXISTS booking (
 		ON UPDATE CASCADE,
 
 	CONSTRAINT booking_check_booking_quantity
-		CHECK (booking_quantity >= 1),
+		CHECK (booking_quantity >= 1 AND booking_quantity <= 5),
 
 	CONSTRAINT booking_check_equipment_quantity
-		CHECK (equipment_quantity >= 1),
+		CHECK (equipment_quantity >= 1 AND equipment_quantity <= 5),
 
 	CONSTRAINT booking_check_quantities
 		CHECK (booking_quantity >= equipment_quantity),

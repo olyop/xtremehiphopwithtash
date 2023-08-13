@@ -192,6 +192,7 @@ const AccountPage: FC = () => {
 										ariaLabel="Edit"
 										text={updateStudentResult.loading ? "Editing..." : "Edit"}
 										onClick={handleUpdateStudent}
+										disabled={updateStudentResult.loading}
 										leftIcon={className => <PencilIcon className={className} />}
 									/>
 									<Button

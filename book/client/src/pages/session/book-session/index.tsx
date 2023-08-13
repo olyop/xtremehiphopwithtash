@@ -8,7 +8,7 @@ import BookingForm from "../../../components/forms/booking-form";
 import Modal from "../../../components/modal";
 import SessionCard from "../../../components/session-card";
 import { BookingInput, Session } from "../../../generated-types";
-import { determineSessionDateLabel } from "../../../helpers/util";
+import { determineSessionDateLabel, isSessionInProgress } from "../../../helpers/util";
 import { useModal } from "../../../hooks";
 import { initialInput } from "./initial-input";
 import ToPaymentButton from "./to-payment-button";
@@ -57,7 +57,9 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	const bookButtonText = session.isCancelled
 		? "Cancelled"
 		: isSessionInPast
-		? "Elapsed"
+		? isSessionInProgress(session)
+			? "In Progress"
+			: "Elapsed"
 		: session.isCapacityRemaining
 		? "Book"
 		: "Fully Booked";

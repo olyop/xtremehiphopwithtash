@@ -13,7 +13,7 @@ const InstagramButton: FC = () => (
 			transparent
 			ariaLabel="Instagram"
 			className="w-full h-full"
-			childrenNode={<img alt="Instagram" src="/images/instagram.webp" />}
+			childrenNode={<img alt="Instagram" src="/images/instagram.webp" className="w-[30px] h-[30px]" />}
 		/>
 	</a>
 );

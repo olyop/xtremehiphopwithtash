@@ -29,6 +29,7 @@ import PaymentMethodForm from "./payment-method-form";
 import { mapSearchParamsToBookingInput, syncSearchParams } from "./search-paramaters";
 import PaymentPageStripe from "./stripe";
 import EquipmentHireWarning from "./equipment-hire-warning";
+import { ApolloError } from "@apollo/client";
 
 const PaymentPage: FC = () => {
 	const apollo = useApolloClient();
@@ -39,6 +40,7 @@ const PaymentPage: FC = () => {
 
 	const [isPaying, setIsPaying] = useState(false);
 	const [session, setSession] = useState<Session | null>(null);
+	const [isReCaptchaError, setIsReCaptchaError] = useState(false);
 	const [bookingCost, setBookingCost] = useState<BookingCost | null>(null);
 	const [bookingInput, setBookingInput] = useState<BookingInput | null>(null);
 
@@ -110,7 +112,7 @@ const PaymentPage: FC = () => {
 					equipmentQuantity,
 				},
 		);
-		syncSearchParams("equipmentQuantity", String(equipmentQuantity), setSearchParams);
+		syncSearchParams("equipmentQuantity", equipmentQuantity, setSearchParams);
 	};
 
 	useEffect(() => {
@@ -133,6 +135,8 @@ const PaymentPage: FC = () => {
 					void refetchPageData(bookingInput);
 				}
 
+				setIsReCaptchaError(true);
+
 				createBookingResult.reset();
 			}
 		}
@@ -153,8 +157,13 @@ const PaymentPage: FC = () => {
 		return null;
 	}
 
+	const handlePaymentCardSubmit = () => {
+		setIsReCaptchaError(false);
+	};
+
 	const handleCreateBooking = () => {
 		setIsPaying(true);
+		setIsReCaptchaError(false);
 
 		if (reCaptchaToken) {
 			void createBooking({
@@ -183,7 +192,12 @@ const PaymentPage: FC = () => {
 					<PaymentMethodForm setBookingInput={setBookingInput} paymentMethod={bookingInput.paymentMethod} />
 				)}
 				{bookingInput.paymentMethod === PaymentMethod.CARD && reCaptchaToken ? (
-					<PaymentPageStripe bookingInput={bookingInput} setIsPaying={setIsPaying} reCaptcha={reCaptchaToken} />
+					<PaymentPageStripe
+						bookingInput={bookingInput}
+						setIsPaying={setIsPaying}
+						reCaptcha={reCaptchaToken}
+						onSubmit={handlePaymentCardSubmit}
+					/>
 				) : bookingInput.paymentMethod === PaymentMethod.COUPON ||
 				  bookingInput.paymentMethod === PaymentMethod.CASH ||
 				  bookingCost.finalCost === 0 ? (
@@ -192,6 +206,15 @@ const PaymentPage: FC = () => {
 						<PaymentButton text="Book Now" onClick={handleCreateBooking} disabled={reCaptchaToken === null} />
 					</Fragment>
 				) : null}
+				{bookingInput.paymentMethod !== PaymentMethod.CARD && isReCaptchaError && (
+					<FormError
+						error={
+							new ApolloError({
+								errorMessage: "Timeout, please try again.",
+							})
+						}
+					/>
+				)}
 			</div>
 		</Page>
 	);

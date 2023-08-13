@@ -7,7 +7,7 @@ const HeaderLogo: FC = () => (
 			src="/images/full-logo.png"
 			alt="Xtreme Hip-Hop with Tash"
 			title="Xtreme Hip-Hop with Tash"
-			className="h-full"
+			className="h-[56px] w-[160px]"
 		/>
 	</Link>
 );

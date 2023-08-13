@@ -80,12 +80,6 @@ export const addSixDays = (date: Date): Date => {
 	return newDate;
 };
 
-export const addOneDay = (date: Date): Date => {
-	const newDate = new Date(date);
-	newDate.setDate(newDate.getDate() + 1);
-	return newDate;
-};
-
 export const isInPast = (date: Date): boolean => {
 	const now = new Date();
 	return date.getTime() < now.getTime();

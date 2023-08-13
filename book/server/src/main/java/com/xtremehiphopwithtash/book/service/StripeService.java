@@ -14,6 +14,7 @@ import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 import com.stripe.param.ChargeUpdateParams;
 import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.CustomerListParams;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods;
@@ -55,14 +56,12 @@ public class StripeService {
 
 	public String createCustomer(String studentID, Details details) {
 		try {
-			String name = String.format("%s %s", details.getFirstName(), details.getLastName());
-
 			Map<String, String> metadata = new HashMap<>();
 			metadata.put("studentID", studentID);
 
 			CustomerCreateParams params = CustomerCreateParams
 				.builder()
-				.setName(name)
+				.setName(formatCustomerName(details))
 				.setEmail(details.getEmailAddress())
 				.setPhone(details.getMobilePhoneNumber())
 				.setMetadata(metadata)
@@ -78,13 +77,11 @@ public class StripeService {
 
 	public void updateCustomer(String stripeCustomerID, Details details) {
 		try {
-			String name = String.format("%s %s", details.getFirstName(), details.getLastName());
-
 			Customer customer = Customer.retrieve(stripeCustomerID);
 
 			CustomerUpdateParams params = CustomerUpdateParams
 				.builder()
-				.setName(name)
+				.setName(formatCustomerName(details))
 				.setEmail(details.getEmailAddress())
 				.setPhone(details.getMobilePhoneNumber())
 				.build();
@@ -94,6 +91,10 @@ public class StripeService {
 			se.printStackTrace();
 			throw new ResolverException("Unable to update Stripe customer");
 		}
+	}
+
+	private String formatCustomerName(Details details) {
+		return String.format("%s %s", details.getFirstName(), details.getLastName());
 	}
 
 	public CreatePaymentIntentResponse createPaymentIntent(
@@ -214,6 +215,16 @@ public class StripeService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ResolverException("Unable to update invoice description");
+		}
+	}
+
+	private final CustomerListParams healthCheckParams = CustomerListParams.builder().setLimit(1L).build();
+
+	public void healthCheck() {
+		try {
+			Customer.list(healthCheckParams);
+		} catch (StripeException se) {
+			throw new ResolverException("Unable to connect to Stripe");
 		}
 	}
 }

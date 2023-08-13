@@ -87,6 +87,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 						<Button
 							text={loading ? "Editing..." : "Edit"}
 							onClick={handleUpdateSubmit}
+							disabled={loading}
 							ariaLabel={loading ? "Edit session" : "Edit"}
 							leftIcon={className => <PencilIcon className={className} />}
 						/>

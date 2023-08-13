@@ -56,6 +56,7 @@ const CancelSession: FC<PropTypes> = ({ session }) => {
 					<Fragment>
 						<Button
 							onClick={handleDelete}
+							disabled={loading}
 							text={loading ? "Cancelling..." : "Yes"}
 							ariaLabel={loading ? "Cancelling..." : "Yes"}
 							leftIcon={className => <CheckIcon className={className} />}

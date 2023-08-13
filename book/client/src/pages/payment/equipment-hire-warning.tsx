@@ -8,6 +8,8 @@ import Button from "../../components/button";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import Input, { InputType } from "../../components/input";
 import { InputOnChange, SelectOption } from "../../components/input/types";
+import { currencyDollarsFormatter } from "../../helpers/intl";
+import { centsToDollars } from "../../utils";
 
 const EquipmentHireWarning: FC<PropTypes> = ({ session, bookingInput, onUpdateEquipmentHire }) => {
 	const [showEquipmentHireInput, setShowEquipmentHireInput] = useState(false);
@@ -55,16 +57,23 @@ const EquipmentHireWarning: FC<PropTypes> = ({ session, bookingInput, onUpdateEq
 			children={
 				<Fragment>
 					{showEquipmentHireInput ? (
-						<Input
-							id="equipmentQuantity"
-							name="Step Hire"
-							placeHolder={session.equipmentRemaining ? "None" : "None avaliable"}
-							disabled={!session.equipmentRemaining}
-							value={String(equipmentQuantity)}
-							onChange={handleEquipmentQuantityChange}
-							selectOptions={bookingEquipmentSelectOptions}
-							type={InputType.SELECT}
-						/>
+						<div className="flex gap-4 flex-col">
+							<Input
+								id="equipmentQuantity"
+								name="Step Hire"
+								placeHolder={session.equipmentRemaining ? "None" : "None avaliable"}
+								disabled={!session.equipmentRemaining}
+								value={String(equipmentQuantity)}
+								onChange={handleEquipmentQuantityChange}
+								selectOptions={bookingEquipmentSelectOptions}
+								type={InputType.SELECT}
+							/>
+							{session.equipmentFee && (
+								<p className="text-sm text-gray-500">
+									Step hire will inccur a {currencyDollarsFormatter.format(centsToDollars(session.equipmentFee))} fee.
+								</p>
+							)}
+						</div>
 					) : (
 						<h1 className="text-lg">Are you sure you don't need to hire a step?</h1>
 					)}

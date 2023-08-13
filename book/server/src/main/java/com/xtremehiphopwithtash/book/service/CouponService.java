@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CouponService {
 
-	private final SecureRandom secureRandom = new SecureRandom();
-
 	private final CouponDAO couponDAO;
+
+	private final String couponPrefix = "XHWT";
+	private final SecureRandom secureRandom = new SecureRandom();
 
 	public CouponService(CouponDAO couponDAO) {
 		this.couponDAO = couponDAO;
@@ -108,7 +109,7 @@ public class CouponService {
 			Collections.shuffle(characters);
 		}
 
-		return String.join("", characters).substring(0, 9).toUpperCase();
+		return couponPrefix + String.join("", characters).substring(0, 5).toUpperCase();
 	}
 
 	private boolean doesCodeExist(String code) {

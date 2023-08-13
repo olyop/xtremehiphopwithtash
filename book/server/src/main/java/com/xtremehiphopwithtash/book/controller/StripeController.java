@@ -11,7 +11,6 @@ import com.xtremehiphopwithtash.book.service.BookingService;
 import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
-import java.util.Map;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,17 +47,17 @@ public class StripeController {
 			try {
 				PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
 
-				Map<String, String> metadata = paymentIntent.getMetadata();
-
-				String studentID = metadata.get("studentID");
-				String bookingInputJson = metadata.get("bookingInput");
+				String studentID = paymentIntent.getMetadata().get("studentID");
 
 				validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
+
+				String bookingInputJson = paymentIntent.getMetadata().get("bookingInput");
 
 				BookingInput bookingInput = objectMapper.readValue(bookingInputJson, BookingInput.class);
 
 				bookingService.create(bookingInput, studentID, paymentIntent, false);
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new IllegalArgumentException("Invalid payment intent");
 			}
 		}

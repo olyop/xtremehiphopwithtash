@@ -67,7 +67,6 @@ public class ReCaptchaService {
 
 			verifyResponse = objectMapper.readValue(connection.getInputStream(), VerifyResponse.class);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new ReCaptchaError("Error verify response");
 		}
 

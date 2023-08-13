@@ -1,6 +1,5 @@
 package com.xtremehiphopwithtash.book.service;
 
-import com.stripe.Stripe;
 import com.stripe.model.PaymentIntent;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
@@ -74,7 +73,6 @@ public class BookingService {
 		} else if (isPayingWithCash(input)) {
 			validateStudentHasNotBookedSession(studentID, input, false, false, isAdministrator);
 			validateQuantitiesAreOne(input);
-
 			booking.setCost(bookingCost.getFinalCost());
 		} else if (isPayingWithCard(input, paymentIntent)) {
 			booking.setPaymentIntentID(paymentIntent.getId());
@@ -158,6 +156,7 @@ public class BookingService {
 		if (!isAdministrator) {
 			validateBookingIsStudents(studentID, booking);
 			validateCancelTime(booking.getSessionID());
+
 			boolean canCancel =
 				(booking.getPaymentMethod() == null && booking.getCost() == null) ||
 				booking.getPaymentMethod() == PaymentMethod.COUPON ||
@@ -180,11 +179,24 @@ public class BookingService {
 		commonValidator.validateText(input.notes(), "Notes", 1024);
 		commonValidator.validateNonZeroInteger(input.bookingQuantity(), "Booking quantity");
 		commonValidator.validateNonZeroInteger(input.equipmentQuantity(), "Equipment quantity");
+		validateQuantities(input);
 	}
 
 	private void validateSession(UUID sessionID) {
 		sessionValidator.validateID(sessionID);
 		sessionValidator.validateIsNotInPast(sessionService.retreiveByID(sessionID).getStartTime());
+	}
+
+	private void validateQuantities(BookingInput input) {
+		if (input.bookingQuantity() > 5) {
+			throw new ResolverException("Booking quantity cannot be greater than 5");
+		}
+
+		if (input.equipmentQuantity().isPresent()) {
+			if (input.equipmentQuantity().get() > input.bookingQuantity()) {
+				throw new ResolverException("Equipment quantity cannot be greater than booking quantity");
+			}
+		}
 	}
 
 	public void validateBookingIsStudents(String studentID, Booking booking) {
@@ -279,11 +291,9 @@ public class BookingService {
 	private boolean isBookingFree(BookingCost bookingCost, BookingInput input) {
 		if (bookingCost.getFinalCost() == 0) {
 			if (input.paymentMethod().isEmpty()) {
-				// Free session
-				return true;
+				return true; // Free session
 			} else if (input.paymentMethod().get().equals(PaymentMethod.COUPON) && bookingCost.isFreeFromCoupon()) {
-				// Free session from coupon
-				return true;
+				return true; // Free session from coupon
 			} else {
 				throw new IllegalStateException("Invalid payment method");
 			}

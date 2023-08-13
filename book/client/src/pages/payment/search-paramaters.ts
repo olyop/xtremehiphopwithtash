@@ -33,16 +33,18 @@ const verifyPaymenMethodParam = (value: string | null, required: boolean) => {
 
 export const syncSearchParams = (
 	key: string,
-	value: string | null | undefined,
+	value: string | number | null | undefined,
 	setSearchParams: SetURLSearchParams,
 ) => {
 	setSearchParams(
 		prevSearchParams => {
 			if (value) {
+				const valueString = String(value);
+
 				if (prevSearchParams.has(key)) {
-					prevSearchParams.set(key, value);
+					prevSearchParams.set(key, valueString);
 				} else {
-					prevSearchParams.append(key, value);
+					prevSearchParams.append(key, valueString);
 				}
 			} else {
 				prevSearchParams.delete(key);
@@ -71,6 +73,13 @@ export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): Bo
 		verifyIntegerParam(equipmentQuantityParam, false) &&
 		verifyPaymenMethodParam(paymentMethodParam, false)
 	) {
+		const bookingQuantity = Number.parseInt(bookingQuantityParam, 10);
+		const equipmentQuantity = equipmentQuantityParam ? Number.parseInt(equipmentQuantityParam, 10) : null;
+
+		if (equipmentQuantity && equipmentQuantity > bookingQuantity) {
+			return null;
+		}
+
 		return {
 			sessionID: sessionIDParam,
 			notes: notesParam,

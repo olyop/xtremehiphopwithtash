@@ -9,32 +9,38 @@ import SessionCardChip from "./chip";
 
 const SessionCardChips: FC<PropTypes> = ({ session }) => {
 	const { isAdministrator } = useContext(IsAdministratorContext);
+
 	return (
 		<div className="absolute flex items-end gap-1 right-1.5 -top-[0.2rem] z-10">
-			{isSessionInProgress(session) ? (
-				<SessionCardChip text="In Progress" colorClassName="bg-black" />
+			{session.isCancelled ? (
+				<SessionCardChip text="Cancelled" colorClassName="bg-red-500" />
 			) : (
 				<Fragment>
-					{!isInPast(new Date(session.endTime)) && (
+					{isSessionInProgress(session) ? (
+						<SessionCardChip text="In Progress" colorClassName="bg-black" />
+					) : (
 						<Fragment>
-							{session.capacityRemaining ? (
+							{!isInPast(new Date(session.endTime)) && (
 								<Fragment>
-									{session.capacityRemaining <= 5 && (
-										<SessionCardChip
-											colorClassName="bg-amber-500"
-											text={`${session.capacityRemaining} spot${determinePlural(session.capacityRemaining)} left`}
-										/>
+									{session.capacityRemaining ? (
+										<Fragment>
+											{session.capacityRemaining <= 5 && (
+												<SessionCardChip
+													colorClassName="bg-amber-500"
+													text={`${session.capacityRemaining} spot${determinePlural(session.capacityRemaining)} left`}
+												/>
+											)}
+										</Fragment>
+									) : (
+										<SessionCardChip text="Fully Booked" colorClassName="bg-purple-500" />
 									)}
 								</Fragment>
-							) : (
-								<SessionCardChip text="Fully Booked" colorClassName="bg-purple-500" />
 							)}
+							{session.price === null && <SessionCardChip text="Free" colorClassName="bg-green-500" />}
 						</Fragment>
 					)}
-					{session.isCancelled && <SessionCardChip text="Cancelled" colorClassName="bg-red-500" />}
-					{session.price === null && <SessionCardChip text="Free" colorClassName="bg-green-500" />}
 					{session.hasBooked && <SessionCardChip text="Booked" colorClassName="bg-blue-500" />}
-					{isAdministrator && session.capacityRemaining && session.capacityBooked && (
+					{isAdministrator && session.capacityBooked && (
 						<SessionCardChip colorClassName="bg-pink-500 px-1.5" text={`${session.capacityBooked}`} />
 					)}
 				</Fragment>

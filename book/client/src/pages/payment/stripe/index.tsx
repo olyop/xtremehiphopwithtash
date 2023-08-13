@@ -13,7 +13,7 @@ import StripeProvider from "../../../providers/stripe";
 import CardForm from "./card-form";
 import CREATE_PAYMENT_INTENT from "./create-payment-intent.graphql";
 
-const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, setIsPaying }) => {
+const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, onSubmit, setIsPaying }) => {
 	const paymentMethodRef = useRef<PaymentMethod | null>(null);
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
 
@@ -61,13 +61,14 @@ const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, setIsPaying
 
 	return (
 		<StripeProvider clientSecret={clientSecret}>
-			<CardForm setIsPaying={setIsPaying} bookingInput={bookingInput} />
+			<CardForm setIsPaying={setIsPaying} onSubmit={onSubmit} bookingInput={bookingInput} />
 		</StripeProvider>
 	);
 };
 
 interface PropTypes {
 	reCaptcha: string | null;
+	onSubmit: () => void;
 	bookingInput: BookingInput;
 	setIsPaying: Dispatch<SetStateAction<boolean>>;
 }

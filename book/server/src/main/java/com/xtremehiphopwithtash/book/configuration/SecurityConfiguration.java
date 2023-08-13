@@ -65,7 +65,7 @@ public class SecurityConfiguration {
 
 	public HeaderWriter buildHeaderWriter() {
 		List<Header> headers = new ArrayList<>();
-		headers.add(new Header("Cache-Control", "max-age=86400"));
+		headers.add(new Header("Cache-Control", "max-age=2678400"));
 		HeaderWriter headerWriter = new StaticHeadersWriter(headers);
 		return headerWriter;
 	}

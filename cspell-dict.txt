@@ -9,11 +9,14 @@ graphqls
 grecaptcha
 inmemory
 Likert
+nopagereadaloud
 Nord
+nositelinkssearchbox
 Querydsl
 saddr
 Tash
 unnest
 VITE
+XHWT
 Xtreme
 xtremehiphopwithtash

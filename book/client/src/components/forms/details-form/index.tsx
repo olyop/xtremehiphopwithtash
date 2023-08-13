@@ -72,6 +72,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCrea
 			/>
 			<Input
 				optional
+				nullable
 				id="instagramUsername"
 				name="Instagram Username"
 				value={input.instagramUsername ?? ""}

@@ -8,7 +8,7 @@ import { BookingInput } from "../../../generated-types";
 import PaymentButton from "../payment-button";
 import { checkCanBookSession } from "./check-can-book-session";
 
-const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
+const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput, onSubmit }) => {
 	const stripe = useStripe();
 	const elements = useElements();
 	const apollo = useApolloClient();
@@ -66,6 +66,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 	};
 
 	const handleSubmit = () => {
+		onSubmit();
 		void confirmPayment();
 	};
 
@@ -98,6 +99,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput }) => {
 
 interface PropTypes {
 	bookingInput: BookingInput;
+	onSubmit: () => void;
 	setIsPaying: Dispatch<SetStateAction<boolean>>;
 }
 

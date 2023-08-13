@@ -337,7 +337,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 									canCancel ? (
 										<Fragment>
 											<Button
-												disabled={!reCaptchaToken}
+												disabled={!reCaptchaToken || cancelBookingResult.loading}
 												onClick={handleCancelBooking}
 												ariaLabel="Yes - Cancel Booking"
 												leftIcon={className => <CheckIcon className={className} />}

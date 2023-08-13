@@ -19,20 +19,27 @@ const discountSelectOptions: SelectOption[] = Array.from({ length: 20 }).map((_,
 const Coupons: FC = () => {
 	const apollo = useApolloClient();
 
+	const [loading, setLoading] = useState(false);
 	const [discount, setDiscount] = useState<number>(100);
 	const [isModalOpen, openModal, closeModal] = useModal();
 	const [coupons, setCoupons] = useState<[string, number][] | null>(null);
 
 	const generateCoupon = async () => {
-		const { data } = await apollo.mutate<GenerateCouponMutation, GenerateCouponMutationVariables>({
-			mutation: GENERATE_COUPON,
-			variables: {
-				discount,
-			},
-		});
+		try {
+			setLoading(true);
 
-		if (data) {
-			setCoupons(prevState => [...(prevState ?? []), [data.generateCoupon, discount]]);
+			const { data } = await apollo.mutate<GenerateCouponMutation, GenerateCouponMutationVariables>({
+				mutation: GENERATE_COUPON,
+				variables: {
+					discount,
+				},
+			});
+
+			if (data) {
+				setCoupons(prevState => [...(prevState ?? []), [data.generateCoupon, discount]]);
+			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -102,6 +109,7 @@ const Coupons: FC = () => {
 						<Button
 							text={coupons && coupons.length > 0 ? "Regenerate" : "Generate"}
 							ariaLabel="Generate Coupon Code"
+							disabled={loading}
 							onClick={handleGenerateCoupon}
 							leftIcon={className => <ArrowPathIcon className={className} />}
 						/>
