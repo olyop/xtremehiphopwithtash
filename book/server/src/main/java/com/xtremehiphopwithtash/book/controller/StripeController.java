@@ -1,5 +1,7 @@
 package com.xtremehiphopwithtash.book.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.stripe.model.Event;
@@ -38,28 +40,27 @@ public class StripeController {
 	}
 
 	@PostMapping("/webhook")
-	public void handleWebHook(@RequestHeader("Stripe-Signature") String signature, @RequestBody String payload) {
+	public void handleWebHook(@RequestHeader("Stripe-Signature") String signature, @RequestBody String payload)
+		throws JsonMappingException, JsonProcessingException {
 		Event event = stripeService.constructPaymentEvent(payload, signature);
 
 		StripeObject stripeObject = stripeService.constructObject(event);
 
 		if (event.getType().equals("payment_intent.succeeded")) {
-			try {
-				PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
+			PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
 
-				String studentID = paymentIntent.getMetadata().get("studentID");
+			String studentID = paymentIntent.getMetadata().get("studentID");
+			String bookingInputJson = paymentIntent.getMetadata().get("bookingInput");
 
-				validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
-
-				String bookingInputJson = paymentIntent.getMetadata().get("bookingInput");
-
-				BookingInput bookingInput = objectMapper.readValue(bookingInputJson, BookingInput.class);
-
-				bookingService.create(bookingInput, studentID, paymentIntent, false);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new IllegalArgumentException("Invalid payment intent");
+			if (studentID == null || bookingInputJson == null) {
+				return;
 			}
+
+			validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
+
+			BookingInput bookingInput = objectMapper.readValue(bookingInputJson, BookingInput.class);
+
+			bookingService.create(bookingInput, studentID, paymentIntent, false);
 		}
 	}
 

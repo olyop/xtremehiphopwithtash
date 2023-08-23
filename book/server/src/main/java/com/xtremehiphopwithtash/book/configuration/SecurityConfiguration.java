@@ -38,6 +38,7 @@ public class SecurityConfiguration {
 		"/account",
 		"/payment",
 		"/payment-success",
+		"/merch",
 	};
 
 	public SecurityConfiguration(@Value("${cors.allowed.origins}") List<String> allowedOrigins) {

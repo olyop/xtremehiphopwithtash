@@ -28,6 +28,7 @@ import Page from "../page";
 import { detailsToInput } from "./details-to-input";
 import GET_ACCOUNT_PAGE from "./get-account-page.graphql";
 import UPDATE_STUDENT from "./update-student.graphql";
+import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 
 const createdAtFormatter = new Intl.DateTimeFormat(undefined, {
 	year: "numeric",
@@ -189,11 +190,11 @@ const AccountPage: FC = () => {
 							buttons={
 								<Fragment>
 									<Button
-										ariaLabel="Edit"
-										text={updateStudentResult.loading ? "Editing..." : "Edit"}
+										ariaLabel="Save"
+										text={updateStudentResult.loading ? "Saving..." : "Save"}
 										onClick={handleUpdateStudent}
 										disabled={updateStudentResult.loading}
-										leftIcon={className => <PencilIcon className={className} />}
+										leftIcon={className => <CheckIcon className={className} />}
 									/>
 									<Button
 										ariaLabel="Cancel"
@@ -229,9 +230,14 @@ const AccountPage: FC = () => {
 							/>
 						))
 					) : (
-						<p className="text-gray-500 p-4">No bookings</p>
+						<p className="text-gray-500 p-2">No booking</p>
 					)}
 				</div>
+				{bookings && bookings.length > 0 && (
+					<p>
+						{bookings.length} booking{bookings.length === 1 ? "" : "s"}
+					</p>
+				)}
 			</div>
 			<Button
 				text="Log Out"

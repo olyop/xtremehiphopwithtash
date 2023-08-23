@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 public class HealthCheckController {
 
-	private final String healthMessage = "OK";
-
 	private final InstructorService instructorService;
 	private final StripeService stripeService;
 
@@ -27,6 +25,6 @@ public class HealthCheckController {
 		instructorService.retreiveAll();
 		stripeService.healthCheck();
 
-		return healthMessage;
+		return "OK";
 	}
 }

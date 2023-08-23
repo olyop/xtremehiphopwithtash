@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.model.Details;
+import com.xtremehiphopwithtash.book.model.MerchItem;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.other.BookingCost;
@@ -16,9 +17,11 @@ import com.xtremehiphopwithtash.book.service.SessionService;
 import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -94,5 +97,10 @@ public class StripeResolver {
 			sessionService.createBookingDescription(input.sessionID()),
 			bookingCost.getFinalCost()
 		);
+	}
+
+	@QueryMapping
+	public List<MerchItem> getMerchItems() {
+		return stripeService.retrieveMerchItems();
 	}
 }

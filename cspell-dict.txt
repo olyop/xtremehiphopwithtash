@@ -9,6 +9,7 @@ graphqls
 grecaptcha
 inmemory
 Likert
+merch
 nopagereadaloud
 Nord
 nositelinkssearchbox

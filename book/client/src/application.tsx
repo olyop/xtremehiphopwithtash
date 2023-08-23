@@ -9,6 +9,7 @@ import Auth0 from "./providers/auth0";
 import CreateAccount from "./providers/create-account";
 import ReCaptcha from "./providers/recaptcha";
 import Routes from "./routes";
+import AdministratorButton from "./components/administrator-button";
 
 const Application: FC = () => (
 	<BrowserRouter>
@@ -19,6 +20,7 @@ const Application: FC = () => (
 						<CreateAccount>
 							<Header />
 							<Routes />
+							<AdministratorButton />
 							<InstagramButton />
 						</CreateAccount>
 					</IsAdministratorProvider>

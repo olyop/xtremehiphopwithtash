@@ -161,3 +161,14 @@ type Review {
 type CreatePaymentIntentResponse {
 	clientSecret: String!
 }
+
+type MerchItem {
+	merchItemID: String!
+
+	name: String!
+	description: String
+	price: PositiveInt!
+	photo: URL!
+	stock: NonNegativeInt
+	sizesAvailable: [String!]
+}

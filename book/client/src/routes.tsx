@@ -7,6 +7,7 @@ import PaymentPage from "./pages/payment";
 import PaymentSuccessPage from "./pages/payment-success";
 import Schedule from "./pages/schedule";
 import SessionPage from "./pages/session";
+import MerchPage from "./pages/merch";
 
 const routes: RouteObject[] = [
 	{
@@ -24,6 +25,10 @@ const routes: RouteObject[] = [
 	{
 		path: "account",
 		element: <AccountPage />,
+	},
+	{
+		path: "merch",
+		element: <MerchPage />,
 	},
 	{
 		path: "payment",

@@ -10,6 +10,9 @@ import com.stripe.model.Customer;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Price;
+import com.stripe.model.Product;
+import com.stripe.model.ProductCollection;
 import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 import com.stripe.param.ChargeUpdateParams;
@@ -19,16 +22,21 @@ import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods;
 import com.stripe.param.PaymentIntentUpdateParams;
+import com.stripe.param.ProductListParams;
 import com.xtremehiphopwithtash.book.model.Details;
+import com.xtremehiphopwithtash.book.model.MerchItem;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.lang.module.ResolutionException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +60,24 @@ public class StripeService {
 
 		this.objectMapper = new ObjectMapper();
 		this.objectMapper.registerModule(new Jdk8Module());
+	}
+
+	private final CustomerListParams healthCheckParams = CustomerListParams.builder().setLimit(1L).build();
+	private final ProductListParams productListParams = ProductListParams.builder().setActive(true).build();
+
+	private Comparator<MerchItem> merchItemComparator = new Comparator<MerchItem>() {
+		@Override
+		public int compare(MerchItem merchItem1, MerchItem merchItem2) {
+			return merchItem1.getName().compareTo(merchItem2.getName());
+		}
+	};
+
+	public void healthCheck() {
+		try {
+			Customer.list(healthCheckParams);
+		} catch (StripeException se) {
+			throw new ResolverException("Unable to connect to Stripe");
+		}
 	}
 
 	public String createCustomer(String studentID, Details details) {
@@ -93,10 +119,6 @@ public class StripeService {
 		}
 	}
 
-	private String formatCustomerName(Details details) {
-		return String.format("%s %s", details.getFirstName(), details.getLastName());
-	}
-
 	public CreatePaymentIntentResponse createPaymentIntent(
 		BookingInput bookingInput,
 		String studentID,
@@ -131,24 +153,6 @@ public class StripeService {
 		}
 	}
 
-	private void validateCustomerExists(String stripeCustomerID) {
-		try {
-			Customer.retrieve(stripeCustomerID);
-		} catch (StripeException se) {
-			throw new ResolverException("Customer does not exist");
-		}
-	}
-
-	private Map<String, String> constructPaymentIntentMetadata(String studentID, BookingInput bookingInput)
-		throws JsonProcessingException {
-		Map<String, String> metadata = new HashMap<>();
-
-		metadata.put("studentID", studentID);
-		metadata.put("bookingInput", objectMapper.writeValueAsString(bookingInput));
-
-		return metadata;
-	}
-
 	public Event constructPaymentEvent(String payload, String signature) {
 		try {
 			return Webhook.constructEvent(payload, signature, webhookSecret);
@@ -171,7 +175,7 @@ public class StripeService {
 		return stripeObject;
 	}
 
-	public URL getChargeReceiptURL(String paymentIntentID) {
+	public URL retrieveChargeReceiptURL(String paymentIntentID) {
 		try {
 			PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentID);
 
@@ -183,9 +187,29 @@ public class StripeService {
 
 			return new URL(charge.getReceiptUrl());
 		} catch (StripeException e) {
+			e.printStackTrace();
 			throw new ResolverException("Unable to retrieve charge");
 		} catch (MalformedURLException e) {
 			throw new ResolverException("Unable to parse charge receipt URL");
+		}
+	}
+
+	public List<MerchItem> retrieveMerchItems() {
+		try {
+			ProductCollection productsCollection = Product.list(productListParams);
+
+			List<MerchItem> merchItems = productsCollection
+				.getData()
+				.stream()
+				.filter(productsFilter)
+				.map(productToMerchItem)
+				.sorted(merchItemComparator)
+				.toList();
+
+			return merchItems;
+		} catch (StripeException se) {
+			se.printStackTrace();
+			throw new ResolverException("Unable to retrieve products");
 		}
 	}
 
@@ -218,13 +242,57 @@ public class StripeService {
 		}
 	}
 
-	private final CustomerListParams healthCheckParams = CustomerListParams.builder().setLimit(1L).build();
-
-	public void healthCheck() {
+	private void validateCustomerExists(String stripeCustomerID) {
 		try {
-			Customer.list(healthCheckParams);
+			Customer.retrieve(stripeCustomerID);
 		} catch (StripeException se) {
-			throw new ResolverException("Unable to connect to Stripe");
+			throw new ResolverException("Customer does not exist");
 		}
 	}
+
+	private Map<String, String> constructPaymentIntentMetadata(String studentID, BookingInput bookingInput)
+		throws JsonProcessingException {
+		Map<String, String> metadata = new HashMap<>();
+
+		metadata.put("studentID", studentID);
+		metadata.put("bookingInput", objectMapper.writeValueAsString(bookingInput));
+
+		return metadata;
+	}
+
+	private String formatCustomerName(Details details) {
+		return String.format("%s %s", details.getFirstName(), details.getLastName());
+	}
+
+	private Predicate<Product> productsFilter = product -> {
+		return product.getActive() && !product.getName().equals("Shipping") && !product.getName().equals("Hoodie");
+	};
+
+	private Function<Product, MerchItem> productToMerchItem = product -> {
+		try {
+			MerchItem merchItem = new MerchItem();
+
+			merchItem.setMerchItemID(product.getId());
+			merchItem.setName(product.getName());
+			merchItem.setDescription(product.getDescription());
+			merchItem.setPhoto(new URL(product.getImages().get(0)));
+
+			Price price = Price.retrieve(product.getDefaultPrice());
+			merchItem.setPrice(price.getUnitAmount().intValue());
+
+			int stock = product.getMetadata().get("stock") == null ? 0 : Integer.valueOf(product.getMetadata().get("stock"));
+			merchItem.setStock(stock);
+
+			String sizesAvailable = product.getMetadata().get("sizesAvailable");
+			merchItem.setSizesAvailable(sizesAvailable == null ? null : sizesAvailable.split(","));
+
+			return merchItem;
+		} catch (StripeException se) {
+			se.printStackTrace();
+			throw new ResolverException("Unable to retrieve products");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			throw new ResolverException("Unable to parse product image URL");
+		}
+	};
 }

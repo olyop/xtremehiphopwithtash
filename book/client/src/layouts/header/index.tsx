@@ -12,14 +12,14 @@ const Header: FC = () => {
 
 	const sessionID = searchParams.get("sessionID");
 
-	const handleBack = () => {
+	const handleBackOnePage = () => {
 		navigate(-1);
 	};
 
 	const invisible = location.pathname === "/";
 
 	return (
-		<header className="flex items-stretch relative justify-between pr-4 md:pr-4 border-b h-header-height bg-white">
+		<header className="flex items-stretch relative justify-between border-b h-header-height bg-white">
 			{location.pathname === "/payment" && sessionID ? (
 				<Link to={`/session/${sessionID}`}>
 					<BackButton invisible={invisible} />
@@ -35,7 +35,7 @@ const Header: FC = () => {
 									<BackButton invisible={invisible} />
 								</Link>
 							) : (
-								<BackButton invisible={invisible} onClick={handleBack} />
+								<BackButton invisible={invisible} onClick={handleBackOnePage} />
 							)}
 							<HeaderLogo />
 							<HeaderRight />

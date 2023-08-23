@@ -25,4 +25,6 @@ type Query {
 
 	getBookingCost(bookingInput: BookingInput!): BookingCost!
 	getBookingReceiptURL(bookingID: UUID!): URL!
+
+	getMerchItems: [MerchItem!]!
 }

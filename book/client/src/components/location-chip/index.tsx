@@ -91,7 +91,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 							<CopyButton ariaLabel="Copy Address" text={location.address} buttonDimension={6} iconDimension={4} />
 						</div>
 						<div className="flex flex-col items-start gap-4">
-							<div className="w-full overflow-hidden bg-gray-100 rounded h-[28rem]">
+							<div className="w-full overflow-hidden bg-gray-100 rounded h-[22rem]">
 								<GoogleMaps>
 									<Map
 										zoom={15}

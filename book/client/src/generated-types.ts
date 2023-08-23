@@ -168,6 +168,17 @@ export type LocationInput = {
 	readonly plusCode: Scalars["String"]["input"];
 };
 
+export type MerchItem = {
+	readonly __typename: "MerchItem";
+	readonly description: Maybe<Scalars["String"]["output"]>;
+	readonly merchItemID: Scalars["String"]["output"];
+	readonly name: Scalars["String"]["output"];
+	readonly photo: Scalars["URL"]["output"];
+	readonly price: Scalars["PositiveInt"]["output"];
+	readonly sizesAvailable: Maybe<ReadonlyArray<Scalars["String"]["output"]>>;
+	readonly stock: Maybe<Scalars["NonNegativeInt"]["output"]>;
+};
+
 export type Mutation = {
 	readonly __typename: "Mutation";
 	readonly cancelBookingByID: Scalars["UUID"]["output"];
@@ -318,6 +329,7 @@ export type Query = {
 	readonly getInstructors: Maybe<ReadonlyArray<Instructor>>;
 	readonly getLocationByID: Location;
 	readonly getLocations: Maybe<ReadonlyArray<Location>>;
+	readonly getMerchItems: ReadonlyArray<MerchItem>;
 	readonly getSessionByID: Session;
 	readonly getSessionsInPeriod: ReadonlyArray<Session>;
 	readonly getStudentByID: Student;
@@ -906,6 +918,22 @@ export type GetStudentsQuery = {
 			} & { readonly __typename: "Details" };
 		} & { readonly __typename: "Student" }
 	> | null;
+} & { readonly __typename: "Query" };
+
+export type GetMerchItemsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetMerchItemsQuery = {
+	readonly getMerchItems: ReadonlyArray<
+		{
+			readonly merchItemID: string;
+			readonly name: string;
+			readonly description: string | null;
+			readonly price: number;
+			readonly photo: string;
+			readonly stock: number | null;
+			readonly sizesAvailable: ReadonlyArray<string> | null;
+		} & { readonly __typename: "MerchItem" }
+	>;
 } & { readonly __typename: "Query" };
 
 export type GetPaymentSuccessDataQueryVariables = Exact<{

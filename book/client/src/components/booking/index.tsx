@@ -77,7 +77,10 @@ const SessionPageBooking: FC<PropTypes> = ({
 		});
 	};
 
-	const canCancel = !booking.isCancelled && (isAdministrator || booking.paymentMethod !== PaymentMethod.CARD);
+	const isSessionInPast = isInPast(new Date(session.endTime));
+
+	const canCancel =
+		!booking.isCancelled && (isAdministrator || (booking.paymentMethod !== PaymentMethod.CARD && !isSessionInPast));
 
 	const handleCancelBooking = () => {
 		if (canCancel && reCaptchaToken && !cancelBookingResult.loading) {
@@ -136,8 +139,6 @@ const SessionPageBooking: FC<PropTypes> = ({
 			void handleReCaptcha();
 		}
 	}, [isCancelModalOpen]);
-
-	const isSessionInPast = isInPast(new Date(session.endTime));
 
 	const paymentDescription =
 		bookingInput.paymentMethod === null
@@ -283,10 +284,10 @@ const SessionPageBooking: FC<PropTypes> = ({
 							<Button
 								transparent
 								ariaLabel="Cancel"
-								disabled={booking.isCancelled}
+								disabled={!canCancel}
 								onClick={openCancelModal}
 								text={booking.isCancelled ? "Cancelled" : "Cancel"}
-								className={`!px-2 !text-xs !h-7 ${booking.isCancelled ? "hover:bg-transparent select-none" : ""}`}
+								className={`!px-2 !text-xs !h-7 ${!canCancel ? "hover:bg-transparent select-none" : ""}`}
 								leftIcon={className =>
 									booking.isCancelled ? (
 										<MinusIcon className={`!h-4 !w-4 ${className}}`} />

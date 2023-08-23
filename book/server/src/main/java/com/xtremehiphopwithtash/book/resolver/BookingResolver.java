@@ -75,7 +75,7 @@ public class BookingResolver {
 			throw new ResolverException("Booking was not paid with CARD.");
 		}
 
-		return stripeService.getChargeReceiptURL(booking.getPaymentIntentID());
+		return stripeService.retrieveChargeReceiptURL(booking.getPaymentIntentID());
 	}
 
 	@MutationMapping

@@ -1,0 +1,11 @@
+query getMerchItems {
+	getMerchItems {
+		merchItemID
+		name
+		description
+		price
+		photo
+		stock
+		sizesAvailable
+	}
+}
