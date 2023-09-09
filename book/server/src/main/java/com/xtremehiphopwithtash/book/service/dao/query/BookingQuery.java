@@ -43,6 +43,8 @@ public class BookingQuery {
 
 	public final String SELECT_BY_STUDENT_ID = sqlUtil.read("select-by-student-id");
 
+	public final String SELECT_SUM = sqlUtil.read("select-sum");
+
 	public final String SELECT_SUM_BY_STUDENT_ID = sqlUtil.read("select-sum-by-student-id");
 
 	public final String SELECT_SUM_BY_STUDENT_ID_AND_FREE = sqlUtil.read("select-sum-by-student-id-and-free");

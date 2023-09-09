@@ -22,6 +22,12 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 		this.rowMapper = rowMapper;
 	}
 
+	public int count() {
+		String sql = query.SELECT_COUNT;
+
+		return jdbcTemplate.getJdbcTemplate().queryForObject(sql, Integer.class);
+	}
+
 	@Override
 	public Student insert(Student value) {
 		String sql = query.INSERT;

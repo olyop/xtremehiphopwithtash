@@ -11,17 +11,17 @@ public class SQLUtil {
 	private final String modulePath;
 	private final String columnNames;
 
-	SQLUtil(String modulePath) {
+	public SQLUtil(String modulePath) {
 		this.modulePath = modulePath;
 		this.columnNames = "";
 	}
 
-	SQLUtil(String modulePath, String columnNames) {
+	public SQLUtil(String modulePath, String columnNames) {
 		this.modulePath = modulePath;
 		this.columnNames = columnNames;
 	}
 
-	String read(String fileName) {
+	public String read(String fileName) {
 		Path fullPath = Paths.get(basePath, modulePath, fileName + ".sql");
 
 		ResourceLoader loader = new DefaultResourceLoader();

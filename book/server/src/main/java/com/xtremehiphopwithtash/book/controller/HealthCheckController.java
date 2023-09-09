@@ -1,7 +1,7 @@
 package com.xtremehiphopwithtash.book.controller;
 
 import com.xtremehiphopwithtash.book.service.InstructorService;
-import com.xtremehiphopwithtash.book.service.StripeService;
+import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +21,9 @@ public class HealthCheckController {
 	}
 
 	@GetMapping
-	public String health() {
+	public String check() {
 		instructorService.retreiveAll();
-		stripeService.healthCheck();
+		stripeService.healthCheck().check();
 
 		return "OK";
 	}

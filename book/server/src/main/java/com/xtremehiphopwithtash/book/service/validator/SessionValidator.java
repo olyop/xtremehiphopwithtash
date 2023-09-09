@@ -55,7 +55,6 @@ public class SessionValidator implements ValidatorCRUD<UUID, SessionInput> {
 	@Override
 	public void validateDelete(UUID sessionID) {
 		validateID(sessionID);
-		validateNotAlreadyCancelled(sessionID);
 		validateBookings(sessionID);
 	}
 

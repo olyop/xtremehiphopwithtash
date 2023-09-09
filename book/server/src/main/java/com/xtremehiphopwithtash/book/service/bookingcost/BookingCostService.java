@@ -1,6 +1,5 @@
-package com.xtremehiphopwithtash.book.service;
+package com.xtremehiphopwithtash.book.service.bookingcost;
 
-import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;

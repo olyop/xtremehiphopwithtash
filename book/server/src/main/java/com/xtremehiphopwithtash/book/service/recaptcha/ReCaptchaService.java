@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service;
+package com.xtremehiphopwithtash.book.service.recaptcha;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,6 +88,7 @@ public class ReCaptchaService {
 		}
 
 		String resultString = result.toString();
+
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
 	}
 
@@ -108,13 +109,4 @@ public class ReCaptchaService {
 			throw new ReCaptchaError("Score too low");
 		}
 	}
-
-	private class ReCaptchaError extends RuntimeException {
-
-		public ReCaptchaError(String message) {
-			super("Failed to verify reCAPTCHA: " + message);
-		}
-	}
-
-	private record VerifyResponse(boolean success, String hostname, float score, String action) {}
 }

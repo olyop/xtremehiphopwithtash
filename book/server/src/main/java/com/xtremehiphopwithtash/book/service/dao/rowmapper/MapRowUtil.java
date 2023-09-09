@@ -2,12 +2,13 @@ package com.xtremehiphopwithtash.book.service.dao.rowmapper;
 
 import com.xtremehiphopwithtash.book.other.LikertScale;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.UUID;
 
-class MapRowUtil {
+public class MapRowUtil {
 
 	public static final UUID mapUUID(String value) {
 		if (value == null) {
@@ -19,7 +20,7 @@ class MapRowUtil {
 
 	public static final URL mapURL(String value) throws SQLException {
 		try {
-			URL url = new URL(value);
+			URL url = URI.create(value).toURL();
 			return url;
 		} catch (MalformedURLException mue) {
 			throw new SQLException(mue);

@@ -1,6 +1,6 @@
-package com.xtremehiphopwithtash.book.service.dao.rowmapper;
+package com.xtremehiphopwithtash.book.service.coupon;
 
-import com.xtremehiphopwithtash.book.model.Coupon;
+import com.xtremehiphopwithtash.book.service.dao.rowmapper.MapRowUtil;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CouponRowMapper implements RowMapper<Coupon> {
+class CouponRowMapper implements RowMapper<Coupon> {
 
 	@Override
 	@Nullable

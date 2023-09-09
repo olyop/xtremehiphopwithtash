@@ -1,6 +1,6 @@
 package com.xtremehiphopwithtash.book.model;
 
-import java.net.URL;
+import java.net.URI;
 
 public class MerchItem {
 
@@ -8,7 +8,7 @@ public class MerchItem {
 	private String name;
 	private String description;
 	private Integer price;
-	private URL photo;
+	private URI photo;
 	private Integer stock;
 	private String[] sizesAvailable;
 
@@ -44,11 +44,11 @@ public class MerchItem {
 		this.price = price;
 	}
 
-	public URL getPhoto() {
+	public URI getPhoto() {
 		return photo;
 	}
 
-	public void setPhoto(URL photo) {
+	public void setPhoto(URI photo) {
 		this.photo = photo;
 	}
 

@@ -79,8 +79,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 
 	const isSessionInPast = isInPast(new Date(session.endTime));
 
-	const canCancel =
-		!booking.isCancelled && (isAdministrator || (booking.paymentMethod !== PaymentMethod.CARD && !isSessionInPast));
+	const canCancel = !booking.isCancelled && (isAdministrator || !isSessionInPast);
 
 	const handleCancelBooking = () => {
 		if (canCancel && reCaptchaToken && !cancelBookingResult.loading) {
@@ -287,7 +286,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 								disabled={!canCancel}
 								onClick={openCancelModal}
 								text={booking.isCancelled ? "Cancelled" : "Cancel"}
-								className={`!px-2 !text-xs !h-7 ${!canCancel ? "hover:bg-transparent select-none" : ""}`}
+								className={`!px-2 !text-xs !h-7 ${canCancel ? "" : "hover:bg-transparent select-none"}`}
 								leftIcon={className =>
 									booking.isCancelled ? (
 										<MinusIcon className={`!h-4 !w-4 ${className}}`} />
@@ -335,7 +334,7 @@ const SessionPageBooking: FC<PropTypes> = ({
 									)
 								}
 								buttons={
-									canCancel ? (
+									canCancel && (isAdministrator || booking.paymentMethod !== PaymentMethod.CARD) ? (
 										<Fragment>
 											<Button
 												disabled={!reCaptchaToken || cancelBookingResult.loading}

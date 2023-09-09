@@ -4,18 +4,18 @@ import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.MerchItem;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.Student;
-import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
-import com.xtremehiphopwithtash.book.service.Auth0JwtService;
-import com.xtremehiphopwithtash.book.service.BookingCostService;
 import com.xtremehiphopwithtash.book.service.BookingService;
-import com.xtremehiphopwithtash.book.service.CouponService;
 import com.xtremehiphopwithtash.book.service.DetailsService;
-import com.xtremehiphopwithtash.book.service.ReCaptchaService;
 import com.xtremehiphopwithtash.book.service.SessionService;
-import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.bookingcost.BookingCost;
+import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
+import com.xtremehiphopwithtash.book.service.coupon.CouponService;
+import com.xtremehiphopwithtash.book.service.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -89,18 +89,20 @@ public class StripeResolver {
 			couponDiscountPercentage
 		);
 
-		return stripeService.createPaymentIntent(
-			input,
-			studentID,
-			details.getEmailAddress(),
-			student.getStripeCustomerID(),
-			sessionService.createBookingDescription(input.sessionID()),
-			bookingCost.getFinalCost()
-		);
+		return stripeService
+			.paymentIntent()
+			.create(
+				input,
+				studentID,
+				details.getEmailAddress(),
+				student.getStripeCustomerID(),
+				sessionService.createBookingDescription(input.sessionID()),
+				bookingCost.getFinalCost()
+			);
 	}
 
 	@QueryMapping
 	public List<MerchItem> getMerchItems() {
-		return stripeService.retrieveMerchItems();
+		return stripeService.merch().retrieveAll();
 	}
 }

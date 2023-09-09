@@ -5,10 +5,10 @@ import com.xtremehiphopwithtash.book.model.Details;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
-import com.xtremehiphopwithtash.book.service.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.BookingService;
 import com.xtremehiphopwithtash.book.service.DetailsService;
 import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import java.security.Principal;
 import java.util.List;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -46,6 +46,15 @@ public class StudentResolver {
 		List<Student> students = studentService.retreiveAll();
 
 		return students.isEmpty() ? null : students;
+	}
+
+	@QueryMapping
+	public Integer getStudentsTotal(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		int studentsTotal = studentService.retreiveTotal();
+
+		return studentsTotal == 0 ? null : studentsTotal;
 	}
 
 	@QueryMapping

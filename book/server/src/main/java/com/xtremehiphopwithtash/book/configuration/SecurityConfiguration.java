@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,6 +34,7 @@ public class SecurityConfiguration {
 		"/assets/**",
 		"/fonts/**",
 		"/images/**",
+		"/.well-known/**",
 		"/admin",
 		"/session/**",
 		"/account",
@@ -83,8 +85,8 @@ public class SecurityConfiguration {
 				authorize.requestMatchers(HttpMethod.POST, "/api/**").authenticated();
 				authorize.requestMatchers(HttpMethod.POST, "/graphql").authenticated();
 			})
-			.oauth2ResourceServer(oauth2 -> oauth2.jwt())
-			.headers(headers -> headers.cacheControl().disable().addHeaderWriter(headerWriter))
+			.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+			.headers(headers -> headers.cacheControl(Customizer.withDefaults()).addHeaderWriter(headerWriter))
 			.build();
 	}
 }

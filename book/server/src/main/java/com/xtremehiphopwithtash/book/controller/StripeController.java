@@ -10,8 +10,8 @@ import com.stripe.model.StripeObject;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
 import com.xtremehiphopwithtash.book.service.BookingService;
-import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,9 +42,8 @@ public class StripeController {
 	@PostMapping("/webhook")
 	public void handleWebHook(@RequestHeader("Stripe-Signature") String signature, @RequestBody String payload)
 		throws JsonMappingException, JsonProcessingException {
-		Event event = stripeService.constructPaymentEvent(payload, signature);
-
-		StripeObject stripeObject = stripeService.constructObject(event);
+		Event event = stripeService.webhook().constructPaymentEvent(payload, signature);
+		StripeObject stripeObject = stripeService.webhook().constructObject(event);
 
 		if (event.getType().equals("payment_intent.succeeded")) {
 			PaymentIntent paymentIntent = (PaymentIntent) stripeObject;

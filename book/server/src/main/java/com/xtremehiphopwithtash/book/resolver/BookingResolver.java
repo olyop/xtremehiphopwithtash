@@ -4,14 +4,14 @@ import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
 import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
-import com.xtremehiphopwithtash.book.service.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.BookingService;
-import com.xtremehiphopwithtash.book.service.ReCaptchaService;
 import com.xtremehiphopwithtash.book.service.SessionService;
-import com.xtremehiphopwithtash.book.service.StripeService;
 import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
-import java.net.URL;
+import java.net.URI;
 import java.security.Principal;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -53,6 +53,15 @@ public class BookingResolver {
 		return bookingService.retreiveByID(bookingID);
 	}
 
+	@QueryMapping
+	public Integer getBookingsTotal(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		int bookingTotal = bookingService.retreiveTotal();
+
+		return bookingTotal == 0 ? null : bookingTotal;
+	}
+
 	@SchemaMapping(typeName = "Booking", field = "session")
 	public Session getSession(Booking booking) {
 		return sessionService.retreiveByID(booking.getSessionID());
@@ -64,7 +73,7 @@ public class BookingResolver {
 	}
 
 	@SchemaMapping(typeName = "Query", field = "getBookingReceiptURL")
-	public URL getReceiptURL(Principal principal, @Argument UUID bookingID) {
+	public URI getReceiptURL(Principal principal, @Argument UUID bookingID) {
 		String studentID = auth0JwtService.extractStudentID(principal);
 
 		Booking booking = bookingService.retreiveByID(bookingID);
@@ -75,7 +84,7 @@ public class BookingResolver {
 			throw new ResolverException("Booking was not paid with CARD.");
 		}
 
-		return stripeService.retrieveChargeReceiptURL(booking.getPaymentIntentID());
+		return stripeService.paymentIntent().retrieveChargeReceiptURL(booking.getPaymentIntentID());
 	}
 
 	@MutationMapping

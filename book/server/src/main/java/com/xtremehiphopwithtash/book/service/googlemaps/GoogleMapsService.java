@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service;
+package com.xtremehiphopwithtash.book.service.googlemaps;
 
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
@@ -6,8 +6,6 @@ import com.google.maps.TextSearchRequest;
 import com.google.maps.model.PlacesSearchResponse;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.openlocationcode.OpenLocationCode;
-import com.xtremehiphopwithtash.book.model.Place;
-import com.xtremehiphopwithtash.book.other.Coordinates;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,4 @@
-package com.xtremehiphopwithtash.book.model;
-
-import com.xtremehiphopwithtash.book.other.Coordinates;
+package com.xtremehiphopwithtash.book.service.googlemaps;
 
 public class Place {
 

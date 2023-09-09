@@ -1,10 +1,7 @@
-package com.xtremehiphopwithtash.book.service.dao;
+package com.xtremehiphopwithtash.book.service.coupon;
 
-import com.xtremehiphopwithtash.book.model.Coupon;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityBaseDAO;
 import com.xtremehiphopwithtash.book.service.dao.inter.EntityUpdateDAO;
-import com.xtremehiphopwithtash.book.service.dao.query.CouponQuery;
-import com.xtremehiphopwithtash.book.service.dao.rowmapper.CouponRowMapper;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

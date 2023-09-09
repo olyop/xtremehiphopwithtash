@@ -1,7 +1,5 @@
-package com.xtremehiphopwithtash.book.service;
+package com.xtremehiphopwithtash.book.service.coupon;
 
-import com.xtremehiphopwithtash.book.model.Coupon;
-import com.xtremehiphopwithtash.book.service.dao.CouponDAO;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Arrays;

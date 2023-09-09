@@ -322,6 +322,7 @@ export type Query = {
 	readonly getBookingByID: Booking;
 	readonly getBookingCost: BookingCost;
 	readonly getBookingReceiptURL: Scalars["URL"]["output"];
+	readonly getBookingsTotal: Maybe<Scalars["NonNegativeInt"]["output"]>;
 	readonly getClassDescription: Scalars["String"]["output"];
 	readonly getCourseByID: Course;
 	readonly getCourses: Maybe<ReadonlyArray<Course>>;
@@ -334,6 +335,7 @@ export type Query = {
 	readonly getSessionsInPeriod: ReadonlyArray<Session>;
 	readonly getStudentByID: Student;
 	readonly getStudents: Maybe<ReadonlyArray<Student>>;
+	readonly getStudentsTotal: Maybe<Scalars["NonNegativeInt"]["output"]>;
 	readonly isStudentAdministator: Scalars["Boolean"]["output"];
 	readonly searchPlaceByName: Maybe<Place>;
 	readonly verifyCoupon: Maybe<Scalars["String"]["output"]>;
@@ -900,6 +902,8 @@ export type UpdateLocationMutation = {
 export type GetStudentsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetStudentsQuery = {
+	readonly getStudentsTotal: number | null;
+	readonly getBookingsTotal: number | null;
 	readonly getStudents: ReadonlyArray<
 		{
 			readonly studentID: string;

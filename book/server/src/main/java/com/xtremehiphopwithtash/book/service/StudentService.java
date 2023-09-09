@@ -5,6 +5,7 @@ import com.xtremehiphopwithtash.book.model.Student;
 import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
 import com.xtremehiphopwithtash.book.service.dao.StudentDAO;
 import com.xtremehiphopwithtash.book.service.inter.StudentServiceInter;
+import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.StudentValidator;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,10 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 		return studentDAO.select();
 	}
 
+	public int retreiveTotal() {
+		return studentDAO.count();
+	}
+
 	@Override
 	public Student retreiveByID(String studentID) {
 		validator.validateID(studentID);
@@ -52,7 +57,7 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 
 		Details details = detailsService.create(input);
 
-		String stripeCustomerID = stripeService.createCustomer(studentID, details);
+		String stripeCustomerID = stripeService.customer().createCustomer(studentID, details);
 
 		Student student = new Student();
 		student.setStudentID(studentID);
@@ -74,7 +79,7 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 
 		detailsService.updateByID(details.getDetailsID(), input);
 
-		stripeService.updateCustomer(student.getStripeCustomerID(), details);
+		stripeService.customer().updateCustomer(student.getStripeCustomerID(), details);
 
 		return student;
 	}

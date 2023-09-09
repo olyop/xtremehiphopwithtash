@@ -3,11 +3,14 @@ package com.xtremehiphopwithtash.book.service;
 import com.stripe.model.PaymentIntent;
 import com.xtremehiphopwithtash.book.model.Booking;
 import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
+import com.xtremehiphopwithtash.book.service.bookingcost.BookingCost;
+import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
+import com.xtremehiphopwithtash.book.service.coupon.CouponService;
 import com.xtremehiphopwithtash.book.service.dao.BookingDAO;
 import com.xtremehiphopwithtash.book.service.inputmapper.BookingInputMapper;
+import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.CommonValidator;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
@@ -110,7 +113,7 @@ public class BookingService {
 			}
 		}
 
-		stripeService.updatePaymentIntentDescriptions(paymentIntentIDs, description);
+		stripeService.paymentIntent().updateDescriptions(paymentIntentIDs, description);
 	}
 
 	public void cancelByID(UUID bookingID, String studentID, String reCaptcha, boolean isAdministrator) {
@@ -329,6 +332,10 @@ public class BookingService {
 		studentValidator.validateID(studentID);
 
 		return bookingDAO.selectByStudentID(studentID);
+	}
+
+	public int retreiveTotal() {
+		return bookingDAO.selectSum();
 	}
 
 	public int retreiveStudentTotal(String studentID) {

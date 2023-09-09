@@ -8,6 +8,9 @@ type Query {
 	getLocations: [Location!]
 	getCourses: [Course!]
 
+	getStudentsTotal: NonNegativeInt
+	getBookingsTotal: NonNegativeInt
+
 	getInstructorByID(instructorID: UUID!): Instructor!
 	getCourseByID(courseID: UUID!): Course!
 	getLocationByID(locationID: UUID!): Location!

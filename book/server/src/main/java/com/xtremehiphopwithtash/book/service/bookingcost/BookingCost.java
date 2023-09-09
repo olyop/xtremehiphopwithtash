@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.other;
+package com.xtremehiphopwithtash.book.service.bookingcost;
 
 public class BookingCost {
 

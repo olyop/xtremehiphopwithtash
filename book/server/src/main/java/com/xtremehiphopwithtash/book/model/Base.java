@@ -3,7 +3,7 @@ package com.xtremehiphopwithtash.book.model;
 import java.io.Serializable;
 import java.time.Instant;
 
-abstract class Base implements Serializable {
+public abstract class Base implements Serializable {
 
 	private Instant createdAt;
 
@@ -13,10 +13,5 @@ abstract class Base implements Serializable {
 
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	@Override
-	public String toString() {
-		return "Base [createdAt=" + createdAt + "]";
 	}
 }

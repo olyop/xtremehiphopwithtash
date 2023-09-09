@@ -1,11 +1,11 @@
 package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.other.BookingCost;
 import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
-import com.xtremehiphopwithtash.book.service.BookingCostService;
-import com.xtremehiphopwithtash.book.service.CouponService;
 import com.xtremehiphopwithtash.book.service.SessionService;
+import com.xtremehiphopwithtash.book.service.bookingcost.BookingCost;
+import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
+import com.xtremehiphopwithtash.book.service.coupon.CouponService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;

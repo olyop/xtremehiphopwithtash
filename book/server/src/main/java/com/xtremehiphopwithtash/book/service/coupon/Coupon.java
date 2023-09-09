@@ -1,5 +1,6 @@
-package com.xtremehiphopwithtash.book.model;
+package com.xtremehiphopwithtash.book.service.coupon;
 
+import com.xtremehiphopwithtash.book.model.Base;
 import java.time.Instant;
 import java.util.UUID;
 

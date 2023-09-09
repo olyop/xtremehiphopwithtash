@@ -1,7 +1,7 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.service.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.ClassDescriptionService;
+import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

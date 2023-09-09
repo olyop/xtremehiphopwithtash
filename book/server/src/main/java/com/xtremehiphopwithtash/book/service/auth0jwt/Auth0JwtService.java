@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service;
+package com.xtremehiphopwithtash.book.service.auth0jwt;
 
 import java.security.Principal;
 import org.springframework.security.oauth2.jwt.Jwt;

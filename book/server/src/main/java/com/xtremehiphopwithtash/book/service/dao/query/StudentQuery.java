@@ -9,6 +9,8 @@ public class StudentQuery {
 
 	public final String SELECT = sqlUtil.read("select");
 
+	public final String SELECT_COUNT = sqlUtil.read("select-count");
+
 	public final String SELECT_BY_ID = sqlUtil.read("select-by-id");
 
 	public final String INSERT = sqlUtil.read("insert");
