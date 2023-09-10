@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.recaptcha;
+package com.xtremehiphopwithtash.book.service.integration.recaptcha;
 
 class ReCaptchaError extends RuntimeException {
 

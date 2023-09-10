@@ -1,15 +1,15 @@
 package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
-import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.database.booking.Booking;
 import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
 import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
-import com.xtremehiphopwithtash.book.service.recaptcha.ReCaptchaService;
-import com.xtremehiphopwithtash.book.service.stripe.StripeService;
+import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.net.URL;
 import java.security.Principal;

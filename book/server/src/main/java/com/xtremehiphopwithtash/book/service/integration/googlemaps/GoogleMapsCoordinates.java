@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.googlemaps;
+package com.xtremehiphopwithtash.book.service.integration.googlemaps;
 
 public class GoogleMapsCoordinates {
 

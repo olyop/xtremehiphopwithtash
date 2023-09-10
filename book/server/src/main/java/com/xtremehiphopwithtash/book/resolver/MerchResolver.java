@@ -1,7 +1,7 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.service.stripe.StripeMerchItem;
-import com.xtremehiphopwithtash.book.service.stripe.StripeService;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeMerchItem;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import java.util.List;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;

@@ -4,7 +4,7 @@ import com.xtremehiphopwithtash.book.graphql.input.DetailsInput;
 import com.xtremehiphopwithtash.book.service.database.details.Details;
 import com.xtremehiphopwithtash.book.service.database.details.DetailsService;
 import com.xtremehiphopwithtash.book.service.helpers.StudentServiceInter;
-import com.xtremehiphopwithtash.book.service.stripe.StripeService;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.StudentValidator;
 import java.util.List;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,6 @@ package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
-import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.bookingcost.BookingCost;
 import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
 import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
@@ -13,15 +12,13 @@ import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
-import com.xtremehiphopwithtash.book.service.recaptcha.ReCaptchaService;
-import com.xtremehiphopwithtash.book.service.stripe.StripeMerchItem;
-import com.xtremehiphopwithtash.book.service.stripe.StripeService;
+import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -99,10 +96,5 @@ public class StripeResolver {
 				sessionService.createBookingDescription(input.sessionID()),
 				bookingCost.getFinalCost()
 			);
-	}
-
-	@QueryMapping
-	public List<StripeMerchItem> getMerchItems() {
-		return stripeService.merch().retrieveAll();
 	}
 }

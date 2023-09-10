@@ -2,13 +2,13 @@ package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.graphql.input.DetailsInput;
 import com.xtremehiphopwithtash.book.other.PaymentMethod;
-import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.database.booking.Booking;
 import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
 import com.xtremehiphopwithtash.book.service.database.details.Details;
 import com.xtremehiphopwithtash.book.service.database.details.DetailsService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
+import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
 import java.security.Principal;
 import java.util.List;
 import org.springframework.graphql.data.method.annotation.Argument;

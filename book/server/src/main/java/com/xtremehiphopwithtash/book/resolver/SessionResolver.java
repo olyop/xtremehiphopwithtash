@@ -2,7 +2,6 @@ package com.xtremehiphopwithtash.book.resolver;
 
 import com.xtremehiphopwithtash.book.graphql.input.GetSessionsInput;
 import com.xtremehiphopwithtash.book.graphql.input.SessionInput;
-import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.database.booking.Booking;
 import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
 import com.xtremehiphopwithtash.book.service.database.course.Course;
@@ -13,6 +12,7 @@ import com.xtremehiphopwithtash.book.service.database.location.Location;
 import com.xtremehiphopwithtash.book.service.database.location.LocationService;
 import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
+import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.security.Principal;
 import java.util.List;

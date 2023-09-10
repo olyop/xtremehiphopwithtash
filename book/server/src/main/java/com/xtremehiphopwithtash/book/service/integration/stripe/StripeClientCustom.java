@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.stripe;
+package com.xtremehiphopwithtash.book.service.integration.stripe;
 
 import com.stripe.StripeClient;
 import org.springframework.beans.factory.annotation.Value;

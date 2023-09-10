@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.database.imagecache;
+package com.xtremehiphopwithtash.book.service.database.image;
 
 import com.xtremehiphopwithtash.book.service.helpers.MapRowUtil;
 import java.sql.ResultSet;
@@ -7,21 +7,20 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 @Service
-class ImageCacheRowMapper implements RowMapper<ImageCacheItem> {
+class ImageRowMapper implements RowMapper<ImageItem> {
 
 	private final MapRowUtil mapRowUtil;
 
-	public ImageCacheRowMapper(MapRowUtil mapRowUtil) {
+	public ImageRowMapper(MapRowUtil mapRowUtil) {
 		this.mapRowUtil = mapRowUtil;
 	}
 
 	@Override
-	public ImageCacheItem mapRow(ResultSet rs, int rowNum) throws SQLException {
-		ImageCacheItem ici = new ImageCacheItem();
+	public ImageItem mapRow(ResultSet rs, int rowNum) throws SQLException {
+		ImageItem ici = new ImageItem();
 
-		ici.setImageCacheID(mapRowUtil.mapUUID(rs, "image_cache_id"));
+		ici.setImageID(mapRowUtil.mapUUID(rs, "image_id"));
 		ici.setData(rs.getBytes("data"));
-		ici.setExpiresAt(mapRowUtil.mapInstant(rs, "expires_at"));
 
 		ici.setCreatedAt(mapRowUtil.mapInstant(rs, "created_at"));
 

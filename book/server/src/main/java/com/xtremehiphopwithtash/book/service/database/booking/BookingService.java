@@ -8,7 +8,7 @@ import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
 import com.xtremehiphopwithtash.book.service.database.coupon.CouponService;
 import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
-import com.xtremehiphopwithtash.book.service.stripe.StripeService;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.CommonValidator;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;

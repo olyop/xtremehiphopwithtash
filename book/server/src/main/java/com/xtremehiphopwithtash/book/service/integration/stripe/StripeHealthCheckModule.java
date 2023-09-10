@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.stripe;
+package com.xtremehiphopwithtash.book.service.integration.stripe;
 
 import com.stripe.exception.StripeException;
 import com.stripe.param.CustomerListParams;
