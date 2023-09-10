@@ -1,20 +1,20 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.model.Details;
-import com.xtremehiphopwithtash.book.model.MerchItem;
-import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.model.Student;
+import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
-import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
-import com.xtremehiphopwithtash.book.service.BookingService;
-import com.xtremehiphopwithtash.book.service.DetailsService;
-import com.xtremehiphopwithtash.book.service.SessionService;
-import com.xtremehiphopwithtash.book.service.StudentService;
 import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.bookingcost.BookingCost;
 import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
-import com.xtremehiphopwithtash.book.service.coupon.CouponService;
+import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
+import com.xtremehiphopwithtash.book.service.database.coupon.CouponService;
+import com.xtremehiphopwithtash.book.service.database.details.Details;
+import com.xtremehiphopwithtash.book.service.database.details.DetailsService;
+import com.xtremehiphopwithtash.book.service.database.session.Session;
+import com.xtremehiphopwithtash.book.service.database.session.SessionService;
+import com.xtremehiphopwithtash.book.service.database.student.Student;
+import com.xtremehiphopwithtash.book.service.database.student.StudentService;
 import com.xtremehiphopwithtash.book.service.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.stripe.StripeMerchItem;
 import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import java.security.Principal;
 import java.util.List;
@@ -102,7 +102,7 @@ public class StripeResolver {
 	}
 
 	@QueryMapping
-	public List<MerchItem> getMerchItems() {
+	public List<StripeMerchItem> getMerchItems() {
 		return stripeService.merch().retrieveAll();
 	}
 }

@@ -1,12 +1,12 @@
 package com.xtremehiphopwithtash.book.service.validator;
 
 import com.google.openlocationcode.OpenLocationCode;
-import com.xtremehiphopwithtash.book.model.Course;
-import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.resolver.input.LocationInput;
-import com.xtremehiphopwithtash.book.service.dao.CourseDAO;
-import com.xtremehiphopwithtash.book.service.dao.LocationDAO;
-import com.xtremehiphopwithtash.book.service.dao.SessionDAO;
+import com.xtremehiphopwithtash.book.graphql.input.LocationInput;
+import com.xtremehiphopwithtash.book.service.database.course.Course;
+import com.xtremehiphopwithtash.book.service.database.course.CourseDAO;
+import com.xtremehiphopwithtash.book.service.database.location.LocationDAO;
+import com.xtremehiphopwithtash.book.service.database.session.Session;
+import com.xtremehiphopwithtash.book.service.database.session.SessionDAO;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Component;

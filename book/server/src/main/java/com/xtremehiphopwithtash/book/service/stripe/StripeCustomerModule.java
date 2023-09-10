@@ -4,7 +4,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.CustomerUpdateParams;
-import com.xtremehiphopwithtash.book.model.Details;
+import com.xtremehiphopwithtash.book.service.database.details.Details;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.util.HashMap;
 import java.util.Map;

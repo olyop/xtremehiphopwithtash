@@ -1,11 +1,11 @@
 package com.xtremehiphopwithtash.book.service.validator;
 
-import com.xtremehiphopwithtash.book.model.Booking;
-import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.resolver.input.GetSessionsInput;
-import com.xtremehiphopwithtash.book.resolver.input.SessionInput;
-import com.xtremehiphopwithtash.book.service.dao.BookingDAO;
-import com.xtremehiphopwithtash.book.service.dao.SessionDAO;
+import com.xtremehiphopwithtash.book.graphql.input.GetSessionsInput;
+import com.xtremehiphopwithtash.book.graphql.input.SessionInput;
+import com.xtremehiphopwithtash.book.service.database.booking.Booking;
+import com.xtremehiphopwithtash.book.service.database.booking.BookingDAO;
+import com.xtremehiphopwithtash.book.service.database.session.Session;
+import com.xtremehiphopwithtash.book.service.database.session.SessionDAO;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;

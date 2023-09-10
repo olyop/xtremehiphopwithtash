@@ -1,9 +1,9 @@
 package com.xtremehiphopwithtash.book.service.validator;
 
-import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.resolver.input.CourseInput;
-import com.xtremehiphopwithtash.book.service.dao.CourseDAO;
-import com.xtremehiphopwithtash.book.service.dao.SessionDAO;
+import com.xtremehiphopwithtash.book.graphql.input.CourseInput;
+import com.xtremehiphopwithtash.book.service.database.course.CourseDAO;
+import com.xtremehiphopwithtash.book.service.database.session.Session;
+import com.xtremehiphopwithtash.book.service.database.session.SessionDAO;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Component;

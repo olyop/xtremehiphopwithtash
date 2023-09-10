@@ -1,7 +1,7 @@
 package com.xtremehiphopwithtash.book.service.validator;
 
-import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
-import com.xtremehiphopwithtash.book.service.dao.StudentDAO;
+import com.xtremehiphopwithtash.book.graphql.input.DetailsInput;
+import com.xtremehiphopwithtash.book.service.database.student.StudentDAO;
 import org.springframework.stereotype.Component;
 
 @Component

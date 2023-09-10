@@ -1,13 +1,13 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.model.Course;
-import com.xtremehiphopwithtash.book.model.Instructor;
-import com.xtremehiphopwithtash.book.model.Location;
-import com.xtremehiphopwithtash.book.resolver.input.CourseInput;
-import com.xtremehiphopwithtash.book.service.CourseService;
-import com.xtremehiphopwithtash.book.service.InstructorService;
-import com.xtremehiphopwithtash.book.service.LocationService;
+import com.xtremehiphopwithtash.book.graphql.input.CourseInput;
 import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.database.course.Course;
+import com.xtremehiphopwithtash.book.service.database.course.CourseService;
+import com.xtremehiphopwithtash.book.service.database.instructor.Instructor;
+import com.xtremehiphopwithtash.book.service.database.instructor.InstructorService;
+import com.xtremehiphopwithtash.book.service.database.location.Location;
+import com.xtremehiphopwithtash.book.service.database.location.LocationService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;

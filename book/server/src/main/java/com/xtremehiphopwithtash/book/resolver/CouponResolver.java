@@ -1,6 +1,6 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.service.coupon.CouponService;
+import com.xtremehiphopwithtash.book.service.database.coupon.CouponService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

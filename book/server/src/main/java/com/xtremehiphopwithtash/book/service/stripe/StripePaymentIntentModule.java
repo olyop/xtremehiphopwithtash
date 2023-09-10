@@ -8,15 +8,17 @@ import com.stripe.param.ChargeUpdateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentCreateParams.AutomaticPaymentMethods;
 import com.stripe.param.PaymentIntentUpdateParams;
+import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.other.ObjectMapperCustom;
-import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -72,11 +74,7 @@ public class StripePaymentIntentModule {
 		}
 	}
 
-	public void updateDescriptions(List<String> paymentIntentIDs, String description) {
-		paymentIntentIDs.forEach(paymentIntentID -> updatePaymentIntentDescription(paymentIntentID, description));
-	}
-
-	public URI retrieveChargeReceiptURL(String paymentIntentID) {
+	public URL retrieveChargeReceiptURL(String paymentIntentID) {
 		try {
 			PaymentIntent paymentIntent = stripeClient.client().paymentIntents().retrieve(paymentIntentID);
 
@@ -86,38 +84,58 @@ public class StripePaymentIntentModule {
 				throw new ResolverException("Unable to retrieve charge");
 			}
 
-			return new URI(charge.getReceiptUrl());
+			return URI.create(charge.getReceiptUrl()).toURL();
 		} catch (StripeException e) {
 			e.printStackTrace();
 			throw new ResolverException("Unable to retrieve charge");
-		} catch (URISyntaxException e) {
+		} catch (MalformedURLException mue) {
 			throw new ResolverException("Unable to parse charge receipt URL");
 		}
 	}
 
-	private void updatePaymentIntentDescription(String paymentIntentID, String description) {
-		try {
-			PaymentIntent paymentIntent = stripeClient.client().paymentIntents().retrieve(paymentIntentID);
+	public void updateDescriptions(List<String> paymentIntentIDs, String description) {
+		paymentIntentIDs.stream().parallel().forEach(updatePaymentIntentDescription(description));
+	}
 
-			PaymentIntentUpdateParams paymentIntentParams = PaymentIntentUpdateParams
-				.builder()
-				.setDescription(description)
-				.build();
+	private Consumer<String> updatePaymentIntentDescription(String description) {
+		return paymentIntentID -> {
+			try {
+				PaymentIntent paymentIntent = stripeClient.client().paymentIntents().retrieve(paymentIntentID);
 
-			Charge charge = stripeClient.client().charges().retrieve(paymentIntent.getLatestCharge());
+				PaymentIntentUpdateParams paymentIntentParams = PaymentIntentUpdateParams
+					.builder()
+					.setDescription(description)
+					.build();
 
-			if (charge == null) {
-				throw new ResolverException("Unable to retrieve charge");
+				Charge charge = stripeClient.client().charges().retrieve(paymentIntent.getLatestCharge());
+
+				if (charge == null) {
+					throw new ResolverException("Unable to retrieve charge");
+				}
+
+				ChargeUpdateParams chargeParams = ChargeUpdateParams.builder().setDescription(description).build();
+
+				// Run both of these in parallel
+				List
+					.of(paymentIntentParams, chargeParams)
+					.parallelStream()
+					.forEach(params -> {
+						try {
+							if (params instanceof PaymentIntentUpdateParams) {
+								stripeClient.client().paymentIntents().update(paymentIntentID, (PaymentIntentUpdateParams) params);
+							} else {
+								stripeClient.client().charges().update(charge.getId(), (ChargeUpdateParams) params);
+							}
+						} catch (StripeException se) {
+							se.printStackTrace();
+							throw new ResolverException("Unable to update invoice description");
+						}
+					});
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new ResolverException("Unable to update invoice description");
 			}
-
-			ChargeUpdateParams chargeParams = ChargeUpdateParams.builder().setDescription(description).build();
-
-			paymentIntent.update(paymentIntentParams);
-			charge.update(chargeParams);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ResolverException("Unable to update invoice description");
-		}
+		};
 	}
 
 	private void validateCustomerExists(String stripeCustomerID) {

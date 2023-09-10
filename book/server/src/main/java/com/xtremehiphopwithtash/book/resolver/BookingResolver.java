@@ -1,17 +1,17 @@
 package com.xtremehiphopwithtash.book.resolver;
 
-import com.xtremehiphopwithtash.book.model.Booking;
-import com.xtremehiphopwithtash.book.model.Session;
-import com.xtremehiphopwithtash.book.model.Student;
-import com.xtremehiphopwithtash.book.resolver.input.BookingInput;
-import com.xtremehiphopwithtash.book.service.BookingService;
-import com.xtremehiphopwithtash.book.service.SessionService;
-import com.xtremehiphopwithtash.book.service.StudentService;
+import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
 import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.database.booking.Booking;
+import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
+import com.xtremehiphopwithtash.book.service.database.session.Session;
+import com.xtremehiphopwithtash.book.service.database.session.SessionService;
+import com.xtremehiphopwithtash.book.service.database.student.Student;
+import com.xtremehiphopwithtash.book.service.database.student.StudentService;
 import com.xtremehiphopwithtash.book.service.recaptcha.ReCaptchaService;
 import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
-import java.net.URI;
+import java.net.URL;
 import java.security.Principal;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -73,7 +73,7 @@ public class BookingResolver {
 	}
 
 	@SchemaMapping(typeName = "Query", field = "getBookingReceiptURL")
-	public URI getReceiptURL(Principal principal, @Argument UUID bookingID) {
+	public URL getReceiptURL(Principal principal, @Argument UUID bookingID) {
 		String studentID = auth0JwtService.extractStudentID(principal);
 
 		Booking booking = bookingService.retreiveByID(bookingID);

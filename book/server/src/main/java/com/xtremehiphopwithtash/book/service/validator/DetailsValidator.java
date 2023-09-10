@@ -1,7 +1,7 @@
 package com.xtremehiphopwithtash.book.service.validator;
 
-import com.xtremehiphopwithtash.book.resolver.input.DetailsInput;
-import com.xtremehiphopwithtash.book.service.dao.DetailsDAO;
+import com.xtremehiphopwithtash.book.graphql.input.DetailsInput;
+import com.xtremehiphopwithtash.book.service.database.details.DetailsDAO;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 

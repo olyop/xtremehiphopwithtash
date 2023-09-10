@@ -5,10 +5,10 @@ import com.stripe.model.Price;
 import com.stripe.model.Product;
 import com.stripe.model.StripeCollection;
 import com.stripe.param.ProductListParams;
-import com.xtremehiphopwithtash.book.model.MerchItem;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
+import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
@@ -26,11 +26,11 @@ public class StripeMerchModule {
 
 	private final ProductListParams productListParams = ProductListParams.builder().setActive(true).build();
 
-	public List<MerchItem> retrieveAll() {
+	public List<StripeMerchItem> retrieveAll() {
 		try {
 			StripeCollection<Product> productsCollection = stripeClient.client().products().list(productListParams);
 
-			List<MerchItem> merchItems = productsCollection
+			List<StripeMerchItem> merchItems = productsCollection
 				.getData()
 				.stream()
 				.filter(productsFilter)
@@ -45,9 +45,9 @@ public class StripeMerchModule {
 		}
 	}
 
-	private Comparator<MerchItem> merchItemComparator = new Comparator<MerchItem>() {
+	private Comparator<StripeMerchItem> merchItemComparator = new Comparator<StripeMerchItem>() {
 		@Override
-		public int compare(MerchItem merchItem1, MerchItem merchItem2) {
+		public int compare(StripeMerchItem merchItem1, StripeMerchItem merchItem2) {
 			return merchItem1.getName().compareTo(merchItem2.getName());
 		}
 	};
@@ -56,8 +56,8 @@ public class StripeMerchModule {
 		return product.getActive() && !product.getName().equals("Shipping") && !product.getName().equals("Hoodie");
 	};
 
-	private Function<Product, MerchItem> productToMerchItem = product -> {
-		MerchItem merchItem = new MerchItem();
+	private Function<Product, StripeMerchItem> productToMerchItem = product -> {
+		StripeMerchItem merchItem = new StripeMerchItem();
 
 		merchItem.setMerchItemID(product.getId());
 		merchItem.setName(product.getName());
@@ -70,11 +70,11 @@ public class StripeMerchModule {
 		return merchItem;
 	};
 
-	private URI getProductImage(Product product) {
+	private URL getProductImage(Product product) {
 		try {
-			return new URI(product.getImages().get(0));
-		} catch (URISyntaxException use) {
-			throw new ResolverException("Unable to retrieve product image");
+			return URI.create(product.getImages().get(0)).toURL();
+		} catch (MalformedURLException mue) {
+			throw new ResolverException("Unable to parse product image URL");
 		}
 	}
 

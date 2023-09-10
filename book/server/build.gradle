@@ -47,6 +47,14 @@ tasks.named('bootJar') {
 	launchScript()
 }
 
+tasks.withType(JavaCompile) {
+	options.compilerArgs += [
+		'-Xlint:deprecation',
+		'-Xlint:unchecked',
+		'-Xlint:rawtypes'
+	]
+}
+
 bootJar {
 	archiveFileName = 'book.jar'
 }

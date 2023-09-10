@@ -21,7 +21,7 @@ public class GoogleMapsService {
 		this.context = new GeoApiContext.Builder().apiKey(apiKey).build();
 	}
 
-	public Place searchPlaceByName(String name) {
+	public GoogleMapsPlace searchPlaceByName(String name) {
 		try {
 			TextSearchRequest request = PlacesApi.textSearchQuery(context, name);
 
@@ -38,9 +38,9 @@ public class GoogleMapsService {
 			double longitude = result.geometry.location.lng;
 
 			OpenLocationCode olc = new OpenLocationCode(latitude, longitude);
-			Coordinates coordinates = new Coordinates(latitude, longitude);
+			GoogleMapsCoordinates coordinates = new GoogleMapsCoordinates(latitude, longitude);
 
-			return new Place(result.formattedAddress, olc.getCode(), coordinates);
+			return new GoogleMapsPlace(result.formattedAddress, olc.getCode(), coordinates);
 		} catch (Exception e) {
 			return null;
 		}

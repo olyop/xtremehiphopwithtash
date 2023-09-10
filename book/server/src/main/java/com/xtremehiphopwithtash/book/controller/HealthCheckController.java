@@ -1,6 +1,6 @@
 package com.xtremehiphopwithtash.book.controller;
 
-import com.xtremehiphopwithtash.book.service.InstructorService;
+import com.xtremehiphopwithtash.book.service.database.instructor.InstructorService;
 import com.xtremehiphopwithtash.book.service.stripe.StripeService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

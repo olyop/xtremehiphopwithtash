@@ -2,13 +2,13 @@ package com.xtremehiphopwithtash.book.resolver;
 
 import com.google.openlocationcode.OpenLocationCode;
 import com.google.openlocationcode.OpenLocationCode.CodeArea;
-import com.xtremehiphopwithtash.book.model.Location;
-import com.xtremehiphopwithtash.book.resolver.input.LocationInput;
-import com.xtremehiphopwithtash.book.service.LocationService;
+import com.xtremehiphopwithtash.book.graphql.input.LocationInput;
 import com.xtremehiphopwithtash.book.service.auth0jwt.Auth0JwtService;
-import com.xtremehiphopwithtash.book.service.googlemaps.Coordinates;
+import com.xtremehiphopwithtash.book.service.database.location.Location;
+import com.xtremehiphopwithtash.book.service.database.location.LocationService;
+import com.xtremehiphopwithtash.book.service.googlemaps.GoogleMapsCoordinates;
+import com.xtremehiphopwithtash.book.service.googlemaps.GoogleMapsPlace;
 import com.xtremehiphopwithtash.book.service.googlemaps.GoogleMapsService;
-import com.xtremehiphopwithtash.book.service.googlemaps.Place;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -76,25 +76,25 @@ public class LocationResolver {
 	}
 
 	@QueryMapping
-	public Place searchPlaceByName(@Argument String name, @AuthenticationPrincipal Jwt jwt) {
+	public GoogleMapsPlace searchPlaceByName(@Argument String name, @AuthenticationPrincipal Jwt jwt) {
 		auth0JwtService.validateAdministrator(jwt);
 
 		return googleMapsService.searchPlaceByName(name);
 	}
 
 	@SchemaMapping(typeName = "Location", field = "coordinates")
-	public Coordinates getCoordinates(Location location) {
+	public GoogleMapsCoordinates getCoordinates(Location location) {
 		OpenLocationCode code = new OpenLocationCode(location.getPlusCode());
 		CodeArea area = code.decode();
-		return new Coordinates(area.getCenterLatitude(), area.getCenterLongitude());
+		return new GoogleMapsCoordinates(area.getCenterLatitude(), area.getCenterLongitude());
 	}
 
 	@QueryMapping
-	public Coordinates decodePlusCode(@Argument String plusCode) {
+	public GoogleMapsCoordinates decodePlusCode(@Argument String plusCode) {
 		try {
 			OpenLocationCode olc = new OpenLocationCode(plusCode);
 			CodeArea decode = olc.decode();
-			return new Coordinates(decode.getCenterLatitude(), decode.getCenterLongitude());
+			return new GoogleMapsCoordinates(decode.getCenterLatitude(), decode.getCenterLongitude());
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Invalid plus code: " + plusCode);
 		}
