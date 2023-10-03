@@ -37,10 +37,6 @@ public class CommonValidator {
 	}
 
 	public void validateURL(URL url, String label) {
-		if (!url.getProtocol().equalsIgnoreCase("https")) {
-			throw new ResolverException(String.format("%s must use https", label));
-		}
-
 		try (Socket socket = new Socket()) {
 			socket.connect(new InetSocketAddress(url.getHost(), 443), 500);
 		} catch (IOException e) {

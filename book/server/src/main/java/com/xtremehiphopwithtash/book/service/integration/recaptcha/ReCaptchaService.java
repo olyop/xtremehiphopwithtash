@@ -1,7 +1,6 @@
 package com.xtremehiphopwithtash.book.service.integration.recaptcha;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xtremehiphopwithtash.book.other.ObjectMapperCustom;
 import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -22,14 +21,15 @@ public class ReCaptchaService {
 	private final String action;
 	private final double scoreMinimum;
 
-	private final ObjectMapper objectMapper;
+	private final ObjectMapperCustom objectMapper;
 
 	public ReCaptchaService(
 		@Value("${google.recaptcha.verify.url}") URL verifyUrl,
 		@Value("${google.recaptcha.secret}") String secretKey,
 		@Value("${google.recaptcha.hostname}") String hostname,
 		@Value("${google.recaptcha.action}") String action,
-		@Value("${google.recaptcha.score.minimum}") double scoreMinimum
+		@Value("${google.recaptcha.score.minimum}") double scoreMinimum,
+		ObjectMapperCustom objectMapper
 	) {
 		this.verifyUrl = verifyUrl;
 		this.secretKey = secretKey;
@@ -37,35 +37,18 @@ public class ReCaptchaService {
 		this.action = action;
 		this.scoreMinimum = scoreMinimum;
 
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		this.objectMapper = objectMapper;
 	}
 
-	public void validateResponse(String response) {
-		if (response == null || response.trim().equals("")) {
+	public void validateResponse(String response, String remoteAddress) {
+		if (response == null || response.isBlank()) {
 			throw new ReCaptchaError("Response cannot be null or empty");
 		}
 
 		VerifyResponse verifyResponse;
 
 		try {
-			HttpURLConnection connection = (HttpURLConnection) verifyUrl.openConnection();
-
-			connection.setRequestMethod("POST");
-			connection.setDoInput(true);
-			connection.setDoOutput(true);
-			connection.setUseCaches(false);
-			connection.setInstanceFollowRedirects(false);
-			connection.setRequestProperty("Content-Length", "0");
-			connection.setRequestProperty("Charset", StandardCharsets.UTF_8.displayName());
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-			DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-			out.writeBytes(constructParamaters(response));
-			out.flush();
-			out.close();
-
-			verifyResponse = objectMapper.readValue(connection.getInputStream(), VerifyResponse.class);
+			verifyResponse = retreiveResponse(response, remoteAddress);
 		} catch (Exception e) {
 			throw new ReCaptchaError("Error verify response");
 		}
@@ -73,12 +56,37 @@ public class ReCaptchaService {
 		validateResponse(verifyResponse);
 	}
 
-	private String constructParamaters(String response) throws UnsupportedEncodingException {
+	private VerifyResponse retreiveResponse(String response, String remoteAddress) throws Exception {
+		VerifyResponse verifyResponse;
+
+		HttpURLConnection connection = (HttpURLConnection) verifyUrl.openConnection();
+
+		connection.setRequestMethod("POST");
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		connection.setUseCaches(false);
+		connection.setInstanceFollowRedirects(false);
+		connection.setRequestProperty("Content-Length", "0");
+		connection.setRequestProperty("Charset", StandardCharsets.UTF_8.displayName());
+		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+		DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+		out.writeBytes(constructParamaters(response, remoteAddress));
+		out.flush();
+		out.close();
+
+		verifyResponse = objectMapper.instance().readValue(connection.getInputStream(), VerifyResponse.class);
+
+		return verifyResponse;
+	}
+
+	private String constructParamaters(String response, String remoteAddress) throws UnsupportedEncodingException {
 		StringBuilder result = new StringBuilder();
 
 		Map<String, String> paramaters = new HashMap<>();
 		paramaters.put("secret", secretKey);
 		paramaters.put("response", response);
+		paramaters.put("remoteip", remoteAddress);
 
 		for (Map.Entry<String, String> entry : paramaters.entrySet()) {
 			result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
@@ -93,19 +101,19 @@ public class ReCaptchaService {
 	}
 
 	private void validateResponse(VerifyResponse verifyResponse) {
-		if (!verifyResponse.success()) {
+		if (!verifyResponse.getSuccess()) {
 			throw new ReCaptchaError("Response is invalid");
 		}
 
-		if (!verifyResponse.hostname().equals(hostname)) {
+		if (!verifyResponse.getHostname().equals(hostname)) {
 			throw new ReCaptchaError("Hostname is invalid");
 		}
 
-		if (!verifyResponse.action().equals(action)) {
+		if (!verifyResponse.getAction().equals(action)) {
 			throw new ReCaptchaError("Action is invalid");
 		}
 
-		if (verifyResponse.score() < scoreMinimum) {
+		if (verifyResponse.getScore() < scoreMinimum) {
 			throw new ReCaptchaError("Score too low");
 		}
 	}

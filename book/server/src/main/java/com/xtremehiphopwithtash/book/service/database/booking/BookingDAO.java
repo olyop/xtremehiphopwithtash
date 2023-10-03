@@ -228,6 +228,12 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
 
+	public int selectGrossSum() {
+		String sql = query.SELECT_GROSS_SUM;
+
+		return jdbcTemplate.getJdbcTemplate().queryForObject(sql, Integer.class);
+	}
+
 	public int selectGrossBySessionID(UUID sessionID) {
 		String sql = query.SELECT_GROSS_BY_SESSION_ID;
 

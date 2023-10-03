@@ -23,7 +23,7 @@ public class SecurityConfiguration {
 	private final HeaderWriter headerWriter;
 	private final CorsConfigurationSource corsConfigurationSource;
 
-	private final String[] resources = new String[] {
+	private final String[] allowedResources = new String[] {
 		"/",
 		"/index.html",
 		"/health",
@@ -49,19 +49,13 @@ public class SecurityConfiguration {
 	}
 
 	private CorsConfigurationSource buildCorsConfigurationSource(List<String> allowedOrigins) {
-		CorsConfiguration allDomainsConfiguration = new CorsConfiguration();
-		// allDomainsConfiguration.setAllowedOrigins(List.of("*"));
-		// allDomainsConfiguration.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
-		// allDomainsConfiguration.setAllowCredentials(true);
-		allDomainsConfiguration.applyPermitDefaultValues();
-
-		// CorsConfiguration currentDomainConfiguration = new CorsConfiguration();
-		// currentDomainConfiguration.setAllowedOrigins(allowedOrigins);
-		// currentDomainConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "OPTIONS"));
-		// currentDomainConfiguration.setAllowCredentials(true);
+		CorsConfiguration currentDomainConfiguration = new CorsConfiguration();
+		currentDomainConfiguration.setAllowedOrigins(allowedOrigins);
+		currentDomainConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "OPTIONS"));
+		currentDomainConfiguration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", allDomainsConfiguration);
+		source.registerCorsConfiguration("/**", currentDomainConfiguration);
 
 		return source;
 	}
@@ -80,10 +74,10 @@ public class SecurityConfiguration {
 			.cors(cors -> cors.configurationSource(corsConfigurationSource))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(authorize -> {
-				authorize.requestMatchers(HttpMethod.GET, resources).permitAll();
+				authorize.requestMatchers(HttpMethod.GET, allowedResources).permitAll();
 				authorize.requestMatchers(HttpMethod.POST, "/stripe/webhook").permitAll();
-				authorize.requestMatchers(HttpMethod.POST, "/api/**").authenticated();
 				authorize.requestMatchers(HttpMethod.POST, "/graphql").authenticated();
+				authorize.requestMatchers(HttpMethod.POST, "/storage").authenticated();
 			})
 			.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
 			.headers(headers -> headers.cacheControl(Customizer.withDefaults()).addHeaderWriter(headerWriter))

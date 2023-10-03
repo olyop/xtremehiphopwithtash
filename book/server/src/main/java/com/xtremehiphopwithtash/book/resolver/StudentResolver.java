@@ -8,7 +8,7 @@ import com.xtremehiphopwithtash.book.service.database.details.Details;
 import com.xtremehiphopwithtash.book.service.database.details.DetailsService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
-import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import java.security.Principal;
 import java.util.List;
 import org.springframework.graphql.data.method.annotation.Argument;

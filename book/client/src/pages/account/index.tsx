@@ -5,6 +5,7 @@ import ArrowLeftOnRectangleIcon from "@heroicons/react/24/outline/ArrowLeftOnRec
 import HomeIcon from "@heroicons/react/24/outline/HomeIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
+import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +29,6 @@ import Page from "../page";
 import { detailsToInput } from "./details-to-input";
 import GET_ACCOUNT_PAGE from "./get-account-page.graphql";
 import UPDATE_STUDENT from "./update-student.graphql";
-import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 
 const createdAtFormatter = new Intl.DateTimeFormat(undefined, {
 	year: "numeric",
@@ -41,6 +41,7 @@ const AccountPage: FC = () => {
 	const { isAuthenticated, logout, user } = useAuth0();
 
 	const [detailsInput, setDetailsInput] = useState<DetailsInput | null>(null);
+	const [hasUpdatedEmailAddress, setHasUpdatedEmailAddress] = useState(false);
 
 	const [getAccountPage, queryResult] = useLazyQuery<QueryData>(GET_ACCOUNT_PAGE);
 
@@ -72,6 +73,10 @@ const AccountPage: FC = () => {
 
 	const handleUpdateStudent = () => {
 		if (user?.sub && detailsInput && !updateStudentResult.loading) {
+			if (detailsInput.emailAddress !== user.email) {
+				setHasUpdatedEmailAddress(true);
+			}
+
 			void updateStudent({
 				variables: {
 					detailsInput,
@@ -100,7 +105,12 @@ const AccountPage: FC = () => {
 	useEffect(() => {
 		if (updateStudentResult.data) {
 			closeEditModal();
-			void refetch();
+			
+			if (hasUpdatedEmailAddress) {
+				void logout();
+			} else {
+				void refetch();
+			}
 		}
 	}, [updateStudentResult.data]);
 
@@ -190,6 +200,7 @@ const AccountPage: FC = () => {
 							buttons={
 								<Fragment>
 									<Button
+										isSubmit
 										ariaLabel="Save"
 										text={updateStudentResult.loading ? "Saving..." : "Save"}
 										onClick={handleUpdateStudent}

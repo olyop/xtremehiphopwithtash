@@ -16,9 +16,10 @@ public class StripeHealthCheckModule {
 
 	private final CustomerListParams healthCheckParams = CustomerListParams.builder().setLimit(1L).build();
 
-	public void check() {
+	public String check() {
 		try {
 			stripeClient.client().customers().list(healthCheckParams);
+			return "OK";
 		} catch (StripeException se) {
 			throw new ResolverException("Unable to connect to Stripe");
 		}

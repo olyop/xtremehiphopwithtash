@@ -326,6 +326,7 @@ export type Query = {
 	readonly getClassDescription: Scalars["String"]["output"];
 	readonly getCourseByID: Course;
 	readonly getCourses: Maybe<ReadonlyArray<Course>>;
+	readonly getGrossTotal: Maybe<Scalars["NonNegativeInt"]["output"]>;
 	readonly getInstructorByID: Instructor;
 	readonly getInstructors: Maybe<ReadonlyArray<Instructor>>;
 	readonly getLocationByID: Location;
@@ -902,6 +903,7 @@ export type UpdateLocationMutation = {
 export type GetStudentsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetStudentsQuery = {
+	readonly getGrossTotal: number | null;
 	readonly getStudentsTotal: number | null;
 	readonly getBookingsTotal: number | null;
 	readonly getStudents: ReadonlyArray<

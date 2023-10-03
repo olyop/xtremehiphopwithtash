@@ -5,6 +5,7 @@ const baseIconClassName = "h-5 w-5";
 const Button: FC<ButtonPropTypes> = ({
 	id,
 	transparent = false,
+	isSubmit = false,
 	leftIcon,
 	text,
 	ariaLabel,
@@ -18,7 +19,7 @@ const Button: FC<ButtonPropTypes> = ({
 }) => (
 	<button
 		id={id}
-		type="button"
+		type={isSubmit ? "submit" : "button"}
 		title={text ?? ariaLabel}
 		disabled={disabled}
 		aria-label={ariaLabel}
@@ -27,7 +28,7 @@ const Button: FC<ButtonPropTypes> = ({
 			text === undefined && (leftIcon !== undefined || rightIcon !== undefined)
 				? "p-2 rounded-full w-9 h-9"
 				: "px-4 h-9"
-		} h-10 font-bold rounded ${
+		} font-bold rounded ${
 			transparent
 				? "text-black bg-transparent hover:bg-gray-200"
 				: disabled
@@ -47,6 +48,7 @@ const Button: FC<ButtonPropTypes> = ({
 export interface ButtonPropTypes {
 	id?: string;
 	transparent?: boolean;
+	isSubmit?: boolean;
 	leftIcon?: (className: string) => ReactNode;
 	text?: string | undefined;
 	ariaLabel: string;

@@ -4,6 +4,7 @@ import com.xtremehiphopwithtash.book.graphql.input.DetailsInput;
 import com.xtremehiphopwithtash.book.service.database.details.Details;
 import com.xtremehiphopwithtash.book.service.database.details.DetailsService;
 import com.xtremehiphopwithtash.book.service.helpers.StudentServiceInter;
+import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0ManagementService;
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.StudentValidator;
 import java.util.List;
@@ -15,17 +16,20 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 	private final StudentDAO studentDAO;
 	private final DetailsService detailsService;
 	private final StripeService stripeService;
+	private final Auth0ManagementService auth0ManagementService;
 	private final StudentValidator validator;
 
 	public StudentService(
 		StudentDAO studentDAO,
 		DetailsService detailsService,
 		StripeService stripeService,
+		Auth0ManagementService auth0ManagementService,
 		StudentValidator validator
 	) {
 		this.studentDAO = studentDAO;
 		this.detailsService = detailsService;
 		this.stripeService = stripeService;
+		this.auth0ManagementService = auth0ManagementService;
 		this.validator = validator;
 	}
 
@@ -79,6 +83,8 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 		detailsService.updateByID(details.getDetailsID(), input);
 
 		stripeService.customer().updateCustomer(student.getStripeCustomerID(), details);
+
+		auth0ManagementService.updateUserEmailAddress(studentID, input.emailAddress());
 
 		return student;
 	}

@@ -10,12 +10,15 @@ grecaptcha
 inmemory
 Likert
 merch
+mgmt
 nopagereadaloud
 Nord
 nositelinkssearchbox
 Querydsl
+remoteip
 saddr
 Tash
+tika
 unnest
 VITE
 XHWT

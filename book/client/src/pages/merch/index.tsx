@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client/react/hooks/useQuery";
 
 import Page from "../page";
 import GET_MERCH_ITEMS from "./get-merch-items.graphql";
-import { GetMerchItemsQuery } from "../../generated-types";
+import { GetMerchItemsQuery, MerchItem as MerchItemType } from "../../generated-types";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
 import MerchItem from "./merch-item";
 
@@ -16,7 +16,10 @@ const MerchPage: FC = () => {
 				Merch
 			</h1>
 			<div className="flex flex-col md:flex-row items-center gap-10">
-				{data && data.getMerchItems.map(merchItem => <MerchItem key={merchItem.merchItemID} merchItem={merchItem} />)}
+				{data &&
+					data.getMerchItems.map(merchItem => (
+						<MerchItem key={merchItem.merchItemID} merchItem={merchItem as MerchItemType} />
+					))}
 			</div>
 		</Page>
 	);

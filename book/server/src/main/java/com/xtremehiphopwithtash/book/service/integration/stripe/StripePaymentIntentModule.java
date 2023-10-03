@@ -31,9 +31,9 @@ public class StripePaymentIntentModule {
 	private final ObjectMapperCustom objectMapper;
 
 	StripePaymentIntentModule(
+		@Value("${stripe.currency}") String currency,
 		StripeClientCustom stripeClient,
-		ObjectMapperCustom objectMapper,
-		@Value("${stripe.currency}") String currency
+		ObjectMapperCustom objectMapper
 	) {
 		this.stripeClient = stripeClient;
 		this.currency = currency;

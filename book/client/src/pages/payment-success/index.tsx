@@ -1,10 +1,10 @@
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
 import { FC, createElement, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useLazyQuery } from "@apollo/client";
 
 import Button from "../../components/button";
 import GET_PAYMENT_SUCCESS_SCREEN from "./get-payment-success-data.graphql";
-import { useLazyQuery } from "@apollo/client";
 import { GetPaymentSuccessDataQuery, GetPaymentSuccessDataQueryVariables, Session } from "../../generated-types";
 import SessionCard from "../../components/session-card";
 
@@ -17,7 +17,7 @@ const PaymentSuccessPage: FC = () => {
 		const sessionID = searchParams.get("sessionID");
 
 		if (sessionID) {
-			getPaymentScreenSuccessData({ variables: { sessionID } });
+			void getPaymentScreenSuccessData({ variables: { sessionID } });
 		}
 	}, []);
 
@@ -28,14 +28,14 @@ const PaymentSuccessPage: FC = () => {
 				<h2 className="text-xl font-bold">You Have Booked</h2>
 				<p className="text-center">
 					You can view your booking
-					<br /> in your account page.
+					<br /> in the account page.
 				</p>
 			</div>
 			{data && (
 				<SessionCard
 					session={data?.getSessionByID as Session}
-					className="!min-w-[16rem] !h-44 !shadow-xl"
-					imageClassName="!h-24"
+					className="!min-w-[16rem] !h-48 !shadow-xl"
+					imageClassName="!h-28"
 					disableLink
 					showDate
 				/>

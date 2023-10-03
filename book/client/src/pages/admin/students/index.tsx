@@ -5,6 +5,8 @@ import { GetStudentsQuery, GetStudentsQueryVariables, Student as StudentType } f
 import Section from "../section";
 import GET_STUDENTS from "./get-students.graphql";
 import Student from "./student";
+import { currencyDollarsFormatter } from "../../../helpers/intl";
+import { centsToDollars } from "../../../utils";
 
 const Students: FC = () => {
 	const { data } = useQuery<GetStudentsQuery, GetStudentsQueryVariables>(GET_STUDENTS);
@@ -13,7 +15,9 @@ const Students: FC = () => {
 			title="Students"
 			subTitle={
 				data && data.getStudentsTotal && data.getBookingsTotal
-					? `${data.getStudentsTotal} students, ${data.getBookingsTotal} bookings`
+					? `${data.getStudentsTotal} students, ${data.getBookingsTotal} bookings, ${currencyDollarsFormatter.format(
+							centsToDollars(data.getGrossTotal ?? 0),
+					  )} gross`
 					: undefined
 			}
 			items={data?.getStudents as StudentType[] | null | undefined}

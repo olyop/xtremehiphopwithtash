@@ -12,7 +12,7 @@ import com.xtremehiphopwithtash.book.service.database.location.Location;
 import com.xtremehiphopwithtash.book.service.database.location.LocationService;
 import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
-import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.security.Principal;
 import java.util.List;

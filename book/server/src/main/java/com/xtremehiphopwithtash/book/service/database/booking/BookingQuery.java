@@ -61,5 +61,7 @@ class BookingQuery {
 
 	final String SELECT_PAYMENT_METHODS = sqlUtil.read("select-payment-methods");
 
+	final String SELECT_GROSS_SUM = sqlUtil.read("select-gross-sum");
+
 	final String SELECT_GROSS_BY_SESSION_ID = sqlUtil.read("select-gross-by-session-id");
 }

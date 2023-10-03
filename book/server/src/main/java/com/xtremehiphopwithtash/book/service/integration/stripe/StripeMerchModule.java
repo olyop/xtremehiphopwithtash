@@ -9,24 +9,50 @@ import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StripeMerchModule {
 
+	private int cacheDuration;
+
 	private final StripeClientCustom stripeClient;
 
-	StripeMerchModule(StripeClientCustom stripeClient) {
+	private Instant expiresAt;
+	private List<StripeMerchItem> merchItemsCache;
+
+	StripeMerchModule(@Value("${stripe.merch.cache.timeout.min}") int cacheTimeoutMin, StripeClientCustom stripeClient) {
+		this.cacheDuration = cacheTimeoutMin * 60;
+
 		this.stripeClient = stripeClient;
+
+		this.expiresAt = Instant.now();
 	}
 
 	private final ProductListParams productListParams = ProductListParams.builder().setActive(true).build();
 
 	public List<StripeMerchItem> retrieveAll() {
+		Instant now = Instant.now();
+
+		if (merchItemsCache == null || now.isAfter(expiresAt)) {
+			synchronized (this) {
+				if (merchItemsCache == null || now.isAfter(expiresAt)) {
+					merchItemsCache = getMerchItems();
+					expiresAt = now.plusSeconds(cacheDuration);
+				}
+			}
+		}
+
+		return merchItemsCache;
+	}
+
+	private List<StripeMerchItem> getMerchItems() {
 		try {
 			StripeCollection<Product> productsCollection = stripeClient.client().products().list(productListParams);
 

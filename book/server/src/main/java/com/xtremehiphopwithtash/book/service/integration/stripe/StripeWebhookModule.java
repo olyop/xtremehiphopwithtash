@@ -21,6 +21,7 @@ public class StripeWebhookModule {
 		try {
 			return Webhook.constructEvent(payload, signature, webhookSecret);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ResolutionException("Unable to parse webhook payload");
 		}
 	}

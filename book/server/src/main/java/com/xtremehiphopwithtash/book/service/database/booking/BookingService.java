@@ -410,6 +410,10 @@ public class BookingService {
 		bookingDAO.updateHasCheckedIn(bookingID, hasCheckedIn);
 	}
 
+	public int retreiveGrossTotal() {
+		return bookingDAO.selectGrossSum();
+	}
+
 	public int retreiveGrossBySessionID(UUID sessionID) {
 		sessionValidator.validateID(sessionID);
 

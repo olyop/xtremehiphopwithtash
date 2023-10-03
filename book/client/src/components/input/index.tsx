@@ -1,17 +1,21 @@
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
-import { ChangeEventHandler, FC, Fragment, ReactNode, createElement } from "react";
+import { ChangeEventHandler, FC, Fragment, ReactNode, createElement, useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import { currencyDollarsFormatter } from "../../helpers/intl";
 import { capitalizeFirstLetter } from "../../utils";
 import Chip, { ChipInput } from "../chip";
 import {
 	convertDateTimeInputToUnixTime,
+	convertFileListToFile,
 	convertTimeInputToUnixTime,
+	determineInputAcceptValue,
 	determineInputType,
 	determineInputValue,
 	isArrayOfStrings,
 	mapListToChips,
 	mapListToSelectOptions,
+	uploadAmazonFile,
 } from "./helpers";
 import { InputOnChange, InputSelectOptions, InputType, InputValue, SelectOption } from "./types";
 
@@ -20,7 +24,13 @@ const createClassName = (type: InputType, value: InputValue, className: string |
 		disabled ? "text-gray-400" : "hover:border-gray-400 transition-all"
 	} rounded-md py-4 px-3 bg-transparent leading-none focus:border-gray-700 ${
 		type === InputType.PRICE ? (value === null ? "pl-[3.25rem]" : "pl-6") : ""
-	} ${type === InputType.TEXTAREA ? "resize-none h-[7rem]" : ""} ${className ?? ""}`;
+	} ${type === InputType.TEXTAREA ? "resize-none h-[7rem]" : ""} ${
+		type === InputType.IMAGE
+			? `${
+					typeof value === "string" && value.length > 0 ? "!pt-[12rem]" : ""
+			  } file:mr-3 file:bg-primary file:border-none file:text-white file:px-4 file:text-sm file:uppercase file:font-bold file:cursor-pointer file:rounded file:h-10 file:hover:shadow-md file:transition-all file:hover:bg-primary-dark`
+			: ""
+	} ${className ?? ""}`;
 
 const Input: FC<InputPropTypes> = ({
 	id,
@@ -42,15 +52,25 @@ const Input: FC<InputPropTypes> = ({
 	onChange,
 	items,
 }) => {
+	const isTimeType = type === InputType.TIME;
+	const isDateType = type === InputType.DATE;
+	const isImageType = type === InputType.IMAGE;
+	const isCheckboxType = type === InputType.CHECKBOX;
+	const isTextAreaType = type === InputType.TEXTAREA;
 	const isTextType = type === InputType.TEXT || type === InputType.URL || type === InputType.MOBILE;
 	const isIntegerType = type === InputType.INTEGER || type === InputType.PRICE;
 
-	const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
-		const { value: targetValue, checked } = event.target;
+	const { getAccessTokenSilently } = useAuth0();
 
-		if (type === InputType.TIME && typeof value === "number") {
+	const [isImageTooLarge, setIsImageTooLarge] = useState(false);
+	const [imageToBeUploaded, setImageToBeUploaded] = useState<File | null>(null);
+
+	const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
+		const { value: targetValue, checked, files } = event.target;
+
+		if (isTimeType && typeof value === "number") {
 			onChange(convertTimeInputToUnixTime(value, targetValue));
-		} else if (type === InputType.DATE && typeof value === "number") {
+		} else if (isDateType && typeof value === "number") {
 			onChange(convertDateTimeInputToUnixTime(value, targetValue));
 		} else if (isIntegerType) {
 			if (targetValue.length === 0) {
@@ -61,17 +81,37 @@ const Input: FC<InputPropTypes> = ({
 			}
 		} else if (isTextType) {
 			onChange(nullable ? (targetValue.length === 0 ? null : targetValue) : targetValue);
-		} else if (type === InputType.CHECKBOX) {
+		} else if (isCheckboxType) {
 			onChange(checked);
+		} else if (isImageType) {
+			const file = convertFileListToFile(files);
+
+			if (file && file.size > 1_000_000) {
+				setIsImageTooLarge(true);
+				onChange(null);
+			} else {
+				setIsImageTooLarge(false);
+				if (file) {
+					setImageToBeUploaded(file);
+				} else {
+					onChange(null);
+				}
+			}
 		} else {
 			throw new Error(`Invalid input type: ${type} ${value?.toString() ?? "unknown"}`);
 		}
 	};
 
+	useEffect(() => {
+		if (isImageType && imageToBeUploaded) {
+			void uploadAmazonFile(imageToBeUploaded, getAccessTokenSilently).then(onChange);
+		}
+	}, [imageToBeUploaded]);
+
 	const handleTextAreaChange: ChangeEventHandler<HTMLTextAreaElement> = event => {
 		const { value: targetValue } = event.target;
 
-		if (type === InputType.TEXTAREA) {
+		if (isTextAreaType) {
 			onChange(nullable ? (targetValue.length === 0 ? null : targetValue) : targetValue);
 		} else {
 			throw new Error(`Invalid input type: ${type} ${value?.toString() ?? "unknown"}`);
@@ -93,17 +133,19 @@ const Input: FC<InputPropTypes> = ({
 		}
 	};
 
+	const hasImageValue = isImageType && value && typeof value === "string";
+
 	return (
 		<div
-			className={`relative ${type === InputType.CHECKBOX ? "flex gap-2 flex-row-reverse justify-end" : ""} ${
-				type === InputType.TEXTAREA ? (note ? "h-[8.5rem]" : "h-[7rem]") : ""
+			className={`relative ${isCheckboxType ? "flex gap-2 flex-row-reverse justify-end" : ""} ${
+				isTextAreaType ? (note ? "h-[8.5rem]" : "h-[7rem]") : hasImageValue ? "h-[16rem]" : ""
 			} ${className ?? ""}`}
 		>
 			<label
 				children={optional ? `${name} (optional)` : name}
 				htmlFor={type === InputType.LIST ? `${id}-select` : id}
 				className={`${
-					type === InputType.CHECKBOX ? "text-base" : "uppercase font-bold text-xs absolute -top-1.5"
+					isCheckboxType ? "text-base" : "uppercase font-bold text-xs absolute -top-1.5"
 				} cursor-pointer left-3 bg-white z-50 select-none ${disabled ? "text-gray-400" : ""} ${labelClassName ?? ""}`}
 			/>
 			{type === InputType.LIST && items && selectOptions && (
@@ -115,6 +157,13 @@ const Input: FC<InputPropTypes> = ({
 				<p className="absolute top-1/2 -translate-y-1/2 left-3">
 					{value === null ? "Free" : currencyDollarsFormatter.format(value).slice(0, 1)}
 				</p>
+			)}
+			{hasImageValue && !isImageTooLarge && (
+				<img
+					alt={name}
+					src={value}
+					className="absolute top-4 left-3 w-[calc(100%_-_1.5rem)] h-[10rem] object-cover rounded shadow-lg"
+				/>
 			)}
 			{type === InputType.LIST && Array.isArray(value) ? (
 				<Fragment>
@@ -182,7 +231,7 @@ const Input: FC<InputPropTypes> = ({
 						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${disabled ? "text-gray-500" : ""}`}
 					/>
 				</Fragment>
-			) : type === InputType.TEXTAREA ? (
+			) : isTextAreaType ? (
 				<textarea
 					id={id}
 					name={name}
@@ -205,20 +254,22 @@ const Input: FC<InputPropTypes> = ({
 					type={determineInputType(type)}
 					max={isIntegerType ? 50 : undefined}
 					step={isIntegerType ? 1 : undefined}
+					accept={determineInputAcceptValue(type)}
+					multiple={isImageType ? false : undefined}
 					min={isIntegerType ? (nullable ? 0 : 1) : undefined}
+					maxLength={type === InputType.MOBILE ? 14 : maxLength}
 					value={determineInputValue(type, value, selectOptions)}
 					className={createClassName(type, value, className, disabled)}
-					checked={type === InputType.CHECKBOX && typeof value === "boolean" ? value : undefined}
-					maxLength={type === InputType.MOBILE ? 14 : maxLength}
+					checked={isCheckboxType && typeof value === "boolean" ? value : undefined}
 				/>
 			)}
-			{note && type !== InputType.CHECKBOX && (
+			{((note && !isCheckboxType) || isImageTooLarge) && (
 				<p
 					className={`text-gray-500 text-xs md:text-sm px-3 pb-1 ${
 						noteClassName ?? ""
 					} whitespace-nowrap overflow-hidden overflow-ellipsis`}
 				>
-					{note}
+					{note || "Image is too large"}
 				</p>
 			)}
 		</div>

@@ -8,6 +8,7 @@ type Query {
 	getLocations: [Location!]
 	getCourses: [Course!]
 
+	getGrossTotal: NonNegativeInt
 	getStudentsTotal: NonNegativeInt
 	getBookingsTotal: NonNegativeInt
 

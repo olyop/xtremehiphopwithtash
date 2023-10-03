@@ -53,7 +53,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 				id="photo"
 				name="Photo"
 				value={input.photo}
-				type={InputType.URL}
+				type={InputType.IMAGE}
 				onChange={handleChange("photo")}
 				autoComplete="off"
 				placeHolder="Please enter"

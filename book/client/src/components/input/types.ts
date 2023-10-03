@@ -10,6 +10,7 @@ export enum InputType {
 	TIME,
 	DATE,
 	CHECKBOX,
+	IMAGE,
 }
 
 export type InputValue = readonly string[] | string | number | boolean | null;

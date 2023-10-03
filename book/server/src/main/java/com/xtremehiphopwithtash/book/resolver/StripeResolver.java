@@ -12,9 +12,11 @@ import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
-import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.integration.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.integration.resolvers.RemoteAddressService;
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
+import graphql.GraphQLContext;
 import java.security.Principal;
 import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -28,6 +30,7 @@ public class StripeResolver {
 	private final DetailsService detailsService;
 	private final SessionService sessionService;
 	private final Auth0JwtService auth0JwtService;
+	private final RemoteAddressService remoteAddressService;
 	private final StripeService stripeService;
 	private final ReCaptchaService reCaptchaService;
 	private final BookingService bookingService;
@@ -39,6 +42,7 @@ public class StripeResolver {
 		DetailsService detailsService,
 		SessionService sessionService,
 		Auth0JwtService auth0JwtService,
+		RemoteAddressService remoteAddressService,
 		StripeService stripeService,
 		ReCaptchaService reCaptchaService,
 		BookingService bookingService,
@@ -49,6 +53,7 @@ public class StripeResolver {
 		this.detailsService = detailsService;
 		this.sessionService = sessionService;
 		this.auth0JwtService = auth0JwtService;
+		this.remoteAddressService = remoteAddressService;
 		this.stripeService = stripeService;
 		this.reCaptchaService = reCaptchaService;
 		this.bookingService = bookingService;
@@ -60,11 +65,13 @@ public class StripeResolver {
 	public CreatePaymentIntentResponse createPaymentIntent(
 		@Argument BookingInput input,
 		@Argument String reCaptcha,
+		GraphQLContext graphQlContext,
 		Principal principal
 	) {
 		String studentID = auth0JwtService.extractStudentID(principal);
+		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
 
-		reCaptchaService.validateResponse(reCaptcha);
+		reCaptchaService.validateResponse(reCaptcha, remoteAddress);
 		bookingService.validateCreate(input, studentID);
 
 		Student student = studentService.retreiveByID(studentID);

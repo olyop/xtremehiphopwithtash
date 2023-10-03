@@ -7,10 +7,12 @@ import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
-import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.integration.recaptcha.ReCaptchaService;
+import com.xtremehiphopwithtash.book.service.integration.resolvers.RemoteAddressService;
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
+import graphql.GraphQLContext;
 import java.net.URL;
 import java.security.Principal;
 import java.util.UUID;
@@ -31,6 +33,7 @@ public class BookingResolver {
 	private final SessionService sessionService;
 	private final Auth0JwtService auth0JwtService;
 	private final ReCaptchaService reCaptchaService;
+	private final RemoteAddressService remoteAddressService;
 
 	public BookingResolver(
 		StripeService stripeService,
@@ -38,7 +41,8 @@ public class BookingResolver {
 		BookingService bookingService,
 		SessionService sessionService,
 		Auth0JwtService auth0JwtService,
-		ReCaptchaService reCaptchaService
+		ReCaptchaService reCaptchaService,
+		RemoteAddressService remoteAddressService
 	) {
 		this.stripeService = stripeService;
 		this.studentService = studentService;
@@ -46,6 +50,7 @@ public class BookingResolver {
 		this.sessionService = sessionService;
 		this.auth0JwtService = auth0JwtService;
 		this.reCaptchaService = reCaptchaService;
+		this.remoteAddressService = remoteAddressService;
 	}
 
 	@QueryMapping
@@ -60,6 +65,15 @@ public class BookingResolver {
 		int bookingTotal = bookingService.retreiveTotal();
 
 		return bookingTotal == 0 ? null : bookingTotal;
+	}
+
+	@QueryMapping
+	public Integer getGrossTotal(@AuthenticationPrincipal Jwt jwt) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		int grossRevenueTotal = bookingService.retreiveGrossTotal();
+
+		return grossRevenueTotal == 0 ? null : grossRevenueTotal;
 	}
 
 	@SchemaMapping(typeName = "Booking", field = "session")
@@ -91,10 +105,13 @@ public class BookingResolver {
 	public Booking createBooking(
 		@Argument BookingInput input,
 		@Argument String reCaptcha,
-		Principal principal,
-		@AuthenticationPrincipal Jwt jwt
+		@AuthenticationPrincipal Jwt jwt,
+		GraphQLContext graphQlContext,
+		Principal principal
 	) {
-		reCaptchaService.validateResponse(reCaptcha);
+		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
+
+		reCaptchaService.validateResponse(reCaptcha, remoteAddress);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
 		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
@@ -118,9 +135,12 @@ public class BookingResolver {
 		@Argument UUID bookingID,
 		@Argument String reCaptcha,
 		@AuthenticationPrincipal Jwt jwt,
+		GraphQLContext graphQlContext,
 		Principal principal
 	) {
-		reCaptchaService.validateResponse(reCaptcha);
+		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
+
+		reCaptchaService.validateResponse(reCaptcha, remoteAddress);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
 		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);

@@ -62,7 +62,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCrea
 			<Input
 				id="emailAddress"
 				name="Email Address"
-				autoComplete="email"
+				autoComplete="username"
 				value={input.emailAddress}
 				type={InputType.TEXT}
 				onChange={handleChange("emailAddress")}

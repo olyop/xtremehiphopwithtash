@@ -1,4 +1,5 @@
 import { HTMLInputTypeAttribute } from "react";
+import { Auth0ContextInterface } from "@auth0/auth0-react";
 
 import { ChipInput } from "../chip";
 import { InputSelectOptions, InputType, InputValue, SelectOption } from "./types";
@@ -46,8 +47,8 @@ export const determineInputValue = (
 	type: InputType,
 	value: InputValue,
 	selectOptions: InputSelectOptions | undefined,
-): string | number => {
-	if (value === undefined || value === null) {
+): string | number | undefined => {
+	if (type !== InputType.IMAGE && (value === undefined || value === null)) {
 		return type === InputType.PRICE || type === InputType.INTEGER ? 0 : "";
 	} else if (type === InputType.TIME && typeof value === "number") {
 		return convertUnixTimeToTimeInput(value);
@@ -69,6 +70,8 @@ export const determineInputValue = (
 		return value;
 	} else if (type === InputType.MOBILE && typeof value === "string") {
 		return value;
+	} else if (type === InputType.IMAGE) {
+		return undefined;
 	} else {
 		throw new Error(`Invalid input value of type ${typeof value} for input type ${type}`);
 	}
@@ -89,6 +92,8 @@ export const determineInputType = (type: InputType): HTMLInputTypeAttribute =>
 		? "checkbox"
 		: type === InputType.MOBILE
 		? "tel"
+		: type === InputType.IMAGE
+		? "file"
 		: "text";
 
 export const mapListToChips = <T>(
@@ -125,4 +130,43 @@ export const mapListToSelectOptions = <T>(
 	}
 
 	return list.map(mapper);
+};
+
+export const determineInputAcceptValue = (type: InputType): string | undefined =>
+	type === InputType.IMAGE ? "image/jpeg" : undefined;
+
+export const convertFileListToFile = (fileList: FileList | null): File | null => {
+	if (fileList === null || fileList.length === 0) {
+		return null;
+	}
+
+	const file = fileList.item(0);
+
+	if (file === null) {
+		return null;
+	}
+
+	return file;
+};
+
+export const uploadAmazonFile = async (
+	file: File,
+	getAccessTokenSilently: Auth0ContextInterface["getAccessTokenSilently"],
+) => {
+	const accessToken = await getAccessTokenSilently();
+
+	const formData = new FormData();
+	formData.append("file", file);
+
+	const request: RequestInit = {
+		method: "POST",
+		body: formData,
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
+
+	const response = await fetch("/storage", request);
+
+	return response.text();
 };

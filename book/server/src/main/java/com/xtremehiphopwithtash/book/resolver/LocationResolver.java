@@ -5,7 +5,7 @@ import com.google.openlocationcode.OpenLocationCode.CodeArea;
 import com.xtremehiphopwithtash.book.graphql.input.LocationInput;
 import com.xtremehiphopwithtash.book.service.database.location.Location;
 import com.xtremehiphopwithtash.book.service.database.location.LocationService;
-import com.xtremehiphopwithtash.book.service.integration.auth0jwt.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.integration.googlemaps.GoogleMapsCoordinates;
 import com.xtremehiphopwithtash.book.service.integration.googlemaps.GoogleMapsPlace;
 import com.xtremehiphopwithtash.book.service.integration.googlemaps.GoogleMapsService;

@@ -28,7 +28,7 @@ const InstructorForm: FC<PropTypes> = ({ input, onChange }) => {
 				id="photo"
 				name="Photo"
 				value={input.photo}
-				type={InputType.URL}
+				type={InputType.IMAGE}
 				onChange={handleChange("photo")}
 				autoComplete="off"
 				placeHolder="e.g. https://example.com/photo.jpg"

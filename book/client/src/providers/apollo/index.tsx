@@ -14,10 +14,9 @@ export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
 
 	const addJWTToken = setContext(async () => {
 		try {
-			const accessToken = await getAccessTokenSilently();
 			return {
 				headers: {
-					Authorization: `Bearer ${accessToken}`,
+					Authorization: `Bearer ${await getAccessTokenSilently()}`,
 				},
 			};
 		} catch {

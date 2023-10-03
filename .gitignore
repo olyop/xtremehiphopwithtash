@@ -5,8 +5,9 @@ node_modules
 
 book/client/.env
 book/client/.env.local
-book/client/.env.production.local
 book/client/.env.development.local
+book/client/.env.testing.local
+book/client/.env.production.local
 book/client/stats.html
 book/client/dist
 book/client/node_modules
@@ -21,4 +22,5 @@ book/server/src/main/resources/.classpath
 book/server/src/main/resources/public
 book/server/src/main/resources/application-global.properties
 book/server/src/main/resources/application-development.properties
+book/server/src/main/resources/application-testing.properties
 book/server/src/main/resources/application-production.properties
