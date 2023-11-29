@@ -12,6 +12,10 @@ import com.xtremehiphopwithtash.book.service.database.location.Location;
 import com.xtremehiphopwithtash.book.service.database.location.LocationService;
 import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
+import com.xtremehiphopwithtash.book.service.database.sessionview.SessionView;
+import com.xtremehiphopwithtash.book.service.database.sessionview.SessionViewService;
+import com.xtremehiphopwithtash.book.service.database.student.Student;
+import com.xtremehiphopwithtash.book.service.database.student.StudentService;
 import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.security.Principal;
@@ -29,27 +33,33 @@ import org.springframework.stereotype.Controller;
 public class SessionResolver {
 
 	private final SessionService sessionService;
+	private final SessionViewService sessionViewService;
 	private final CourseService courseService;
 	private final LocationService locationService;
 	private final InstructorService instructorService;
 	private final BookingService bookingService;
+	private final StudentService studentService;
 	private final Auth0JwtService auth0JwtService;
 	private final SessionValidator sessionValidator;
 
 	public SessionResolver(
 		SessionService sessionService,
+		SessionViewService sessionViewService,
 		CourseService courseService,
 		LocationService locationService,
 		InstructorService instructorService,
 		BookingService bookingService,
+		StudentService studentService,
 		Auth0JwtService auth0JwtService,
 		SessionValidator sessionValidator
 	) {
 		this.sessionService = sessionService;
+		this.sessionViewService = sessionViewService;
 		this.courseService = courseService;
 		this.locationService = locationService;
 		this.instructorService = instructorService;
 		this.bookingService = bookingService;
+		this.studentService = studentService;
 		this.auth0JwtService = auth0JwtService;
 		this.sessionValidator = sessionValidator;
 	}
@@ -214,5 +224,54 @@ public class SessionResolver {
 		}
 
 		return gross;
+	}
+
+	@MutationMapping
+	public boolean viewSession(Principal principal, @Argument UUID sessionID) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		sessionViewService.insert(sessionID, studentID);
+
+		return true;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "viewsCount")
+	public Integer getViewsCount(Session session) {
+		int views = sessionViewService.selectCountBySessionID(session.getSessionID());
+
+		if (views == 0) {
+			return null;
+		}
+
+		return views;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "views")
+	public List<SessionView> getViews(@AuthenticationPrincipal Jwt jwt, Session session) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		List<SessionView> views = sessionViewService.selectBySessionID(session.getSessionID());
+
+		if (views.isEmpty()) {
+			return null;
+		}
+
+		return views;
+	}
+
+	@SchemaMapping(typeName = "SessionView", field = "student")
+	public Student getSessionViewStudent(@AuthenticationPrincipal Jwt jwt, SessionView sessionView) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		String studentID = sessionView.getStudentID();
+
+		return studentService.retreiveByID(studentID);
+	}
+
+	@SchemaMapping(typeName = "SessionView", field = "hasBooked")
+	public boolean getSessionViewHasBooked(@AuthenticationPrincipal Jwt jwt, SessionView sessionView) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		return bookingService.retreiveHasBooked(sessionView.getSessionID(), sessionView.getStudentID());
 	}
 }

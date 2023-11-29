@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import react from "@vitejs/plugin-react-swc";
 import { visualizer } from "rollup-plugin-visualizer";
 import { PluginOption, defineConfig, loadEnv } from "vite";
+import checker from "vite-plugin-checker";
 // @ts-expect-error
 import gqlImport from "vite-plugin-simple-gql";
 
@@ -17,7 +18,7 @@ export default defineConfig(async ({ mode }) => {
 		}),
 	];
 
-	const commonPlugins: PluginOption[] = [react(), gql()];
+	const commonPlugins: PluginOption[] = [react(), gql(), checker({ typescript: true })];
 
 	return {
 		plugins: mode === "production" ? [...commonPlugins, ...productionPlugins] : commonPlugins,

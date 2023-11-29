@@ -1,12 +1,12 @@
+import { useLazyQuery } from "@apollo/client";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
 import { FC, createElement, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { useLazyQuery } from "@apollo/client";
 
 import Button from "../../components/button";
-import GET_PAYMENT_SUCCESS_SCREEN from "./get-payment-success-data.graphql";
-import { GetPaymentSuccessDataQuery, GetPaymentSuccessDataQueryVariables, Session } from "../../generated-types";
 import SessionCard from "../../components/session-card";
+import { GetPaymentSuccessDataQuery, GetPaymentSuccessDataQueryVariables, Session } from "../../generated-types";
+import GET_PAYMENT_SUCCESS_SCREEN from "./get-payment-success-data.graphql";
 
 const PaymentSuccessPage: FC = () => {
 	const [searchParams] = useSearchParams();

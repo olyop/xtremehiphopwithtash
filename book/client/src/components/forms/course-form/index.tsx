@@ -52,6 +52,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 			<Input
 				id="photo"
 				name="Photo"
+				isImageLandscape
 				value={input.photo}
 				type={InputType.IMAGE}
 				onChange={handleChange("photo")}

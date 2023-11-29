@@ -3,11 +3,11 @@ import { RouteObject, useLocation, useRoutes } from "react-router-dom";
 
 import AccountPage from "./pages/account";
 import AdminPage from "./pages/admin";
+import MerchPage from "./pages/merch";
 import PaymentPage from "./pages/payment";
 import PaymentSuccessPage from "./pages/payment-success";
 import Schedule from "./pages/schedule";
 import SessionPage from "./pages/session";
-import MerchPage from "./pages/merch";
 
 const routes: RouteObject[] = [
 	{

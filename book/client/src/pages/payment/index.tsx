@@ -1,3 +1,4 @@
+import { ApolloError } from "@apollo/client";
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -22,14 +23,13 @@ import Page from "../page";
 import { isSessionInPast } from "../session/helpers";
 import PaymentCoupon from "./coupon";
 import CREATE_BOOKING from "./create-booking.graphql";
+import EquipmentHireWarning from "./equipment-hire-warning";
 import GET_PAYMENT_SCREEN from "./get-payment-screen-data.graphql";
 import PaymentOverview from "./overview";
 import PaymentButton from "./payment-button";
 import PaymentMethodForm from "./payment-method-form";
 import { mapSearchParamsToBookingInput, syncSearchParams } from "./search-paramaters";
 import PaymentPageStripe from "./stripe";
-import EquipmentHireWarning from "./equipment-hire-warning";
-import { ApolloError } from "@apollo/client";
 
 const PaymentPage: FC = () => {
 	const apollo = useApolloClient();

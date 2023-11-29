@@ -1,6 +1,6 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import { ChangeEventHandler, FC, Fragment, ReactNode, createElement, useEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 
 import { currencyDollarsFormatter } from "../../helpers/intl";
 import { capitalizeFirstLetter } from "../../utils";
@@ -49,6 +49,7 @@ const Input: FC<InputPropTypes> = ({
 	placeHolder,
 	selectOptions,
 	hideEmptySelectOptions = false,
+	isImageLandscape = true,
 	onChange,
 	items,
 }) => {
@@ -86,7 +87,7 @@ const Input: FC<InputPropTypes> = ({
 		} else if (isImageType) {
 			const file = convertFileListToFile(files);
 
-			if (file && file.size > 1_000_000) {
+			if (file && file.size > 20_000_000) {
 				setIsImageTooLarge(true);
 				onChange(null);
 			} else {
@@ -104,7 +105,11 @@ const Input: FC<InputPropTypes> = ({
 
 	useEffect(() => {
 		if (isImageType && imageToBeUploaded) {
-			void uploadAmazonFile(imageToBeUploaded, getAccessTokenSilently).then(onChange);
+			void uploadAmazonFile(imageToBeUploaded, isImageLandscape, getAccessTokenSilently)
+				.then(onChange)
+				.finally(() => {
+					setImageToBeUploaded(null);
+				});
 		}
 	}, [imageToBeUploaded]);
 
@@ -158,11 +163,16 @@ const Input: FC<InputPropTypes> = ({
 					{value === null ? "Free" : currencyDollarsFormatter.format(value).slice(0, 1)}
 				</p>
 			)}
-			{hasImageValue && !isImageTooLarge && (
+			{imageToBeUploaded instanceof File && (
+				<p className="absolute top-1/2 -translate-y-1/2 right-4 p-2 bg-gray-200 rounded-lg">Uploading...</p>
+			)}
+			{hasImageValue && !isImageTooLarge && imageToBeUploaded == null && (
 				<img
 					alt={name}
 					src={value}
-					className="absolute top-4 left-3 w-[calc(100%_-_1.5rem)] h-[10rem] object-cover rounded shadow-lg"
+					className={`absolute top-4 left-3 ${
+						isImageLandscape ? "w-[calc(100%_-_1.5rem)]" : "w-[10rem]"
+					} h-[10rem] object-cover rounded shadow-lg`}
 				/>
 			)}
 			{type === InputType.LIST && Array.isArray(value) ? (
@@ -294,6 +304,7 @@ interface InputPropTypes {
 	onChange: InputOnChange;
 	selectOptions?: InputSelectOptions;
 	hideEmptySelectOptions?: boolean;
+	isImageLandscape?: boolean;
 	items?: ChipInput[];
 }
 

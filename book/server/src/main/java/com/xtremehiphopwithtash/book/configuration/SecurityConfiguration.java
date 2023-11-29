@@ -80,7 +80,7 @@ public class SecurityConfiguration {
 				authorize.requestMatchers(HttpMethod.POST, "/storage").authenticated();
 			})
 			.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-			.headers(headers -> headers.cacheControl(Customizer.withDefaults()).addHeaderWriter(headerWriter))
+			.headers(headers -> headers.cacheControl(cacheControl -> cacheControl.disable()).addHeaderWriter(headerWriter))
 			.build();
 	}
 }

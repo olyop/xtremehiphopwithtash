@@ -1,5 +1,5 @@
-import { HTMLInputTypeAttribute } from "react";
 import { Auth0ContextInterface } from "@auth0/auth0-react";
+import { HTMLInputTypeAttribute } from "react";
 
 import { ChipInput } from "../chip";
 import { InputSelectOptions, InputType, InputValue, SelectOption } from "./types";
@@ -81,20 +81,20 @@ export const determineInputType = (type: InputType): HTMLInputTypeAttribute =>
 	type === InputType.TEXT
 		? "text"
 		: type === InputType.INTEGER || type === InputType.PRICE
-		? "number"
-		: type === InputType.URL
-		? "url"
-		: type === InputType.DATE
-		? "datetime-local"
-		: type === InputType.TIME
-		? "time"
-		: type === InputType.CHECKBOX
-		? "checkbox"
-		: type === InputType.MOBILE
-		? "tel"
-		: type === InputType.IMAGE
-		? "file"
-		: "text";
+		  ? "number"
+		  : type === InputType.URL
+		    ? "url"
+		    : type === InputType.DATE
+		      ? "datetime-local"
+		      : type === InputType.TIME
+		        ? "time"
+		        : type === InputType.CHECKBOX
+		          ? "checkbox"
+		          : type === InputType.MOBILE
+		            ? "tel"
+		            : type === InputType.IMAGE
+		              ? "file"
+		              : "text";
 
 export const mapListToChips = <T>(
 	list: readonly string[],
@@ -151,12 +151,14 @@ export const convertFileListToFile = (fileList: FileList | null): File | null =>
 
 export const uploadAmazonFile = async (
 	file: File,
+	isLandscape: boolean,
 	getAccessTokenSilently: Auth0ContextInterface["getAccessTokenSilently"],
 ) => {
 	const accessToken = await getAccessTokenSilently();
 
 	const formData = new FormData();
 	formData.append("file", file);
+	formData.append("isLandscape", String(isLandscape));
 
 	const request: RequestInit = {
 		method: "POST",
@@ -167,6 +169,10 @@ export const uploadAmazonFile = async (
 	};
 
 	const response = await fetch("/storage", request);
+
+	if (response.status !== 200) {
+		throw new Error(response.statusText);
+	}
 
 	return response.text();
 };

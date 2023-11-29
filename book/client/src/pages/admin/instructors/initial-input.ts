@@ -1,7 +1,7 @@
 import { InstructorInput } from "../../../generated-types";
 
 export const initialInput: InstructorInput = {
-	photo: "https://xtremehiphopwithtash.com/images/natasha-brown.jpg",
+	photo: "",
 	details: {
 		firstName: "",
 		lastName: "",

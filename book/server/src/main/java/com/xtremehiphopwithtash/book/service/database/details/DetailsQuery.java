@@ -26,4 +26,8 @@ class DetailsQuery {
 	final String EXISTS_BY_FIRST_LAST_NICK_NAME = sqlUtil.read("exists-by-first-last-nick-name");
 
 	final String SELECT_GENDERS = sqlUtil.read("select-genders");
+
+	public String EXISTS_BY_EMAIL_ADDRESS = sqlUtil.read("exists-by-email-address");
+
+	public String SELECT_BY_EMAIL_ADDRESS = sqlUtil.read("select-by-email-address");
 }

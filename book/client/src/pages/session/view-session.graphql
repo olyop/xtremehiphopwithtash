@@ -1,0 +1,3 @@
+mutation viewSession($sessionID: UUID!) {
+	viewSession(sessionID: $sessionID)
+}

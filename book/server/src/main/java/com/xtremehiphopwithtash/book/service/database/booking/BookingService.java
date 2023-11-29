@@ -72,8 +72,8 @@ public class BookingService {
 			validateStudentHasNotBookedSession(studentID, input, true, bookingCost.isFreeFromCoupon(), isAdministrator);
 			booking.setCost(null);
 		} else if (isPayingWithCash(input)) {
-			validateStudentHasNotBookedSession(studentID, input, false, false, isAdministrator);
-			validateQuantitiesAreOne(input);
+			// validateStudentHasNotBookedSession(studentID, input, false, false, isAdministrator);
+			// validateQuantitiesAreOne(input);
 			booking.setCost(bookingCost.getFinalCost());
 		} else if (isPayingWithCard(input, paymentIntent)) {
 			booking.setPaymentIntentID(paymentIntent.getId());

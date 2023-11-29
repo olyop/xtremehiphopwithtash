@@ -143,14 +143,14 @@ const SessionPageBooking: FC<PropTypes> = ({
 		bookingInput.paymentMethod === null
 			? "FREE session"
 			: booking.paymentMethod === PaymentMethod.COUPON
-			? "Paid in full with COUPON"
-			: bookingInput.paymentMethod === PaymentMethod.CASH && booking.cost
-			? `${isSessionInPast ? "Paid" : "Will pay"} ${currencyDollarsFormatter.format(
-					centsToDollars(booking.cost),
-			  )} in CASH`
-			: bookingInput.paymentMethod === PaymentMethod.CARD && booking.cost
-			? `Paid ${currencyDollarsFormatter.format(booking.cost / 100)} with CARD`
-			: null;
+			  ? "Paid in full with COUPON"
+			  : bookingInput.paymentMethod === PaymentMethod.CASH && booking.cost
+			    ? `${isSessionInPast ? "Paid" : "Will pay"} ${currencyDollarsFormatter.format(
+							centsToDollars(booking.cost),
+			      )} in CASH`
+			    : bookingInput.paymentMethod === PaymentMethod.CARD && booking.cost
+			      ? `Paid ${currencyDollarsFormatter.format(booking.cost / 100)} with CARD`
+			      : null;
 
 	const sessionDateAndTimeLabel = (
 		<Fragment>

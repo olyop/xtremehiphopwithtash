@@ -57,12 +57,12 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	const bookButtonText = session.isCancelled
 		? "Cancelled"
 		: isSessionInPast
-		? isSessionInProgress(session)
-			? "In Progress"
-			: "Elapsed"
-		: session.isCapacityRemaining
-		? "Book"
-		: "Fully Booked";
+		  ? isSessionInProgress(session)
+				? "In Progress"
+				: "Elapsed"
+		  : session.isCapacityRemaining
+		    ? "Book"
+		    : "Fully Booked";
 
 	return (
 		<Fragment>

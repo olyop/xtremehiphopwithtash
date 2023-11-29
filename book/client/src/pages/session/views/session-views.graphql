@@ -1,0 +1,22 @@
+query sessionViews($sessionID: UUID!) {
+	getSessionByID(sessionID: $sessionID) {
+		sessionID
+		views {
+			student {
+				studentID
+				details {
+					detailsID
+					firstName
+					lastName
+					nickName
+					emailAddress
+					mobilePhoneNumber
+					instagramUsername
+					createdAt
+				}
+			}
+			hasBooked
+			createdAt
+		}
+	}
+}

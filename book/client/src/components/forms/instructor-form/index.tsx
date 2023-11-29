@@ -31,6 +31,7 @@ const InstructorForm: FC<PropTypes> = ({ input, onChange }) => {
 				type={InputType.IMAGE}
 				onChange={handleChange("photo")}
 				autoComplete="off"
+				isImageLandscape={false}
 				placeHolder="e.g. https://example.com/photo.jpg"
 			/>
 		</Fragment>

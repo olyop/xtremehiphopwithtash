@@ -1,10 +1,10 @@
-import { createElement, FC } from "react";
 import { useQuery } from "@apollo/client/react/hooks/useQuery";
+import { FC, createElement } from "react";
 
+import FullscreenSpinner from "../../components/fullscreen-spinner";
+import { GetMerchItemsQuery, MerchItem as MerchItemType } from "../../generated-types";
 import Page from "../page";
 import GET_MERCH_ITEMS from "./get-merch-items.graphql";
-import { GetMerchItemsQuery, MerchItem as MerchItemType } from "../../generated-types";
-import FullscreenSpinner from "../../components/fullscreen-spinner";
 import MerchItem from "./merch-item";
 
 const MerchPage: FC = () => {

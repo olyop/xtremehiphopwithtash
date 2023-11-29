@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client";
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
 import { FC, Fragment, createElement, useContext, useEffect } from "react";
@@ -31,9 +32,12 @@ import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
 import SessionPriceBanner from "./price-banner";
 import UpdateSession from "./update-session";
+import { viewSession } from "./view-session";
+import ViewsSession from "./views";
 import XtremeHipHopChip from "./xtreme-hip-hop-chip";
 
 const SessionPage: FC = () => {
+	const apollo = useApolloClient();
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
@@ -56,6 +60,12 @@ const SessionPage: FC = () => {
 			});
 		}
 	}, []);
+
+	useEffect(() => {
+		if (data && sessionID) {
+			viewSession(apollo, sessionID);
+		}
+	}, [data]);
 
 	if (sessionID === undefined) {
 		return <div>Session ID not provided</div>;
@@ -122,6 +132,12 @@ const SessionPage: FC = () => {
 										? `${session.equipmentHired ?? 0} / ${session.equipmentAvailable}`
 										: "No steps available"}
 								</p>
+								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
+								<p>
+									{session.capacityBooked ?? 0} / {session.capacityAvailable}
+								</p>
+								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">views</p>
+								<ViewsSession session={session as Session} />
 							</Fragment>
 						)}
 					</div>

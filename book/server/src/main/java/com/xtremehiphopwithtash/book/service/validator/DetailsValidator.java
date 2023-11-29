@@ -63,7 +63,7 @@ public class DetailsValidator implements Validator<UUID, DetailsInput> {
 			}
 		} else if (mobilePhoneNumber.length() == 13) {
 			if (!mobilePhoneNumber.startsWith("+61 4")) {
-				throw new ResolverException("Invalid mobile number - must bestart with +61 4");
+				throw new ResolverException("Invalid mobile number - must start with +61 4");
 			}
 			if (!mobilePhoneNumber.substring(4).matches("^[0-9]*$")) {
 				throw new ResolverException("Invalid mobile number - must only contain numbers");

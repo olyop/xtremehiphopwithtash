@@ -7,6 +7,7 @@ Embeddable
 fkey
 graphqls
 grecaptcha
+imgscalr
 inmemory
 Likert
 merch
@@ -17,7 +18,9 @@ nositelinkssearchbox
 Querydsl
 remoteip
 saddr
+Scalr
 Tash
+thumbnailator
 tika
 unnest
 VITE

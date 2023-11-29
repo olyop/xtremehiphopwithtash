@@ -62,7 +62,6 @@ public class InstructorService implements EntityServiceInter<Instructor, Instruc
 		detailsService.updateByID(currentInstructor.getDetailsID(), input.details());
 
 		Instructor instructor = inputMapper.map(input);
-		instructor.setPhoto(currentInstructor.getPhoto());
 
 		Instructor savedInstructor = instructorDAO.updateByID(instructorID, instructor);
 

@@ -80,8 +80,6 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 		Student student = studentDAO.selectByID(studentID);
 		Details details = detailsService.updateByID(student.getDetailsID(), input);
 
-		detailsService.updateByID(details.getDetailsID(), input);
-
 		stripeService.customer().updateCustomer(student.getStripeCustomerID(), details);
 
 		auth0ManagementService.updateUserEmailAddress(studentID, input.emailAddress());

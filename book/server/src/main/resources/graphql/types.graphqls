@@ -108,6 +108,9 @@ type Session {
 
 	hasBooked: Boolean!
 
+	viewsCount: PositiveInt
+	views: [SessionView!]
+
 	createdAt: UnixTime!
 }
 
@@ -171,4 +174,12 @@ type MerchItem {
 	photo: URL!
 	stock: NonNegativeInt
 	sizesAvailable: [String!]
+}
+
+type SessionView {
+	student: Student!
+
+	hasBooked: Boolean!
+
+	createdAt: UnixTime!
 }

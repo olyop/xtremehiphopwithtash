@@ -93,4 +93,22 @@ public class DetailsDAO implements EntityBaseDAO<Details, UUID>, EntityUpdateDAO
 
 		return jdbcTemplate.getJdbcTemplate().queryForList(sql, String.class);
 	}
+
+	public Details selectByEmailAddress(String emailAddress) {
+		String sql = query.SELECT_BY_EMAIL_ADDRESS;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("emailAddress", emailAddress);
+
+		List<Details> details = jdbcTemplate.query(sql, paramSource, rowMapper);
+
+		return details.isEmpty() ? null : details.stream().findFirst().get();
+	}
+
+	public boolean existsByEmailAddress(String emailAddress) {
+		String sql = query.EXISTS_BY_EMAIL_ADDRESS;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("emailAddress", emailAddress);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
 }

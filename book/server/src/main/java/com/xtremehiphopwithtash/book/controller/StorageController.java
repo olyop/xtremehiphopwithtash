@@ -28,6 +28,7 @@ public class StorageController {
 	@PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = { MediaType.TEXT_PLAIN_VALUE })
 	public String handleFileUpload(
 		@RequestParam(value = "file", required = true) MultipartFile file,
+		@RequestParam(value = "isLandscape", required = true) boolean isLandscape,
 		@AuthenticationPrincipal Jwt jwt
 	) {
 		auth0JwtService.validateAdministrator(jwt);
@@ -35,7 +36,7 @@ public class StorageController {
 		URL url;
 
 		try {
-			url = amazonFileService.upload(file.getBytes());
+			url = amazonFileService.upload(file.getBytes(), isLandscape);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to upload file");

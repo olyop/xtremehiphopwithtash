@@ -32,8 +32,8 @@ const Button: FC<ButtonPropTypes> = ({
 			transparent
 				? "text-black bg-transparent hover:bg-gray-200"
 				: disabled
-				? "cursor-not-allowed text-gray-500 bg-gray-200 !shadow-none"
-				: "cursor-pointer text-white bg-primary hover:bg-primary-dark"
+				  ? "cursor-not-allowed text-gray-500 bg-gray-200 !shadow-none"
+				  : "cursor-pointer text-white bg-primary hover:bg-primary-dark"
 		} text-sm uppercase flex items-center justify-center gap-2 ${transparent ? "" : "shadow-sm"} ${
 			disabled ? "" : "hover:shadow-md"
 		} select-none transition-all items-center ${className ?? ""}`}

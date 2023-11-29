@@ -1,8 +1,8 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import ShoppingBagIcon from "@heroicons/react/24/outline/ShoppingBagIcon";
+import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import { FC, Fragment, createElement } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 
 import Button from "../../components/button";
 

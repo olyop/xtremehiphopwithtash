@@ -4,8 +4,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import ArrowLeftOnRectangleIcon from "@heroicons/react/24/outline/ArrowLeftOnRectangleIcon";
 import HomeIcon from "@heroicons/react/24/outline/HomeIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
-import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
+import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -105,7 +105,7 @@ const AccountPage: FC = () => {
 	useEffect(() => {
 		if (updateStudentResult.data) {
 			closeEditModal();
-			
+
 			if (hasUpdatedEmailAddress) {
 				void logout();
 			} else {

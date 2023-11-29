@@ -1,10 +1,10 @@
-import { FC, Fragment, createElement } from "react";
 import ShoppingBagIcon from "@heroicons/react/24/outline/ShoppingBagIcon";
+import { FC, Fragment, createElement } from "react";
 
-import { currencyDollarsFormatter } from "../../helpers/intl";
-import { MerchItem as MerchItemType } from "../../generated-types";
-import { useModal } from "../../hooks";
 import Modal from "../../components/modal";
+import { MerchItem as MerchItemType } from "../../generated-types";
+import { currencyDollarsFormatter } from "../../helpers/intl";
+import { useModal } from "../../hooks";
 
 const MerchItem: FC<PropTypes> = ({ merchItem }) => {
 	const [isOpen, openModal, closeModal] = useModal();

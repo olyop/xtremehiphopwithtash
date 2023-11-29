@@ -1,14 +1,15 @@
-import { FC, Fragment, createElement, useEffect, useState } from "react";
-import { useModal } from "../../hooks";
-import { BookingInput, Session } from "../../generated-types";
-import Modal from "../../components/modal";
 import ExclamationCircleIcon from "@heroicons/react/24/outline/ExclamationCircleIcon";
 import ArrowSmallRightIcon from "@heroicons/react/24/solid/ArrowSmallRightIcon";
-import Button from "../../components/button";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
+import { FC, Fragment, createElement, useEffect, useState } from "react";
+
+import Button from "../../components/button";
 import Input, { InputType } from "../../components/input";
 import { InputOnChange, SelectOption } from "../../components/input/types";
+import Modal from "../../components/modal";
+import { BookingInput, Session } from "../../generated-types";
 import { currencyDollarsFormatter } from "../../helpers/intl";
+import { useModal } from "../../hooks";
 import { centsToDollars } from "../../utils";
 
 const EquipmentHireWarning: FC<PropTypes> = ({ session, bookingInput, onUpdateEquipmentHire }) => {

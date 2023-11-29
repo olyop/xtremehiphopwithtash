@@ -203,6 +203,7 @@ export type Mutation = {
 	readonly updateLocationByID: Location;
 	readonly updateSessionByID: Session;
 	readonly updateStudentByID: Student;
+	readonly viewSession: Scalars["Boolean"]["output"];
 };
 
 export type MutationCancelBookingByIdArgs = {
@@ -300,6 +301,10 @@ export type MutationUpdateSessionByIdArgs = {
 
 export type MutationUpdateStudentByIdArgs = {
 	input: DetailsInput;
+};
+
+export type MutationViewSessionArgs = {
+	sessionID: Scalars["UUID"]["input"];
 };
 
 export enum PaymentMethod {
@@ -421,6 +426,8 @@ export type Session = {
 	readonly sessionID: Scalars["UUID"]["output"];
 	readonly startTime: Scalars["UnixTime"]["output"];
 	readonly title: Scalars["String"]["output"];
+	readonly views: Maybe<ReadonlyArray<SessionView>>;
+	readonly viewsCount: Maybe<Scalars["PositiveInt"]["output"]>;
 };
 
 export type SessionIsCapacityRemainingArgs = {
@@ -443,6 +450,13 @@ export type SessionInput = {
 	readonly price: InputMaybe<Scalars["PositiveInt"]["input"]>;
 	readonly startTime: Scalars["UnixTime"]["input"];
 	readonly title: Scalars["String"]["input"];
+};
+
+export type SessionView = {
+	readonly __typename: "SessionView";
+	readonly createdAt: Scalars["UnixTime"]["output"];
+	readonly hasBooked: Scalars["Boolean"]["output"];
+	readonly student: Student;
 };
 
 export type Student = {
@@ -1151,6 +1165,7 @@ export type GetSessionPageQuery = {
 		readonly equipmentRemaining: number | null;
 		readonly isCapacityRemaining: boolean;
 		readonly isCancelled: boolean;
+		readonly viewsCount: number | null;
 		readonly createdAt: number;
 		readonly location: {
 			readonly locationID: string;
@@ -1194,6 +1209,41 @@ export type UpdateSessionMutationVariables = Exact<{
 export type UpdateSessionMutation = {
 	readonly updateSessionByID: { readonly sessionID: string } & { readonly __typename: "Session" };
 } & { readonly __typename: "Mutation" };
+
+export type ViewSessionMutationVariables = Exact<{
+	sessionID: Scalars["UUID"]["input"];
+}>;
+
+export type ViewSessionMutation = { readonly viewSession: boolean } & { readonly __typename: "Mutation" };
+
+export type SessionViewsQueryVariables = Exact<{
+	sessionID: Scalars["UUID"]["input"];
+}>;
+
+export type SessionViewsQuery = {
+	readonly getSessionByID: {
+		readonly sessionID: string;
+		readonly views: ReadonlyArray<
+			{
+				readonly hasBooked: boolean;
+				readonly createdAt: number;
+				readonly student: {
+					readonly studentID: string;
+					readonly details: {
+						readonly detailsID: string;
+						readonly firstName: string;
+						readonly lastName: string;
+						readonly nickName: string | null;
+						readonly emailAddress: string;
+						readonly mobilePhoneNumber: string;
+						readonly instagramUsername: string | null;
+						readonly createdAt: number;
+					} & { readonly __typename: "Details" };
+				} & { readonly __typename: "Student" };
+			} & { readonly __typename: "SessionView" }
+		> | null;
+	} & { readonly __typename: "Session" };
+} & { readonly __typename: "Query" };
 
 export type CheckStudentQueryVariables = Exact<{ [key: string]: never }>;
 

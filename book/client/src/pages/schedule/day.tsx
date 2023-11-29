@@ -2,11 +2,11 @@ import { FC, createElement, useContext } from "react";
 
 import SessionCard from "../../components/session-card";
 import { IsAdministratorContext } from "../../contexts/is-administrator";
+import { isDateInBetweenRange } from "../../helpers/date";
 import CreateSession from "./create-session";
 import { Day as DayType } from "./types";
-import { isDateInBetweenRange } from "../../helpers/date";
 
-const hardcodedUnavailableDayRange = [new Date("2023-08-17T00:00:00"), new Date("2023-08-27T00:00:00")] as const;
+const hardcodedUnavailableDayRange = [new Date("2023-10-26T00:00:00"), new Date("2023-10-30T00:00:00")] as const;
 
 const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 	const { isAdministrator } = useContext(IsAdministratorContext);

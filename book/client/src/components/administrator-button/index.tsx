@@ -1,9 +1,9 @@
-import { FC, createElement, useContext } from "react";
-
-import Button from "../button";
-import { Link, useLocation } from "react-router-dom";
 import WrenchScrewdriverIcon from "@heroicons/react/24/outline/WrenchScrewdriverIcon";
+import { FC, createElement, useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+
 import { IsAdministratorContext } from "../../contexts/is-administrator";
+import Button from "../button";
 
 const AdministratorButton: FC = () => {
 	const location = useLocation();

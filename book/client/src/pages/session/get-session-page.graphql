@@ -16,6 +16,7 @@ query getSessionPage($sessionID: UUID!) {
 		equipmentRemaining
 		isCapacityRemaining(bookingQuantity: 1)
 		isCancelled
+		viewsCount
 		createdAt
 		location {
 			locationID

@@ -100,5 +100,5 @@ public final class SQLColumnNames {
 		"created_at"
 	);
 
-	public static final List<String> IMAGE = List.of("image_id", "data", "created_at");
+	public static final List<String> SESSION_VIEW = List.of("session_id", "student_id", "created_at");
 }

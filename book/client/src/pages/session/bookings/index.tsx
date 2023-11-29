@@ -3,8 +3,8 @@ import { FC, Fragment, createElement, useEffect } from "react";
 
 import SessionPageBooking from "../../../components/booking";
 import { Booking, GetSessionBookingsQuery, GetSessionBookingsQueryVariables, Session } from "../../../generated-types";
-import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
 import { currencyDollarsFormatter } from "../../../helpers/intl";
+import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
 
 const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
 	const [getBookings, bookingsResult] = useLazyQuery<Data, Vars>(GET_SESSION_BOOKINGS);

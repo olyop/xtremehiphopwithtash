@@ -34,3 +34,7 @@ export const timeFormatter = new Intl.DateTimeFormat(undefined, {
 export const durationFormatter = new Intl.RelativeTimeFormat(undefined, {
 	style: "long",
 });
+
+export const viewsFormatter = new Intl.NumberFormat(undefined, {
+	notation: "compact",
+});

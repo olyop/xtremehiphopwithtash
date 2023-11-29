@@ -2,11 +2,11 @@ import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { FC, createElement } from "react";
 
 import { GetStudentsQuery, GetStudentsQueryVariables, Student as StudentType } from "../../../generated-types";
+import { currencyDollarsFormatter } from "../../../helpers/intl";
+import { centsToDollars } from "../../../utils";
 import Section from "../section";
 import GET_STUDENTS from "./get-students.graphql";
 import Student from "./student";
-import { currencyDollarsFormatter } from "../../../helpers/intl";
-import { centsToDollars } from "../../../utils";
 
 const Students: FC = () => {
 	const { data } = useQuery<GetStudentsQuery, GetStudentsQueryVariables>(GET_STUDENTS);
