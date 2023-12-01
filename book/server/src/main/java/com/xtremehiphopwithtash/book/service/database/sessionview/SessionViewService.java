@@ -27,15 +27,11 @@ public class SessionViewService {
 		return sessionViewDAO.selectByID(sessionID, studentID);
 	}
 
-	public boolean existsByID(UUID sessionID, String studentID) {
-		return sessionViewDAO.existsByID(sessionID, studentID);
-	}
-
-	public SessionView insert(UUID sessionID, String studentID) {
+	public SessionView save(UUID sessionID, String studentID) {
 		sessionValidator.validateID(sessionID);
 		studentValidator.validateID(studentID);
 
-		if (existsByID(sessionID, studentID)) {
+		if (exists(sessionID, studentID)) {
 			return retreiveByID(sessionID, studentID);
 		}
 
@@ -47,11 +43,15 @@ public class SessionViewService {
 		return sessionViewDAO.insert(sessionView);
 	}
 
-	public int selectCountBySessionID(UUID sessionID) {
+	private boolean exists(UUID sessionID, String studentID) {
+		return sessionViewDAO.existsByID(sessionID, studentID);
+	}
+
+	public int retreiveCountBySessionID(UUID sessionID) {
 		return sessionViewDAO.selectCountBySessionID(sessionID);
 	}
 
-	public List<SessionView> selectBySessionID(UUID sessionID) {
+	public List<SessionView> retreiveBySessionID(UUID sessionID) {
 		return sessionViewDAO.selectBySessionID(sessionID);
 	}
 }

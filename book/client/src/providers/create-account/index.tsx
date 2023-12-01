@@ -84,7 +84,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 	};
 
 	const handleCancel = () => {
-		logout({
+		void logout({
 			logoutParams: {
 				returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URL,
 			},

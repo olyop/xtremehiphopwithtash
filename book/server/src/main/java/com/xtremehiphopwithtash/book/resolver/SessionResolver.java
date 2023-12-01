@@ -227,17 +227,22 @@ public class SessionResolver {
 	}
 
 	@MutationMapping
-	public boolean viewSession(Principal principal, @Argument UUID sessionID) {
+	public boolean viewSession(@AuthenticationPrincipal Jwt jwt, @Argument UUID sessionID, Principal principal) {
 		String studentID = auth0JwtService.extractStudentID(principal);
+		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
 
-		sessionViewService.insert(sessionID, studentID);
+		if (isAdministrator) {
+			return false;
+		}
+
+		sessionViewService.save(sessionID, studentID);
 
 		return true;
 	}
 
 	@SchemaMapping(typeName = "Session", field = "viewsCount")
 	public Integer getViewsCount(Session session) {
-		int views = sessionViewService.selectCountBySessionID(session.getSessionID());
+		int views = sessionViewService.retreiveCountBySessionID(session.getSessionID());
 
 		if (views == 0) {
 			return null;
@@ -250,7 +255,7 @@ public class SessionResolver {
 	public List<SessionView> getViews(@AuthenticationPrincipal Jwt jwt, Session session) {
 		auth0JwtService.validateAdministrator(jwt);
 
-		List<SessionView> views = sessionViewService.selectBySessionID(session.getSessionID());
+		List<SessionView> views = sessionViewService.retreiveBySessionID(session.getSessionID());
 
 		if (views.isEmpty()) {
 			return null;

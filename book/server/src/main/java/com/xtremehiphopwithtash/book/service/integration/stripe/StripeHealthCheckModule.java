@@ -21,7 +21,7 @@ public class StripeHealthCheckModule {
 			stripeClient.client().customers().list(healthCheckParams);
 			return "OK";
 		} catch (StripeException se) {
-			throw new ResolverException("Unable to connect to Stripe");
+			throw new ResolverException("Unable to connect to Stripe", se);
 		}
 	}
 }

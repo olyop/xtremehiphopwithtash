@@ -41,7 +41,10 @@ const SessionCardChips: FC<PropTypes> = ({ session }) => {
 					)}
 					{session.hasBooked && <SessionCardChip text="Booked" colorClassName="bg-blue-500" />}
 					{isAdministrator && session.capacityBooked && (
-						<SessionCardChip colorClassName="bg-pink-500 px-1.5" text={`${session.capacityBooked}`} />
+						<SessionCardChip colorClassName="bg-pink-500 px-1.5" text={`${session.capacityBooked}B`} />
+					)}
+					{isAdministrator && session.viewsCount && (
+						<SessionCardChip colorClassName="bg-gray-500 px-1.5" text={`${session.viewsCount}V`} />
 					)}
 				</Fragment>
 			)}
