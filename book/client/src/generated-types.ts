@@ -26,6 +26,13 @@ export type Scalars = {
 	UnixTime: { input: number; output: number };
 };
 
+export type Auth0User = {
+	readonly __typename: "Auth0User";
+	readonly lastLogin: Scalars["UnixTime"]["output"];
+	readonly logins: Scalars["PositiveInt"]["output"];
+	readonly student: Student;
+};
+
 export type Booking = {
 	readonly __typename: "Booking";
 	readonly bookingID: Scalars["UUID"]["output"];
@@ -324,6 +331,7 @@ export type Query = {
 	readonly __typename: "Query";
 	readonly decodePlusCode: Coordinates;
 	readonly doesStudentExist: Scalars["Boolean"]["output"];
+	readonly getAuth0Users: ReadonlyArray<Auth0User>;
 	readonly getBookingByID: Booking;
 	readonly getBookingCost: BookingCost;
 	readonly getBookingReceiptURL: Scalars["URL"]["output"];
@@ -1080,6 +1088,7 @@ export type GetSessionsInPeriodQuery = {
 			readonly endTime: number;
 			readonly price: number | null;
 			readonly hasBooked: boolean;
+			readonly viewsCount: number | null;
 			readonly capacityRemaining: number | null;
 			readonly capacityBooked: number | null;
 			readonly isCancelled: boolean;

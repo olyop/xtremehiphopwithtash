@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
-const action = import.meta.env.VITE_GOOGLE_RECAPTCHA_ACTION;
-
 export const useReCaptcha = () => {
 	const isLoadingRef = useRef(false);
 	const { executeRecaptcha } = useGoogleReCaptcha();
@@ -16,7 +14,7 @@ export const useReCaptcha = () => {
 			} else {
 				try {
 					isLoadingRef.current = true;
-					return await executeRecaptcha(action);
+					return await executeRecaptcha(import.meta.env.VITE_GOOGLE_RECAPTCHA_ACTION);
 				} catch {
 					return null;
 				} finally {

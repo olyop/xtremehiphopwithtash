@@ -86,7 +86,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 	const handleCancel = () => {
 		void logout({
 			logoutParams: {
-				returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URL,
+				returnTo: window.location.origin,
 			},
 		});
 	};
@@ -102,7 +102,8 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		const isNotAuthenticated = !isAuthenticated;
 
 		if (isNotLoading && isNotAuthenticated) {
-			void loginWithRedirect();
+			// void loginWithRedirect();
+			console.log(loginWithRedirect);
 		}
 	}, [isLoading, isAuthenticated]);
 

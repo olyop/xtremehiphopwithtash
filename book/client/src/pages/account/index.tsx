@@ -66,7 +66,7 @@ const AccountPage: FC = () => {
 	const handleLogOut = () => {
 		void logout({
 			logoutParams: {
-				returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URL,
+				returnTo: window.location.origin,
 			},
 		});
 	};
@@ -167,14 +167,14 @@ const AccountPage: FC = () => {
 						</p>
 					)}
 					<p>
-						Mobile Number: <span className="text-gray-500">{details.mobilePhoneNumber ?? ""}</span>
+						Mobile Number: <span className="text-gray-500">{details.mobilePhoneNumber}</span>
 					</p>
 					<p>
-						Email: <span className="text-gray-500">{details.emailAddress ?? ""}</span>
+						Email: <span className="text-gray-500">{details.emailAddress}</span>
 					</p>
 					{details.instagramUsername && (
 						<p>
-							Instagram: <span className="text-gray-500">{details.instagramUsername ?? ""}</span>
+							Instagram: <span className="text-gray-500">{details.instagramUsername}</span>
 						</p>
 					)}
 					<p>

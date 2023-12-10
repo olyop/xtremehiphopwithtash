@@ -38,7 +38,7 @@ public class HealthCheckController {
 			.allOf(
 				CompletableFuture.supplyAsync(() -> classDescriptionService.getValue()),
 				CompletableFuture.supplyAsync(() -> stripeService.healthCheck().check()),
-				CompletableFuture.supplyAsync(() -> awsS3Client.listBuckets().toString()),
+				CompletableFuture.supplyAsync(() -> awsS3Client.listBuckets()),
 				CompletableFuture.supplyAsync(() -> auth0ManagementService.listApplications())
 			)
 			.join();

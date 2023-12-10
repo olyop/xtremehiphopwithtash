@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.resolver;
+package com.xtremehiphopwithtash.book.graphql.resolver;
 
 import com.xtremehiphopwithtash.book.service.database.coupon.CouponService;
 import org.springframework.graphql.data.method.annotation.Argument;

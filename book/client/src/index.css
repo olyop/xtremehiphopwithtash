@@ -4,7 +4,7 @@
 
 @font-face {
 	font-family: "La Nord";
-	src: url("/fonts/la-nord-regular.otf") format("opentype");
+	src: url("/fonts/la-nord-regular.woff2") format("woff2");
 	font-weight: normal;
 	font-style: normal;
 	text-rendering: optimizeLegibility;
@@ -13,7 +13,7 @@
 
 @font-face {
 	font-family: "La Nord";
-	src: url("/fonts/la-nord-medium.otf") format("opentype");
+	src: url("/fonts/la-nord-medium.woff2") format("woff2");
 	font-weight: bold;
 	font-style: normal;
 	text-rendering: optimizeLegibility;

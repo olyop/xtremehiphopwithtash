@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.resolver;
+package com.xtremehiphopwithtash.book.graphql.resolver;
 
 import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
 import com.xtremehiphopwithtash.book.service.bookingcost.BookingCost;

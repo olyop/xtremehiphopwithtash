@@ -7,7 +7,7 @@ const XtremeHipHopChip: FC = () => (
 		chip={{
 			chipID: "Xtreme Hip-Hop",
 			text: "Xtreme Hip-Hop",
-			photo: "https://xtremehiphopwithtash.com/images/logo-x.png",
+			photo: "/images/logo-x.png",
 		}}
 	/>
 );

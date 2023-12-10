@@ -6,8 +6,6 @@ import com.xtremehiphopwithtash.book.service.database.location.LocationService;
 import com.xtremehiphopwithtash.book.service.database.session.instructor.SessionInstructor;
 import com.xtremehiphopwithtash.book.service.database.session.instructor.SessionInstructorDAO;
 import com.xtremehiphopwithtash.book.service.helpers.EntityServiceInter;
-import com.xtremehiphopwithtash.book.service.validator.CourseValidator;
-import com.xtremehiphopwithtash.book.service.validator.LocationValidator;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -22,32 +20,25 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 	private final SessionDAO sessionDAO;
 	private final SessionInstructorDAO sessionInstructorDAO;
 	private final SessionValidator validator;
-	private final CourseValidator courseValidator;
-	private final LocationValidator locationValidator;
 	private final SessionInputMapper sessionInputMapper;
 	private final LocationService locationService;
-	private final DateTimeFormatter sessionDateTimeFormatter;
+	private final DateTimeFormatter dateTimeFormatter;
 
 	public SessionService(
 		SessionDAO sessionDAO,
 		SessionInstructorDAO sessionInstructorDAO,
 		SessionValidator validator,
-		CourseValidator courseValidator,
-		LocationValidator locationValidator,
 		SessionInputMapper sessionInputMapper,
 		LocationService locationService
 	) {
 		this.sessionDAO = sessionDAO;
 		this.sessionInstructorDAO = sessionInstructorDAO;
 		this.validator = validator;
-		this.courseValidator = courseValidator;
-		this.locationValidator = locationValidator;
 		this.sessionInputMapper = sessionInputMapper;
 		this.locationService = locationService;
 
-		DateTimeFormatter sessionDateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-		sessionDateTimeFormatter = sessionDateTimeFormatter.withZone(TimeZone.getTimeZone("Australia/Sydney").toZoneId());
-		this.sessionDateTimeFormatter = sessionDateTimeFormatter;
+		this.dateTimeFormatter =
+			DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm").withZone(TimeZone.getTimeZone("Australia/Sydney").toZoneId());
 	}
 
 	@Override
@@ -116,41 +107,13 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 
 		Session session = sessionDAO.selectByID(sessionID);
 		Location location = locationService.retreiveByID(session.getLocationID());
-		String date = sessionDateTimeFormatter.format(session.getStartTime());
+		String date = dateTimeFormatter.format(session.getStartTime());
 
 		return String.format("Session: '%s' at '%s' on %s", session.getTitle(), location.getName(), date);
 	}
 
-	public List<Session> retreiveByCourseID(UUID courseID) {
-		courseValidator.validateID(courseID);
-
-		return sessionDAO.selectByCourseID(courseID);
-	}
-
-	public List<Session> retreiveByLocationID(UUID locationID) {
-		locationValidator.validateID(locationID);
-
-		return sessionDAO.selectByLocationID(locationID);
-	}
-
-	public List<Session> retreiveByInstructorID(UUID instructorID) {
-		validator.validateID(instructorID);
-
-		return sessionDAO.selectByInstructorID(instructorID);
-	}
-
 	public List<Session> retreiveInTimePeriod(Instant startTime, Instant endTime) {
 		return sessionDAO.selectInTimePeriod(startTime, endTime);
-	}
-
-	public List<Session> retreiveInTimePeriodExcludeSession(Instant startTime, Instant endTime, UUID sessionID) {
-		return sessionDAO.selectInTimePeriodExcludeSession(startTime, endTime, sessionID);
-	}
-
-	public List<Session> retreiveInTimePeriodByCourseID(Instant startTime, Instant endTime, UUID courseID) {
-		courseValidator.validateID(courseID);
-
-		return sessionDAO.selectInTimePeriodAndCourseID(startTime, endTime, courseID);
 	}
 
 	private void handleInstructorsChange(List<UUID> instructorIDs, UUID sessionID) {

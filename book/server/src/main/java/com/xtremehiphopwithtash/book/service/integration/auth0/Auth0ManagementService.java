@@ -3,13 +3,16 @@ package com.xtremehiphopwithtash.book.service.integration.auth0;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.client.mgmt.filter.ClientFilter;
+import com.auth0.client.mgmt.filter.UserFilter;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.TokenHolder;
 import com.auth0.json.mgmt.client.ClientsPage;
 import com.auth0.json.mgmt.users.User;
 import com.auth0.net.Response;
+import com.xtremehiphopwithtash.book.other.Auth0User;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,22 +35,30 @@ public class Auth0ManagementService {
 		this.domain = domain;
 		this.audience = String.format("https://%s/api/v2/", domain);
 		this.authApi = AuthAPI.newBuilder(domain, clientId, clientSecret).build();
-		this.managementApi = getManagementApi();
+		this.managementApi = instance();
 	}
 
-	private ManagementAPI getManagementApi() {
-		if (tokenHolder == null || tokenHolder.getExpiresAt().after(Date.from(Instant.now()))) {
+	private boolean isTokenExpired() {
+		return tokenHolder == null || tokenHolder.getExpiresAt().after(Date.from(Instant.now()));
+	}
+
+	private void refreshToken() {
+		Response<TokenHolder> response;
+
+		try {
+			response = authApi.requestToken(audience).execute();
+		} catch (Auth0Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		tokenHolder = response.getBody();
+	}
+
+	private ManagementAPI instance() {
+		if (isTokenExpired()) {
 			synchronized (this) {
-				if (tokenHolder == null || tokenHolder.getExpiresAt().after(Date.from(Instant.now()))) {
-					Response<TokenHolder> response;
-
-					try {
-						response = authApi.requestToken(audience).execute();
-					} catch (Auth0Exception e) {
-						throw new RuntimeException(e);
-					}
-
-					this.tokenHolder = response.getBody();
+				if (isTokenExpired()) {
+					refreshToken();
 
 					if (managementApi == null) {
 						return ManagementAPI.newBuilder(domain, tokenHolder.getAccessToken()).build();
@@ -67,7 +78,7 @@ public class Auth0ManagementService {
 
 	public ClientsPage listApplications() {
 		try {
-			return getManagementApi().clients().list(new ClientFilter()).execute().getBody();
+			return instance().clients().list(new ClientFilter()).execute().getBody();
 		} catch (Auth0Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -78,7 +89,33 @@ public class Auth0ManagementService {
 			User user = new User();
 			user.setEmail(newEmailAddress);
 
-			getManagementApi().users().update(userId, user).execute();
+			instance().users().update(userId, user).execute();
+		} catch (Auth0Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Auth0User mapUser(User user) {
+		Auth0User auth0User = new Auth0User();
+
+		auth0User.setStudentID(user.getId());
+		auth0User.setLastLogin(user.getLastLogin().toInstant());
+		auth0User.setLogins(user.getLoginsCount());
+
+		return auth0User;
+	}
+
+	public List<Auth0User> getUsers() {
+		try {
+			return instance()
+				.users()
+				.list(new UserFilter())
+				.execute()
+				.getBody()
+				.getItems()
+				.stream()
+				.map(this::mapUser)
+				.toList();
 		} catch (Auth0Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -8,7 +8,7 @@ import Button from "../../../components/button";
 import Modal from "../../../components/modal";
 import { Session, SessionViewsQuery, SessionViewsQueryVariables } from "../../../generated-types";
 import { dateTimeFormatter, viewsFormatter } from "../../../helpers/intl";
-import { determineDetailsName } from "../../../helpers/util";
+import { determineDetailsFullName } from "../../../helpers/util";
 import { useModal } from "../../../hooks";
 import SESSION_VIEWS from "./session-views.graphql";
 
@@ -47,14 +47,14 @@ const ViewsSession: FC<PropTypes> = ({ session }) => {
 										<div key={view.student.studentID} className="p-2 border-b last:border-none flex justify-between">
 											<div className="flex flex-row items-center gap-2">
 												<CheckIcon className={`w-4 h-4 text-green-500 ${view.hasBooked ? "visible" : "invisible"}`} />
-												<p>{determineDetailsName(view.student.details)}</p>
+												<p>{determineDetailsFullName(view.student.details)}</p>
 											</div>
 											<p>{dateTimeFormatter.format(view.createdAt * 1000)}</p>
 										</div>
 									))}
 								</Fragment>
 							) : (
-								"No views yet"
+								<p className="p-2">No views yet</p>
 							)}
 						</div>
 					)

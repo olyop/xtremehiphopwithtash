@@ -31,4 +31,5 @@ type Query {
 	getBookingReceiptURL(bookingID: UUID!): URL!
 
 	getMerchItems: [MerchItem!]!
+	getAuth0Users: [Auth0User!]!
 }

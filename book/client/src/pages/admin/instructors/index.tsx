@@ -30,7 +30,6 @@ const Instructors: FC = () => {
 		({ instructorID }: Pick<InstructorType, "instructorID">) =>
 		(input: InstructorInput): OnEditAndUpdate =>
 		async onClose => {
-			console.log({ input });
 			const result = await updateInstructor({
 				refetchQueries: [{ query: GET_INSTRUCTORS }],
 				variables: {

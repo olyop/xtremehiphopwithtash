@@ -1,11 +1,15 @@
 import { Details, Session } from "../generated-types";
 import { fullYearDateFormatter, thisYearDateFormatter } from "./intl";
 
+export const determineDetailsFullName = ({ firstName, lastName }: Pick<Details, "firstName" | "lastName">) =>
+	`${firstName} ${lastName}`;
+
 export const determineDetailsName = ({
 	firstName,
 	lastName,
 	nickName,
-}: Pick<Details, "firstName" | "lastName" | "nickName">) => nickName || `${firstName} ${lastName}`;
+}: Pick<Details, "firstName" | "lastName" | "nickName">) =>
+	nickName || determineDetailsFullName({ firstName, lastName });
 
 const currentYear = new Date().getFullYear();
 
@@ -23,9 +27,6 @@ export const determineSessionDateLabel = (
 
 	return `${dayName}${useDash ? " — " : " "}${dateLabel}`;
 };
-
-export const determineDetailsFullName = ({ firstName, lastName }: Pick<Details, "firstName" | "lastName">) =>
-	`${firstName} ${lastName}`;
 
 export const isSessionInProgress = ({ startTime, endTime }: Pick<Session, "startTime" | "endTime">) => {
 	const now = new Date();

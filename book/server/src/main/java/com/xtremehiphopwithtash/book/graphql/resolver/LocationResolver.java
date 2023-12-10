@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.resolver;
+package com.xtremehiphopwithtash.book.graphql.resolver;
 
 import com.google.openlocationcode.OpenLocationCode;
 import com.google.openlocationcode.OpenLocationCode.CodeArea;

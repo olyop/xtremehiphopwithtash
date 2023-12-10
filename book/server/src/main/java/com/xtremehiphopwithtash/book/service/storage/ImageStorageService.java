@@ -12,17 +12,15 @@ import net.coobird.thumbnailator.geometry.Positions;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 
 @Service
-public class StorageService {
+public class ImageStorageService {
 
+	private final String baseUrl;
 	private final String s3BucketName;
-	private final String s3BucketFolder;
-	private final String cloudfrontBaseUrl;
+	private final String s3FolderName;
 
 	private final AwsS3Client awsS3Client;
-	private final ObjectCannedACL acl;
 
 	private final Tika tika;
 
@@ -30,19 +28,21 @@ public class StorageService {
 	private final int portraitImageHeight;
 	private final int landscapeImageWidth;
 	private final int landscapeImageHeight;
+	private final Positions cropPosition;
+	private final String outputFormat;
+	private final double outputQuality;
 
-	StorageService(
-		@Value("${storage.s3.bucket.name}") String s3BucketName,
-		@Value("${storage.s3.bucket.folder}") String s3BucketFolder,
-		@Value("${storage.cloudfront.base.url}") String cloudfrontBaseUrl,
+	ImageStorageService(
+		@Value("${imagestorage.base.url}") String baseUrl,
+		@Value("${imagestorage.s3.bucket.name}") String s3BucketName,
+		@Value("${imageservice.s3.folder.name}") String s3FolderName,
 		AwsS3Client awsS3Client
 	) {
+		this.baseUrl = baseUrl;
 		this.s3BucketName = s3BucketName;
-		this.s3BucketFolder = s3BucketFolder;
-		this.cloudfrontBaseUrl = cloudfrontBaseUrl;
+		this.s3FolderName = s3FolderName;
 
 		this.awsS3Client = awsS3Client;
-		this.acl = ObjectCannedACL.PUBLIC_READ;
 
 		this.tika = new Tika();
 
@@ -50,6 +50,9 @@ public class StorageService {
 		this.portraitImageHeight = 450;
 		this.landscapeImageWidth = 1125;
 		this.landscapeImageHeight = 450;
+		this.cropPosition = Positions.TOP_LEFT;
+		this.outputFormat = "JPEG";
+		this.outputQuality = 1.0;
 	}
 
 	public URL upload(byte[] bytes, boolean isLandscape) {
@@ -57,13 +60,11 @@ public class StorageService {
 
 		bytes = resizeImage(bytes, isLandscape);
 
-		UUID amazonFileId = UUID.randomUUID();
+		String key = generateS3Key();
 
-		String key = constructS3Key(amazonFileId);
+		awsS3Client.uploadFile(s3BucketName, key, bytes);
 
-		awsS3Client.uploadFile(s3BucketName, key, acl, bytes);
-
-		return constructCloudfrontUrl(cloudfrontBaseUrl, key);
+		return constructUrl(key);
 	}
 
 	private void validateFile(byte[] bytes) {
@@ -87,15 +88,15 @@ public class StorageService {
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+			int width = isLandscape ? landscapeImageWidth : portraitImageWidth;
+			int height = isLandscape ? landscapeImageHeight : portraitImageHeight;
+
 			Thumbnails
 				.of(new ByteArrayInputStream(bytes))
-				.size(
-					isLandscape ? landscapeImageWidth : portraitImageWidth,
-					isLandscape ? landscapeImageHeight : portraitImageHeight
-				)
-				.crop(Positions.TOP_LEFT)
-				.outputFormat("JPEG")
-				.outputQuality(1.0)
+				.size(width, height)
+				.crop(cropPosition)
+				.outputFormat(outputFormat)
+				.outputQuality(outputQuality)
 				.toOutputStream(outputStream);
 
 			return outputStream.toByteArray();
@@ -104,13 +105,13 @@ public class StorageService {
 		}
 	}
 
-	private String constructS3Key(UUID amazonFileId) {
-		return String.format("%s/%s.jpg", s3BucketFolder, amazonFileId);
+	private String generateS3Key() {
+		return String.format("%s/%s.jpg", s3FolderName, UUID.randomUUID());
 	}
 
-	private URL constructCloudfrontUrl(String baseUrl, String key) {
+	private URL constructUrl(String key) {
 		try {
-			return URI.create(String.format("%s/%s", baseUrl, key)).toURL();
+			return URI.create(baseUrl + key).toURL();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Failed to create URL", e);
 		}

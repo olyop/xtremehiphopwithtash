@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.resolver;
+package com.xtremehiphopwithtash.book.graphql.resolver;
 
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeMerchItem;
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;

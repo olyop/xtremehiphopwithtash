@@ -183,3 +183,9 @@ type SessionView {
 
 	createdAt: UnixTime!
 }
+
+type Auth0User {
+	student: Student!
+	logins: PositiveInt!
+	lastLogin: UnixTime!
+}

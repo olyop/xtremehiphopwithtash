@@ -12,10 +12,14 @@ import { httpLink } from "./http-link";
 export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
 	const { logout, getAccessTokenSilently } = useAuth0();
 
-	const addJWTToken = setContext(async () => {
+	const addJWTToken = setContext(async (_, prevContext) => {
 		try {
+			const headers: Record<string, unknown> = prevContext["headers"]
+				? (prevContext["headers"] as Record<string, unknown>)
+				: {};
 			return {
 				headers: {
+					...headers,
 					Authorization: `Bearer ${await getAccessTokenSilently()}`,
 				},
 			};

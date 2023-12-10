@@ -1,7 +1,7 @@
 package com.xtremehiphopwithtash.book.controller;
 
 import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
-import com.xtremehiphopwithtash.book.service.storage.StorageService;
+import com.xtremehiphopwithtash.book.service.storage.ImageStorageService;
 import java.io.IOException;
 import java.net.URL;
 import org.springframework.http.MediaType;
@@ -17,11 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/storage")
 public class StorageController {
 
-	private final StorageService amazonFileService;
+	private final ImageStorageService imageStorageService;
 	private final Auth0JwtService auth0JwtService;
 
-	public StorageController(StorageService amazonFileService, Auth0JwtService auth0JwtService) {
-		this.amazonFileService = amazonFileService;
+	public StorageController(ImageStorageService imageStorageService, Auth0JwtService auth0JwtService) {
+		this.imageStorageService = imageStorageService;
 		this.auth0JwtService = auth0JwtService;
 	}
 
@@ -36,7 +36,7 @@ public class StorageController {
 		URL url;
 
 		try {
-			url = amazonFileService.upload(file.getBytes(), isLandscape);
+			url = imageStorageService.upload(file.getBytes(), isLandscape);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to upload file");

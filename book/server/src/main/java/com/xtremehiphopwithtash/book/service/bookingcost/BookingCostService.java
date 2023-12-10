@@ -108,7 +108,7 @@ public class BookingCostService {
 		bc.setSessionCost(sessionCost);
 		bc.setEquipmentCost(equipmentCost);
 		bc.setBookingCost(fullCost);
-		bc.setCouponDiscountPercentage(couponDiscountPercentage.orElse(0));
+		bc.setCouponDiscountPercentage(handleOptional(couponDiscountPercentage));
 		bc.setCouponAmountToDiscount(couponAmountToDiscount);
 		bc.setCouponDiscount(couponDiscount);
 		bc.setCost(cost);

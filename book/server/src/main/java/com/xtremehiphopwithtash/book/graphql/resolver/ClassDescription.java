@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.resolver;
+package com.xtremehiphopwithtash.book.graphql.resolver;
 
 import com.xtremehiphopwithtash.book.service.database.classdescription.ClassDescriptionService;
 import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;

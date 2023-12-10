@@ -44,13 +44,13 @@ const Routes: FC = () => {
 	const location = useLocation();
 	const routesElement = useRoutes(routes);
 	return (
-		<div
+		<main
 			className={`h-content-height w-full bg-stone-150 ${
 				location.pathname === "/" ? "overflow-hidden" : "overflow-x-hidden overflow-y-scroll"
 			}`}
 		>
 			{routesElement}
-		</div>
+		</main>
 	);
 };
 

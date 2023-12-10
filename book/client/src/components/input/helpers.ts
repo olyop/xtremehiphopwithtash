@@ -48,7 +48,7 @@ export const determineInputValue = (
 	value: InputValue,
 	selectOptions: InputSelectOptions | undefined,
 ): string | number | undefined => {
-	if (type !== InputType.IMAGE && (value === undefined || value === null)) {
+	if (type !== InputType.IMAGE && value === null) {
 		return type === InputType.PRICE || type === InputType.INTEGER ? 0 : "";
 	} else if (type === InputType.TIME && typeof value === "number") {
 		return convertUnixTimeToTimeInput(value);
@@ -104,7 +104,7 @@ export const mapListToChips = <T>(
 ): ChipInput[] => {
 	if (allItems) {
 		return list.map<ChipInput>(id => {
-			const item = allItems?.find(x => getID(x) === id);
+			const item = allItems.find(x => getID(x) === id);
 
 			if (item === undefined) {
 				throw new Error(`Item with ID ${id} not found`);
@@ -168,7 +168,7 @@ export const uploadAmazonFile = async (
 		},
 	};
 
-	const response = await fetch("/storage", request);
+	const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/storage`, request);
 
 	if (response.status !== 200) {
 		throw new Error(response.statusText);
