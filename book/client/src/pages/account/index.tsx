@@ -107,7 +107,11 @@ const AccountPage: FC = () => {
 			closeEditModal();
 
 			if (hasUpdatedEmailAddress) {
-				void logout();
+				void logout({
+					logoutParams: {
+						returnTo: window.location.origin,
+					},
+				});
 			} else {
 				void refetch();
 			}

@@ -102,8 +102,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		const isNotAuthenticated = !isAuthenticated;
 
 		if (isNotLoading && isNotAuthenticated) {
-			// void loginWithRedirect();
-			console.log(loginWithRedirect);
+			void loginWithRedirect();
 		}
 	}, [isLoading, isAuthenticated]);
 

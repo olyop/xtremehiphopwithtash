@@ -18,6 +18,10 @@
 		"node": "21.2.0",
 		"npm": "10.2.4"
 	},
+	"engines": {
+		"node": "21.2.0",
+		"npm": "10.2.4"
+	},
 	"scripts": {
 		"book-client-dev-run": "cd book/client && npm run dev && cd ../..",
 		"book-client-dev-codegen": "graphql-codegen-esm -w",
@@ -34,7 +38,7 @@
 		"book-server-prod-deploy": "scp ./book/server/build/libs/book.jar xtremehiphopwithtash:/home/ec2-user/book.jar",
 		"book-dev": "concurrently 'npm run book-client-dev-codegen' 'npm run book-client-dev-run' 'npm run book-server-dev-watch' 'npm run book-server-dev-run' 'npm run book-server-dev-stripe'",
 		"book-test": "npm run book-client-test-build && npm run book-server-test-build && npm run book-client-test-deploy && npm run book-server-test-deploy",
-		"book-prod": "npm run book-client-prod && npm run book-server-prod && npm run book-client-prod-deploy && npm run book-server-prod-deploy"
+		"book-prod": "npm run book-client-prod-build && npm run book-server-prod-build && npm run book-client-prod-deploy && npm run book-server-prod-deploy"
 	},
 	"devDependencies": {
 		"@graphql-codegen/add": "5.0.0",

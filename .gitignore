@@ -22,5 +22,6 @@ book/server/src/main/resources/.classpath
 book/server/src/main/resources/public
 book/server/src/main/resources/application-global.properties
 book/server/src/main/resources/application-development.properties
+book/server/src/main/resources/application-development-base.properties
 book/server/src/main/resources/application-testing.properties
 book/server/src/main/resources/application-production.properties

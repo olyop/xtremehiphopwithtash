@@ -30,7 +30,11 @@ export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
 
 	const checkExpiredToken = onError(({ networkError }) => {
 		if (networkError?.message.includes("401")) {
-			void logout();
+			void logout({
+				logoutParams: {
+					returnTo: window.location.origin,
+				},
+			});
 		}
 	});
 

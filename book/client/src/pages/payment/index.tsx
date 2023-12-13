@@ -117,12 +117,12 @@ const PaymentPage: FC = () => {
 
 	useEffect(() => {
 		if (createBookingResult.data) {
-			const searchParams = new URLSearchParams();
-			searchParams.append("bookingID", createBookingResult.data.createBooking.bookingID);
-			searchParams.append("sessionID", createBookingResult.data.createBooking.session.sessionID);
+			const newSearchParams = new URLSearchParams();
+			newSearchParams.append("bookingID", createBookingResult.data.createBooking.bookingID);
+			newSearchParams.append("sessionID", createBookingResult.data.createBooking.session.sessionID);
 
 			// Reload the page refresh the local cache
-			window.location.href = `/payment-success?${searchParams.toString()}`;
+			window.location.href = `/payment-success?${newSearchParams.toString()}`;
 		}
 	}, [createBookingResult.data]);
 
@@ -143,7 +143,7 @@ const PaymentPage: FC = () => {
 	}, [createBookingResult.error]);
 
 	const showSpinner =
-		!isAuthenticated || user === null || bookingInput === null || bookingCost === null || session === null;
+		!isAuthenticated || user === undefined || bookingInput === null || bookingCost === null || session === null;
 
 	if (showSpinner) {
 		return (

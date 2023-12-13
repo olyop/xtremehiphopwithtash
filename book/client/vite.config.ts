@@ -90,7 +90,9 @@ export default defineConfig(async ({ mode }) => {
 		react(),
 		html({ ...environmentVariables, "VITE_CONTENT_SECURITY_POLICY": determineContentSecurityPolicy(mode) }),
 		gql(),
-		checker({ typescript: true }),
+		checker({
+			typescript: true,
+		}),
 	];
 
 	return {

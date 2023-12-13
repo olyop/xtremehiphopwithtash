@@ -59,6 +59,8 @@ public class SecurityConfiguration {
 			})
 			.headers(headers -> {
 				headers.xssProtection(Customizer.withDefaults());
+				headers.referrerPolicy(Customizer.withDefaults());
+				headers.contentTypeOptions(Customizer.withDefaults());
 				headers.contentSecurityPolicy(Customizer.withDefaults());
 			})
 			.authorizeHttpRequests(authorize -> {

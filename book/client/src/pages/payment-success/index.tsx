@@ -22,7 +22,7 @@ const PaymentSuccessPage: FC = () => {
 	}, []);
 
 	return (
-		<div className="p-4 flex flex-col gap-12 items-center justify-center h-full">
+		<main className="p-4 flex flex-col gap-12 items-center justify-center h-full">
 			<div className="flex flex-col gap-4 items-center">
 				<h1 className="text-4xl">Congratulations!</h1>
 				<h2 className="text-xl font-bold">You Have Booked</h2>
@@ -33,7 +33,7 @@ const PaymentSuccessPage: FC = () => {
 			</div>
 			{data && (
 				<SessionCard
-					session={data?.getSessionByID as Session}
+					session={data.getSessionByID as Session}
 					className="!min-w-[16rem] !h-48 !shadow-xl"
 					imageClassName="!h-28"
 					disableLink
@@ -48,7 +48,7 @@ const PaymentSuccessPage: FC = () => {
 					leftIcon={className => <CheckIcon className={`${className} h-7 w-7`} />}
 				/>
 			</Link>
-		</div>
+		</main>
 	);
 };
 

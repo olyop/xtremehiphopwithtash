@@ -8,6 +8,10 @@
 		"test": "tsc && vite build --mode testing --force",
 		"prod": "tsc && vite build --mode production --force"
 	},
+	"engines": {
+		"node": "21.2.0",
+		"npm": "10.2.4"
+	},
 	"dependencies": {
 		"@apollo/client": "3.8.8",
 		"@auth0/auth0-react": "2.2.3",

@@ -84,7 +84,7 @@ const Schedule: FC = () => {
 	}, []);
 
 	return (
-		<div className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
+		<main className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
 			<FullscreenSpinner isLoading={loading} backgroundClassName="!opacity-10" />
 			{error ? (
 				<div className="h-content-height w-full p-4 border-t">
@@ -104,7 +104,7 @@ const Schedule: FC = () => {
 				onForwardOneWeek={handleForwardOneWeekClick}
 				isFirstDayInPast={days[0]?.isInPast ?? false}
 			/>
-		</div>
+		</main>
 	);
 };
 
