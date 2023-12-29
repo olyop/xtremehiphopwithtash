@@ -180,6 +180,7 @@ type SessionView {
 	student: Student!
 
 	hasBooked: Boolean!
+	hasCancelled: Boolean!
 
 	createdAt: UnixTime!
 }

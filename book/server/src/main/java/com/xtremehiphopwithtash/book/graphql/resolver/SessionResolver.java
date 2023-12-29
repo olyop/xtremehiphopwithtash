@@ -279,4 +279,11 @@ public class SessionResolver {
 
 		return bookingService.retreiveHasBooked(sessionView.getSessionID(), sessionView.getStudentID());
 	}
+
+	@SchemaMapping(typeName = "SessionView", field = "hasCancelled")
+	public boolean getSessionViewHasCancelled(@AuthenticationPrincipal Jwt jwt, SessionView sessionView) {
+		auth0JwtService.validateAdministrator(jwt);
+
+		return bookingService.retreiveHasBooked(sessionView.getSessionID(), sessionView.getStudentID());
+	}
 }

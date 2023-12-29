@@ -5,7 +5,7 @@ import { Breakpoint, useBreakpoint } from "../../hooks";
 import BookSession from "./book-session";
 import ShareButton from "./share-button";
 
-const SessionButtons: FC<PropTypes> = ({ session, isInPast }) => {
+const SessionButtons: FC<Props> = ({ session, isInPast }) => {
 	const breakpoint = useBreakpoint();
 	return (
 		<div className={`flex gap-4 justify-start ${breakpoint === Breakpoint.TINY ? "flex-col" : "flex-row"}`}>
@@ -15,7 +15,7 @@ const SessionButtons: FC<PropTypes> = ({ session, isInPast }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	isInPast: boolean;
 }

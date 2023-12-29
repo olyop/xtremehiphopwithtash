@@ -9,7 +9,7 @@ import { FC, PropsWithChildren, createElement } from "react";
 import { cache } from "./cache";
 import { httpLink } from "./http-link";
 
-export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
+export const Apollo: FC<PropsWithChildren> = ({ children }) => {
 	const { logout, getAccessTokenSilently } = useAuth0();
 
 	const addJWTToken = setContext(async (_, prevContext) => {

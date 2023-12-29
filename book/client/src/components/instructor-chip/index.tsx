@@ -9,7 +9,7 @@ import Chip from "../chip";
 import CopyButton from "../copy-button";
 import Modal from "../modal";
 
-const InstructorChip: FC<PropTypes> = ({ instructor, showFullName }) => {
+const InstructorChip: FC<Props> = ({ instructor, showFullName }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 	return (
 		<Fragment>
@@ -80,7 +80,7 @@ const InstructorChip: FC<PropTypes> = ({ instructor, showFullName }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	instructor: Instructor;
 	showFullName: boolean;
 }

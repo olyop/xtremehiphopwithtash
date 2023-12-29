@@ -1,7 +1,7 @@
 import { FC, Fragment, ReactNode, createElement } from "react";
 import { Link } from "react-router-dom";
 
-const Entity: FC<EntityPropTypes> = ({
+const Entity: FC<EntityProps> = ({
 	id,
 	photo,
 	text,
@@ -45,7 +45,7 @@ const Entity: FC<EntityPropTypes> = ({
 	);
 };
 
-export interface EntityPropTypes {
+export interface EntityProps {
 	id: string;
 	photo?: string | undefined;
 	text: ReactNode;

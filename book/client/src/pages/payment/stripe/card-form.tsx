@@ -8,7 +8,7 @@ import { BookingInput } from "../../../generated-types";
 import PaymentButton from "../payment-button";
 import { checkCanBookSession } from "./check-can-book-session";
 
-const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput, onSubmit }) => {
+const CardForm: FC<Props> = ({ setIsPaying, bookingInput, onSubmit }) => {
 	const stripe = useStripe();
 	const elements = useElements();
 	const apollo = useApolloClient();
@@ -50,9 +50,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput, onSubmit }) => {
 					},
 				});
 
-				if (error) {
-					setFormError(new ApolloError({ errorMessage: error.message ?? "An error occurred. Please try again." }));
-				}
+				setFormError(new ApolloError({ errorMessage: error.message ?? "An error occurred. Please try again." }));
 			} catch (error) {
 				if (error instanceof ApolloError) {
 					setFormError(new ApolloError({ errorMessage: error.message }));
@@ -71,7 +69,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput, onSubmit }) => {
 	};
 
 	useEffect(() => {
-		let timeout: NodeJS.Timeout;
+		let timeout: NodeJS.Timeout | null = null;
 
 		if (formError) {
 			timeout = setTimeout(() => {
@@ -97,7 +95,7 @@ const CardForm: FC<PropTypes> = ({ setIsPaying, bookingInput, onSubmit }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	bookingInput: BookingInput;
 	onSubmit: () => void;
 	setIsPaying: Dispatch<SetStateAction<boolean>>;

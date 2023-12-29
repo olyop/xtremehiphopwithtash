@@ -7,11 +7,11 @@ import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, ReactNode, createElement } from "react";
 
 import Button from "../../../components/button";
-import Entity, { EntityPropTypes } from "../../../components/entity";
+import Entity, { EntityProps } from "../../../components/entity";
 import Modal from "../../../components/modal";
 import { useModal } from "../../../hooks";
 
-const AdminEntity: FC<PropTypes> = ({
+const AdminEntity: FC<Props> = ({
 	id,
 	photo,
 	text,
@@ -136,7 +136,7 @@ const AdminEntity: FC<PropTypes> = ({
 
 export type OnEditAndUpdate = (closeModal: () => void) => Promise<void>;
 
-interface PropTypes extends EntityPropTypes {
+interface Props extends EntityProps {
 	typeName: string;
 	isLargeEditModal?: boolean;
 	isUpdating?: boolean;

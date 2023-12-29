@@ -8,7 +8,7 @@ import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions
 import DefaultDurationInput from "./default-duration";
 import GET_COURSE_FORM_DATA from "./get-course-form-data.graphql";
 
-const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
+const CourseForm: FC<Props> = ({ input, onChange }) => {
 	const { data } = useQuery<GetCourseFormDataQuery>(GET_COURSE_FORM_DATA);
 
 	const handleChange =
@@ -127,7 +127,7 @@ const CourseForm: FC<PropTypes> = ({ input, onChange }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	input: CourseInput;
 	onChange: Dispatch<SetStateAction<CourseInput>>;
 }

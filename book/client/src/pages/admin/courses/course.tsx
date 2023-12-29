@@ -8,7 +8,7 @@ import { centsToDollars } from "../../../utils";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapCourseToInput } from "../map-entity-to-input";
 
-const Course: FC<PropTypes> = ({
+const Course: FC<Props> = ({
 	course,
 	isUpdating,
 	isDeleting,
@@ -53,7 +53,7 @@ const Course: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	course: CourseType;
 	onUpdate: (input: CourseInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;

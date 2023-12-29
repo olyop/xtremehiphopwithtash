@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 import SessionStartTime from "../../components/session-start-end-time";
 import { Session } from "../../generated-types";
 
-const SessionSubtitle: FC<PropTypes> = ({ startTime, endTime, label }) => (
+const SessionSubtitle: FC<Props> = ({ startTime, endTime, label }) => (
 	<Fragment>
 		<SessionStartTime startTime={startTime} endTime={endTime} />
 		<Fragment> on </Fragment>
@@ -11,7 +11,7 @@ const SessionSubtitle: FC<PropTypes> = ({ startTime, endTime, label }) => (
 	</Fragment>
 );
 
-interface PropTypes extends Pick<Session, "startTime" | "endTime"> {
+interface Props extends Pick<Session, "startTime" | "endTime"> {
 	label: string;
 }
 

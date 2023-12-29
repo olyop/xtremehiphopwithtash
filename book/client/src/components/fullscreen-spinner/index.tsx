@@ -3,7 +3,7 @@ import { FC, createElement } from "react";
 import Loading from "../loading";
 import Modal from "../modal";
 
-const FullscreenSpinner: FC<PropTypes> = ({ isLoading, className, backgroundClassName }) => (
+const FullscreenSpinner: FC<Props> = ({ isLoading, className, backgroundClassName }) => (
 	<Modal
 		hideTitle
 		hideCloseButton
@@ -16,7 +16,7 @@ const FullscreenSpinner: FC<PropTypes> = ({ isLoading, className, backgroundClas
 	/>
 );
 
-interface PropTypes {
+interface Props {
 	isLoading: boolean;
 	className?: string;
 	backgroundClassName?: string;

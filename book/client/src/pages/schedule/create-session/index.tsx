@@ -17,7 +17,7 @@ import { Day } from "../types";
 import CREATE_SESSION from "./create-session.graphql";
 import { initialCourseDefaultInput, initialInput } from "./initital-input";
 
-const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
+const CreateSession: FC<Props> = ({ day, onSubmit }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 	const [input, setInput] = useState<SessionInputType>(initialInput({ startTime: day.unix }));
 
@@ -56,7 +56,12 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 		}
 	}, [data]);
 
-	useEffect(() => () => setInput(initialInput({ startTime: day.unix })), []);
+	useEffect(
+		() => () => {
+			setInput(initialInput({ startTime: day.unix }));
+		},
+		[],
+	);
 
 	return (
 		<Fragment>
@@ -103,7 +108,7 @@ const CreateSession: FC<PropTypes> = ({ day, onSubmit }) => {
 type Data = CreateSessionMutation;
 type Vars = CreateSessionMutationVariables;
 
-interface PropTypes {
+interface Props {
 	day: Day;
 	onSubmit: () => void;
 }

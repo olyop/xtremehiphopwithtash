@@ -4,7 +4,7 @@ import Input, { InputType } from "../../components/input";
 import { BookingInput, PaymentMethod } from "../../generated-types";
 import { noop } from "../../utils";
 
-const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, setBookingInput }) => {
+const PaymentMethodForm: FC<Props> = ({ paymentMethod, setBookingInput }) => {
 	const handleCardClick = () => {
 		if (paymentMethod === PaymentMethod.CARD) {
 			setBookingInput(prevState => {
@@ -103,7 +103,7 @@ const PaymentMethodForm: FC<PropTypes> = ({ paymentMethod, setBookingInput }) =>
 	);
 };
 
-interface PropTypes {
+interface Props {
 	paymentMethod: string | null;
 	setBookingInput: Dispatch<SetStateAction<BookingInput | null>>;
 }

@@ -4,9 +4,10 @@ import { FC, Fragment, createElement, useEffect } from "react";
 import SessionPageBooking from "../../../components/booking";
 import { Booking, GetSessionBookingsQuery, GetSessionBookingsQueryVariables, Session } from "../../../generated-types";
 import { currencyDollarsFormatter } from "../../../helpers/intl";
+import { centsToDollars } from "../../../utils";
 import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
 
-const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
+const SessionBookings: FC<Props> = ({ session, onBookingUpdated }) => {
 	const [getBookings, bookingsResult] = useLazyQuery<Data, Vars>(GET_SESSION_BOOKINGS);
 
 	const handleRefetch = () => {
@@ -29,7 +30,7 @@ const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
 			<h3 className="text-xl p-2 border-b">Bookings</h3>
 			{bookingsResult.data?.getSessionByID.gross && (
 				<p className="text-sm p-2">
-					Gross: {currencyDollarsFormatter.format(bookingsResult.data.getSessionByID.gross / 100)}
+					Gross: {currencyDollarsFormatter.format(centsToDollars(bookingsResult.data.getSessionByID.gross))}
 				</p>
 			)}
 			{bookingsResult.data ? (
@@ -63,7 +64,7 @@ const SessionBookings: FC<PropTypes> = ({ session, onBookingUpdated }) => {
 type Data = GetSessionBookingsQuery;
 type Vars = GetSessionBookingsQueryVariables;
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	onBookingUpdated: () => void;
 }

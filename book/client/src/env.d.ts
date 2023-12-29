@@ -7,6 +7,7 @@ interface ImportMetaEnv {
 	readonly VITE_GOOGLE_RECAPTCHA_SITE_KEY: string;
 	readonly VITE_GOOGLE_MAPS_API_KEY: string;
 	readonly VITE_AUTH0_DOMAIN: string;
+	readonly VITE_AUTH0_SCOPE: string;
 	readonly VITE_AUTH0_CLIENT_ID: string;
 	readonly VITE_AUTH0_API_AUDIENCE: string;
 	readonly VITE_STRIPE_PAYMENT_DASHBOARD_URL: string;

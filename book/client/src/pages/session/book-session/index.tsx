@@ -13,7 +13,7 @@ import { useModal } from "../../../hooks";
 import { initialInput } from "./initial-input";
 import ToPaymentButton from "./to-payment-button";
 
-const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
+const BookSession: FC<Props> = ({ session, isSessionInPast }) => {
 	const navigate = useNavigate();
 	const [isModalOpen, openModal, closeModal] = useModal();
 
@@ -108,7 +108,7 @@ const BookSession: FC<PropTypes> = ({ session, isSessionInPast }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	isSessionInPast: boolean;
 }

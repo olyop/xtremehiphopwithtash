@@ -6,7 +6,7 @@ import { determineSessionDateLabel } from "../../helpers/util";
 import SessionStartTime from "../session-start-end-time";
 import SessionCardChips from "./chips";
 
-const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disableLink = false, showDate = false }) => {
+const SessionCard: FC<Props> = ({ session, className, imageClassName, disableLink = false, showDate = false }) => {
 	const content = (
 		<div
 			data-id={session.sessionID}
@@ -53,7 +53,7 @@ const SessionCard: FC<PropTypes> = ({ session, className, imageClassName, disabl
 		</Link>
 	);
 };
-interface PropTypes {
+interface Props {
 	session: Session;
 	className?: string;
 	disableLink?: boolean;

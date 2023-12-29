@@ -4,13 +4,13 @@ import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect } from "react";
 
-import { Booking, GetBookingReceiptUrlQuery, GetBookingReceiptUrlQueryVariables } from "../../../generated-types";
-import { useModal } from "../../../hooks";
-import Button from "../../button";
-import Modal from "../../modal";
+import { Booking, GetBookingReceiptUrlQuery, GetBookingReceiptUrlQueryVariables } from "../../../../generated-types";
+import { useModal } from "../../../../hooks";
+import Button from "../../../button";
+import Modal from "../../../modal";
 import GET_BOOKING_RECEIPT_URL from "./get-booking-receipt-url.graphql";
 
-const BookingReceipt: FC<PropTypes> = ({ booking }) => {
+const BookingReceipt: FC<Props> = ({ booking }) => {
 	const [isModalOpen, openModal, closeModal] = useModal();
 
 	const [getBookingReceiptURL, { data, error, loading }] = useLazyQuery<Data, Vars>(GET_BOOKING_RECEIPT_URL);
@@ -71,7 +71,7 @@ const BookingReceipt: FC<PropTypes> = ({ booking }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	booking: Booking;
 }
 

@@ -6,7 +6,7 @@ import { LocationInput as LocationInputType, Location as LocationType } from "..
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapLocationToInput } from "../map-entity-to-input";
 
-const Location: FC<PropTypes> = ({
+const Location: FC<Props> = ({
 	location,
 	onUpdate,
 	onDelete,
@@ -34,7 +34,7 @@ const Location: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	location: LocationType;
 	onUpdate: (input: LocationInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;

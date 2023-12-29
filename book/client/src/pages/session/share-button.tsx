@@ -5,7 +5,7 @@ import { FC, createElement } from "react";
 import Button from "../../components/button";
 import { useShare } from "../../hooks";
 
-const ShareButton: FC<PropTypes> = ({ url, isSessionInPast }) => {
+const ShareButton: FC<Props> = ({ url, isSessionInPast }) => {
 	const [share, { hasShared, shareText }] = useShare();
 
 	const handleClick = () => {
@@ -27,7 +27,7 @@ const ShareButton: FC<PropTypes> = ({ url, isSessionInPast }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	url: string;
 	isSessionInPast: boolean;
 }

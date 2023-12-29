@@ -6,7 +6,7 @@ import { MerchItem as MerchItemType } from "../../generated-types";
 import { currencyDollarsFormatter } from "../../helpers/intl";
 import { useModal } from "../../hooks";
 
-const MerchItem: FC<PropTypes> = ({ merchItem }) => {
+const MerchItem: FC<Props> = ({ merchItem }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 
 	const outOfStock = merchItem.stock === 0;
@@ -72,7 +72,7 @@ const MerchItem: FC<PropTypes> = ({ merchItem }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	merchItem: MerchItemType;
 }
 

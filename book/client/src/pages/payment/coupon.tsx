@@ -13,7 +13,7 @@ import { BookingInput, VerifyCouponQuery, VerifyCouponQueryVariables } from "../
 import { useHasMounted, useModal } from "../../hooks";
 import VERIFY_COUPON from "./verify-coupon-code.graphql";
 
-const PaymentCoupon: FC<PropTypes> = ({ bookingInput, onApplyCoupon }) => {
+const PaymentCoupon: FC<Props> = ({ bookingInput, onApplyCoupon }) => {
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
 	const [isModalOpen, openModal, closeModal] = useModal();
@@ -139,7 +139,7 @@ const PaymentCoupon: FC<PropTypes> = ({ bookingInput, onApplyCoupon }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	bookingInput: BookingInput;
 	onApplyCoupon: (coupon: string) => void;
 }

@@ -5,14 +5,7 @@ import { FC, createElement, useState } from "react";
 
 import Button from "../button";
 
-const CopyButton: FC<PropTypes> = ({
-	text,
-	buttonText,
-	ariaLabel,
-	className,
-	buttonDimension = 6,
-	iconDimension = 4,
-}) => {
+const CopyButton: FC<Props> = ({ text, buttonText, ariaLabel, className, buttonDimension = 6, iconDimension = 4 }) => {
 	const [error, setError] = useState(false);
 	const [hasCopied, setHasCopied] = useState(false);
 
@@ -54,7 +47,7 @@ const CopyButton: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	text: string;
 	buttonText?: string;
 	showText?: boolean;

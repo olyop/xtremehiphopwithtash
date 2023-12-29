@@ -7,7 +7,7 @@ import { isSessionInProgress } from "../../helpers/util";
 import { determinePlural } from "../../utils";
 import SessionCardChip from "./chip";
 
-const SessionCardChips: FC<PropTypes> = ({ session }) => {
+const SessionCardChips: FC<Props> = ({ session }) => {
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
 	return (
@@ -52,7 +52,7 @@ const SessionCardChips: FC<PropTypes> = ({ session }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 }
 

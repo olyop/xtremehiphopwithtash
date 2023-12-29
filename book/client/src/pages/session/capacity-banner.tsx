@@ -4,7 +4,7 @@ import { FC, createElement } from "react";
 import { Session } from "../../generated-types";
 import { determinePlural } from "../../utils";
 
-const SessionCapacityBanner: FC<PropTypes> = ({ session }) => {
+const SessionCapacityBanner: FC<Props> = ({ session }) => {
 	if (session.capacityRemaining && session.capacityRemaining > 5) {
 		return null;
 	}
@@ -21,7 +21,7 @@ const SessionCapacityBanner: FC<PropTypes> = ({ session }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 }
 

@@ -6,7 +6,7 @@ import { Session } from "../../generated-types";
 import { currencyDollarsFormatter } from "../../helpers/intl";
 import { centsToDollars } from "../../utils";
 
-const SessionPriceBanner: FC<PropTypes> = ({ session }) => {
+const SessionPriceBanner: FC<Props> = ({ session }) => {
 	const isFree = session.price === null;
 	return (
 		<div className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-gray-700"} shadow-2xl`}>
@@ -22,7 +22,7 @@ const SessionPriceBanner: FC<PropTypes> = ({ session }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 }
 

@@ -4,7 +4,7 @@ import { Student as StudentType } from "../../../generated-types";
 import { determinePlural } from "../../../utils";
 import AdminEntity from "../entity";
 
-const Student: FC<PropTypes> = ({ student }) => (
+const Student: FC<Props> = ({ student }) => (
 	<AdminEntity
 		id={student.studentID}
 		typeName={student.__typename}
@@ -58,7 +58,7 @@ const Student: FC<PropTypes> = ({ student }) => (
 	/>
 );
 
-interface PropTypes {
+interface Props {
 	student: StudentType;
 }
 

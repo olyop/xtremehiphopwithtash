@@ -102,7 +102,11 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		const isNotAuthenticated = !isAuthenticated;
 
 		if (isNotLoading && isNotAuthenticated) {
-			void loginWithRedirect();
+			void loginWithRedirect({
+				authorizationParams: {
+					redirect_uri: window.location.origin,
+				},
+			});
 		}
 	}, [isLoading, isAuthenticated]);
 
@@ -129,58 +133,60 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		);
 	}
 
-	return hasCreatedAccount ? (
-		<Fragment>{children}</Fragment>
-	) : (
-		<div className="relative w-screen h-screen">
-			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
-			<FullscreenSpinner isLoading={createAccountResult.loading} className="z-[200]" />
-			<Modal
-				isOpen
-				isLarge
-				centerTitle
-				hideCloseButton
-				disableCloseOnEscape
-				title="Account Setup"
-				icon={className => <UserCircleIcon className={className} />}
-				contentClassName="flex flex-col gap-4 px-4 py-4"
-				backgroundClassName="cursor-default"
-				children={
-					<Fragment>
-						<h2 className="text-xl font-bold text-center">You&apos;re nearly there!!</h2>
-						<h2 className="text-lg text-center">
-							Please complete this form
-							<br />
-							to create your account :)
-						</h2>
-						<div className="flex flex-col gap-4 pt-4">
-							<DetailsForm input={detailsInput} onChange={setDetailsInput} isCreateAccount />
-						</div>
-					</Fragment>
-				}
-				buttonClassName="justify-center pb-4"
-				error={createAccountResult.error}
-				errorClassName="px-4 py-2"
-				buttons={
-					<Fragment>
-						<Button
-							text={createAccountResult.loading ? "Creating..." : "Complete"}
-							onClick={handleCreateAccountClick}
-							ariaLabel="Create Account"
-							rightIcon={className => <PaperAirplaneIcon className={className} />}
-						/>
-						<Button
-							text="Cancel"
-							transparent
-							onClick={handleCancel}
-							ariaLabel="Cancel"
-							leftIcon={className => <XCircleIcon className={className} />}
-						/>
-					</Fragment>
-				}
-			/>
-		</div>
-	);
+	if (!hasCreatedAccount) {
+		return (
+			<div className="relative w-screen h-screen">
+				<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
+				<FullscreenSpinner isLoading={createAccountResult.loading} className="z-[200]" />
+				<Modal
+					isOpen
+					isLarge
+					centerTitle
+					hideCloseButton
+					disableCloseOnEscape
+					title="Account Setup"
+					backgroundClassName="cursor-default"
+					contentClassName="flex flex-col gap-4 px-4 py-4"
+					icon={className => <UserCircleIcon className={className} />}
+					children={
+						<Fragment>
+							<h2 className="text-xl font-bold text-center">You&apos;re nearly there!!</h2>
+							<h2 className="text-lg text-center">
+								Please complete this form
+								<br />
+								to create your account :)
+							</h2>
+							<div className="flex flex-col gap-4 pt-4">
+								<DetailsForm input={detailsInput} onChange={setDetailsInput} isCreateAccount />
+							</div>
+						</Fragment>
+					}
+					buttonClassName="justify-center pb-4"
+					error={createAccountResult.error}
+					errorClassName="px-4 py-2"
+					buttons={
+						<Fragment>
+							<Button
+								text={createAccountResult.loading ? "Creating..." : "Complete"}
+								onClick={handleCreateAccountClick}
+								ariaLabel="Create Account"
+								rightIcon={className => <PaperAirplaneIcon className={className} />}
+							/>
+							<Button
+								text="Cancel"
+								transparent
+								onClick={handleCancel}
+								ariaLabel="Cancel"
+								leftIcon={className => <XCircleIcon className={className} />}
+							/>
+						</Fragment>
+					}
+				/>
+			</div>
+		);
+	}
+
+	return <Fragment>{children}</Fragment>;
 };
 
 type CheckData = CheckStudentQuery;

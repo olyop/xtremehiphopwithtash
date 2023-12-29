@@ -5,7 +5,7 @@ import { BookingCost, BookingInput, PaymentMethod, Session } from "../../generat
 import { currencyDollarsFormatter } from "../../helpers/intl";
 import { centsToDollars, determinePlural } from "../../utils";
 
-const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
+const PaymentOverview: FC<Props> = ({ session, input, bookingCost }) => (
 	<div className="p-6 flex flex-col gap-4 items-stretch md:items-center border-b shadow-xl">
 		<h1 className="text-2xl underline font-bold">Overview</h1>
 		<SessionCard
@@ -49,7 +49,7 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 				</p>
 				{input.equipmentQuantity && (
 					<Fragment>
-						<p className="text-sm truncate">{input.equipmentQuantity ?? 0} x Step Hire</p>
+						<p className="text-sm truncate">{input.equipmentQuantity} x Step Hire</p>
 						<p className="text-sm justify-self-end">
 							{currencyDollarsFormatter.format(centsToDollars(bookingCost.equipmentCost))}
 						</p>
@@ -60,7 +60,7 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 						<p className="text-sm truncate">1 x Coupon ({bookingCost.couponDiscountPercentage}%)</p>
 						<p className="text-sm justify-self-end">
 							<Fragment>-</Fragment>
-							{currencyDollarsFormatter.format(bookingCost.couponDiscount / 100)}
+							{currencyDollarsFormatter.format(centsToDollars(bookingCost.couponDiscount))}
 						</p>
 					</Fragment>
 				)}
@@ -68,7 +68,7 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 					<Fragment>
 						<p className="text-sm truncate">1 x Card Processing Fee</p>
 						<p className="text-sm justify-self-end">
-							{currencyDollarsFormatter.format(bookingCost.cardSurcharge / 100)}
+							{currencyDollarsFormatter.format(centsToDollars(bookingCost.cardSurcharge))}
 						</p>
 					</Fragment>
 				)}
@@ -76,14 +76,14 @@ const PaymentOverview: FC<PropTypes> = ({ session, input, bookingCost }) => (
 				<div className="h-[2px] w-full bg-gray-500 my-[8px]" />
 				<p className="text-sm font-bold truncate">Total:</p>
 				<p className="text-sm justify-self-end font-bold">
-					{currencyDollarsFormatter.format(bookingCost.finalCost / 100)}
+					{currencyDollarsFormatter.format(centsToDollars(bookingCost.finalCost))}
 				</p>
 			</div>
 		</div>
 	</div>
 );
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	input: BookingInput;
 	bookingCost: BookingCost;

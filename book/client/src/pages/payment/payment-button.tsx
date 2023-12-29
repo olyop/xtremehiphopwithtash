@@ -3,7 +3,7 @@ import { FC, createElement } from "react";
 
 import Button from "../../components/button";
 
-const PaymentButton: FC<PropTypes> = ({ text, disabled, onClick }) => (
+const PaymentButton: FC<Props> = ({ text, disabled, onClick }) => (
 	<Button
 		text={text}
 		ariaLabel={text}
@@ -15,7 +15,7 @@ const PaymentButton: FC<PropTypes> = ({ text, disabled, onClick }) => (
 	/>
 );
 
-interface PropTypes {
+interface Props {
 	text: string;
 	disabled: boolean;
 	onClick: () => void;

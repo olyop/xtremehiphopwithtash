@@ -132,10 +132,6 @@ const SessionPage: FC = () => {
 										? `${session.equipmentHired ?? 0} / ${session.equipmentAvailable}`
 										: "No steps available"}
 								</p>
-								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
-								<p>
-									{session.capacityBooked ?? 0} / {session.capacityAvailable}
-								</p>
 								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">views</p>
 								<ViewsSession session={session as Session} />
 							</Fragment>

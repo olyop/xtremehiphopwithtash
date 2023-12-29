@@ -241,4 +241,14 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Integer.class);
 	}
+
+	public boolean existsBySessionAndStudentAndCancelled(UUID sessionID, String studentID) {
+		String sql = query.EXISTS_BY_SESSION_ID_AND_STUDENT_ID_AND_CANCELLED;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("sessionID", sessionID);
+		paramSource.addValue("studentID", studentID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
 }

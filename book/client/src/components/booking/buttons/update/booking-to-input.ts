@@ -1,4 +1,4 @@
-import { Booking, BookingInput } from "../../generated-types";
+import { Booking, BookingInput } from "../../../../generated-types";
 
 export const bookingToInput = ({
 	notes,

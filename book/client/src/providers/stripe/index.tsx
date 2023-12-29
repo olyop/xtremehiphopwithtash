@@ -2,11 +2,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { FC, PropsWithChildren, createElement } from "react";
 
-const stripe = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-
-const StripeProvider: FC<PropsWithChildren<PropTypes>> = ({ children, clientSecret }) => (
+const StripeProvider: FC<PropsWithChildren<Props>> = ({ children, clientSecret }) => (
 	<Elements
-		stripe={stripe}
+		stripe={loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)}
 		options={{
 			clientSecret,
 		}}
@@ -15,7 +13,7 @@ const StripeProvider: FC<PropsWithChildren<PropTypes>> = ({ children, clientSecr
 	</Elements>
 );
 
-interface PropTypes {
+interface Props {
 	clientSecret: string;
 }
 

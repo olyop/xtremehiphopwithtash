@@ -2,6 +2,9 @@ query sessionViews($sessionID: UUID!) {
 	getSessionByID(sessionID: $sessionID) {
 		sessionID
 		views {
+			hasBooked
+			hasCancelled
+			createdAt
 			student {
 				studentID
 				details {
@@ -15,8 +18,6 @@ query sessionViews($sessionID: UUID!) {
 					createdAt
 				}
 			}
-			hasBooked
-			createdAt
 		}
 	}
 }

@@ -3,7 +3,6 @@ node_modules
 *.class
 *.war
 
-book/client/.env
 book/client/.env.local
 book/client/.env.development.local
 book/client/.env.testing.local

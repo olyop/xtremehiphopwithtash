@@ -4,7 +4,7 @@ import { FC, createElement, useEffect, useState } from "react";
 import Button from "../../../components/button";
 import { useHasMounted } from "../../../hooks";
 
-const ToPaymentButton: FC<PropTypes> = ({ onClick }) => {
+const ToPaymentButton: FC<Props> = ({ onClick }) => {
 	const hasMounted = useHasMounted();
 	const [text, setText] = useState("Next");
 
@@ -39,7 +39,7 @@ const ToPaymentButton: FC<PropTypes> = ({ onClick }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	onClick: () => void;
 }
 

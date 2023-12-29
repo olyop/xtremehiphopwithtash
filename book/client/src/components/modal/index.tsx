@@ -6,7 +6,7 @@ import { useKeyPress } from "../../hooks";
 import Button from "../button";
 import FormError from "../form-error";
 
-const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
+const Modal: FC<PropsWithChildren<ModalProps>> = ({
 	title,
 	titleContent,
 	subTitle,
@@ -91,7 +91,7 @@ const Modal: FC<PropsWithChildren<ModalPropTypes>> = ({
 	);
 };
 
-interface ModalPropTypes {
+interface ModalProps {
 	isOpen: boolean;
 	title?: string;
 	titleContent?: ReactNode;

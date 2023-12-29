@@ -404,6 +404,12 @@ public class BookingService {
 		return bookingDAO.existsBySessionAndStudent(sessionID, studentID);
 	}
 
+	public boolean retreiveHasCancelled(UUID sessionID, String studentID) {
+		sessionValidator.validateID(sessionID);
+
+		return bookingDAO.existsBySessionAndStudentAndCancelled(sessionID, studentID);
+	}
+
 	public void checkIn(UUID bookingID, boolean hasCheckedIn) {
 		validateID(bookingID);
 

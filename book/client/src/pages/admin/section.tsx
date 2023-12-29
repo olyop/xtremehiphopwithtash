@@ -1,7 +1,7 @@
 import { ReactNode, createElement } from "react";
 
 // eslint-disable-next-line @typescript-eslint/comma-dangle
-const Section = <T,>({ title, subTitle, items, renderItem, create }: PropTypes<T>) => (
+const Section = <T,>({ title, subTitle, items, renderItem, create }: Props<T>) => (
 	<div className="flex flex-col items-start gap-2">
 		<div>
 			<h2 className="text-2xl">{title}</h2>
@@ -20,7 +20,7 @@ const Section = <T,>({ title, subTitle, items, renderItem, create }: PropTypes<T
 	</div>
 );
 
-interface PropTypes<T> {
+interface Props<T> {
 	title: string;
 	subTitle?: string | undefined;
 	items: readonly T[] | null | undefined;

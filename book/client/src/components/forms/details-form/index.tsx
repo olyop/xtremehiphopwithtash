@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 import { DetailsInput } from "../../../generated-types";
 import Input, { InputOnChange, InputType } from "../../input";
 
-const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCreateAccount = false }) => {
+const DetailsForm: FC<Props> = ({ input, onChange, hideNotes = false, isCreateAccount = false }) => {
 	const handleChange =
 		(key: keyof DetailsInput): InputOnChange =>
 		value => {
@@ -67,7 +67,7 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCrea
 				type={InputType.TEXT}
 				onChange={handleChange("emailAddress")}
 				placeHolder="Email Address"
-				disabled={isCreateAccount && input.emailAddress !== undefined}
+				disabled={isCreateAccount}
 				note={hideNotes ? undefined : "Used for receiving booking confirmations"}
 			/>
 			<Input
@@ -78,13 +78,13 @@ const DetailsForm: FC<PropTypes> = ({ input, onChange, hideNotes = false, isCrea
 				value={input.instagramUsername ?? ""}
 				type={InputType.TEXT}
 				onChange={handleChange("instagramUsername")}
-				placeHolder="Username"
+				placeHolder="Instagram Username"
 			/>
 		</Fragment>
 	);
 };
 
-interface PropTypes {
+interface Props {
 	input: DetailsInput;
 	hideNotes?: boolean;
 	isCreateAccount?: boolean;

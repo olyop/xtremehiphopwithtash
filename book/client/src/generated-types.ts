@@ -464,6 +464,7 @@ export type SessionView = {
 	readonly __typename: "SessionView";
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly hasBooked: Scalars["Boolean"]["output"];
+	readonly hasCancelled: Scalars["Boolean"]["output"];
 	readonly student: Student;
 };
 
@@ -1235,6 +1236,7 @@ export type SessionViewsQuery = {
 		readonly views: ReadonlyArray<
 			{
 				readonly hasBooked: boolean;
+				readonly hasCancelled: boolean;
 				readonly createdAt: number;
 				readonly student: {
 					readonly studentID: string;

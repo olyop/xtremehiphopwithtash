@@ -32,7 +32,7 @@ const createClassName = (type: InputType, value: InputValue, className: string |
 			: ""
 	} ${className ?? ""}`;
 
-const Input: FC<InputPropTypes> = ({
+const Input: FC<InputProps> = ({
 	id,
 	type,
 	name,
@@ -155,7 +155,9 @@ const Input: FC<InputPropTypes> = ({
 			/>
 			{type === InputType.LIST && items && selectOptions && (
 				<div className="absolute flex items-center gap-1 top-[1.65rem] left-2 -translate-y-1/2 w-1/2 bg-white">
-					{items.map(item => item && <Chip key={item?.text} chip={item} className="bg-white" />)}
+					{items.map(item => (
+						<Chip key={item.text} chip={item} className="bg-white" />
+					))}
 				</div>
 			)}
 			{type === InputType.PRICE && (value === null || typeof value === "number") && (
@@ -182,7 +184,6 @@ const Input: FC<InputPropTypes> = ({
 						name={name}
 						disabled={disabled}
 						id={`${id}-select`}
-						placeholder={placeHolder}
 						onChange={handleSelectChange}
 						className={`${createClassName(type, value, className, disabled)} appearance-none ${
 							disabled ? "text-gray-400" : ""
@@ -215,7 +216,6 @@ const Input: FC<InputPropTypes> = ({
 						id={id}
 						name={name}
 						disabled={disabled}
-						placeholder={placeHolder}
 						onChange={handleSelectChange}
 						value={determineInputValue(type, value, selectOptions)}
 						className={`${createClassName(type, value, className, disabled)} appearance-none ${
@@ -286,7 +286,7 @@ const Input: FC<InputPropTypes> = ({
 	);
 };
 
-interface InputPropTypes {
+interface InputProps {
 	id: string;
 	name: string;
 	note?: ReactNode;

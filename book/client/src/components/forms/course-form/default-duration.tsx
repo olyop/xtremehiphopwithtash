@@ -8,7 +8,7 @@ const selectOptions: SelectOption[] = Array.from({ length: 31 }).map((_, index) 
 	optionID: String(5 * (index + 6)),
 }));
 
-const DefaultDurationInput: FC<PropTypes> = ({ value, onChange }) => {
+const DefaultDurationInput: FC<Props> = ({ value, onChange }) => {
 	const handleChange: InputOnChange = inputValue => {
 		if (typeof inputValue === "string") {
 			onChange(prevState => ({
@@ -32,7 +32,7 @@ const DefaultDurationInput: FC<PropTypes> = ({ value, onChange }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	value: number;
 	onChange: Dispatch<SetStateAction<CourseInput>>;
 }

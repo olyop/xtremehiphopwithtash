@@ -1,18 +1,18 @@
 import { useLazyQuery } from "@apollo/client";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
-import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect } from "react";
 
 import Button from "../../../components/button";
 import Modal from "../../../components/modal";
-import { Session, SessionViewsQuery, SessionViewsQueryVariables } from "../../../generated-types";
+import { Session, SessionView, SessionViewsQuery, SessionViewsQueryVariables } from "../../../generated-types";
 import { dateTimeFormatter, viewsFormatter } from "../../../helpers/intl";
 import { determineDetailsFullName } from "../../../helpers/util";
 import { useModal } from "../../../hooks";
+import { determineSessionViewIcon } from "./determine-icon";
 import SESSION_VIEWS from "./session-views.graphql";
 
-const ViewsSession: FC<PropTypes> = ({ session }) => {
+const ViewsSession: FC<Props> = ({ session }) => {
 	const [isModalOpen, openModal, closeModal] = useModal();
 
 	const [getViews, { data, error }] = useLazyQuery<SessionViewsQuery, SessionViewsQueryVariables>(SESSION_VIEWS, {
@@ -33,10 +33,10 @@ const ViewsSession: FC<PropTypes> = ({ session }) => {
 			<Modal
 				title="Session Views"
 				className="z-30"
-				icon={className => <EyeIcon className={className} />}
 				isOpen={isModalOpen}
 				onClose={closeModal}
 				contentClassName="flex flex-col gap-4"
+				icon={className => <EyeIcon className={className} />}
 				error={error}
 				children={
 					data && (
@@ -44,9 +44,13 @@ const ViewsSession: FC<PropTypes> = ({ session }) => {
 							{data.getSessionByID.views ? (
 								<Fragment>
 									{data.getSessionByID.views.map(view => (
-										<div key={view.student.studentID} className="p-2 border-b last:border-none flex justify-between">
+										<div
+											key={view.student.studentID}
+											data-id={view.student.studentID}
+											className="p-2 border-b last:border-none flex justify-between"
+										>
 											<div className="flex flex-row items-center gap-2">
-												<CheckIcon className={`w-4 h-4 text-green-500 ${view.hasBooked ? "visible" : "invisible"}`} />
+												{determineSessionViewIcon(view as SessionView)}
 												<p>{determineDetailsFullName(view.student.details)}</p>
 											</div>
 											<p>{dateTimeFormatter.format(view.createdAt * 1000)}</p>
@@ -72,7 +76,7 @@ const ViewsSession: FC<PropTypes> = ({ session }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 }
 

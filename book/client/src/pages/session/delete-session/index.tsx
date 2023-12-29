@@ -12,7 +12,7 @@ import { useModal } from "../../../hooks";
 import SessionSubtitle from "../session-subtitle";
 import DELETE_SESSION from "./delete-session.graphql";
 
-const DeleteSession: FC<PropTypes> = ({ session }) => {
+const DeleteSession: FC<Props> = ({ session }) => {
 	const navigate = useNavigate();
 	const [isModalOpen, openModal, closeModal] = useModal();
 
@@ -76,7 +76,7 @@ const DeleteSession: FC<PropTypes> = ({ session }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 }
 

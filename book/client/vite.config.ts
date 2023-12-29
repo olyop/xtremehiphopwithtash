@@ -65,6 +65,7 @@ const determineContentSecurityPolicy = (mode: string) => {
 				"https://*.google.com",
 				"https://*.gstatic.com",
 				"https://*.googleusercontent.com",
+				"https://xtremehiphopwithtash.com",
 				isDevelopment ? "https://development.xtremehiphopwithtash.com" : "",
 			],
 			manifestSrc: ["'none'"],
@@ -98,10 +99,13 @@ export default defineConfig(async ({ mode }) => {
 	return {
 		plugins: mode === "production" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
 		server: {
-			https: {
-				cert: await readFile(process.env["TLS_CERT_PATH"]!),
-				key: await readFile(process.env["TLS_KEY_PATH"]!),
-			},
+			https:
+				mode === "development"
+					? {
+							cert: await readFile(process.env["TLS_CERT_PATH"]!),
+							key: await readFile(process.env["TLS_KEY_PATH"]!),
+					  }
+					: {},
 		},
 	};
 });

@@ -1,7 +1,7 @@
 {
 	"extends": "@oly_op",
 	"parserOptions": {
-		"project": "./tsconfig.json"
+		"project": "./tsconfig.eslint.json"
 	},
 	"rules": {
 		"@typescript-eslint/no-non-null-assertion": "off",

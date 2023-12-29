@@ -2,7 +2,7 @@ import { FC, ReactNode, createElement } from "react";
 
 const baseIconClassName = "h-5 w-5";
 
-const Button: FC<ButtonPropTypes> = ({
+const Button: FC<ButtonProps> = ({
 	id,
 	transparent = false,
 	isSubmit = false,
@@ -45,7 +45,7 @@ const Button: FC<ButtonPropTypes> = ({
 	</button>
 );
 
-export interface ButtonPropTypes {
+export interface ButtonProps {
 	id?: string;
 	transparent?: boolean;
 	isSubmit?: boolean;

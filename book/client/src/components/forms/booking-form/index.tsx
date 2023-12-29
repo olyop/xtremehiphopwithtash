@@ -7,7 +7,7 @@ import { centsToDollars } from "../../../utils";
 import Input, { InputOnChange, InputType } from "../../input";
 import BookingQuantities from "./quantities";
 
-const BookingForm: FC<PropTypes> = ({
+const BookingForm: FC<Props> = ({
 	input,
 	onChange,
 	isEditing = false,
@@ -62,7 +62,7 @@ const BookingForm: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	input: BookingInput;
 	isEditing?: boolean;

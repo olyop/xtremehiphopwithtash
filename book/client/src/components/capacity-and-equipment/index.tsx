@@ -7,7 +7,7 @@ const selectOptions: SelectOption[] = Array.from({ length: 100 }).map((_, index)
 	optionID: `${index + 1}`,
 }));
 
-const CapacityAndEquipmentForm: FC<PropTypes> = ({
+const CapacityAndEquipmentForm: FC<Props> = ({
 	capacityAvailable,
 	equipmentAvailable,
 	onCapacityAvailableChange,
@@ -52,7 +52,7 @@ const CapacityAndEquipmentForm: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	capacityAvailable: number;
 	equipmentAvailable: number | null;
 	onCapacityAvailableChange: InputOnChange;

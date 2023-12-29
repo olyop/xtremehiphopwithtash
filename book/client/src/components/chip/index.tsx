@@ -3,7 +3,7 @@ import { FC, ReactNode, createElement } from "react";
 
 import Button from "../button";
 
-const Chip: FC<PropTypes> = ({ chip: { icon, photo, text, onRemove }, onClick, className }) => (
+const Chip: FC<Props> = ({ chip: { icon, photo, text, onRemove }, onClick, className }) => (
 	<div
 		onClick={onClick}
 		role={onClick ? "button" : undefined}
@@ -37,7 +37,7 @@ export interface ChipInput {
 	onRemove?: () => void;
 }
 
-interface PropTypes {
+interface Props {
 	chip: ChipInput;
 	onClick?: () => void;
 	className?: string;

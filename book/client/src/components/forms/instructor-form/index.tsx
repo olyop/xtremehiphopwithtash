@@ -4,7 +4,7 @@ import { DetailsInput, InstructorInput } from "../../../generated-types";
 import Input, { InputOnChange, InputType } from "../../input";
 import DetailsForm from "../details-form";
 
-const InstructorForm: FC<PropTypes> = ({ input, onChange }) => {
+const InstructorForm: FC<Props> = ({ input, onChange }) => {
 	const handleChange =
 		(key: keyof InstructorInput): InputOnChange =>
 		value => {
@@ -38,7 +38,7 @@ const InstructorForm: FC<PropTypes> = ({ input, onChange }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	input: InstructorInput;
 	onChange: Dispatch<SetStateAction<InstructorInput>>;
 }

@@ -7,7 +7,7 @@ import CapacityAndEquipmentForm from "../../capacity-and-equipment";
 import Input, { InputOnChange, InputType, mapListToChips, mapListToSelectOptions } from "../../input";
 import GET_SESSION_FORM_DATA from "./get-session-form-data.graphql";
 
-const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
+const SessionForm: FC<Props> = ({ input, onChange, onCourseReset }) => {
 	const { data } = useQuery<GetSessionFormDataQuery>(GET_SESSION_FORM_DATA);
 
 	const handleChange =
@@ -198,7 +198,7 @@ const SessionForm: FC<PropTypes> = ({ input, onChange, onCourseReset }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	input: SessionInputType;
 	onChange: Dispatch<SetStateAction<SessionInputType>>;
 	onCourseReset?: () => void;

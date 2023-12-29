@@ -12,7 +12,7 @@ import { currencyDollarsFormatter } from "../../helpers/intl";
 import { useModal } from "../../hooks";
 import { centsToDollars } from "../../utils";
 
-const EquipmentHireWarning: FC<PropTypes> = ({ session, bookingInput, onUpdateEquipmentHire }) => {
+const EquipmentHireWarning: FC<Props> = ({ session, bookingInput, onUpdateEquipmentHire }) => {
 	const [showEquipmentHireInput, setShowEquipmentHireInput] = useState(false);
 	const [equipmentQuantity, setEquipmentQuantity] = useState(bookingInput.equipmentQuantity);
 	const [isEquipmentHireWarningOpen, openEquipmentHireWarning, closeEquipmentHireWarning] = useModal();
@@ -101,7 +101,7 @@ const EquipmentHireWarning: FC<PropTypes> = ({ session, bookingInput, onUpdateEq
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	bookingInput: BookingInput;
 	onUpdateEquipmentHire: (equipmentQuantity: number | null) => void;

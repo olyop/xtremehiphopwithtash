@@ -13,14 +13,14 @@ import StripeProvider from "../../../providers/stripe";
 import CardForm from "./card-form";
 import CREATE_PAYMENT_INTENT from "./create-payment-intent.graphql";
 
-const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, onSubmit, setIsPaying }) => {
+const PaymentPageStripe: FC<Props> = ({ reCaptcha, bookingInput, onSubmit, setIsPaying }) => {
 	const paymentMethodRef = useRef<PaymentMethod | null>(null);
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
 
 	const [createPaymentIntent, { data, error }] = useMutation<IntentData, IntentVars>(CREATE_PAYMENT_INTENT);
 
 	const handleCreatePaymentIntent = () => {
-		if (bookingInput && reCaptcha) {
+		if (reCaptcha) {
 			void createPaymentIntent({
 				variables: {
 					reCaptcha,
@@ -33,7 +33,7 @@ const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, onSubmit, s
 	useEffect(() => {
 		if (bookingInput.paymentMethod === PaymentMethod.CARD && paymentMethodRef.current !== bookingInput.paymentMethod) {
 			paymentMethodRef.current = bookingInput.paymentMethod;
-			void handleCreatePaymentIntent();
+			handleCreatePaymentIntent();
 		}
 
 		if (paymentMethodRef.current === null) {
@@ -66,7 +66,7 @@ const PaymentPageStripe: FC<PropTypes> = ({ reCaptcha, bookingInput, onSubmit, s
 	);
 };
 
-interface PropTypes {
+interface Props {
 	reCaptcha: string | null;
 	onSubmit: () => void;
 	bookingInput: BookingInput;

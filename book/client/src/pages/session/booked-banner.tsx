@@ -3,7 +3,7 @@ import { FC, createElement } from "react";
 
 import { Session } from "../../generated-types";
 
-const SessionBookedBanner: FC<PropTypes> = ({ session }) => {
+const SessionBookedBanner: FC<Props> = ({ session }) => {
 	if (!session.hasBooked) {
 		return null;
 	}
@@ -16,7 +16,7 @@ const SessionBookedBanner: FC<PropTypes> = ({ session }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 }
 

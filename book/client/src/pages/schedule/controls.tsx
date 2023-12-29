@@ -33,7 +33,7 @@ const determineBackLabel = (breakpoint: Breakpoint) => {
 	}
 };
 
-const ScheduleControls: FC<PropTypes> = ({
+const ScheduleControls: FC<Props> = ({
 	isFirstDayToday,
 	isFirstDayInPast,
 	onReset,
@@ -90,7 +90,7 @@ const ScheduleControls: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	onReset: () => void;
 	breakpoint: Breakpoint;
 	onBackOneWeek: () => void;

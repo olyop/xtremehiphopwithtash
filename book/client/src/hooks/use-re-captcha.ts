@@ -1,32 +1,30 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
-export const useReCaptcha = () => {
-	const isLoadingRef = useRef(false);
+export const useReCaptcha = (action: string) => {
 	const { executeRecaptcha } = useGoogleReCaptcha();
 
-	const [reCaptchaToken, setReCaptchaToken] = useState<ReCaptchaToken>(null);
+	const [reCaptchaToken, setReCaptchaToken] = useState<string | null>(null);
+	const [reCaptchaError, setReCaptchaError] = useState<string | null>(null);
 
-	const executeReCaptcha = async (): Promise<ReCaptchaToken> => {
+	const executeReCaptcha = async () => {
 		if (executeRecaptcha) {
-			if (isLoadingRef.current) {
-				return reCaptchaToken;
-			} else {
-				try {
-					isLoadingRef.current = true;
-					return await executeRecaptcha(import.meta.env.VITE_GOOGLE_RECAPTCHA_ACTION);
-				} catch {
-					return null;
-				} finally {
-					isLoadingRef.current = false;
-				}
+			try {
+				const token = await executeRecaptcha(action);
+
+				setReCaptchaToken(token);
+			} catch (error) {
+				setReCaptchaError(error instanceof Error ? error.message : "Unknown error");
+				setReCaptchaToken(null);
 			}
-		} else {
-			return null;
 		}
 	};
 
-	return [reCaptchaToken, setReCaptchaToken, executeReCaptcha] as const;
-};
+	const getReCaptchaToken = () => {
+		setReCaptchaToken(null);
 
-type ReCaptchaToken = string | null;
+		void executeReCaptcha();
+	};
+
+	return [reCaptchaToken, reCaptchaError, getReCaptchaToken] as const;
+};

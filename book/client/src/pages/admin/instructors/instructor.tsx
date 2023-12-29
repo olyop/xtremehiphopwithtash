@@ -7,7 +7,7 @@ import { determineDetailsName } from "../../../helpers/util";
 import AdminEntity, { OnEditAndUpdate } from "../entity";
 import { mapInstructorToInput } from "../map-entity-to-input";
 
-const Instructor: FC<PropTypes> = ({
+const Instructor: FC<Props> = ({
 	instructor,
 	onUpdate,
 	onDelete,
@@ -36,7 +36,7 @@ const Instructor: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	instructor: InstructorType;
 	onUpdate: (input: InstructorInputType) => OnEditAndUpdate;
 	onDelete: OnEditAndUpdate;

@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,25 +18,25 @@ public class ReCaptchaService {
 
 	private final URL verifyUrl;
 	private final String secretKey;
-	private final String hostname;
 	private final String action;
 	private final double scoreMinimum;
+	private final List<String> allowedHostnames;
 
 	private final ObjectMapperCustom objectMapper;
 
 	public ReCaptchaService(
 		@Value("${google.recaptcha.verify.url}") URL verifyUrl,
 		@Value("${google.recaptcha.secret}") String secretKey,
-		@Value("${google.recaptcha.hostname}") String hostname,
 		@Value("${google.recaptcha.action}") String action,
 		@Value("${google.recaptcha.score.minimum}") double scoreMinimum,
+		@Value("#{'${google.recaptcha.allowed.hostnames}'.split(',')}") List<String> allowedHostnames,
 		ObjectMapperCustom objectMapper
 	) {
 		this.verifyUrl = verifyUrl;
 		this.secretKey = secretKey;
-		this.hostname = hostname;
 		this.action = action;
 		this.scoreMinimum = scoreMinimum;
+		this.allowedHostnames = allowedHostnames;
 
 		this.objectMapper = objectMapper;
 	}
@@ -105,16 +106,16 @@ public class ReCaptchaService {
 			throw new ReCaptchaError("Response is invalid");
 		}
 
-		if (!verifyResponse.getHostname().equals(hostname)) {
-			throw new ReCaptchaError("Hostname is invalid");
-		}
-
 		if (!verifyResponse.getAction().equals(action)) {
 			throw new ReCaptchaError("Action is invalid");
 		}
 
 		if (verifyResponse.getScore() < scoreMinimum) {
 			throw new ReCaptchaError("Score too low");
+		}
+
+		if (verifyResponse.getHostname() == null || !allowedHostnames.contains(verifyResponse.getHostname())) {
+			throw new ReCaptchaError("Hostname is invalid");
 		}
 	}
 }

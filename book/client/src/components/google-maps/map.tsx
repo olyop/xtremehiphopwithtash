@@ -11,7 +11,7 @@ import {
 	useState,
 } from "react";
 
-export const Map: FC<PropsWithChildren<PropTypes>> = ({ onClick, children, className, ...options }) => {
+export const Map: FC<PropsWithChildren<Props>> = ({ onClick, children, className, ...options }) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const [map, setMap] = useState<google.maps.Map>();
 
@@ -47,7 +47,7 @@ export const Map: FC<PropsWithChildren<PropTypes>> = ({ onClick, children, class
 	);
 };
 
-interface PropTypes extends google.maps.MapOptions {
+interface Props extends google.maps.MapOptions {
 	className?: string;
 	onClick?: () => void;
 }

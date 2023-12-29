@@ -14,7 +14,7 @@ import { Map, Marker } from "../google-maps";
 import Modal from "../modal";
 import { createGoogleMapsDirectionsURL, createOpenInGoogleMapsURL, getLocation } from "./helpers";
 
-const LocationChip: FC<PropTypes> = ({ location }) => {
+const LocationChip: FC<Props> = ({ location }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 	const [directionsLoading, setDirectionsLoading] = useState(false);
 	const [directionsButtonLabel, setDirectionsButtonLabel] = useState("Directions");
@@ -139,7 +139,7 @@ const LocationChip: FC<PropTypes> = ({ location }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	location: Location;
 }
 

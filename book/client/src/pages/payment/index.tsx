@@ -36,7 +36,10 @@ const PaymentPage: FC = () => {
 	const hasMounted = useHasMounted();
 	const { isAuthenticated, user } = useAuth0();
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [reCaptchaToken, setReCaptchaToken, executeReCaptcha] = useReCaptcha();
+
+	const [reCaptchaToken, reCaptchaError, getReCaptchaToken] = useReCaptcha(
+		import.meta.env.VITE_GOOGLE_RECAPTCHA_ACTION,
+	);
 
 	const [isPaying, setIsPaying] = useState(false);
 	const [session, setSession] = useState<Session | null>(null);
@@ -47,7 +50,7 @@ const PaymentPage: FC = () => {
 	const [createBooking, createBookingResult] = useMutation<CreateData, CreateVars>(CREATE_BOOKING);
 
 	const refetchPageData = async (input: BookingInput) => {
-		const token = await executeReCaptcha();
+		getReCaptchaToken();
 
 		const { data } = await apollo.query<PageData, PageVars>({
 			query: GET_PAYMENT_SCREEN,
@@ -62,7 +65,6 @@ const PaymentPage: FC = () => {
 
 		setBookingCost(getBookingCost);
 		setSession(getSessionByID as Session);
-		setReCaptchaToken(token);
 		setBookingInput({
 			...input,
 			paymentMethod:
@@ -203,7 +205,11 @@ const PaymentPage: FC = () => {
 				  bookingCost.finalCost === 0 ? (
 					<Fragment>
 						<FormError error={createBookingResult.error} />
-						<PaymentButton text="Book Now" onClick={handleCreateBooking} disabled={reCaptchaToken === null} />
+						<PaymentButton
+							text={reCaptchaError ?? "Book Now"}
+							onClick={handleCreateBooking}
+							disabled={reCaptchaToken === null}
+						/>
 					</Fragment>
 				) : null}
 				{bookingInput.paymentMethod !== PaymentMethod.CARD && isReCaptchaError && (

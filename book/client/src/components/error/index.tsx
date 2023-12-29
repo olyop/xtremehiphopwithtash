@@ -2,7 +2,7 @@ import ExclamationCircleIcon from "@heroicons/react/24/outline/ExclamationCircle
 import ExclamationTriangleIcon from "@heroicons/react/24/outline/ExclamationTriangleIcon";
 import { FC, createElement } from "react";
 
-const Error: FC<PropTypes> = ({ errors, isBadError = false }) => (
+const Error: FC<Props> = ({ errors, isBadError = false }) => (
 	<div
 		className={`rounded border px-4 py-3 flex flex-col gap-2 ${
 			isBadError ? " border-red-500 bg-red-50" : " border-orange-500 bg-orange-50"
@@ -24,7 +24,7 @@ const Error: FC<PropTypes> = ({ errors, isBadError = false }) => (
 	</div>
 );
 
-interface PropTypes {
+interface Props {
 	errors: string[];
 	isBadError?: boolean;
 }

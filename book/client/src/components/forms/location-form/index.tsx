@@ -7,7 +7,7 @@ import { GoogleMaps } from "../../../providers/google-maps";
 import { Map, Marker } from "../../google-maps";
 import Input, { InputOnChange, InputType } from "../../input";
 
-const LocationForm: FC<PropTypes> = ({ input, coordinates, onChange }) => {
+const LocationForm: FC<Props> = ({ input, coordinates, onChange }) => {
 	const handleChange =
 		(key: keyof LocationInput): InputOnChange =>
 		value => {
@@ -102,7 +102,7 @@ const LocationForm: FC<PropTypes> = ({ input, coordinates, onChange }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	input: LocationInput;
 	coordinates: Coordinates | null;
 	onChange: Dispatch<SetStateAction<LocationInput>>;

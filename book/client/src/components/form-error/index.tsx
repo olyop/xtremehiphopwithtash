@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 
 import Error from "../error";
 
-const FormError: FC<PropTypes> = ({ error }) => (
+const FormError: FC<Props> = ({ error }) => (
 	<Fragment>
 		{error && (
 			<Fragment>
@@ -28,7 +28,7 @@ const FormError: FC<PropTypes> = ({ error }) => (
 	</Fragment>
 );
 
-interface PropTypes {
+interface Props {
 	error: ApolloError | undefined;
 }
 

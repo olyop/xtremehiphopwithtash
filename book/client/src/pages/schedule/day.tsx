@@ -8,7 +8,7 @@ import { Day as DayType } from "./types";
 
 const hardcodedUnavailableDayRange = [new Date("2023-10-26T00:00:00"), new Date("2023-10-30T00:00:00")] as const;
 
-const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
+const Day: FC<Props> = ({ day, onSessionUpdate }) => {
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
 	const isUnavailable = isDateInBetweenRange(day.unix, hardcodedUnavailableDayRange);
@@ -39,7 +39,7 @@ const Day: FC<PropTypes> = ({ day, onSessionUpdate }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	day: DayType;
 	onSessionUpdate: () => void;
 }

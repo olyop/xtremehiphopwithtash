@@ -3,7 +3,7 @@ import { FC, createElement } from "react";
 
 import Button from "../../components/button";
 
-const BackButton: FC<PropTypes> = ({ onClick, invisible }) => (
+const BackButton: FC<Props> = ({ onClick, invisible }) => (
 	<Button
 		transparent
 		text="Back"
@@ -14,7 +14,7 @@ const BackButton: FC<PropTypes> = ({ onClick, invisible }) => (
 	/>
 );
 
-interface PropTypes {
+interface Props {
 	onClick?: () => void;
 	invisible: boolean;
 }

@@ -6,7 +6,7 @@ import { useModal } from "../../hooks";
 import Chip from "../chip";
 import Modal from "../modal";
 
-const CourseChip: FC<PropTypes> = ({ course }) => {
+const CourseChip: FC<Props> = ({ course }) => {
 	const [isOpen, openModal, closeModal] = useModal();
 	return (
 		<Fragment>
@@ -42,7 +42,7 @@ const CourseChip: FC<PropTypes> = ({ course }) => {
 	);
 };
 
-interface PropTypes {
+interface Props {
 	course: Course;
 }
 

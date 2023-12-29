@@ -14,7 +14,7 @@ import GET_SESSION_PAGE from "../get-session-page.graphql";
 import SessionSubtitle from "../session-subtitle";
 import UPDATE_SESSION from "./update-session.graphql";
 
-const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
+const UpdateSession: FC<Props> = ({ session, onEdit }) => {
 	const [isModalOpen, openModal, closeModal] = useModal();
 
 	const [updateSession, { data, error, loading }] = useMutation<Data, Vars>(UPDATE_SESSION);
@@ -108,7 +108,7 @@ const UpdateSession: FC<PropTypes> = ({ session, onEdit }) => {
 type Data = UpdateSessionMutation;
 type Vars = UpdateSessionMutationVariables;
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	onEdit: () => void;
 }

@@ -64,4 +64,8 @@ class BookingQuery {
 	final String SELECT_GROSS_SUM = sqlUtil.read("select-gross-sum");
 
 	final String SELECT_GROSS_BY_SESSION_ID = sqlUtil.read("select-gross-by-session-id");
+
+	public final String EXISTS_BY_SESSION_ID_AND_STUDENT_ID_AND_CANCELLED = sqlUtil.read(
+		"exists-by-session-id-and-student-id-and-cancelled"
+	);
 }

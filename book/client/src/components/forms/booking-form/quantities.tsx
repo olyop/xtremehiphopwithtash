@@ -3,7 +3,7 @@ import { FC, Fragment, createElement } from "react";
 import { Maybe, Session } from "../../../generated-types";
 import Input, { InputOnChange, InputType, SelectOption } from "../../input";
 
-const BookingQuantities: FC<PropTypes> = ({
+const BookingQuantities: FC<Props> = ({
 	session,
 	isEditing,
 	bookingQuantity,
@@ -75,7 +75,7 @@ const BookingQuantities: FC<PropTypes> = ({
 	);
 };
 
-interface PropTypes {
+interface Props {
 	session: Session;
 	bookingQuantity: number;
 	isEditing: boolean;
