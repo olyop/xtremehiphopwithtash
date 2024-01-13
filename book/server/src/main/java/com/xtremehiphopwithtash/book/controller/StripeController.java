@@ -8,6 +8,7 @@ import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
 import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
+import com.xtremehiphopwithtash.book.other.ObjectMapperCustom;
 import com.xtremehiphopwithtash.book.service.database.booking.BookingService;
 import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
@@ -28,39 +29,49 @@ public class StripeController {
 	private final StripeService stripeService;
 	private final BookingService bookingService;
 	private final StudentService studentService;
-	private final ObjectMapper objectMapper;
+	private final ObjectMapperCustom objectMapperCustom;
 
-	public StripeController(StripeService stripeService, StudentService studentService, BookingService bookingService) {
+	public StripeController(
+		StripeService stripeService,
+		StudentService studentService,
+		BookingService bookingService,
+		ObjectMapperCustom objectMapperCustom
+	) {
 		this.stripeService = stripeService;
 		this.bookingService = bookingService;
 		this.studentService = studentService;
-
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.registerModule(new Jdk8Module());
+		this.objectMapperCustom = objectMapperCustom;
 	}
 
 	@PostMapping("/webhook")
-	public void handleWebHook(@RequestHeader("Stripe-Signature") String signature, @RequestBody String payload)
-		throws JsonMappingException, JsonProcessingException {
+	public void handleWebHook(@RequestHeader("Stripe-Signature") String signature, @RequestBody String payload) {
 		Event event = stripeService.webhook().constructPaymentEvent(payload, signature);
 		StripeObject stripeObject = stripeService.webhook().constructObject(event);
 
 		if (event.getType().equals("payment_intent.succeeded")) {
-			PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
-
-			String studentID = paymentIntent.getMetadata().get("studentID");
-			String bookingInputJson = paymentIntent.getMetadata().get("bookingInput");
-
-			if (studentID == null || bookingInputJson == null) {
-				return;
-			}
-
-			validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
-
-			BookingInput bookingInput = objectMapper.readValue(bookingInputJson, BookingInput.class);
-
-			bookingService.create(bookingInput, studentID, paymentIntent, false);
+			handlePaymentIntentSucceeded((PaymentIntent) stripeObject);
+		} else {
+			throw new ResolverException("Unhandled event type");
 		}
+	}
+
+	private void handlePaymentIntentSucceeded(PaymentIntent paymentIntent) {
+		String studentID = paymentIntent.getMetadata().get("studentID");
+		String bookingInputJson = paymentIntent.getMetadata().get("bookingInput");
+
+		if (studentID == null) {
+			throw new ResolverException("Payment intent metadata missing student ID");
+		}
+
+		if (bookingInputJson == null) {
+			throw new ResolverException("Payment intent metadata missing booking input");
+		}
+
+		validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
+
+		BookingInput bookingInput = parseBookingInput(bookingInputJson);
+
+		bookingService.create(bookingInput, studentID, paymentIntent, false);
 	}
 
 	private void validatePaymentIntentCustomerIdMatches(String studentID, PaymentIntent paymentIntent) {
@@ -68,6 +79,14 @@ public class StripeController {
 
 		if (!paymentIntent.getCustomer().equals(student.getStripeCustomerID())) {
 			throw new ResolverException("Payment intent customer ID does not match student");
+		}
+	}
+
+	private BookingInput parseBookingInput(String bookingInputJson) {
+		try {
+			return objectMapperCustom.instance().readValue(bookingInputJson, BookingInput.class);
+		} catch (JsonProcessingException e) {
+			throw new ResolverException("Unable to parse booking input");
 		}
 	}
 }

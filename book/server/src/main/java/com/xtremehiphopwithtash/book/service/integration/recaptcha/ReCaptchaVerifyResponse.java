@@ -1,11 +1,14 @@
 package com.xtremehiphopwithtash.book.service.integration.recaptcha;
 
-class VerifyResponse {
+import java.util.List;
+
+class ReCaptchaVerifyResponse {
 
 	private boolean success;
 	private String hostname;
 	private float score;
 	private String action;
+	private List<String> errorCodes;
 
 	boolean getSuccess() {
 		return success;
@@ -37,5 +40,13 @@ class VerifyResponse {
 
 	void setAction(String action) {
 		this.action = action;
+	}
+
+	List<String> getErrorCodes() {
+		return errorCodes;
+	}
+
+	void setErrorCodes(List<String> errorCodes) {
+		this.errorCodes = errorCodes;
 	}
 }

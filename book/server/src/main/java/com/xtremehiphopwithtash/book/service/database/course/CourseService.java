@@ -103,7 +103,7 @@ public class CourseService implements EntityServiceInter<Course, CourseInput, UU
 	private void handleDefaultInstructors(List<UUID> defaultInstructorsIDs, UUID courseID) {
 		courseDefaultInstructorDAO.deleteByCourseID(courseID);
 
-		Short index = 0;
+		short index = 0;
 
 		for (UUID instructorID : defaultInstructorsIDs) {
 			CourseDefaultInstructor courseDefaultInstructor = new CourseDefaultInstructor();

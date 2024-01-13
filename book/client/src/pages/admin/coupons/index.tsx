@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useState } from "react";

@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
 import { FC, Fragment, createElement, useContext, useEffect } from "react";

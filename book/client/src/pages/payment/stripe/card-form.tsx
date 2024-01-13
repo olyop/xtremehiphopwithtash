@@ -1,4 +1,5 @@
-import { ApolloError, useApolloClient } from "@apollo/client";
+import { ApolloError } from "@apollo/client/errors";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripePaymentElementChangeEvent } from "@stripe/stripe-js";
 import { Dispatch, FC, SetStateAction, createElement, useEffect, useState } from "react";

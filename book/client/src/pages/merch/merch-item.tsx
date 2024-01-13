@@ -5,6 +5,7 @@ import Modal from "../../components/modal";
 import { MerchItem as MerchItemType } from "../../generated-types";
 import { currencyDollarsFormatter } from "../../helpers/intl";
 import { useModal } from "../../hooks";
+import { centsToDollars } from "../../utils";
 
 const MerchItem: FC<Props> = ({ merchItem }) => {
 	const [isOpen, openModal, closeModal] = useModal();
@@ -35,7 +36,7 @@ const MerchItem: FC<Props> = ({ merchItem }) => {
 					<p className="text-sm text-gray-500">{merchItem.sizesAvailable?.join(", ") ?? "All Sizes"}</p>
 				</div>
 				<div className="flex flex-col border-t px-4 py-3 md:px-5 md:py-4">
-					<p className="font-bold">{currencyDollarsFormatter.format(merchItem.price / 100)}</p>
+					<p className="font-bold">{currencyDollarsFormatter.format(centsToDollars(merchItem.price))}</p>
 					<p className="text-[0.7rem] text-gray-400">(excl. shipping)</p>
 				</div>
 			</button>
@@ -46,7 +47,7 @@ const MerchItem: FC<Props> = ({ merchItem }) => {
 				title={merchItem.name}
 				subTitle={
 					<Fragment>
-						<span>Price: {currencyDollarsFormatter.format(merchItem.price / 100)} (excl. shipping)</span>
+						<span>Price: {currencyDollarsFormatter.format(centsToDollars(merchItem.price))} (excl. shipping)</span>
 						<br />
 						<span>Sizes Available: {merchItem.sizesAvailable?.join(", ") ?? "All Sizes"}</span>
 					</Fragment>

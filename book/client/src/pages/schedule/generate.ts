@@ -1,5 +1,5 @@
-import { ApolloError } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core/ApolloClient";
+import { ApolloError } from "@apollo/client/errors";
 
 import { Session } from "../../generated-types";
 import {
@@ -34,12 +34,10 @@ export const determineStartAndEndDate = (
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		startingDate = minusThreeDays(startOfDay);
 		endingDate = addNineDays(startOfDay);
-	} else if (breakpoint === Breakpoint.LARGE) {
+	} else {
 		const mondayOfWeek = getMonday(startOfDay);
 		startingDate = minusOneWeek(mondayOfWeek);
 		endingDate = addOneMonth(startingDate);
-	} else {
-		throw new Error("Invalid breakpoint");
 	}
 
 	return [startingDate, endingDate];
@@ -50,10 +48,8 @@ const determineNumberOfDays = (breakpoint: Breakpoint) => {
 		return 6;
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return 12;
-	} else if (breakpoint === Breakpoint.LARGE) {
-		return 28;
 	} else {
-		throw new Error("Invalid breakpoint");
+		return 28;
 	}
 };
 

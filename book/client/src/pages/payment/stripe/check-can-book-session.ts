@@ -1,4 +1,5 @@
-import { ApolloClient, ApolloError } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
+import { ApolloError } from "@apollo/client/errors";
 
 import { BookingInput, GetCheckSessionQuery, GetCheckSessionQueryVariables } from "../../../generated-types";
 import CHECK_SESSION from "./check-session.graphql";

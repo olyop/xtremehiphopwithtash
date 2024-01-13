@@ -41,24 +41,28 @@ public class ReCaptchaService {
 		this.objectMapper = objectMapper;
 	}
 
-	public void validateResponse(String response, String remoteAddress) {
-		if (response == null || response.isBlank()) {
-			throw new ReCaptchaError("Response cannot be null or empty");
-		}
+	public void validate(String token, String remoteAddress) {
+		validateToken(token);
 
-		VerifyResponse verifyResponse;
+		ReCaptchaVerifyResponse verifyResponse;
 
 		try {
-			verifyResponse = retreiveResponse(response, remoteAddress);
+			verifyResponse = retreiveResponse(token, remoteAddress);
 		} catch (Exception e) {
 			throw new ReCaptchaError("Error verify response");
 		}
 
-		validateResponse(verifyResponse);
+		validateVerifyResponse(verifyResponse);
 	}
 
-	private VerifyResponse retreiveResponse(String response, String remoteAddress) throws Exception {
-		VerifyResponse verifyResponse;
+	private void validateToken(String token) {
+		if (token == null || token.isBlank()) {
+			throw new ReCaptchaError("Response cannot be null or empty");
+		}
+	}
+
+	private ReCaptchaVerifyResponse retreiveResponse(String response, String remoteAddress) throws Exception {
+		ReCaptchaVerifyResponse verifyResponse;
 
 		HttpURLConnection connection = (HttpURLConnection) verifyUrl.openConnection();
 
@@ -76,7 +80,7 @@ public class ReCaptchaService {
 		out.flush();
 		out.close();
 
-		verifyResponse = objectMapper.instance().readValue(connection.getInputStream(), VerifyResponse.class);
+		verifyResponse = objectMapper.instance().readValue(connection.getInputStream(), ReCaptchaVerifyResponse.class);
 
 		return verifyResponse;
 	}
@@ -101,7 +105,7 @@ public class ReCaptchaService {
 		return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
 	}
 
-	private void validateResponse(VerifyResponse verifyResponse) {
+	private void validateVerifyResponse(ReCaptchaVerifyResponse verifyResponse) {
 		if (!verifyResponse.getSuccess()) {
 			throw new ReCaptchaError("Response is invalid");
 		}

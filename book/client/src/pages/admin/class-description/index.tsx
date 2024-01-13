@@ -1,4 +1,5 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import { FC, createElement, useEffect, useState } from "react";
 

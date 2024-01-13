@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import DocumentTextIcon from "@heroicons/react/24/outline/DocumentTextIcon";
 import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";

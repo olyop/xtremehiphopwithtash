@@ -111,7 +111,7 @@ public class BookingResolver {
 	) {
 		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
 
-		reCaptchaService.validateResponse(reCaptcha, remoteAddress);
+		reCaptchaService.validate(reCaptcha, remoteAddress);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
 		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
@@ -140,7 +140,7 @@ public class BookingResolver {
 	) {
 		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
 
-		reCaptchaService.validateResponse(reCaptcha, remoteAddress);
+		reCaptchaService.validate(reCaptcha, remoteAddress);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
 		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);

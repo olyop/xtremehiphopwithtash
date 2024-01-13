@@ -1,5 +1,5 @@
-import { ApolloError } from "@apollo/client";
 import { ApolloClient } from "@apollo/client/core/ApolloClient";
+import { ApolloError } from "@apollo/client/errors";
 
 import { GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs, Session } from "../../generated-types";
 import { addOneWeek, addThreeDays, addTwoDays, minusOneWeek, minusThreeDays, minusTwoDays } from "../../helpers/date";
@@ -11,10 +11,8 @@ export const determineDecrementAction = (breakpoint: Breakpoint) => {
 		return minusTwoDays;
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return minusThreeDays;
-	} else if (breakpoint === Breakpoint.LARGE) {
-		return minusOneWeek;
 	} else {
-		throw new Error("Invalid breakpoint");
+		return minusOneWeek;
 	}
 };
 
@@ -23,10 +21,8 @@ export const determineIncrementAction = (breakpoint: Breakpoint) => {
 		return addTwoDays;
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return addThreeDays;
-	} else if (breakpoint === Breakpoint.LARGE) {
-		return addOneWeek;
 	} else {
-		throw new Error("Invalid breakpoint");
+		return addOneWeek;
 	}
 };
 

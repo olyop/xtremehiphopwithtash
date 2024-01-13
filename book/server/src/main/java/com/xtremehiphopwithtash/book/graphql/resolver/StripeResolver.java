@@ -71,7 +71,7 @@ public class StripeResolver {
 		String studentID = auth0JwtService.extractStudentID(principal);
 		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
 
-		reCaptchaService.validateResponse(reCaptcha, remoteAddress);
+		reCaptchaService.validate(reCaptcha, remoteAddress);
 		bookingService.validateCreate(input, studentID);
 
 		Student student = studentService.retreiveByID(studentID);

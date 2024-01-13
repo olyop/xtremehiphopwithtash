@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
 import { FC, createElement, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
