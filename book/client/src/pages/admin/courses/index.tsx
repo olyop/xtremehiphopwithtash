@@ -18,7 +18,7 @@ import DELETE_COURSE from "./delete-course.graphql";
 import GET_COURSES from "./get-courses.graphql";
 import UPDATE_COURSE from "./update-course.graphql";
 
-const Courses: FC = () => {
+const AdminCourses: FC = () => {
 	const { data } = useQuery<GetCoursesQuery>(GET_COURSES);
 
 	const [updateCourse, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_COURSE);
@@ -93,4 +93,4 @@ type DeleteData = Pick<Mutation, "deleteCourseByID">;
 type UpdateVars = MutationUpdateCourseByIdArgs;
 type DeleteVars = MutationDeleteCourseByIdArgs;
 
-export default Courses;
+export default AdminCourses;

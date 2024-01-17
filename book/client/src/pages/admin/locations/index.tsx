@@ -20,7 +20,7 @@ import GET_LOCATIONS from "./get-locations.graphql";
 import Location from "./location";
 import UPDATE_LOCATION from "./update-location.graphql";
 
-const Locations: FC = () => {
+const AdminLocations: FC = () => {
 	const { data } = useQuery<GetLocationsQuery>(GET_LOCATIONS);
 
 	const [updateLocation, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_LOCATION);
@@ -86,4 +86,4 @@ type DeleteData = DeleteLocationMutation;
 type UpdateVars = MutationUpdateLocationByIdArgs;
 type DeleteVars = MutationDeleteLocationByIdArgs;
 
-export default Locations;
+export default AdminLocations;

@@ -8,7 +8,7 @@ import Section from "../section";
 import GET_STUDENTS from "./get-students.graphql";
 import Student from "./student";
 
-const Students: FC = () => {
+const AdminStudents: FC = () => {
 	const { data } = useQuery<GetStudentsQuery, GetStudentsQueryVariables>(GET_STUDENTS);
 	return (
 		<Section<StudentType>
@@ -26,4 +26,4 @@ const Students: FC = () => {
 	);
 };
 
-export default Students;
+export default AdminStudents;

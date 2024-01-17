@@ -77,5 +77,13 @@ export const cache = new InMemoryCache({
 				},
 			},
 		},
+		BookingTrend: {
+			keyFields: ["unixDay"],
+			fields: {
+				unixDay: {
+					read: readUnixTime,
+				},
+			},
+		},
 	},
 });

@@ -60,3 +60,8 @@ input BookingInput {
 	paymentMethod: PaymentMethod
 	couponCode: String
 }
+
+input GetBookingTrendsInput {
+	startTime: UnixTime!
+	endTime: UnixTime!
+}

@@ -10,12 +10,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class ClassDescription {
+public class ClassDescriptionResolver {
 
 	private final ClassDescriptionService classDescriptionService;
 	private final Auth0JwtService auth0JwtService;
 
-	public ClassDescription(ClassDescriptionService classDescriptionService, Auth0JwtService auth0JwtService) {
+	public ClassDescriptionResolver(ClassDescriptionService classDescriptionService, Auth0JwtService auth0JwtService) {
 		this.classDescriptionService = classDescriptionService;
 		this.auth0JwtService = auth0JwtService;
 	}

@@ -67,6 +67,10 @@ const Input: FC<InputProps> = ({
 	const [imageToBeUploaded, setImageToBeUploaded] = useState<File | null>(null);
 
 	const handleInputChange: ChangeEventHandler<HTMLInputElement> = event => {
+		if (onChange === undefined) {
+			return;
+		}
+
 		const { value: targetValue, checked, files } = event.target;
 
 		if (isTimeType && typeof value === "number") {
@@ -114,6 +118,10 @@ const Input: FC<InputProps> = ({
 	}, [imageToBeUploaded]);
 
 	const handleTextAreaChange: ChangeEventHandler<HTMLTextAreaElement> = event => {
+		if (onChange === undefined) {
+			return;
+		}
+
 		const { value: targetValue } = event.target;
 
 		if (isTextAreaType) {
@@ -124,6 +132,10 @@ const Input: FC<InputProps> = ({
 	};
 
 	const handleSelectChange: ChangeEventHandler<HTMLSelectElement> = event => {
+		if (onChange === undefined) {
+			return;
+		}
+
 		if (type === InputType.LIST && isArrayOfStrings(value)) {
 			const isEmpty = event.target.value.length === 0;
 			const isDuplicate = value.includes(event.target.value);
@@ -301,7 +313,7 @@ interface InputProps {
 	optional?: boolean;
 	autoComplete?: string;
 	type: InputType;
-	onChange: InputOnChange;
+	onChange?: InputOnChange;
 	selectOptions?: InputSelectOptions;
 	hideEmptySelectOptions?: boolean;
 	isImageLandscape?: boolean;

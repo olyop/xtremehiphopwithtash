@@ -2,7 +2,6 @@ import { Dispatch, FC, SetStateAction, createElement } from "react";
 
 import Input, { InputType } from "../../components/input";
 import { BookingInput, PaymentMethod } from "../../generated-types";
-import { noop } from "../../utils";
 
 const PaymentMethodForm: FC<Props> = ({ paymentMethod, setBookingInput }) => {
 	const handleCardClick = () => {
@@ -73,7 +72,6 @@ const PaymentMethodForm: FC<Props> = ({ paymentMethod, setBookingInput }) => {
 						type={InputType.CHECKBOX}
 						name="Card / Apple Pay / Google Pay"
 						value={paymentMethod === PaymentMethod.CARD}
-						onChange={noop}
 						autoComplete="off"
 						labelClassName="!bg-transparent leading-none"
 						className="pointer-events-none items-center gap-4"
@@ -92,7 +90,6 @@ const PaymentMethodForm: FC<Props> = ({ paymentMethod, setBookingInput }) => {
 						type={InputType.CHECKBOX}
 						name="Cash"
 						value={paymentMethod === PaymentMethod.CASH}
-						onChange={noop}
 						autoComplete="off"
 						labelClassName="!bg-transparent leading-none"
 						className="pointer-events-none items-center gap-4"

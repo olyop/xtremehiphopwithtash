@@ -32,4 +32,6 @@ type Query {
 
 	getMerchItems: [MerchItem!]!
 	getAuth0Users: [Auth0User!]!
+
+	getBookingTrends(input: GetBookingTrendsInput!): [BookingTrend!]!
 }

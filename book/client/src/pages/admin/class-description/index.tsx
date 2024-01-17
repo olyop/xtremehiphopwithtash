@@ -13,7 +13,7 @@ import {
 import GET_CLASS_DESCRIPTION from "./get-class-description.graphql";
 import UPDATE_CLASS_DESCRIPTION from "./update-class-description.graphql";
 
-const ClassDescriptionForm: FC = () => {
+const AdminClassDescription: FC = () => {
 	const [classDescription, setClassDescription] = useState<string | null>(null);
 
 	const { data } = useQuery<GetClassDescriptionQuery>(GET_CLASS_DESCRIPTION);
@@ -73,4 +73,4 @@ const ClassDescriptionForm: FC = () => {
 type UpdateData = UpdateClassDescriptionMutation;
 type UpdateVars = UpdateClassDescriptionMutationVariables;
 
-export default ClassDescriptionForm;
+export default AdminClassDescription;

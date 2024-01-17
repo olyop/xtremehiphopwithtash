@@ -3,29 +3,35 @@ import { FC, createElement, useContext } from "react";
 
 import { IsAdministratorContext } from "../../contexts/is-administrator";
 import Page from "../page";
-import ClassDescriptionForm from "./class-description";
-import ReferralCodes from "./coupons";
-import Courses from "./courses";
-import Instructors from "./instructors";
-import Locations from "./locations";
-import Students from "./students";
+import AdminClassDescription from "./class-description";
+import AdminCoupons from "./coupons";
+import AdminCourses from "./courses";
+import AdminInstructors from "./instructors";
+import AdminLocations from "./locations";
+import AdminStudents from "./students";
+import AdminTrends from "./trends";
 
 const AdminPage: FC = () => {
 	const { isLoading } = useAuth0();
 	const { isAdministrator } = useContext(IsAdministratorContext);
 
-	if (!isAdministrator && !isLoading) {
+	if (isLoading) {
+		return <p className="text-lg text-gray-500 p-4">Loading...</p>;
+	}
+
+	if (!isAdministrator) {
 		return <p className="text-lg text-gray-500 p-4">You are not an administrator.</p>;
 	}
 
 	return (
 		<Page className="flex flex-col gap-8 p-4">
-			<ClassDescriptionForm />
-			<Instructors />
-			<Locations />
-			<Courses />
-			<ReferralCodes />
-			<Students />
+			<AdminClassDescription />
+			<AdminInstructors />
+			<AdminLocations />
+			<AdminCourses />
+			<AdminCoupons />
+			<AdminStudents />
+			<AdminTrends />
 		</Page>
 	);
 };

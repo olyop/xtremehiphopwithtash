@@ -190,3 +190,8 @@ type Auth0User {
 	logins: PositiveInt!
 	lastLogin: UnixTime!
 }
+
+type BookingTrend {
+	unixDay: UnixTime!
+	bookings: NonNegativeInt!
+}

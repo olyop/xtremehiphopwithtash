@@ -1,0 +1,6 @@
+query getTrends($bookingTrendsInput: GetBookingTrendsInput!) {
+	getBookingTrends(input: $bookingTrendsInput) {
+		unixDay
+		bookings
+	}
+}

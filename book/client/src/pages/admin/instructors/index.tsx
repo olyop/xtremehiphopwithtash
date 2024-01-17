@@ -20,7 +20,7 @@ import GET_INSTRUCTORS from "./get-instructors.graphql";
 import Instructor from "./instructor";
 import UPDATE_INSTRUCTOR from "./update-instructor.graphql";
 
-const Instructors: FC = () => {
+const AdminInstructors: FC = () => {
 	const { data } = useQuery<GetInstructorsQuery>(GET_INSTRUCTORS);
 
 	const [updateInstructor, updateResult] = useMutation<UpdateData, UpdateVars>(UPDATE_INSTRUCTOR);
@@ -82,4 +82,4 @@ type DeleteData = DeleteInstructorMutation;
 type UpdateVars = MutationUpdateInstructorByIdArgs;
 type DeleteVars = MutationDeleteInstructorByIdArgs;
 
-export default Instructors;
+export default AdminInstructors;

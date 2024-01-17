@@ -16,7 +16,7 @@ const discountSelectOptions: SelectOption[] = Array.from({ length: 20 }).map((_,
 	optionID: String(5 * (index + 1)),
 }));
 
-const Coupons: FC = () => {
+const AdminCoupons: FC = () => {
 	const apollo = useApolloClient();
 
 	const [loading, setLoading] = useState(false);
@@ -127,4 +127,4 @@ const Coupons: FC = () => {
 	);
 };
 
-export default Coupons;
+export default AdminCoupons;
