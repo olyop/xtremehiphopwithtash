@@ -1,8 +1,5 @@
 {
-	"extends": "@oly_op",
-	"parserOptions": {
-		"project": "./tsconfig.eslint.json"
-	},
+	"extends": "@oly_op/eslint-config",
 	"rules": {
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"import/no-extraneous-dependencies": "off",

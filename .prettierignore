@@ -1,4 +1,7 @@
-book/**/*.sql
+book/client/stats.html
+
+book/server/build
+book/server/**/*.sql
 book/server/src/main/resources/application-global.properties
 book/server/src/main/resources/application-development.properties
 book/server/src/main/resources/application-production.properties

@@ -1,0 +1,10 @@
+{
+	"extends": "../../.eslintrc.base.json",
+	"env": {
+		"browser": true,
+		"serviceworker": true
+	},
+	"parserOptions": {
+		"project": "./book/service-worker/tsconfig.eslint.json"
+	}
+}

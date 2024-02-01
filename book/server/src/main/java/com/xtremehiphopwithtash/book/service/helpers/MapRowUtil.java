@@ -54,7 +54,11 @@ public class MapRowUtil {
 	public Integer mapInteger(ResultSet rs, String columnName) throws SQLException {
 		int value = rs.getInt(columnName);
 
-		return value == 0 ? null : value;
+		if (value == 0) {
+			return null;
+		}
+
+		return value;
 	}
 
 	public <T extends Enum<T>> T mapEnum(ResultSet rs, String columnName, Class<T> enumClass) throws SQLException {
@@ -62,8 +66,8 @@ public class MapRowUtil {
 
 		if (value == null) {
 			return null;
-		} else {
-			return Enum.valueOf(enumClass, value);
 		}
+
+		return Enum.valueOf(enumClass, value);
 	}
 }

@@ -1,0 +1,31 @@
+{
+	"dir": "ltr",
+	"lang": "en-US",
+	"name": "Xtreme Hip-Hop with Tash",
+	"id": "xtremehiphopwithtash.com",
+	"display": "standalone",
+	"theme_color": "#ff0000",
+	"short_name": "Xtreme Hip-Hop with Tash",
+	"orientation": "portrait",
+	"description": "Xtreme Hip-Hop with Tash",
+	"start_url": "/",
+	"background_color": "#ffffff",
+	"icons": [
+		{
+			"src": "/images/logo-x-very-small.png",
+			"sizes": "64x64",
+			"type": "image/png"
+		},
+		{
+			"src": "/images/logo-x-small.png",
+			"sizes": "256x256",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "/images/logo-x.png",
+			"sizes": "1024x1024",
+			"type": "image/png"
+		}
+	]
+}

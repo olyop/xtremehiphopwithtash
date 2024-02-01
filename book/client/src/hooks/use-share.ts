@@ -30,14 +30,18 @@ export const useShare = () => {
 	};
 
 	useEffect(() => {
-		let timer: NodeJS.Timeout;
+		let timer: ReturnType<typeof setTimeout>;
+
 		if (text) {
 			timer = setTimeout(() => {
 				setHasShared(false);
 				setText("Share");
 			}, 2000);
 		}
-		return () => clearTimeout(timer);
+
+		return () => {
+			clearTimeout(timer);
+		};
 	}, [text]);
 
 	return [

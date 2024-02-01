@@ -2,14 +2,10 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"skipLibCheck": true,
-		"esModuleInterop": false,
 		"module": "ESNext",
 		"moduleResolution": "Node",
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"jsxFactory": "createElement",
-		"types": ["vite/client"]
+		"exactOptionalPropertyTypes": false,
+		"lib": ["ESNext", "DOM", "WebWorker"]
 	},
 	"include": ["src"]
 }

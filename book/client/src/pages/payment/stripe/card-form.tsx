@@ -70,7 +70,7 @@ const CardForm: FC<Props> = ({ setIsPaying, bookingInput, onSubmit }) => {
 	};
 
 	useEffect(() => {
-		let timeout: NodeJS.Timeout | null = null;
+		let timeout: ReturnType<typeof setTimeout> | null = null;
 
 		if (formError) {
 			timeout = setTimeout(() => {

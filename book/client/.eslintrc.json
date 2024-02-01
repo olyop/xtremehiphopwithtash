@@ -3,9 +3,9 @@
 	"overrides": [
 		{
 			"files": ["*.ts", "*.tsx"],
-			"extends": ["@oly_op/eslint-config-react", "../../.eslintrc.json"],
+			"extends": ["@oly_op/eslint-config-react", "../../.eslintrc.base.json"],
 			"parserOptions": {
-				"project": "book/client/tsconfig.json"
+				"project": "book/client/tsconfig.eslint.json"
 			},
 			"env": {
 				"browser": true

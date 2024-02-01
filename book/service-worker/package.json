@@ -1,0 +1,46 @@
+{
+	"private": true,
+	"name": "xtremehiphopwithtash",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/olyop/xtremehiphopwithtash.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/olyop/xtremehiphopwithtash/issues"
+	},
+	"homepage": "https://github.com/olyop/xtremehiphopwithtash#readme",
+	"volta": {
+		"node": "21.2.0",
+		"npm": "10.2.4"
+	},
+	"engines": {
+		"node": "21.2.0",
+		"npm": "10.2.4"
+	},
+	"scripts": {
+		"dev": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch",
+		"test": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:testing",
+		"build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production"
+	},
+	"devDependencies": {
+		"@rollup/plugin-node-resolve": "15.2.3",
+		"@rollup/plugin-replace": "5.0.5",
+		"@rollup/plugin-terser": "0.4.4",
+		"@rollup/plugin-typescript": "11.1.6",
+		"rollup": "4.9.6",
+		"workbox-cacheable-response": "7.0.0",
+		"workbox-core": "7.0.0",
+		"workbox-expiration": "7.0.0",
+		"workbox-range-requests": "7.0.0",
+		"workbox-recipes": "7.0.0",
+		"workbox-routing": "7.0.0",
+		"workbox-strategies": "7.0.0",
+		"workbox-window": "7.0.0"
+	}
+}

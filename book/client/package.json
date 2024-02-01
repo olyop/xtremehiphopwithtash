@@ -6,42 +6,42 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite --mode development --force",
-		"test": "tsc && vite build --mode testing --force",
-		"prod": "tsc && vite build --mode production --force"
+		"test": "vite build --mode testing --force",
+		"prod": "vite build --mode production --force"
 	},
 	"engines": {
 		"node": "21.2.0",
 		"npm": "10.2.4"
 	},
 	"dependencies": {
-		"@apollo/client": "3.8.8",
+		"@apollo/client": "3.9.1",
 		"@auth0/auth0-react": "2.2.4",
 		"@googlemaps/react-wrapper": "1.1.35",
 		"@heroicons/react": "2.1.1",
 		"@stripe/react-stripe-js": "2.4.0",
-		"@stripe/stripe-js": "2.2.2",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"@stripe/stripe-js": "2.4.0",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
 		"react-google-recaptcha-v3": "1.10.1",
-		"react-router-dom": "6.21.1"
+		"react-router-dom": "6.21.3"
 	},
 	"devDependencies": {
-		"@types/google.maps": "3.54.10",
-		"@types/react": "^18.2.46",
-		"@types/react-dom": "^18.2.18",
-		"@vitejs/plugin-react-swc": "^3.5.0",
-		"autoprefixer": "10.4.16",
+		"@types/google.maps": "3.55.1",
+		"@types/react": "18.2.49",
+		"@types/react-dom": "18.2.18",
+		"@vitejs/plugin-react-swc": "3.6.0",
+		"autoprefixer": "10.4.17",
 		"content-security-policy-builder": "2.1.1",
 		"http2-proxy": "5.0.53",
-		"postcss": "8.4.32",
-		"sass": "1.69.6",
-		"tailwindcss": "3.4.0",
-		"typescript": "^5.3.3",
-		"vite": "^5.0.10",
-		"vite-plugin-checker": "0.6.2",
+		"postcss": "8.4.33",
+		"rollup-plugin-visualizer": "5.12.0",
+		"sass": "1.70.0",
+		"tailwindcss": "3.4.1",
+		"vite": "5.0.12",
+		"vite-plugin-checker": "0.6.3",
 		"vite-plugin-eslint": "1.8.1",
-		"vite-plugin-mkcert": "1.17.1",
+		"vite-plugin-mkcert": "1.17.3",
 		"vite-plugin-proxy-middleware": "1.0.2",
-		"vite-plugin-simple-gql": "0.5.0"
+		"workbox-window": "7.0.0"
 	}
 }

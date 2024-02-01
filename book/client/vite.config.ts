@@ -1,78 +1,28 @@
 import { readFile } from "node:fs/promises";
 
 import react from "@vitejs/plugin-react-swc";
-import contentSecurityPolicyBuilder from "content-security-policy-builder";
 import { visualizer } from "rollup-plugin-visualizer";
-import { Plugin, PluginOption, defineConfig, loadEnv } from "vite";
+import { PluginOption, defineConfig, loadEnv } from "vite";
 import checker from "vite-plugin-checker";
-// @ts-expect-error
-import gqlImport from "vite-plugin-simple-gql";
 
-const gql = (gqlImport as unknown as { default: () => PluginOption }).default;
+import { determineContentSecurityPolicy } from "./vite/determine-content-security-policy";
+import { VitePluginGraphql as gql } from "./vite/plugin-graphql";
+import { VitePluginHtml as htmlVariables } from "./vite/plugin-html-variables";
 
-const html = (variables: Record<string, string>): Plugin => ({
-	name: "html-transform",
-	transformIndexHtml: {
-		order: "pre",
-		handler: (html: string): string => html.replace(/{{ (.*?) }}/g, (match, p1) => variables[p1] ?? match),
-	},
-});
-
-const determineContentSecurityPolicy = (mode: string) => {
-	const isProduction = mode === "production";
-	const isTesting = mode === "testing";
-	const isDevelopment = mode === "development";
-
-	return contentSecurityPolicyBuilder({
-		directives: {
-			defaultSrc: ["'self'"],
-			scriptSrc: [
-				"'self'",
-				"https://*.stripe.com",
-				"https://*.google.com",
-				"https://*.gstatic.com",
-				"https://*.googleapis.com",
-				isProduction ? "" : "'unsafe-inline'",
-			],
-			styleSrc: ["'self'", isProduction ? "" : "'unsafe-inline'", " https://*.googleapis.com"],
-			objectSrc: ["'none'"],
-			connectSrc: [
-				"'self'",
-				"https://*.stripe.com",
-				"https://*.googleapis.com",
-				isProduction
-					? "https://api.xtremehiphopwithtash.com"
-					: isTesting
-					  ? "https://api.development.xtremehiphopwithtash.com"
-					  : "http://localhost:8080",
-				isProduction ? "https://xtremehiphopwithtash.au.auth0.com" : "https://xtremehiphopwithtash-dev.au.auth0.com",
-			],
-			fontSrc: ["'self'", "https://*.gstatic.com"],
-			frameSrc: [
-				"'self'",
-				"data:",
-				"https://*.googleapis.com",
-				"https://*.gstatic.com",
-				"https://*.google.com",
-				"https://*.gstatic.com",
-				"https://*.stripe.com",
-			],
-			imgSrc: [
-				"'self'",
-				"data:",
-				"https://*.googleapis.com",
-				"https://*.gstatic.com",
-				"https://*.google.com",
-				"https://*.gstatic.com",
-				"https://*.googleusercontent.com",
-				"https://xtremehiphopwithtash.com",
-				isDevelopment ? "https://development.xtremehiphopwithtash.com" : "",
-			],
-			manifestSrc: ["'none'"],
-			mediaSrc: ["'none'"],
-			workerSrc: ["'none'"],
+const checkerOptions: Parameters<typeof checker>[0] = {
+	typescript: true,
+	eslint: {
+		lintCommand: "eslint",
+		dev: {
+			overrideConfig: {
+				overrideConfig: {
+					parserOptions: {
+						project: "./tsconfig.json",
+					},
+				},
+			},
 		},
-	});
+	},
 };
 
 export default defineConfig(async ({ mode }) => {
@@ -89,11 +39,9 @@ export default defineConfig(async ({ mode }) => {
 
 	const commonPlugins: PluginOption[] = [
 		react(),
-		html({ ...environmentVariables, "VITE_CONTENT_SECURITY_POLICY": determineContentSecurityPolicy(mode) }),
 		gql(),
-		checker({
-			typescript: true,
-		}),
+		checker(checkerOptions),
+		htmlVariables({ "VITE_CONTENT_SECURITY_POLICY": determineContentSecurityPolicy(mode) }),
 	];
 
 	return {
@@ -105,7 +53,7 @@ export default defineConfig(async ({ mode }) => {
 							cert: await readFile(process.env["TLS_CERT_PATH"]!),
 							key: await readFile(process.env["TLS_KEY_PATH"]!),
 					  }
-					: {},
+					: undefined,
 		},
 	};
 });
