@@ -1,7 +1,7 @@
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
-import ArrowLeftOnRectangleIcon from "@heroicons/react/24/outline/ArrowLeftOnRectangleIcon";
+import ArrowLeftStartOnRectangle from "@heroicons/react/20/solid/ArrowLeftStartOnRectangleIcon";
 import HomeIcon from "@heroicons/react/24/outline/HomeIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
@@ -258,7 +258,7 @@ const AccountPage: FC = () => {
 				text="Log Out"
 				ariaLabel="Log Out"
 				onClick={handleLogOut}
-				leftIcon={className => <ArrowLeftOnRectangleIcon className={className} />}
+				leftIcon={className => <ArrowLeftStartOnRectangle className={className} />}
 			/>
 		</Page>
 	);

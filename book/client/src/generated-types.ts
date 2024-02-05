@@ -598,6 +598,24 @@ export type GetSessionFormDataQuery = {
 	> | null;
 } & { readonly __typename: "Query" };
 
+export type GetStudentDetailsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetStudentDetailsQuery = {
+	readonly getStudentByID: {
+		readonly studentID: string;
+		readonly createdAt: number;
+		readonly details: {
+			readonly detailsID: string;
+			readonly firstName: string;
+			readonly lastName: string;
+			readonly nickName: string | null;
+			readonly emailAddress: string;
+			readonly mobilePhoneNumber: string;
+			readonly instagramUsername: string | null;
+		} & { readonly __typename: "Details" };
+	} & { readonly __typename: "Student" };
+} & { readonly __typename: "Query" };
+
 export type GetAccountPageQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetAccountPageQuery = {

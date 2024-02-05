@@ -5,7 +5,7 @@ book/client/dist
 book/client/public/service-worker.js
 book/client/.env.local
 book/client/.env.development.local
-book/client/.env.testing.local
+book/client/.env.staging.local
 book/client/.env.production.local
 book/client/stats.html
 
@@ -20,6 +20,6 @@ book/server/.settings
 book/server/src/main/resources/.classpath
 book/server/src/main/resources/application-global.properties
 book/server/src/main/resources/application-development.properties
-book/server/src/main/resources/application-development-base.properties
-book/server/src/main/resources/application-testing.properties
+book/server/src/main/resources/application-development-staging.properties
+book/server/src/main/resources/application-staging.properties
 book/server/src/main/resources/application-production.properties

@@ -1,0 +1,15 @@
+query getStudentDetails {
+	getStudentByID {
+		studentID
+		createdAt
+		details {
+			detailsID
+			firstName
+			lastName
+			nickName
+			emailAddress
+			mobilePhoneNumber
+			instagramUsername
+		}
+	}
+}

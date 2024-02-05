@@ -2,7 +2,7 @@ import contentSecurityPolicyBuilder from "content-security-policy-builder";
 
 export const determineContentSecurityPolicy = (mode: string) => {
 	const isProduction = mode === "production";
-	const isTesting = mode === "testing";
+	const isStaging = mode === "staging";
 	const isDevelopment = mode === "development";
 
 	return contentSecurityPolicyBuilder({
@@ -24,7 +24,7 @@ export const determineContentSecurityPolicy = (mode: string) => {
 				"https://*.googleapis.com",
 				isProduction
 					? "https://api.xtremehiphopwithtash.com"
-					: isTesting
+					: isStaging
 					  ? "https://api.development.xtremehiphopwithtash.com"
 					  : "http://localhost:8080",
 				isProduction ? "https://xtremehiphopwithtash.au.auth0.com" : "https://xtremehiphopwithtash-dev.au.auth0.com",
@@ -42,6 +42,8 @@ export const determineContentSecurityPolicy = (mode: string) => {
 			imgSrc: [
 				"'self'",
 				"data:",
+				"https://*.gravatar.com",
+				"https://*.wp.com",
 				"https://*.googleapis.com",
 				"https://*.gstatic.com",
 				"https://*.google.com",

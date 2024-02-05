@@ -39,7 +39,7 @@ import XtremeHipHopChip from "./xtreme-hip-hop-chip";
 const SessionPage: FC = () => {
 	const apollo = useApolloClient();
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
-	const { isAdministrator } = useContext(IsAdministratorContext);
+	const isAdministrator = useContext(IsAdministratorContext);
 
 	const [getQuery, { data, error, loading, refetch }] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
 		GET_SESSION_PAGE,

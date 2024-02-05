@@ -1,49 +1,42 @@
 import { FC, Fragment, createElement } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import BackButton from "./back-button";
+import { useModal } from "../../hooks";
+import AccountDropdown from "../account-dropdown";
+import Sidebar from "../sidebar";
+import HeaderAccountButton from "./account-button";
 import HeaderLogo from "./logo";
-import HeaderRight from "./right";
+import HeaderMenuButton from "./menu-button";
 
 const Header: FC = () => {
-	const location = useLocation();
-	const navigate = useNavigate();
-	const [searchParams] = useSearchParams();
+	const [isMenuOpen, openMenu, closeMenu] = useModal();
+	const [isAccountOpen, openAccount, closeAccount] = useModal();
 
-	const sessionID = searchParams.get("sessionID");
+	const handleOpenMenu = () => {
+		closeAccount();
 
-	const handleBackOnePage = () => {
-		navigate(-1);
+		openMenu();
 	};
 
-	const invisible = location.pathname === "/";
+	const handleOpenAccount = () => {
+		closeMenu();
+
+		openAccount();
+	};
 
 	return (
-		<header className="flex items-stretch relative justify-between border-b h-header-height bg-white">
-			{location.pathname === "/payment" && sessionID ? (
-				<Link to={`/session/${sessionID}`}>
-					<BackButton invisible={invisible} />
-				</Link>
-			) : (
-				<Fragment>
-					{location.pathname === "/payment-success" ? (
-						<HeaderLogo />
-					) : (
-						<Fragment>
-							{location.pathname.startsWith("/session") ? (
-								<Link to="/">
-									<BackButton invisible={invisible} />
-								</Link>
-							) : (
-								<BackButton invisible={invisible} onClick={handleBackOnePage} />
-							)}
-							<HeaderLogo />
-							<HeaderRight />
-						</Fragment>
-					)}
-				</Fragment>
-			)}
-		</header>
+		<Fragment>
+			<header className="flex items-center px-2 relative justify-between border-b h-header-height bg-white !z-[150]">
+				<HeaderMenuButton isMenuOpen={isMenuOpen} onMenuOpen={handleOpenMenu} onMenuClose={closeMenu} />
+				<HeaderLogo onMenuClose={closeMenu} onAccountClose={closeAccount} />
+				<HeaderAccountButton
+					isAccountOpen={isAccountOpen}
+					onAccountOpen={handleOpenAccount}
+					onAccountClose={closeAccount}
+				/>
+			</header>
+			<Sidebar isOpen={isMenuOpen} onClose={closeMenu} />
+			<AccountDropdown isOpen={isAccountOpen} onClose={closeAccount} />
+		</Fragment>
 	);
 };
 

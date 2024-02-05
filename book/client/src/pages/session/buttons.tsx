@@ -1,19 +1,15 @@
 import { FC, createElement } from "react";
 
 import { Session } from "../../generated-types";
-import { Breakpoint, useBreakpoint } from "../../hooks";
 import BookSession from "./book-session";
 import ShareButton from "./share-button";
 
-const SessionButtons: FC<Props> = ({ session, isInPast }) => {
-	const breakpoint = useBreakpoint();
-	return (
-		<div className={`flex gap-4 justify-start ${breakpoint === Breakpoint.TINY ? "flex-col" : "flex-row"}`}>
-			<BookSession session={session} isSessionInPast={isInPast} />
-			{!session.isCancelled && <ShareButton url={location.href} isSessionInPast={isInPast} />}
-		</div>
-	);
-};
+const SessionButtons: FC<Props> = ({ session, isInPast }) => (
+	<div className="flex gap-4 justify-start flex-col sm:flex-row">
+		<BookSession session={session} isSessionInPast={isInPast} />
+		{!session.isCancelled && !isInPast && <ShareButton text={location.href} />}
+	</div>
+);
 
 interface Props {
 	session: Session;

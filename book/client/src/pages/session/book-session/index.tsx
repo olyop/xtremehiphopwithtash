@@ -72,8 +72,8 @@ const BookSession: FC<Props> = ({ session, isSessionInPast }) => {
 				text={bookButtonText}
 				onClick={handleBookClick}
 				ariaLabel={bookButtonText}
-				className="!h-14 px-6 shadow-xl hover:shadow-xl rounded-xl"
-				leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
+				className="!h-16 px-6 shadow-xl hover:shadow-xl rounded-xl gap-4"
+				leftIcon={className => <CalendarIcon className={`${className} h-8 w-8`} />}
 			/>
 			<Modal
 				isLarge

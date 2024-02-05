@@ -21,6 +21,9 @@ module.exports = {
 			width: {
 				"booking-modal": "30rem",
 			},
+			screens: {
+				"tiny": "400px",
+			},
 		},
 	},
 	plugins: [],

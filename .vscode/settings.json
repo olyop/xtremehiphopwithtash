@@ -4,6 +4,7 @@
 		".git",
 		"book/client",
 		"book/server/bin",
+		"book/server/dist",
 		"book/server/src/main/resources/public"
 	]
 }

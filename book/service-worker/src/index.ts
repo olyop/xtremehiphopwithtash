@@ -1,18 +1,19 @@
 import { clientsClaim } from "workbox-core";
-import { imageCache, offlineFallback, pageCache } from "workbox-recipes";
+import { imageCache, offlineFallback, pageCache, staticResourceCache } from "workbox-recipes";
 
 declare const self: ServiceWorkerGlobalScope;
 
 // eslint-disable-next-line no-underscore-dangle
 self.__WB_DISABLE_DEV_LOGS = true;
 
-clientsClaim();
+const run = async () => {
+	clientsClaim();
 
-// eslint-disable-next-line unicorn/prefer-top-level-await
-void self.skipWaiting().then(() => {
+	await self.skipWaiting();
+
 	pageCache();
 
-	// staticResourceCache();
+	staticResourceCache();
 
 	imageCache({
 		maxEntries: Number.POSITIVE_INFINITY,
@@ -22,7 +23,6 @@ void self.skipWaiting().then(() => {
 	offlineFallback({
 		pageFallback: "index.html",
 	});
+};
 
-	// eslint-disable-next-line no-useless-return
-	return;
-});
+void run();

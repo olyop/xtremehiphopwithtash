@@ -1,54 +1,57 @@
 import { useEffect, useState } from "react";
 
-export const useShare = () => {
-	const [text, setText] = useState("Share");
-	const [hasShared, setHasShared] = useState<boolean | null>(false);
+export const useShare = (text: string) => {
+	const [hasShared, setHasShared] = useState<boolean | null>(null);
 
-	const handleCannotShare = () => {
-		setHasShared(null);
-		setText("Disabled");
-	};
+	const [hasError, setHasError] = useState(false);
+	const [hasCopiedShared, setHasCopiedShared] = useState(false);
 
-	const handler = async (data: ShareData) => {
+	const share = async (value: string) => {
+		setHasShared(false);
+
 		try {
-			const navigatorVariable = navigator;
-			if ("share" in navigatorVariable) {
-				setText("Sharing");
-				await navigator.share(data);
-				setHasShared(true);
-			} else if ("clipboard" in navigatorVariable && data.url) {
-				setText("Copying");
-				await navigator.clipboard.writeText(data.url);
-				setHasShared(true);
-				setText("Copied");
-			} else {
-				handleCannotShare();
-			}
+			await navigator.share({
+				text: value,
+			});
 		} catch {
-			setText("Cancelled");
+			try {
+				await navigator.clipboard.writeText(value);
+
+				setHasCopiedShared(true);
+			} catch {
+				setHasError(true);
+			}
+		} finally {
+			setHasShared(true);
 		}
 	};
 
-	useEffect(() => {
-		let timer: ReturnType<typeof setTimeout>;
+	const handleShare = () => {
+		void share(text);
+	};
 
-		if (text) {
-			timer = setTimeout(() => {
-				setHasShared(false);
-				setText("Share");
+	useEffect(() => {
+		let timeout: ReturnType<typeof setTimeout>;
+
+		if (hasShared) {
+			timeout = setTimeout(() => {
+				setHasShared(null);
+				setHasCopiedShared(false);
+				setHasError(false);
 			}, 2000);
 		}
 
 		return () => {
-			clearTimeout(timer);
+			clearTimeout(timeout);
 		};
-	}, [text]);
+	}, [hasShared]);
 
 	return [
-		handler,
+		handleShare,
 		{
 			hasShared,
-			shareText: text,
+			hasError,
+			hasCopiedShared,
 		},
 	] as const;
 };

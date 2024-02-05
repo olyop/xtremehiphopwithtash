@@ -24,9 +24,9 @@
 		"npm": "10.2.4"
 	},
 	"scripts": {
-		"dev": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch",
-		"test": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:testing",
-		"build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production"
+		"deve": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch",
+		"stag": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production",
+		"prod": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production"
 	},
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "15.2.3",

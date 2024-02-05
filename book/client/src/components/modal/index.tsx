@@ -30,9 +30,29 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 }) => {
 	const escapePress = useKeyPress("Escape");
 
-	useEffect(() => {
-		if (escapePress && onClose) {
+	const handleClose = () => {
+		if (onClose) {
 			onClose();
+		}
+	};
+
+	const handleSwiped: EventListener = event => {
+		event.stopPropagation();
+
+		handleClose();
+	};
+
+	useEffect(() => {
+		document.addEventListener("swiped", handleSwiped);
+
+		return () => {
+			document.removeEventListener("swiped", handleSwiped);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (escapePress) {
+			handleClose();
 		}
 	}, [escapePress]);
 

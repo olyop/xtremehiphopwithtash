@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
 import PaperAirplaneIcon from "@heroicons/react/24/solid/PaperAirplaneIcon";
 import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
-import { FC, Fragment, PropsWithChildren, createElement, useContext, useEffect, useState } from "react";
+import { FC, Fragment, PropsWithChildren, createElement, useEffect, useState } from "react";
 
 import Button from "../../components/button";
 import DetailsForm from "../../components/forms/details-form";
@@ -17,7 +17,6 @@ import {
 	CheckStudentQueryVariables,
 	CreateStudentMutation,
 	CreateStudentMutationVariables,
-	DetailsInput,
 } from "../../generated-types";
 import Header from "../../layouts/header";
 import CHECK_STUDENT from "./check-student.graphql";
@@ -25,10 +24,10 @@ import CREATE_STUDENT from "./create-student.graphql";
 import { initialInput } from "./initital-input";
 
 const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
-	const { setIsAdministrator } = useContext(IsAdministratorContext);
 	const { isLoading, isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
-	const [detailsInput, setDetailsInput] = useState<DetailsInput>(initialInput);
+	const [isAdministrator, setIsAdministrator] = useState(false);
+	const [detailsInput, setDetailsInput] = useState(initialInput);
 	const [hasCreatedAccount, setHasCreatedAccount] = useState<boolean | null>(null);
 
 	const [checkStudent, checkStudentResult] = useLazyQuery<CheckData, CheckVars>(CHECK_STUDENT);
@@ -186,7 +185,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		);
 	}
 
-	return <Fragment>{children}</Fragment>;
+	return <IsAdministratorContext.Provider value={isAdministrator}>{children}</IsAdministratorContext.Provider>;
 };
 
 type CheckData = CheckStudentQuery;

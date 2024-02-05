@@ -8,7 +8,7 @@ import { determinePlural } from "../../utils";
 import SessionCardChip from "./chip";
 
 const SessionCardChips: FC<Props> = ({ session }) => {
-	const { isAdministrator } = useContext(IsAdministratorContext);
+	const isAdministrator = useContext(IsAdministratorContext);
 
 	return (
 		<div className="absolute flex items-end gap-1 right-1.5 -top-[0.2rem] z-10">

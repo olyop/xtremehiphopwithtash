@@ -13,7 +13,7 @@ import AdminTrends from "./trends";
 
 const AdminPage: FC = () => {
 	const { isLoading } = useAuth0();
-	const { isAdministrator } = useContext(IsAdministratorContext);
+	const isAdministrator = useContext(IsAdministratorContext);
 
 	if (isLoading) {
 		return <p className="text-lg text-gray-500 p-4">Loading...</p>;

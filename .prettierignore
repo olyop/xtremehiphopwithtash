@@ -1,4 +1,5 @@
 book/client/stats.html
+book/client/public/swiped-events.min.js
 
 book/server/build
 book/server/**/*.sql

@@ -19,7 +19,7 @@ import Modal from "../../../modal";
 import CANCEL_BOOKING from "./cancel-booking.graphql";
 
 const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated }) => {
-	const { isAdministrator } = useContext(IsAdministratorContext);
+	const isAdministrator = useContext(IsAdministratorContext);
 
 	const [reCaptchaToken, reCaptchaError, getReCaptchaToken] = useReCaptcha(
 		import.meta.env.VITE_GOOGLE_RECAPTCHA_ACTION,
