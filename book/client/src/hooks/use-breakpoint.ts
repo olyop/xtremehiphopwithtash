@@ -8,7 +8,7 @@ export enum Breakpoint {
 }
 
 const determineBreakpoint = (): Breakpoint => {
-	if (window.innerWidth < 400) {
+	if (window.innerWidth < 350) {
 		return Breakpoint.TINY;
 	} else if (window.innerWidth < 768) {
 		return Breakpoint.SMALL;
@@ -22,19 +22,11 @@ const determineBreakpoint = (): Breakpoint => {
 export const useBreakpoint = () => {
 	const [value, setValue] = useState<Breakpoint>(determineBreakpoint());
 
+	const handleResize = () => {
+		setValue(determineBreakpoint());
+	};
+
 	useEffect(() => {
-		const handleResize = () => {
-			const breakpoint = determineBreakpoint();
-
-			setValue(prevState => {
-				if (prevState === breakpoint) {
-					return breakpoint;
-				} else {
-					return breakpoint;
-				}
-			});
-		};
-
 		// Add event listener
 		window.addEventListener("resize", handleResize);
 

@@ -64,7 +64,7 @@ const PaymentOverview: FC<Props> = ({ session, input, bookingCost }) => (
 						</p>
 					</Fragment>
 				)}
-				{input.paymentMethod === PaymentMethod.CARD && (
+				{input.paymentMethod === PaymentMethod.CARD && bookingCost.cardSurcharge !== 0 && (
 					<Fragment>
 						<p className="text-sm truncate">1 x Card Processing Fee</p>
 						<p className="text-sm justify-self-end">

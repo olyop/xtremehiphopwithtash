@@ -18,9 +18,12 @@ type Query {
 	getSessionByID(sessionID: UUID!): Session!
 	getBookingByID(bookingID: UUID!): Booking!
 
+	existsBookingByID(bookingID: UUID!): Boolean!
+
 	getStudentByID: Student!
 	doesStudentExist: Boolean!
 	isStudentAdministator: Boolean!
+	shouldShowInstallPopup: Boolean!
 
 	decodePlusCode(plusCode: String!): Coordinates!
 	searchPlaceByName(name: String!): Place
@@ -34,4 +37,6 @@ type Query {
 	getAuth0Users: [Auth0User!]!
 
 	getBookingTrends(input: GetBookingTrendsInput!): [BookingTrend!]!
+
+	getCanBookSession(bookingInput: BookingInput!): Boolean!
 }

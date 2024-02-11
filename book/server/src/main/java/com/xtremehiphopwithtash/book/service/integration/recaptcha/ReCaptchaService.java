@@ -106,20 +106,20 @@ public class ReCaptchaService {
 	}
 
 	private void validateVerifyResponse(ReCaptchaVerifyResponse verifyResponse) {
-		if (!verifyResponse.getSuccess()) {
-			throw new ReCaptchaError("Response is invalid");
-		}
-
 		if (!verifyResponse.getAction().equals(action)) {
 			throw new ReCaptchaError("Action is invalid");
+		}
+
+		if (verifyResponse.getHostname() == null || !allowedHostnames.contains(verifyResponse.getHostname())) {
+			throw new ReCaptchaError("Hostname is invalid");
 		}
 
 		if (verifyResponse.getScore() < scoreMinimum) {
 			throw new ReCaptchaError("Score too low");
 		}
 
-		if (verifyResponse.getHostname() == null || !allowedHostnames.contains(verifyResponse.getHostname())) {
-			throw new ReCaptchaError("Hostname is invalid");
+		if (!verifyResponse.getSuccess()) {
+			throw new ReCaptchaError("Response is invalid");
 		}
 	}
 }

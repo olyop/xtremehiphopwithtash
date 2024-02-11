@@ -1,5 +1,7 @@
-mutation createPaymentIntent($input: BookingInput!, $reCaptcha: String!) {
-	createPaymentIntent(input: $input, reCaptcha: $reCaptcha) {
+mutation createPaymentIntent($input: BookingInput!, $reCaptchaToken: String!) {
+	createPaymentIntent(input: $input, reCaptchaToken: $reCaptchaToken) {
 		clientSecret
+		bookingID
+		isLiveMode
 	}
 }

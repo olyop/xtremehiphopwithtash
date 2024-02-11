@@ -65,10 +65,10 @@ const LocationChip: FC<Props> = ({ location }) => {
 			<Modal
 				isLarge
 				isOpen={isOpen}
-				icon={iconClassName => <MapPinIcon className={iconClassName} />}
-				title={location.name}
 				onClose={closeModal}
+				title={location.name}
 				contentClassName="flex flex-col gap-4"
+				icon={iconClassName => <MapPinIcon className={iconClassName} />}
 				children={
 					<Fragment>
 						<div className="flex flex-col items-start gap-1.5">
@@ -95,7 +95,6 @@ const LocationChip: FC<Props> = ({ location }) => {
 								<GoogleMaps>
 									<Map
 										zoom={15}
-										panControl
 										mapTypeControl
 										fullscreenControl
 										controlSize={30}
@@ -122,15 +121,15 @@ const LocationChip: FC<Props> = ({ location }) => {
 					<Fragment>
 						<Button
 							text="Open"
-							leftIcon={iconClassName => <MapIcon className={iconClassName} />}
 							ariaLabel="Open In Google Maps"
 							onClick={handleOpenInGoogleMaps}
+							leftIcon={iconClassName => <MapIcon className={iconClassName} />}
 						/>
 						<Button
 							text={directionsButtonLabel}
-							leftIcon={iconClassName => <ArrowTopRightOnSquareIcon className={iconClassName} />}
-							ariaLabel={directionsButtonLabel}
 							onClick={handleGetDirections}
+							ariaLabel={directionsButtonLabel}
+							leftIcon={iconClassName => <ArrowTopRightOnSquareIcon className={iconClassName} />}
 						/>
 					</Fragment>
 				}

@@ -1,0 +1,3 @@
+mutation confirmBooking($bookingID: UUID!) {
+	confirmBooking(bookingID: $bookingID)
+}

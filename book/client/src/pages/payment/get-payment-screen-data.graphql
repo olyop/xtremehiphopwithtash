@@ -34,4 +34,5 @@ query getPaymentScreenData($sessionID: UUID!, $bookingInput: BookingInput!) {
 		cardSurchargeWithoutFee
 		finalCost
 	}
+	getCanBookSession(bookingInput: $bookingInput)
 }

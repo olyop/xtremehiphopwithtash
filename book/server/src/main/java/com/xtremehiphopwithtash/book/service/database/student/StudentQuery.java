@@ -20,4 +20,8 @@ class StudentQuery {
 	final String DELETE_BY_ID = sqlUtil.read("delete-by-id");
 
 	final String EXISTS_BY_ID = sqlUtil.read("exists-by-id");
+
+	final String SELECT_HAS_VIEWED_INSTALL_POPUP = sqlUtil.read("select-has-viewed-install-pop-up");
+
+	public String UPDATE_HAS_VIEWED_INSTALL_POPUP = sqlUtil.read("update-has-viewed-install-pop-up");
 }

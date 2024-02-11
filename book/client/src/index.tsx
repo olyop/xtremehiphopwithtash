@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { createElement } from "react";
+import { StrictMode, createElement } from "react";
 import { createRoot } from "react-dom/client";
 // import "swiped-events/src/swiped-events.js";
 import { Workbox } from "workbox-window";
@@ -15,7 +15,16 @@ if (!rootElement) {
 
 const root = createRoot(rootElement);
 
-root.render(<Application />);
+const children =
+	import.meta.env.VITE_REACT_STRICT_MODE === "false" ? (
+		<Application />
+	) : (
+		<StrictMode>
+			<Application />
+		</StrictMode>
+	);
+
+root.render(children);
 
 const workbox = new Workbox("/service-worker.js");
 

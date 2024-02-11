@@ -84,9 +84,7 @@ const AddLocation: FC = () => {
 			},
 		});
 
-		if (result.data.decodePlusCode) {
-			setCoordinates(result.data.decodePlusCode);
-		}
+		setCoordinates(result.data.decodePlusCode);
 	};
 
 	const [isOpen, openModal, closeModal] = useModal(handleFormReset);

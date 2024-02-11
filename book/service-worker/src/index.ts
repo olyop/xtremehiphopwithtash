@@ -1,5 +1,7 @@
 import { clientsClaim } from "workbox-core";
 import { imageCache, offlineFallback, pageCache, staticResourceCache } from "workbox-recipes";
+import { setDefaultHandler } from "workbox-routing";
+import { StaleWhileRevalidate } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -10,6 +12,8 @@ const run = async () => {
 	clientsClaim();
 
 	await self.skipWaiting();
+
+	setDefaultHandler(new StaleWhileRevalidate());
 
 	pageCache();
 

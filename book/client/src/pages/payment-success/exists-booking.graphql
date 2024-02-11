@@ -1,0 +1,3 @@
+query existsBooking($bookingID: UUID!) {
+	existsBookingByID(bookingID: $bookingID)
+}

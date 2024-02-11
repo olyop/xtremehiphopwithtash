@@ -13,6 +13,8 @@ class BookingQuery {
 
 	final String INSERT = sqlUtil.read("insert");
 
+	final String INSERT_WITH_BOOKING_ID = sqlUtil.read("insert-with-booking-id");
+
 	final String SELECT_BY_ID = sqlUtil.read("select-by-id");
 
 	final String UPDATE_BY_ID = sqlUtil.read("update-by-id");
@@ -65,7 +67,11 @@ class BookingQuery {
 
 	final String SELECT_GROSS_BY_SESSION_ID = sqlUtil.read("select-gross-by-session-id");
 
-	public final String EXISTS_BY_SESSION_ID_AND_STUDENT_ID_AND_CANCELLED = sqlUtil.read(
+	final String EXISTS_BY_SESSION_ID_AND_STUDENT_ID_AND_CANCELLED = sqlUtil.read(
 		"exists-by-session-id-and-student-id-and-cancelled"
 	);
+
+	final String UPDATE_HAS_CONFIRMED_BY_ID = sqlUtil.read("update-has-confirmed-by-id");
+
+	final String SELECT_LAST_BOOKING_DATE_BY_STUDENT_ID = sqlUtil.read("select-last-booking-date-by-student-id");
 }

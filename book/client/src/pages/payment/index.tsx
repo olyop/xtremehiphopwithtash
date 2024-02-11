@@ -1,9 +1,7 @@
-import { ApolloError } from "@apollo/client";
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
-import { useAuth0 } from "@auth0/auth0-react";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import FormError from "../../components/form-error";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
@@ -20,21 +18,21 @@ import {
 } from "../../generated-types";
 import { useHasMounted, useReCaptcha } from "../../hooks";
 import Page from "../page";
-import { isSessionInPast } from "../session/helpers";
 import PaymentCoupon from "./coupon";
 import CREATE_BOOKING from "./create-booking.graphql";
+import { createPaymentSuccessUrl } from "./create-payment-success-url";
 import EquipmentHireWarning from "./equipment-hire-warning";
 import GET_PAYMENT_SCREEN from "./get-payment-screen-data.graphql";
 import PaymentOverview from "./overview";
 import PaymentButton from "./payment-button";
 import PaymentMethodForm from "./payment-method-form";
-import { mapSearchParamsToBookingInput, syncSearchParams } from "./search-paramaters";
+import { createSyncSearchParams, mapSearchParamsToBookingInput } from "./search-paramaters";
 import PaymentPageStripe from "./stripe";
 
 const PaymentPage: FC = () => {
+	const navigate = useNavigate();
 	const apollo = useApolloClient();
 	const hasMounted = useHasMounted();
-	const { isAuthenticated, user } = useAuth0();
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const [reCaptchaToken, reCaptchaError, getReCaptchaToken] = useReCaptcha(
@@ -42,60 +40,59 @@ const PaymentPage: FC = () => {
 	);
 
 	const [isPaying, setIsPaying] = useState(false);
-	const [session, setSession] = useState<Session | null>(null);
 	const [isReCaptchaError, setIsReCaptchaError] = useState(false);
+	const [isFetchingPageData, setIsFetchingPageData] = useState(false);
+
+	const [session, setSession] = useState<Session | null>(null);
+	const [canBookSession, setCanBookSession] = useState<boolean>(true);
 	const [bookingCost, setBookingCost] = useState<BookingCost | null>(null);
 	const [bookingInput, setBookingInput] = useState<BookingInput | null>(null);
 
 	const [createBooking, createBookingResult] = useMutation<CreateData, CreateVars>(CREATE_BOOKING);
 
 	const refetchPageData = async (input: BookingInput) => {
-		getReCaptchaToken();
+		try {
+			setIsFetchingPageData(true);
 
-		const { data } = await apollo.query<PageData, PageVars>({
-			query: GET_PAYMENT_SCREEN,
-			fetchPolicy: "network-only",
-			variables: {
-				sessionID: input.sessionID,
-				bookingInput: input,
-			},
-		});
+			await getReCaptchaToken();
 
-		const { getSessionByID, getBookingCost } = data;
+			const { data } = await apollo.query<PageData, PageVars>({
+				query: GET_PAYMENT_SCREEN,
+				fetchPolicy: "network-only",
+				variables: {
+					sessionID: input.sessionID,
+					bookingInput: input,
+				},
+			});
 
-		setBookingCost(getBookingCost);
-		setSession(getSessionByID as Session);
-		setBookingInput({
-			...input,
-			paymentMethod:
-				getBookingCost.cost === 0
-					? getBookingCost.isFreeFromCoupon
-						? PaymentMethod.COUPON
-						: null
-					: input.paymentMethod,
-		});
-	};
+			const { getSessionByID, getBookingCost, getCanBookSession } = data;
 
-	const handleSyncSearchParams = (input: BookingInput) => {
-		syncSearchParams("paymentMethod", input.paymentMethod, setSearchParams);
-		syncSearchParams("coupon", input.couponCode, setSearchParams);
-	};
+			const bookingInputData = {
+				...input,
+				paymentMethod:
+					getBookingCost.cost === 0
+						? getBookingCost.isFreeFromCoupon
+							? PaymentMethod.COUPON
+							: null
+						: input.paymentMethod,
+			};
 
-	useEffect(() => {
-		if (hasMounted) {
-			if (bookingInput) {
-				void refetchPageData(bookingInput);
-				handleSyncSearchParams(bookingInput);
-			}
-		} else {
-			const input = mapSearchParamsToBookingInput(searchParams);
-
-			if (input) {
-				void refetchPageData(input);
-			}
+			setSession(getSessionByID as Session);
+			setCanBookSession(getCanBookSession);
+			setBookingCost(getBookingCost);
+			setBookingInput(bookingInputData);
+		} finally {
+			setIsFetchingPageData(false);
 		}
-	}, [bookingInput?.couponCode, bookingInput?.paymentMethod, bookingInput?.equipmentQuantity]);
+	};
 
+	const handleSyncSearchParams = ({ paymentMethod, couponCode, equipmentQuantity }: BookingInput) => {
+		const syncSearchParams = createSyncSearchParams(setSearchParams);
+
+		syncSearchParams("paymentMethod", paymentMethod);
+		syncSearchParams("coupon", couponCode);
+		syncSearchParams("equipmentQuantity", equipmentQuantity);
+	};
 	const handleApplyCoupon = (couponCode: string) => {
 		setBookingInput(
 			prevState =>
@@ -114,17 +111,60 @@ const PaymentPage: FC = () => {
 					equipmentQuantity,
 				},
 		);
-		syncSearchParams("equipmentQuantity", equipmentQuantity, setSearchParams);
+	};
+
+	const handleSubmitting = () => {
+		setIsReCaptchaError(false);
+		setIsPaying(true);
+	};
+
+	const handleSubmitted = () => {
+		setIsPaying(false);
+	};
+
+	const handleCreateBooking = () => {
+		if (bookingInput && reCaptchaToken) {
+			handleSubmitting();
+
+			void createBooking({
+				variables: {
+					bookingInput,
+					reCaptchaToken,
+				},
+			});
+		}
+	};
+
+	const handleReCaptchaError = () => {
+		void getReCaptchaToken();
+		setIsReCaptchaError(true);
+		createBookingResult.reset();
 	};
 
 	useEffect(() => {
-		if (createBookingResult.data) {
-			const newSearchParams = new URLSearchParams();
-			newSearchParams.append("bookingID", createBookingResult.data.createBooking.bookingID);
-			newSearchParams.append("sessionID", createBookingResult.data.createBooking.session.sessionID);
+		if (hasMounted) {
+			if (bookingInput) {
+				void refetchPageData(bookingInput);
 
-			// Reload the page refresh the local cache
-			window.location.href = `/payment-success?${newSearchParams.toString()}`;
+				handleSyncSearchParams(bookingInput);
+			}
+		} else {
+			const input = mapSearchParamsToBookingInput(searchParams);
+
+			if (input) {
+				void refetchPageData(input);
+			}
+		}
+	}, [bookingInput?.couponCode, bookingInput?.paymentMethod, bookingInput?.equipmentQuantity]);
+
+	useEffect(() => {
+		if (createBookingResult.data) {
+			const successUrl = createPaymentSuccessUrl(createBookingResult.data.createBooking.bookingID);
+
+			navigate({
+				pathname: successUrl.pathname,
+				search: successUrl.search,
+			});
 		}
 	}, [createBookingResult.data]);
 
@@ -133,21 +173,12 @@ const PaymentPage: FC = () => {
 			setIsPaying(false);
 
 			if (createBookingResult.error.message.includes("reCAPTCHA")) {
-				if (bookingInput) {
-					void refetchPageData(bookingInput);
-				}
-
-				setIsReCaptchaError(true);
-
-				createBookingResult.reset();
+				handleReCaptchaError();
 			}
 		}
 	}, [createBookingResult.error]);
 
-	const showSpinner =
-		!isAuthenticated || user === undefined || bookingInput === null || bookingCost === null || session === null;
-
-	if (showSpinner) {
+	if (bookingInput === null || bookingCost === null || session === null) {
 		return (
 			<div className="h-content-height w-full flex items-center justify-center">
 				<Loading />
@@ -155,27 +186,13 @@ const PaymentPage: FC = () => {
 		);
 	}
 
-	if (session.isCancelled || isSessionInPast(session) || session.capacityRemaining === null) {
-		return null;
+	if (!canBookSession) {
+		return (
+			<div className="h-content-height w-full flex items-center justify-center">
+				<FormError error="This session is no longer available." />
+			</div>
+		);
 	}
-
-	const handlePaymentCardSubmit = () => {
-		setIsReCaptchaError(false);
-	};
-
-	const handleCreateBooking = () => {
-		setIsPaying(true);
-		setIsReCaptchaError(false);
-
-		if (reCaptchaToken) {
-			void createBooking({
-				variables: {
-					input: bookingInput,
-					reCaptcha: reCaptchaToken,
-				},
-			});
-		}
-	};
 
 	return (
 		<Page className="h-full flex flex-col gap-12 pb-16">
@@ -196,9 +213,10 @@ const PaymentPage: FC = () => {
 				{bookingInput.paymentMethod === PaymentMethod.CARD && reCaptchaToken ? (
 					<PaymentPageStripe
 						bookingInput={bookingInput}
-						setIsPaying={setIsPaying}
-						reCaptcha={reCaptchaToken}
-						onSubmit={handlePaymentCardSubmit}
+						onSubmit={handleSubmitting}
+						onSubmitted={handleSubmitted}
+						reCaptchaToken={reCaptchaToken}
+						isFetchingPageData={isFetchingPageData}
 					/>
 				) : bookingInput.paymentMethod === PaymentMethod.COUPON ||
 				  bookingInput.paymentMethod === PaymentMethod.CASH ||
@@ -206,21 +224,13 @@ const PaymentPage: FC = () => {
 					<Fragment>
 						<FormError error={createBookingResult.error} />
 						<PaymentButton
-							text={reCaptchaError ?? "Book Now"}
 							onClick={handleCreateBooking}
-							disabled={reCaptchaToken === null}
+							text={reCaptchaError ?? "Book Now"}
+							disabled={isFetchingPageData || reCaptchaToken === null}
 						/>
 					</Fragment>
 				) : null}
-				{bookingInput.paymentMethod !== PaymentMethod.CARD && isReCaptchaError && (
-					<FormError
-						error={
-							new ApolloError({
-								errorMessage: "Timeout, please try again.",
-							})
-						}
-					/>
-				)}
+				{isReCaptchaError && <FormError error="Timeout, please try again." />}
 			</div>
 		</Page>
 	);

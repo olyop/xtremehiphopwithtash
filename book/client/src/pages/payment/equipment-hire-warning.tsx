@@ -1,5 +1,5 @@
 import ExclamationCircleIcon from "@heroicons/react/24/outline/ExclamationCircleIcon";
-import ArrowSmallRightIcon from "@heroicons/react/24/solid/ArrowSmallRightIcon";
+import ArrowRightIcon from "@heroicons/react/24/solid/ArrowRightIcon";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 
@@ -76,16 +76,16 @@ const EquipmentHireWarning: FC<Props> = ({ session, bookingInput, onUpdateEquipm
 							)}
 						</div>
 					) : (
-						<h1 className="text-lg">Are you sure you don't need to hire a step?</h1>
+						<h1 className="text-lg">Are you sure you don&apos;t need to hire a step?</h1>
 					)}
 				</Fragment>
 			}
 			buttons={
 				<Fragment>
 					<Button
-						rightIcon={className => <ArrowSmallRightIcon className={className} />}
-						ariaLabel={showEquipmentHireInput ? "Done" : "I need to hire a step"}
 						text={showEquipmentHireInput ? "Done" : "I do, yes"}
+						rightIcon={className => <ArrowRightIcon className={className} />}
+						ariaLabel={showEquipmentHireInput ? "Done" : "I need to hire a step"}
 						onClick={showEquipmentHireInput ? handleSubmitEquipmentHired : handleShowEquipmentHireInput}
 					/>
 					<Button

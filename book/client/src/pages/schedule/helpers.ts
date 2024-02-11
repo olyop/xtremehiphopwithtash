@@ -46,7 +46,7 @@ export const getSessions =
 				return error;
 			}
 
-			return (data?.getSessionsInPeriod as Session[]) ?? [];
+			return data.getSessionsInPeriod as Session[];
 		} catch (error) {
 			if (error instanceof ApolloError) {
 				return error;

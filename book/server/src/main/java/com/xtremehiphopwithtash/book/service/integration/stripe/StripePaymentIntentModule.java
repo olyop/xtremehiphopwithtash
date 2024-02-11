@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,11 @@ import org.springframework.stereotype.Service;
 public class StripePaymentIntentModule {
 
 	private final StripeClientCustom stripeClient;
+	private final ObjectMapperCustom objectMapper;
 
 	private final String currency;
-	private final ObjectMapperCustom objectMapper;
+
+	private final AutomaticPaymentMethods automaticPaymentMethods;
 
 	StripePaymentIntentModule(
 		@Value("${stripe.currency}") String currency,
@@ -36,8 +39,11 @@ public class StripePaymentIntentModule {
 		ObjectMapperCustom objectMapper
 	) {
 		this.stripeClient = stripeClient;
-		this.currency = currency;
 		this.objectMapper = objectMapper;
+
+		this.currency = currency;
+
+		this.automaticPaymentMethods = AutomaticPaymentMethods.builder().setEnabled(true).build();
 	}
 
 	public CreatePaymentIntentResponse create(
@@ -50,10 +56,10 @@ public class StripePaymentIntentModule {
 	) {
 		validateCustomerExists(stripeCustomerID);
 
-		try {
-			Map<String, String> metadata = constructPaymentIntentMetadata(studentID, bookingInput);
+		UUID bookingID = UUID.randomUUID();
 
-			AutomaticPaymentMethods automaticPaymentMethods = AutomaticPaymentMethods.builder().setEnabled(true).build();
+		try {
+			Map<String, String> metadata = constructPaymentIntentMetadata(studentID, bookingInput, bookingID);
 
 			PaymentIntentCreateParams params = PaymentIntentCreateParams
 				.builder()
@@ -67,7 +73,12 @@ public class StripePaymentIntentModule {
 
 			PaymentIntent paymentIntent = stripeClient.client().paymentIntents().create(params);
 
-			return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
+			CreatePaymentIntentResponse response = new CreatePaymentIntentResponse();
+			response.setClientSecret(paymentIntent.getClientSecret());
+			response.setBookingID(bookingID);
+			response.setLiveMode(paymentIntent.getLivemode());
+
+			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ResolverException("Unable to create payment intent");
@@ -147,12 +158,16 @@ public class StripePaymentIntentModule {
 		}
 	}
 
-	private Map<String, String> constructPaymentIntentMetadata(String studentID, BookingInput bookingInput)
-		throws JsonProcessingException {
+	private Map<String, String> constructPaymentIntentMetadata(
+		String studentID,
+		BookingInput bookingInput,
+		UUID bookingID
+	) throws JsonProcessingException {
 		Map<String, String> metadata = new HashMap<>();
 
 		metadata.put("studentID", studentID);
 		metadata.put("bookingInput", objectMapper.instance().writeValueAsString(bookingInput));
+		metadata.put("bookingID", bookingID.toString());
 
 		return metadata;
 	}

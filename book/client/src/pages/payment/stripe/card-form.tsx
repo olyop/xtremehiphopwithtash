@@ -1,22 +1,19 @@
 import { ApolloError } from "@apollo/client/errors";
-import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripePaymentElementChangeEvent } from "@stripe/stripe-js";
-import { Dispatch, FC, SetStateAction, createElement, useEffect, useState } from "react";
+import { FC, createElement, useEffect, useState } from "react";
 
 import FormError from "../../../components/form-error";
-import { BookingInput } from "../../../generated-types";
+import { createPaymentSuccessUrl } from "../create-payment-success-url";
 import PaymentButton from "../payment-button";
-import { checkCanBookSession } from "./check-can-book-session";
 
-const CardForm: FC<Props> = ({ setIsPaying, bookingInput, onSubmit }) => {
+const CardForm: FC<Props> = ({ bookingID, onSubmit, onSubmitted, isFetchingPageData }) => {
 	const stripe = useStripe();
 	const elements = useElements();
-	const apollo = useApolloClient();
 
 	const [hasCardFormLoaded, setHasCardFormLoaded] = useState(false);
 	const [isCardFormComplete, setIsCardFormComplete] = useState(false);
-	const [formError, setFormError] = useState<ApolloError | undefined>(undefined);
+	const [formError, setFormError] = useState<ApolloError | null>(null);
 
 	const handleCardFormLoad = () => {
 		setHasCardFormLoaded(true);
@@ -28,58 +25,48 @@ const CardForm: FC<Props> = ({ setIsPaying, bookingInput, onSubmit }) => {
 
 	const confirmPayment = async () => {
 		if (stripe && elements) {
-			setIsPaying(true);
-			setFormError(undefined);
+			onSubmit();
+
+			setFormError(null);
 
 			try {
-				const canBookSession = await checkCanBookSession(apollo, bookingInput);
-
-				if (canBookSession instanceof ApolloError) {
-					setFormError(canBookSession);
-					return;
-				}
-
-				if (!canBookSession) {
-					setFormError(new ApolloError({ errorMessage: "This session is no longer available." }));
-					return;
-				}
-
 				const { error } = await stripe.confirmPayment({
 					elements,
 					confirmParams: {
-						return_url: `${window.location.origin}/payment-success?sessionID=${bookingInput.sessionID}`,
+						return_url: createPaymentSuccessUrl(bookingID).toString(),
 					},
 				});
+
+				// the page will redirect to the success page if the payment is successful
 
 				setFormError(new ApolloError({ errorMessage: error.message ?? "An error occurred. Please try again." }));
 			} catch (error) {
 				if (error instanceof ApolloError) {
 					setFormError(new ApolloError({ errorMessage: error.message }));
 				} else {
-					setFormError(new ApolloError({ errorMessage: "An error occurred. Please try again." }));
+					setFormError(new ApolloError({ errorMessage: "A unknown error occurred. Please try again." }));
 				}
 			} finally {
-				setIsPaying(false);
+				onSubmitted();
 			}
 		}
 	};
 
 	const handleSubmit = () => {
-		onSubmit();
 		void confirmPayment();
 	};
 
 	useEffect(() => {
-		let timeout: ReturnType<typeof setTimeout> | null = null;
+		let timeout: ReturnType<typeof setTimeout>;
 
 		if (formError) {
 			timeout = setTimeout(() => {
-				setFormError(undefined);
+				setFormError(null);
 			}, 10_000);
 		}
 
 		return () => {
-			if (timeout) {
+			if (formError) {
 				clearTimeout(timeout);
 			}
 		};
@@ -90,16 +77,17 @@ const CardForm: FC<Props> = ({ setIsPaying, bookingInput, onSubmit }) => {
 			<PaymentElement onReady={handleCardFormLoad} onChange={handlePaymentElementChange} />
 			<FormError error={formError} />
 			{hasCardFormLoaded && (
-				<PaymentButton text="Pay Now" onClick={handleSubmit} disabled={!stripe || !elements || !isCardFormComplete} />
+				<PaymentButton text="Pay Now" onClick={handleSubmit} disabled={isFetchingPageData || !isCardFormComplete} />
 			)}
 		</div>
 	);
 };
 
 interface Props {
-	bookingInput: BookingInput;
+	bookingID: string;
 	onSubmit: () => void;
-	setIsPaying: Dispatch<SetStateAction<boolean>>;
+	onSubmitted: () => void;
+	isFetchingPageData: boolean;
 }
 
 export default CardForm;

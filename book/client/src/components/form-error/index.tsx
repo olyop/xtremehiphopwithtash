@@ -5,18 +5,12 @@ import Error from "../error";
 
 const FormError: FC<Props> = ({ error }) => (
 	<Fragment>
-		{error && (
+		{error instanceof ApolloError ? (
 			<Fragment>
 				{error.graphQLErrors.length > 0 && (
 					<Error
 						errors={error.graphQLErrors.map(({ message }) => message)}
-						isBadError={error.graphQLErrors.reduce((isBad, { message }) => {
-							if (message.includes("INTERNAL_ERROR")) {
-								return true;
-							} else {
-								return false;
-							}
-						}, false)}
+						isBadError={error.graphQLErrors.map(({ message }) => message).includes("INTERNAL_ERROR")}
 					/>
 				)}
 				{error.networkError && <Error isBadError errors={[error.networkError.message]} />}
@@ -24,12 +18,14 @@ const FormError: FC<Props> = ({ error }) => (
 					<Error errors={[error.message]} />
 				)}
 			</Fragment>
-		)}
+		) : typeof error === "string" ? (
+			<Error errors={[error]} />
+		) : null}
 	</Fragment>
 );
 
 interface Props {
-	error: ApolloError | undefined;
+	error: ApolloError | string | null | undefined;
 }
 
 export default FormError;

@@ -7,23 +7,24 @@ export const useReCaptcha = (action: string) => {
 	const [reCaptchaToken, setReCaptchaToken] = useState<string | null>(null);
 	const [reCaptchaError, setReCaptchaError] = useState<string | null>(null);
 
-	const executeReCaptcha = async () => {
+	const handleReCaptcha = async () => {
 		if (executeRecaptcha) {
-			try {
-				const token = await executeRecaptcha(action);
+			let token: string | null = null;
 
-				setReCaptchaToken(token);
+			try {
+				token = await executeRecaptcha(action);
 			} catch (error) {
-				setReCaptchaError(error instanceof Error ? error.message : "Unknown error");
-				setReCaptchaToken(null);
+				setReCaptchaError(error instanceof Error ? error.message : "Unknown reCAPTCHA error");
+			} finally {
+				setReCaptchaToken(token);
 			}
 		}
 	};
 
-	const getReCaptchaToken = () => {
+	const getReCaptchaToken = async () => {
 		setReCaptchaToken(null);
 
-		void executeReCaptcha();
+		await handleReCaptcha();
 	};
 
 	return [reCaptchaToken, reCaptchaError, getReCaptchaToken] as const;

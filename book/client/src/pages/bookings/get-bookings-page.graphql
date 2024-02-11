@@ -1,0 +1,22 @@
+query getBookingsPage {
+	getStudentByID {
+		studentID
+		bookings {
+			bookingID
+			notes
+			createdAt
+			bookingQuantity
+			equipmentQuantity
+			paymentMethod
+			cost
+			isCheckedIn
+			isCancelled
+			session {
+				sessionID
+				title
+				startTime
+				endTime
+			}
+		}
+	}
+}

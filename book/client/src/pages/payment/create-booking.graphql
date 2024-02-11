@@ -1,5 +1,5 @@
-mutation createBooking($input: BookingInput!, $reCaptcha: String!) {
-	createBooking(input: $input, reCaptcha: $reCaptcha) {
+mutation createBooking($bookingInput: BookingInput!, $reCaptchaToken: String!) {
+	createBooking(input: $bookingInput, reCaptchaToken: $reCaptchaToken) {
 		bookingID
 		session {
 			sessionID

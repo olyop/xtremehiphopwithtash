@@ -6,15 +6,22 @@
 	"type": "module",
 	"scripts": {
 		"deve": "vite --mode development --force",
-		"stag": "vite build --mode staging --force",
-		"prod": "vite build --mode production --force"
+		"lint": "eslint --ext .ts,.tsx --parser-options '{\"project\": \"./tsconfig.json\"}' src",
+		"tsc": "tsc --noEmit",
+		"build": "vite build --force",
+		"staging": "npm run build -- --mode staging",
+		"production": "npm run build -- --mode production"
 	},
 	"engines": {
 		"node": "21.2.0",
 		"npm": "10.2.4"
 	},
+	"volta": {
+		"node": "21.6.1",
+		"npm": "10.4.0"
+	},
 	"dependencies": {
-		"@apollo/client": "3.9.2",
+		"@apollo/client": "3.9.4",
 		"@auth0/auth0-react": "2.2.4",
 		"@googlemaps/react-wrapper": "1.1.35",
 		"@heroicons/react": "2.1.1",
@@ -28,18 +35,18 @@
 		"swiped-events": "1.1.9"
 	},
 	"devDependencies": {
-		"@types/google.maps": "3.55.1",
-		"@types/react": "18.2.52",
-		"@types/react-dom": "18.2.18",
+		"@types/google.maps": "3.55.2",
+		"@types/react": "18.2.55",
+		"@types/react-dom": "18.2.19",
 		"@vitejs/plugin-react-swc": "3.6.0",
 		"autoprefixer": "10.4.17",
 		"content-security-policy-builder": "2.1.1",
 		"http2-proxy": "5.0.53",
-		"postcss": "8.4.33",
+		"postcss": "8.4.35",
 		"rollup-plugin-visualizer": "5.12.0",
 		"sass": "1.70.0",
 		"tailwindcss": "3.4.1",
-		"vite": "5.0.12",
+		"vite": "5.1.1",
 		"vite-plugin-checker": "0.6.4",
 		"vite-plugin-eslint": "1.8.1",
 		"vite-plugin-mkcert": "1.17.3",

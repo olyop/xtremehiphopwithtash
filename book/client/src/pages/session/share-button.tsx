@@ -42,7 +42,7 @@ const ShareButton: FC<Props> = ({ text }) => {
 						<CheckIcon className={`${className} !h-8 !w-8`} />
 					)
 				) : (
-					<ArrowPathIcon className={`${className} !h-8 !w-8`} />
+					<ArrowPathIcon className={`${className} !h-8 !w-8 animate-spin`} />
 				)
 			}
 		/>

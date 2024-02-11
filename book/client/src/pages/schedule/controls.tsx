@@ -10,10 +10,8 @@ import Button from "../../components/button";
 import { Breakpoint } from "../../hooks";
 
 const determineForwardLabel = (breakpoint: Breakpoint) => {
-	if (breakpoint === Breakpoint.TINY) {
+	if (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) {
 		return "Future";
-	} else if (breakpoint === Breakpoint.SMALL) {
-		return "+2 days";
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return "+3 days";
 	} else {
@@ -22,10 +20,8 @@ const determineForwardLabel = (breakpoint: Breakpoint) => {
 };
 
 const determineBackLabel = (breakpoint: Breakpoint) => {
-	if (breakpoint === Breakpoint.TINY) {
+	if (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) {
 		return "Past";
-	} else if (breakpoint === Breakpoint.SMALL) {
-		return "-2 days";
 	} else if (breakpoint === Breakpoint.MEDIUM) {
 		return "-3 days";
 	} else {

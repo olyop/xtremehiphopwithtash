@@ -10,9 +10,12 @@ import { VitePluginGraphql as gql } from "./vite/plugin-graphql";
 import { VitePluginHtml as htmlVariables } from "./vite/plugin-html-variables";
 
 const checkerOptions: Parameters<typeof checker>[0] = {
-	typescript: true,
+	terminal: false,
+	typescript: {
+		tsconfigPath: "./tsconfig.json",
+	},
 	eslint: {
-		lintCommand: "eslint",
+		lintCommand: "eslint './src/**/*.{ts,tsx}' --parser-options='{\"project\": \"./tsconfig.json\"}'",
 		dev: {
 			overrideConfig: {
 				overrideConfig: {
@@ -32,7 +35,7 @@ export default defineConfig(async ({ mode }) => {
 
 	const productionPlugins: PluginOption[] = [
 		visualizer({
-			open: false,
+			open: true,
 			gzipSize: true,
 		}),
 	];
@@ -45,7 +48,7 @@ export default defineConfig(async ({ mode }) => {
 	];
 
 	return {
-		plugins: mode === "production" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
+		plugins: mode === "production" || mode === "staging" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
 		server: {
 			https:
 				mode === "development"

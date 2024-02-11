@@ -64,14 +64,14 @@ public class StripeResolver {
 	@MutationMapping
 	public CreatePaymentIntentResponse createPaymentIntent(
 		@Argument BookingInput input,
-		@Argument String reCaptcha,
+		@Argument String reCaptchaToken,
 		GraphQLContext graphQlContext,
 		Principal principal
 	) {
 		String studentID = auth0JwtService.extractStudentID(principal);
 		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
 
-		reCaptchaService.validate(reCaptcha, remoteAddress);
+		reCaptchaService.validate(reCaptchaToken, remoteAddress);
 		bookingService.validateCreate(input, studentID);
 
 		Student student = studentService.retreiveByID(studentID);

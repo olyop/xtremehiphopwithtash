@@ -5,7 +5,7 @@ import { BookingInput, PaymentMethod } from "../../generated-types";
 const verifyIntegerParam = (value: string | null, required: boolean) => {
 	if (value) {
 		try {
-			const parsed = Number.parseInt(value, 10);
+			const parsed = Number.parseInt(value);
 			if (Number.isNaN(parsed)) {
 				return false;
 			} else if (parsed < 0) {
@@ -31,32 +31,29 @@ const verifyPaymenMethodParam = (value: string | null, required: boolean) => {
 	}
 };
 
-export const syncSearchParams = (
-	key: string,
-	value: string | number | null | undefined,
-	setSearchParams: SetURLSearchParams,
-) => {
-	setSearchParams(
-		prevSearchParams => {
-			if (value) {
-				const valueString = String(value);
+export const createSyncSearchParams =
+	(setSearchParams: SetURLSearchParams) => (key: string, value: string | number | null | undefined) => {
+		setSearchParams(
+			prevSearchParams => {
+				if (value) {
+					const valueString = String(value);
 
-				if (prevSearchParams.has(key)) {
-					prevSearchParams.set(key, valueString);
+					if (prevSearchParams.has(key)) {
+						prevSearchParams.set(key, valueString);
+					} else {
+						prevSearchParams.append(key, valueString);
+					}
 				} else {
-					prevSearchParams.append(key, valueString);
+					prevSearchParams.delete(key);
 				}
-			} else {
-				prevSearchParams.delete(key);
-			}
 
-			return prevSearchParams;
-		},
-		{
-			replace: true,
-		},
-	);
-};
+				return prevSearchParams;
+			},
+			{
+				replace: true,
+			},
+		);
+	};
 
 export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): BookingInput | null => {
 	const sessionIDParam = searchParams.get("sessionID");

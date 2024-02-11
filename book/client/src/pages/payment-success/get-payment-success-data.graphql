@@ -1,21 +1,24 @@
-query getPaymentSuccessData($sessionID: UUID!) {
-	getSessionByID(sessionID: $sessionID) {
-		sessionID
-		title
-		price
-		equipmentFee
-		startTime
-		endTime
-		capacityRemaining
-		isCancelled
-		location {
-			locationID
-			name
-		}
-		course {
-			courseID
-			name
-			photo
+query getPaymentSuccessData($bookingID: UUID!) {
+	getBookingByID(bookingID: $bookingID) {
+		bookingID
+		session {
+			sessionID
+			title
+			price
+			equipmentFee
+			startTime
+			endTime
+			capacityRemaining
+			isCancelled
+			location {
+				locationID
+				name
+			}
+			course {
+				courseID
+				name
+				photo
+			}
 		}
 	}
 }

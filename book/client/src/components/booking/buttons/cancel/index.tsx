@@ -54,14 +54,14 @@ const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated }) => {
 
 	useEffect(() => {
 		if (cancelBookingResult.error?.message.includes("reCAPTCHA")) {
-			getReCaptchaToken();
+			void getReCaptchaToken();
 			cancelBookingResult.reset();
 		}
 	}, [cancelBookingResult.error]);
 
 	useEffect(() => {
 		if (isCancelModalOpen) {
-			getReCaptchaToken();
+			void getReCaptchaToken();
 		}
 	}, [isCancelModalOpen]);
 

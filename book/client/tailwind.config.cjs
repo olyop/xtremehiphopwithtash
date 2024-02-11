@@ -13,6 +13,7 @@ module.exports = {
 				primary: "#ff0000",
 				"primary-light": "#ff4040",
 				"primary-dark": "#bf0000",
+				"apple-store-get-blue": "#3478f5",
 			},
 			height: {
 				"header-height": "5rem",
@@ -22,7 +23,7 @@ module.exports = {
 				"booking-modal": "30rem",
 			},
 			screens: {
-				"tiny": "400px",
+				"tiny": "350px",
 			},
 		},
 	},

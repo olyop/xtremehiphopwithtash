@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS booking (
 	payment_method booking_payment_method,
 	payment_intent_id VARCHAR(255),
 	cost INTEGER,
+	has_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
 	has_checked_in BOOLEAN NOT NULL DEFAULT FALSE,
 	has_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
 	cancelled_at INTEGER,

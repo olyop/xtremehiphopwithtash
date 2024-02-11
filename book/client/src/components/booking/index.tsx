@@ -63,8 +63,10 @@ const SessionPageBooking: FC<Props> = ({
 			isLeftALink={isLeftALink}
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftLink={isLeftALink ? `/session/${session.sessionID}` : undefined}
-			className={`!p-0 ${isSessionInPast || booking.isCancelled ? "bg-gray-100" : ""}`}
-			leftClassName={`p-2 pl-3 grow ${isLeftALink ? "hover:bg-gray-100 transition-colors" : ""}`}
+			className={`!p-0 ${isSessionInPast ? "bg-gray-100" : ""}`}
+			leftClassName={`p-2 pl-3 grow hover:bg-gray-200 ${
+				isLeftALink ? `${isSessionInPast ? "bg-gray-100" : ""} transition-colors` : ""
+			}`}
 			text={
 				hideUpdate
 					? booking.session.title

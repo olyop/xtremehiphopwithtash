@@ -59,4 +59,20 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
 	}
+
+	public boolean selectHasViewedInstallPopup(String studentID) {
+		String sql = query.SELECT_HAS_VIEWED_INSTALL_POPUP;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public boolean updateHasViewedInstallPopup(String studentID) {
+		String sql = query.UPDATE_HAS_VIEWED_INSTALL_POPUP;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		return jdbcTemplate.update(sql, paramSource) == 1;
+	}
 }

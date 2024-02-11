@@ -3,6 +3,8 @@ import { RouteObject, useLocation, useRoutes } from "react-router-dom";
 
 import AccountPage from "./pages/account";
 import AdminPage from "./pages/admin";
+import BookingsPage from "./pages/bookings";
+import InstallPage from "./pages/install";
 import MerchPage from "./pages/merch";
 import PaymentPage from "./pages/payment";
 import PaymentSuccessPage from "./pages/payment-success";
@@ -27,8 +29,16 @@ const routes: RouteObject[] = [
 		element: <AccountPage />,
 	},
 	{
+		path: "bookings",
+		element: <BookingsPage />,
+	},
+	{
 		path: "merch",
 		element: <MerchPage />,
+	},
+	{
+		path: "install",
+		element: <InstallPage />,
 	},
 	{
 		path: "payment",

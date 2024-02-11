@@ -6,7 +6,12 @@ import { createLink } from "./link";
 
 export const createClient = async (getAccessTokenSilently: Auth0ContextInterface["getAccessTokenSilently"]) =>
 	new ApolloClient({
-		link: createLink(getAccessTokenSilently),
-		cache: await createCache(),
 		queryDeduplication: false,
+		cache: await createCache(),
+		link: createLink(getAccessTokenSilently),
+		defaultOptions: {
+			watchQuery: {
+				fetchPolicy: "cache-and-network",
+			},
+		},
 	});

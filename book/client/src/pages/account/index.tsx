@@ -1,7 +1,6 @@
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
-import ArrowLeftStartOnRectangle from "@heroicons/react/20/solid/ArrowLeftStartOnRectangleIcon";
 import HomeIcon from "@heroicons/react/24/outline/HomeIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
@@ -9,18 +8,15 @@ import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import SessionPageBooking from "../../components/booking";
 import Button from "../../components/button";
 import FormError from "../../components/form-error";
 import DetailsForm from "../../components/forms/details-form";
 import Loading from "../../components/loading";
 import Modal from "../../components/modal";
 import {
-	Booking,
 	Details,
 	DetailsInput,
 	GetAccountPageQuery,
-	Session,
 	UpdateStudentMutation,
 	UpdateStudentMutationVariables,
 } from "../../generated-types";
@@ -43,15 +39,12 @@ const AccountPage: FC = () => {
 	const [detailsInput, setDetailsInput] = useState<DetailsInput | null>(null);
 	const [hasUpdatedEmailAddress, setHasUpdatedEmailAddress] = useState(false);
 
-	const [getAccountPage, queryResult] = useLazyQuery<QueryData>(GET_ACCOUNT_PAGE);
-
+	const [getAccountPage, accountPageResult] = useLazyQuery<QueryData>(GET_ACCOUNT_PAGE);
 	const [updateStudent, updateStudentResult] = useMutation<MutationData, MutationVars>(UPDATE_STUDENT);
 
-	const { data: queryData, loading, called, refetch, error } = queryResult;
-
 	const handleResetEditModal = () => {
-		if (queryData) {
-			const details = queryData.getStudentByID.details as Details;
+		if (accountPageResult.data) {
+			const details = accountPageResult.data.getStudentByID.details as Details;
 			setDetailsInput(detailsToInput(details));
 			updateStudentResult.reset();
 		}
@@ -61,14 +54,6 @@ const AccountPage: FC = () => {
 
 	const handleGoHome = () => {
 		navigate("/");
-	};
-
-	const handleLogOut = () => {
-		void logout({
-			logoutParams: {
-				returnTo: window.location.origin,
-			},
-		});
 	};
 
 	const handleUpdateStudent = () => {
@@ -85,10 +70,6 @@ const AccountPage: FC = () => {
 		}
 	};
 
-	const handleBookingUpdated = () => {
-		void refetch();
-	};
-
 	useEffect(() => {
 		if (user?.sub) {
 			void getAccountPage();
@@ -96,11 +77,11 @@ const AccountPage: FC = () => {
 	}, [user]);
 
 	useEffect(() => {
-		if (queryData) {
-			const details = queryData.getStudentByID.details as Details;
+		if (accountPageResult.data) {
+			const details = accountPageResult.data.getStudentByID.details as Details;
 			setDetailsInput(detailsToInput(details));
 		}
-	}, [queryData]);
+	}, [accountPageResult.data]);
 
 	useEffect(() => {
 		if (updateStudentResult.data) {
@@ -113,12 +94,12 @@ const AccountPage: FC = () => {
 					},
 				});
 			} else {
-				void refetch();
+				void accountPageResult.refetch();
 			}
 		}
 	}, [updateStudentResult.data]);
 
-	if (!isAuthenticated && called && !loading) {
+	if (!isAuthenticated && accountPageResult.called && !accountPageResult.loading) {
 		return (
 			<div className="p-4">
 				<Button
@@ -131,15 +112,15 @@ const AccountPage: FC = () => {
 		);
 	}
 
-	if (error) {
+	if (accountPageResult.error) {
 		return (
 			<div className="h-content-height w-full p-4">
-				<FormError error={error} />
+				<FormError error={accountPageResult.error} />
 			</div>
 		);
 	}
 
-	if (loading || !user || !queryData) {
+	if (accountPageResult.loading || !user || !accountPageResult.data) {
 		return (
 			<div className="h-content-height w-full flex items-center justify-center">
 				<Loading />
@@ -148,8 +129,8 @@ const AccountPage: FC = () => {
 	}
 
 	const {
-		getStudentByID: { studentID, details, bookings, createdAt },
-	} = queryData;
+		getStudentByID: { studentID, details, createdAt },
+	} = accountPageResult.data;
 
 	const detailsClassName = "flex flex-col gap-1";
 
@@ -224,42 +205,6 @@ const AccountPage: FC = () => {
 					)}
 				</div>
 			</div>
-			<div className="flex flex-col gap-2">
-				<h2 className="text-2xl underline">Bookings</h2>
-				<div className="bg-white flex flex-col w-full shadow-lg">
-					{bookings ? (
-						bookings.map(booking => (
-							<SessionPageBooking
-								hideUpdate
-								hideCheckIn
-								isLeftALink
-								hideCallNow
-								hideInstagram
-								hideQuantities
-								hideEquipmentFee
-								hideStripePaymentLink
-								key={booking.bookingID}
-								booking={booking as Booking}
-								session={booking.session as Session}
-								onBookingUpdated={handleBookingUpdated}
-							/>
-						))
-					) : (
-						<p className="text-gray-500 p-2">No booking</p>
-					)}
-				</div>
-				{bookings && bookings.length > 0 && (
-					<p>
-						{bookings.length} booking{bookings.length === 1 ? "" : "s"}
-					</p>
-				)}
-			</div>
-			<Button
-				text="Log Out"
-				ariaLabel="Log Out"
-				onClick={handleLogOut}
-				leftIcon={className => <ArrowLeftStartOnRectangle className={className} />}
-			/>
 		</Page>
 	);
 };

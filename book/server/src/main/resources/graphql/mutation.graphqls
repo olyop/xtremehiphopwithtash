@@ -19,9 +19,10 @@ type Mutation {
 	updateSessionByID(sessionID: UUID!, input: SessionInput!): Session!
 	updateBookingByID(bookingID: UUID!, input: BookingInput!): Booking!
 
-	createPaymentIntent(input: BookingInput!, reCaptcha: String!): CreatePaymentIntentResponse!
-	createBooking(input: BookingInput!, reCaptcha: String!): Booking!
+	createPaymentIntent(input: BookingInput!, reCaptchaToken: String!): CreatePaymentIntentResponse!
+	createBooking(input: BookingInput!, reCaptchaToken: String!): Booking!
 
+	confirmBooking(bookingID: UUID!): UUID!
 	checkInBooking(bookingID: UUID!, value: Boolean!): UUID!
 
 	cancelSessionByID(sessionID: UUID!): UUID!
@@ -30,4 +31,6 @@ type Mutation {
 	generateCoupon(discount: PositiveInt!): String!
 
 	viewSession(sessionID: UUID!): Boolean!
+
+	viewInstallPopup: Boolean!
 }

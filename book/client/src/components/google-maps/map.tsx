@@ -23,7 +23,9 @@ export const Map: FC<PropsWithChildren<Props>> = ({ onClick, children, className
 
 	useEffect(() => {
 		if (map) {
-			["click", "idle"].forEach(eventName => google.maps.event.clearListeners(map, eventName));
+			["click", "idle"].forEach(eventName => {
+				google.maps.event.clearListeners(map, eventName);
+			});
 
 			if (onClick) {
 				map.addListener("click", onClick);
@@ -37,7 +39,7 @@ export const Map: FC<PropsWithChildren<Props>> = ({ onClick, children, className
 			{Children.map(children, child => {
 				if (isValidElement(child)) {
 					// set the map prop on the child component
-					// @ts-ignore
+					// @ts-expect-error
 					return cloneElement(child, { map });
 				} else {
 					return null;

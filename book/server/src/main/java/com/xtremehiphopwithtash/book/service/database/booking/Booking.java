@@ -16,6 +16,7 @@ public class Booking extends BaseModel {
 	private PaymentMethod paymentMethod;
 	private String paymentIntentID;
 	private Integer cost;
+	private boolean isConfirmed;
 	private boolean isCheckedIn;
 	private boolean isCancelled;
 	private Instant cancelledAt;
@@ -90,6 +91,14 @@ public class Booking extends BaseModel {
 
 	public void setCost(Integer cost) {
 		this.cost = cost;
+	}
+
+	public boolean isConfirmed() {
+		return isConfirmed;
+	}
+
+	public void setIsConfirmed(boolean isConfirmed) {
+		this.isConfirmed = isConfirmed;
 	}
 
 	public Boolean isCheckedIn() {

@@ -58,7 +58,13 @@ public class BookingService {
 		this.stripeService = stripeService;
 	}
 
-	public Booking create(BookingInput input, String studentID, PaymentIntent paymentIntent, boolean isAdministrator) {
+	public Booking create(
+		BookingInput input,
+		UUID bookingIDInput,
+		String studentID,
+		PaymentIntent paymentIntent,
+		boolean isAdministrator
+	) {
 		studentValidator.validateID(studentID);
 		validateCreate(input, studentID);
 
@@ -66,6 +72,7 @@ public class BookingService {
 		BookingCost bookingCost = getBookingCost(input, session);
 
 		Booking booking = bookingInputMapper.map(input);
+		booking.setBookingID(bookingIDInput);
 		booking.setStudentID(studentID);
 
 		if (isBookingFree(bookingCost, input)) {
@@ -82,11 +89,12 @@ public class BookingService {
 			throw new IllegalStateException("Invalid payment method");
 		}
 
-		Booking savedBooking = bookingDAO.insert(booking);
-		UUID bookingID = savedBooking.getBookingID();
+		Booking savedBooking = bookingIDInput == null
+			? bookingDAO.insert(booking)
+			: bookingDAO.insertWithBookingID(booking);
 
 		if (input.couponCode().isPresent()) {
-			couponService.use(input.couponCode().get(), studentID, bookingID);
+			couponService.use(input.couponCode().get(), studentID, savedBooking.getBookingID());
 		}
 
 		return savedBooking;
@@ -264,14 +272,14 @@ public class BookingService {
 		}
 	}
 
-	private void validateQuantitiesAreOne(BookingInput input) {
-		if (
-			input.bookingQuantity() != 1 ||
-			(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : false)
-		) {
-			throw new ResolverException("When paying with cash you can only book one session and hire one step.");
-		}
-	}
+	// private void validateQuantitiesAreOne(BookingInput input) {
+	// 	if (
+	// 		input.bookingQuantity() != 1 ||
+	// 		(input.equipmentQuantity().isPresent() ? input.equipmentQuantity().get() != 1 : false)
+	// 	) {
+	// 		throw new ResolverException("When paying with cash you can only book one session and hire one step.");
+	// 	}
+	// }
 
 	public BookingCost getBookingCost(BookingInput input, Session session) {
 		Optional<Integer> couponDiscountPercentage = input.couponCode().isPresent()
@@ -410,6 +418,12 @@ public class BookingService {
 		return bookingDAO.existsBySessionAndStudentAndCancelled(sessionID, studentID);
 	}
 
+	public void confirm(UUID bookingID) {
+		validateID(bookingID);
+
+		bookingDAO.updateHasConfirmed(bookingID, true);
+	}
+
 	public void checkIn(UUID bookingID, boolean hasCheckedIn) {
 		validateID(bookingID);
 
@@ -424,5 +438,15 @@ public class BookingService {
 		sessionValidator.validateID(sessionID);
 
 		return bookingDAO.selectGrossBySessionID(sessionID);
+	}
+
+	public boolean existsByID(UUID bookingID) {
+		return bookingDAO.existsByID(bookingID);
+	}
+
+	public Instant retreiveStudentLastBookingDate(String studentID) {
+		studentValidator.validateID(studentID);
+
+		return bookingDAO.selectLastBookingDateByStudentID(studentID);
 	}
 }

@@ -4,6 +4,7 @@ import com.xtremehiphopwithtash.book.other.PaymentMethod;
 import com.xtremehiphopwithtash.book.service.helpers.EntityBaseDAO;
 import com.xtremehiphopwithtash.book.service.helpers.EntityDeleteDAO;
 import com.xtremehiphopwithtash.book.service.helpers.EntityUpdateDAO;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -50,9 +51,25 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 	public Booking insert(Booking value) {
 		String sql = query.INSERT;
 
+		MapSqlParameterSource paramSource = mapBookingSqlParameterSource(value);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
+	}
+
+	public Booking insertWithBookingID(Booking value) {
+		String sql = query.INSERT_WITH_BOOKING_ID;
+
+		MapSqlParameterSource paramSource = mapBookingSqlParameterSource(value);
+		paramSource.addValue("bookingID", value.getBookingID());
+
+		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
+	}
+
+	private MapSqlParameterSource mapBookingSqlParameterSource(Booking value) {
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
-		paramSource.addValue("notes", value.getNotes());
+
 		paramSource.addValue("sessionID", value.getSessionID());
+		paramSource.addValue("notes", value.getNotes());
 		paramSource.addValue("studentID", value.getStudentID());
 		paramSource.addValue("bookingQuantity", value.getBookingQuantity());
 		paramSource.addValue("equipmentQuantity", value.getEquipmentQuantity());
@@ -60,7 +77,7 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		paramSource.addValue("paymentIntentID", value.getPaymentIntentID());
 		paramSource.addValue("cost", value.getCost());
 
-		return jdbcTemplate.queryForObject(sql, paramSource, rowMapper);
+		return paramSource;
 	}
 
 	@Override
@@ -250,5 +267,23 @@ public class BookingDAO implements EntityBaseDAO<Booking, UUID>, EntityUpdateDAO
 		paramSource.addValue("studentID", studentID);
 
 		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public void updateHasConfirmed(UUID bookingID, boolean hasConfirmed) {
+		String sql = query.UPDATE_HAS_CONFIRMED_BY_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("bookingID", bookingID);
+		paramSource.addValue("hasConfirmed", hasConfirmed);
+
+		jdbcTemplate.update(sql, paramSource);
+	}
+
+	public Instant selectLastBookingDateByStudentID(String studentID) {
+		String sql = query.SELECT_LAST_BOOKING_DATE_BY_STUDENT_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		return Instant.ofEpochSecond(jdbcTemplate.queryForObject(sql, paramSource, Integer.class));
 	}
 }

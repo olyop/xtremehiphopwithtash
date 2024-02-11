@@ -1,9 +1,6 @@
 package com.xtremehiphopwithtash.book.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.StripeObject;
@@ -14,6 +11,7 @@ import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
+import java.util.UUID;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,7 +56,18 @@ public class StripeController {
 	private void handlePaymentIntentSucceeded(PaymentIntent paymentIntent) {
 		String studentID = paymentIntent.getMetadata().get("studentID");
 		String bookingInputJson = paymentIntent.getMetadata().get("bookingInput");
+		String bookingIDJson = paymentIntent.getMetadata().get("bookingID");
 
+		validateMetadata(studentID, bookingInputJson, bookingIDJson);
+		validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
+
+		BookingInput bookingInput = parseBookingInput(bookingInputJson);
+		UUID bookingID = parseBookingID(bookingIDJson);
+
+		bookingService.create(bookingInput, bookingID, studentID, paymentIntent, false);
+	}
+
+	private void validateMetadata(String studentID, String bookingInputJson, String bookingIDJson) {
 		if (studentID == null) {
 			throw new ResolverException("Payment intent metadata missing student ID");
 		}
@@ -67,11 +76,9 @@ public class StripeController {
 			throw new ResolverException("Payment intent metadata missing booking input");
 		}
 
-		validatePaymentIntentCustomerIdMatches(studentID, paymentIntent);
-
-		BookingInput bookingInput = parseBookingInput(bookingInputJson);
-
-		bookingService.create(bookingInput, studentID, paymentIntent, false);
+		if (bookingIDJson == null) {
+			throw new ResolverException("Payment intent metadata missing booking ID");
+		}
 	}
 
 	private void validatePaymentIntentCustomerIdMatches(String studentID, PaymentIntent paymentIntent) {
@@ -87,6 +94,14 @@ public class StripeController {
 			return objectMapperCustom.instance().readValue(bookingInputJson, BookingInput.class);
 		} catch (JsonProcessingException e) {
 			throw new ResolverException("Unable to parse booking input");
+		}
+	}
+
+	private UUID parseBookingID(String bookingIDJson) {
+		try {
+			return UUID.fromString(bookingIDJson);
+		} catch (IllegalArgumentException e) {
+			throw new ResolverException("Unable to parse booking ID");
 		}
 	}
 }

@@ -6,11 +6,11 @@ import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIc
 import { FC, Fragment, createElement, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import Button from "../../components/button";
-import Input, { InputOnChange, InputType } from "../../components/input";
-import Modal from "../../components/modal";
-import { BookingInput, VerifyCouponQuery, VerifyCouponQueryVariables } from "../../generated-types";
-import { useHasMounted, useModal } from "../../hooks";
+import Button from "../../../components/button";
+import Input, { InputOnChange, InputType } from "../../../components/input";
+import Modal from "../../../components/modal";
+import { BookingInput, VerifyCouponQuery, VerifyCouponQueryVariables } from "../../../generated-types";
+import { useHasMounted, useModal } from "../../../hooks";
 import VERIFY_COUPON from "./verify-coupon-code.graphql";
 
 const PaymentCoupon: FC<Props> = ({ bookingInput, onApplyCoupon }) => {

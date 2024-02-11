@@ -163,6 +163,8 @@ type Review {
 
 type CreatePaymentIntentResponse {
 	clientSecret: String!
+	bookingID: UUID!
+	isLiveMode: Boolean!
 }
 
 type MerchItem {

@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
-import { Dispatch, FC, SetStateAction, createElement, useEffect, useRef, useState } from "react";
+import { FC, createElement, useEffect, useRef, useState } from "react";
 
+import Error from "../../../components/error";
 import FormError from "../../../components/form-error";
 import Loading from "../../../components/loading";
 import {
@@ -13,21 +14,22 @@ import StripeProvider from "../../../providers/stripe";
 import CardForm from "./card-form";
 import CREATE_PAYMENT_INTENT from "./create-payment-intent.graphql";
 
-const PaymentPageStripe: FC<Props> = ({ reCaptcha, bookingInput, onSubmit, setIsPaying }) => {
+const PaymentPageStripe: FC<Props> = ({ isFetchingPageData, reCaptchaToken, bookingInput, onSubmit, onSubmitted }) => {
 	const paymentMethodRef = useRef<PaymentMethod | null>(null);
+
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
+	const [bookingID, setBookingID] = useState<string | null>(null);
+	const [isLiveMode, setIsLiveMode] = useState(false);
 
 	const [createPaymentIntent, { data, error }] = useMutation<IntentData, IntentVars>(CREATE_PAYMENT_INTENT);
 
 	const handleCreatePaymentIntent = () => {
-		if (reCaptcha) {
-			void createPaymentIntent({
-				variables: {
-					reCaptcha,
-					input: bookingInput,
-				},
-			});
-		}
+		void createPaymentIntent({
+			variables: {
+				reCaptchaToken,
+				input: bookingInput,
+			},
+		});
 	};
 
 	useEffect(() => {
@@ -44,10 +46,12 @@ const PaymentPageStripe: FC<Props> = ({ reCaptcha, bookingInput, onSubmit, setIs
 	useEffect(() => {
 		if (data) {
 			setClientSecret(data.createPaymentIntent.clientSecret);
+			setBookingID(data.createPaymentIntent.bookingID);
+			setIsLiveMode(data.createPaymentIntent.isLiveMode);
 		}
 	}, [data]);
 
-	if (!clientSecret || !reCaptcha) {
+	if (!clientSecret || !bookingID) {
 		return (
 			<div className="flex py-10 items-center justify-center">
 				<Loading />
@@ -61,16 +65,23 @@ const PaymentPageStripe: FC<Props> = ({ reCaptcha, bookingInput, onSubmit, setIs
 
 	return (
 		<StripeProvider clientSecret={clientSecret}>
-			<CardForm setIsPaying={setIsPaying} onSubmit={onSubmit} bookingInput={bookingInput} />
+			{!isLiveMode && <Error errors={["Test Mode - Your card will not be charged"]} />}
+			<CardForm
+				bookingID={bookingID}
+				onSubmitted={onSubmitted}
+				onSubmit={onSubmit}
+				isFetchingPageData={isFetchingPageData}
+			/>
 		</StripeProvider>
 	);
 };
 
 interface Props {
-	reCaptcha: string | null;
+	isFetchingPageData: boolean;
+	reCaptchaToken: string;
 	onSubmit: () => void;
 	bookingInput: BookingInput;
-	setIsPaying: Dispatch<SetStateAction<boolean>>;
+	onSubmitted: () => void;
 }
 
 type IntentData = CreatePaymentIntentMutation;

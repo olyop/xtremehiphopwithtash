@@ -3,6 +3,7 @@ import CheckIcon from "@heroicons/react/20/solid/CheckIcon";
 import ClipboardIcon from "@heroicons/react/20/solid/ClipboardIcon";
 import ExclamationTriangleIcon from "@heroicons/react/20/solid/ExclamationTriangleIcon";
 import ShareIcon from "@heroicons/react/20/solid/ShareIcon";
+import ArrowTopRightOnSquareIcon from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
 import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
 import InboxArrowDownIcon from "@heroicons/react/24/outline/InboxArrowDownIcon";
 import ShoppingBagIcon from "@heroicons/react/24/outline/ShoppingBagIcon";
@@ -24,133 +25,165 @@ const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 		<Modal
 			isOpen={isOpen}
 			onClose={onClose}
+			enableSwipeClose
 			modalClassName="!left-0 !top-auto bottom-0 rounded-none !h-[calc(100vh_-_5rem)] !translate-x-0 !translate-y-0 !w-[calc(100vw_-_6rem)] sm:!w-[20rem] !p-0"
 			contentClassName="flex flex-col justify-between h-full !p-0"
 			children={
 				<Fragment>
-					<nav className="flex flex-col gap-2 py-6 border-b">
-						<NavLink to="" onClick={onClose}>
-							{({ isActive }) => (
-								<Button
-									text="Sessions"
-									ariaLabel="Sessions"
-									transparent={!isActive}
-									textClassName="!text-md"
-									leftIcon={className => <CalendarIcon className={`${className} w-7 h-7`} />}
-									className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
-								/>
-							)}
-						</NavLink>
-						<NavLink to="merch" onClick={onClose}>
-							{({ isActive }) => (
-								<Button
-									text="Merch"
-									ariaLabel="Merch"
-									transparent={!isActive}
-									textClassName="!text-md"
-									leftIcon={className => <ShoppingBagIcon className={`${className} w-7 h-7`} />}
-									className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
-								/>
-							)}
-						</NavLink>
-						<NavLink to="install" onClick={onClose}>
-							{({ isActive }) => (
-								<Button
-									text="How to Install"
-									ariaLabel="How to Install"
-									transparent={!isActive}
-									textClassName="!text-md"
-									leftIcon={className => <InboxArrowDownIcon className={`${className} w-7 h-7`} />}
-									className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
-								/>
-							)}
-						</NavLink>
-						{isAdministrator && (
-							<NavLink to="admin" onClick={onClose}>
-								{({ isActive }) => (
-									<Button
-										text="Admin"
-										ariaLabel="Admin"
-										transparent={!isActive}
-										textClassName="!text-md"
-										leftIcon={className => <WrenchScrewdriverIcon className={`${className} w-7 h-7`} />}
-										className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
-									/>
+					<nav className="flex flex-col gap-8 py-6">
+						<div className="flex flex-col gap-4 border-b pb-4">
+							<h2 className="uppercase px-6">
+								<b>
+									<u>Pages</u>
+								</b>
+							</h2>
+							<div className="flex flex-col gap-2">
+								<NavLink to="" onClick={onClose}>
+									{({ isActive }) => (
+										<Button
+											text="Sessions"
+											ariaLabel="Sessions"
+											transparent={!isActive}
+											textClassName="!text-md"
+											leftIcon={className => <CalendarIcon className={`${className} w-7 h-7`} />}
+											className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+										/>
+									)}
+								</NavLink>
+								<NavLink to="merch" onClick={onClose}>
+									{({ isActive }) => (
+										<Button
+											text="Merch"
+											ariaLabel="Merch"
+											transparent={!isActive}
+											textClassName="!text-md"
+											leftIcon={className => <ShoppingBagIcon className={`${className} w-7 h-7`} />}
+											className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+										/>
+									)}
+								</NavLink>
+								<NavLink to="install" onClick={onClose}>
+									{({ isActive }) => (
+										<Button
+											text="How to Install"
+											ariaLabel="How to Install"
+											transparent={!isActive}
+											textClassName="!text-md"
+											leftIcon={className => <InboxArrowDownIcon className={`${className} w-7 h-7`} />}
+											className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+										/>
+									)}
+								</NavLink>
+								{isAdministrator && (
+									<NavLink to="admin" onClick={onClose}>
+										{({ isActive }) => (
+											<Button
+												text="Admin"
+												ariaLabel="Admin"
+												transparent={!isActive}
+												textClassName="!text-md"
+												leftIcon={className => <WrenchScrewdriverIcon className={`${className} w-7 h-7`} />}
+												className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+											/>
+										)}
+									</NavLink>
 								)}
-							</NavLink>
-						)}
-					</nav>
-					<footer className="flex flex-col">
-						<div className="flex items-center border-y">
-							<a
-								rel="noreferrer"
-								target="_blank"
-								onClick={onClose}
-								href="https://www.instagram.com/xtremehiphopwithtash/"
-							>
+							</div>
+						</div>
+						<div className="flex flex-col gap-4 border-b pb-4">
+							<h2 className="uppercase px-6">
+								<b>
+									<u>Connect</u>
+								</b>
+							</h2>
+							<div className="flex flex-col gap-2">
+								<a
+									rel="noreferrer"
+									target="_blank"
+									onClick={onClose}
+									href="https://www.instagram.com/xtremehiphopwithtash/"
+								>
+									<Button
+										transparent
+										text="Instagram"
+										ariaLabel="Instagram"
+										textClassName="!text-md"
+										className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+										leftIcon={className => (
+											<img
+												src="/images/instagram.png"
+												className={`${className} w-7 h-7`}
+												alt="Xtreme Hip-Hop with Tash Instagram page"
+											/>
+										)}
+										rightIcon={className => <ArrowTopRightOnSquareIcon className={className} />}
+									/>
+								</a>
+								<a
+									rel="noreferrer"
+									target="_blank"
+									onClick={onClose}
+									href="https://www.facebook.com/profile.php?id=100071620803738"
+								>
+									<Button
+										transparent
+										text="Facebook"
+										ariaLabel="Facebook"
+										textClassName="!text-md"
+										className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+										leftIcon={className => (
+											<img
+												src="/images/facebook.png"
+												className={`${className} w-7 h-7`}
+												alt="Xtreme Hip-Hop with Tash Facebook page"
+											/>
+										)}
+										rightIcon={className => <ArrowTopRightOnSquareIcon className={className} />}
+									/>
+								</a>
 								<Button
 									transparent
-									ariaLabel="Instagram"
+									onClick={share}
+									ariaLabel="Share"
 									textClassName="!text-md"
-									className="!rounded-none !h-[5rem] !w-[5rem] !shadow-none border-r"
-									leftIcon={className => (
-										<img
-											src="/images/instagram.png"
-											className={`${className} !w-14 !h-14`}
-											alt="Xtreme Hip-Hop with Tash Instagram page"
-										/>
-									)}
-								/>
-							</a>
-							<a
-								rel="noreferrer"
-								target="_blank"
-								onClick={onClose}
-								href="https://www.facebook.com/profile.php?id=100071620803738"
-							>
-								<Button
-									transparent
-									ariaLabel="Facebook"
-									textClassName="!text-md"
-									className="!rounded-none !h-[5rem] !w-[5rem] !shadow-none border-r"
-									leftIcon={className => (
-										<img
-											src="/images/facebook.png"
-											className={`${className} !w-14 !h-14`}
-											alt="Xtreme Hip-Hop with Tash Facebook page"
-										/>
-									)}
-								/>
-							</a>
-							<Button
-								transparent
-								onClick={share}
-								ariaLabel="Share"
-								textClassName="!text-md"
-								className="!rounded-none !h-[5rem] !w-[5rem] !shadow-none border-r"
-								leftIcon={className =>
-									hasShared === null ? (
-										<ShareIcon className={`${className} !w-14 !h-14`} />
-									) : hasShared ? (
-										hasCopiedShared ? (
-											hasError ? (
-												<ExclamationTriangleIcon className={`${className} !w-14 !h-14`} />
+									className="w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem]"
+									text={
+										hasShared === null
+											? "Share"
+											: hasShared
+											  ? hasCopiedShared
+													? hasError
+														? "Error"
+														: "Copied!"
+													: "Shared!"
+											  : "Sharing"
+									}
+									leftIcon={className =>
+										hasShared === null ? (
+											<ShareIcon className={`${className} w-7 h-7`} />
+										) : hasShared ? (
+											hasCopiedShared ? (
+												hasError ? (
+													<ExclamationTriangleIcon className={`${className} w-7 h-7`} />
+												) : (
+													<ClipboardIcon className={`${className} w-7 h-7`} />
+												)
 											) : (
-												<ClipboardIcon className={`${className} !w-14 !h-14`} />
+												<CheckIcon className={`${className} w-7 h-7`} />
 											)
 										) : (
-											<CheckIcon className={`${className} !w-14 !h-14`} />
+											<ArrowPathIcon className={`${className} w-7 h-7 animate-spin`} />
 										)
-									) : (
-										<ArrowPathIcon className={`${className} !w-14 !h-14`} />
-									)
-								}
-							/>
+									}
+								/>
+							</div>
 						</div>
-						<p className="text-xs text-gray-500 p-4 border-b">
-							Copyright © {new Date().getFullYear()} <br /> Xtreme Hip-Hop with Tash
+					</nav>
+					<footer className="flex flex-col">
+						<p className="text-xs text-gray-500 p-4">
+							Copyright © {new Date().getFullYear()} Xtreme Hip-Hop with Tash
 						</p>
-						<p className="text-xs p-4 text-gray-500">
+						{/* <p className="text-xs p-4 text-gray-500">
 							<Fragment>Web Application created by </Fragment>
 							<a
 								rel="noreferrer"
@@ -177,7 +210,7 @@ const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 							<a className="hover:underline text-blue-500" href="#">
 								View
 							</a>
-						</p>
+						</p> */}
 					</footer>
 				</Fragment>
 			}

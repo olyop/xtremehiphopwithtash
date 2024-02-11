@@ -12,6 +12,8 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 	const { logout } = useAuth0();
 
 	const handleLogOut = () => {
+		onClose();
+
 		void logout({
 			logoutParams: {
 				returnTo: window.location.origin,
@@ -23,8 +25,8 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 		<Modal
 			isOpen={isOpen}
 			onClose={onClose}
-			modalClassName="!left-auto !top-auto !right-0 rounded-none !top-[5rem] !h-auto !w-[calc(100vw_-_6rem)] tiny:!w-72 !translate-x-0 !translate-y-0 !p-0"
-			contentClassName="flex flex-col justify-between h-full !p-0"
+			modalClassName="!left-auto !right-0 rounded-none !top-[5rem] !h-auto !w-[calc(100vw_-_6rem)] tiny:!w-72 !translate-x-0 !translate-y-0 !p-0"
+			contentClassName="flex flex-col justify-between h-full !py-4"
 			children={
 				<Fragment>
 					<NavLink to="account" onClick={onClose}>
@@ -35,7 +37,7 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 								transparent={!isActive}
 								textClassName="!text-md"
 								leftIcon={className => <UserCircleIcon className={`${className} w-7 h-7`} />}
-								className="w-full !justify-start !rounded-none !shadow-none !h-[3rem]"
+								className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
 							/>
 						)}
 					</NavLink>
@@ -47,7 +49,7 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 								transparent={!isActive}
 								textClassName="!text-md"
 								leftIcon={className => <CalendarIcon className={`${className} w-7 h-7`} />}
-								className="w-full !justify-start !rounded-none !shadow-none !h-[3rem]"
+								className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
 							/>
 						)}
 					</NavLink>
@@ -58,7 +60,7 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 						onClick={handleLogOut}
 						textClassName="!text-md"
 						leftIcon={className => <ArrowLeftStartOnRectangle className={`${className} w-7 h-7`} />}
-						className="w-full !justify-start !rounded-none !shadow-none !h-[3rem]"
+						className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
 					/>
 				</Fragment>
 			}

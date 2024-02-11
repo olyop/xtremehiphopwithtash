@@ -22,13 +22,16 @@ import Header from "../../layouts/header";
 import CHECK_STUDENT from "./check-student.graphql";
 import CREATE_STUDENT from "./create-student.graphql";
 import { initialInput } from "./initital-input";
+import InstallPopup from "./install-pwa-popup";
 
-const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
+const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 	const { isLoading, isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
-	const [isAdministrator, setIsAdministrator] = useState(false);
 	const [detailsInput, setDetailsInput] = useState(initialInput);
+
+	const [isAdministrator, setIsAdministrator] = useState(false);
 	const [hasCreatedAccount, setHasCreatedAccount] = useState<boolean | null>(null);
+	const [shouldShowInstallPopup, setHasViewedInstallPopup] = useState(false);
 
 	const [checkStudent, checkStudentResult] = useLazyQuery<CheckData, CheckVars>(CHECK_STUDENT);
 	const [createAccount, createAccountResult] = useMutation<CreateData, CreateVars>(CREATE_STUDENT);
@@ -42,16 +45,18 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 			if (error) {
 				setHasCreatedAccount(null);
 				setIsAdministrator(false);
+				setHasViewedInstallPopup(false);
 			} else if (data) {
 				setHasCreatedAccount(data.doesStudentExist);
 				setIsAdministrator(data.isStudentAdministator);
+				setHasViewedInstallPopup(data.shouldShowInstallPopup);
 			}
 		}
 	};
 
 	const handlePopulateForm = () => {
 		if (user) {
-			const shouldUseNickname = user.nickname ? user.nickname.includes(".") || user.nickname.includes(" ") : false;
+			const shouldUseNickname = user.nickname ? !user.nickname.includes(".") || !user.nickname.includes(" ") : false;
 
 			setDetailsInput(prevState => ({
 				...prevState,
@@ -113,7 +118,7 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		if (isAuthenticated) {
 			handlePopulateForm();
 		}
-	}, [user]);
+	}, [user, isAuthenticated]);
 
 	useEffect(() => {
 		if (createAccountResult.data) {
@@ -166,16 +171,16 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 					buttons={
 						<Fragment>
 							<Button
-								text={createAccountResult.loading ? "Creating..." : "Complete"}
-								onClick={handleCreateAccountClick}
 								ariaLabel="Create Account"
+								onClick={handleCreateAccountClick}
+								text={createAccountResult.loading ? "Creating..." : "Complete"}
 								rightIcon={className => <PaperAirplaneIcon className={className} />}
 							/>
 							<Button
-								text="Cancel"
 								transparent
-								onClick={handleCancel}
+								text="Cancel"
 								ariaLabel="Cancel"
+								onClick={handleCancel}
 								leftIcon={className => <XCircleIcon className={className} />}
 							/>
 						</Fragment>
@@ -185,7 +190,12 @@ const CreateAccount: FC<PropsWithChildren> = ({ children }) => {
 		);
 	}
 
-	return <IsAdministratorContext.Provider value={isAdministrator}>{children}</IsAdministratorContext.Provider>;
+	return (
+		<Fragment>
+			<IsAdministratorContext.Provider value={isAdministrator}>{children}</IsAdministratorContext.Provider>
+			<InstallPopup shouldShowInstallPopup={shouldShowInstallPopup} />
+		</Fragment>
+	);
 };
 
 type CheckData = CheckStudentQuery;
@@ -193,4 +203,4 @@ type CheckVars = CheckStudentQueryVariables;
 type CreateData = CreateStudentMutation;
 type CreateVars = CreateStudentMutationVariables;
 
-export default CreateAccount;
+export default AccountManager;

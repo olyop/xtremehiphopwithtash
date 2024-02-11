@@ -75,6 +75,7 @@ public final class SQLColumnNames {
 		"payment_method",
 		"payment_intent_id",
 		"cost",
+		"has_confirmed",
 		"has_checked_in",
 		"has_cancelled",
 		"cancelled_at",

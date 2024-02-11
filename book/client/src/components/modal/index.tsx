@@ -27,11 +27,12 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 	centerTitle = false,
 	hideCloseButton = false,
 	disableCloseOnEscape = false,
+	enableSwipeClose = false,
 }) => {
 	const escapePress = useKeyPress("Escape");
 
 	const handleClose = () => {
-		if (onClose) {
+		if (onClose && !disableCloseOnEscape) {
 			onClose();
 		}
 	};
@@ -43,10 +44,14 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 	};
 
 	useEffect(() => {
-		document.addEventListener("swiped", handleSwiped);
+		if (enableSwipeClose) {
+			document.addEventListener("swiped", handleSwiped);
+		}
 
 		return () => {
-			document.removeEventListener("swiped", handleSwiped);
+			if (enableSwipeClose) {
+				document.removeEventListener("swiped", handleSwiped);
+			}
 		};
 	}, []);
 
@@ -120,7 +125,6 @@ interface ModalProps {
 	onClose?: () => void;
 	error?: ApolloError | undefined;
 	errorClassName?: string;
-
 	buttons?: ReactNode;
 	className?: string | undefined;
 	modalClassName?: string;
@@ -132,6 +136,7 @@ interface ModalProps {
 	disableCloseOnEscape?: boolean;
 	isLarge?: boolean;
 	hideCloseButton?: boolean;
+	enableSwipeClose?: boolean;
 }
 
 export default Modal;

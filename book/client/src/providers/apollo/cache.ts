@@ -88,16 +88,17 @@ const typePolicies: TypePolicies = {
 	},
 };
 
-const cache = new InMemoryCache({
+const inMemoryCache = new InMemoryCache({
 	typePolicies,
 });
 
-const storage = new LocalStorageWrapper(window.localStorage);
+const storageWrapper = new LocalStorageWrapper(window.localStorage);
+
 export const createCache = async () => {
 	await persistCache({
-		cache,
-		storage,
+		cache: inMemoryCache,
+		storage: storageWrapper,
 	});
 
-	return cache;
+	return inMemoryCache;
 };

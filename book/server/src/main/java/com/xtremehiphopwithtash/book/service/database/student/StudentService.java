@@ -91,4 +91,22 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 	public boolean existsByID(String studentID) {
 		return studentDAO.existsByID(studentID);
 	}
+
+	public boolean retreiveHasViewedInstallPopup(String studentID) {
+		validator.validateID(studentID);
+
+		return studentDAO.selectHasViewedInstallPopup(studentID);
+	}
+
+	public boolean updateHasViewedInstallPopup(String studentID) {
+		validator.validateID(studentID);
+
+		boolean hasViewed = studentDAO.selectHasViewedInstallPopup(studentID);
+
+		if (hasViewed) {
+			return true;
+		}
+
+		return studentDAO.updateHasViewedInstallPopup(studentID);
+	}
 }

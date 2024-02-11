@@ -5,16 +5,20 @@ import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import ChevronUpIcon from "@heroicons/react/24/solid/ChevronUpIcon";
 import { FC, createElement, useEffect, useState } from "react";
 
-import { GetStudentDetailsQuery } from "../../../generated-types";
-import HeaderButton from "../header-button";
-import GET_STUDENT_DETAILS from "./get-student-details.graphql";
+import { GetAccountPageQuery, GetBookingsPageQuery } from "../../generated-types";
+import { Breakpoint, useBreakpoint } from "../../hooks";
+import GET_ACCOUNT_PAGE from "../../pages/account/get-account-page.graphql";
+import GET_BOOKINGS_PAGE from "../../pages/bookings/get-bookings-page.graphql";
+import HeaderButton from "./header-button";
 
 const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccountClose }) => {
+	const breakpoint = useBreakpoint();
 	const { isAuthenticated, loginWithRedirect, user } = useAuth0();
 
 	const [showLoginButton, setShowLoginButton] = useState(false);
 
-	const [getStudentDetails, { data }] = useLazyQuery<GetStudentDetailsQuery>(GET_STUDENT_DETAILS);
+	const [getBookingsPage] = useLazyQuery<GetBookingsPageQuery>(GET_BOOKINGS_PAGE);
+	const [getAccountPage, { data }] = useLazyQuery<GetAccountPageQuery>(GET_ACCOUNT_PAGE);
 
 	const handleAccountClick = () => {
 		if (isAccountOpen) {
@@ -34,7 +38,8 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			void getStudentDetails();
+			void getBookingsPage();
+			void getAccountPage();
 		}
 	}, [isAuthenticated]);
 
@@ -55,13 +60,19 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 			{!showLoginButton && isAuthenticated && user && data && (
 				<HeaderButton
 					ariaLabel="Account Page"
-					className="pl-2"
+					className="!border-gray-200"
 					isActive={isAccountOpen}
 					onClick={handleAccountClick}
-					text={data.getStudentByID.details.firstName.slice(0, 10)}
-					leftIcon={className => <img className={className} src={user.picture} alt={user.email} />}
+					text={(data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8)}
+					leftIcon={className =>
+						breakpoint === Breakpoint.TINY ? null : <img className={className} src={user.picture} alt={user.email} />
+					}
 					rightIcon={className =>
-						isAccountOpen ? <ChevronUpIcon className={className} /> : <ChevronDownIcon className={className} />
+						breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : isAccountOpen ? (
+							<ChevronUpIcon className={className} />
+						) : (
+							<ChevronDownIcon className={className} />
+						)
 					}
 				/>
 			)}

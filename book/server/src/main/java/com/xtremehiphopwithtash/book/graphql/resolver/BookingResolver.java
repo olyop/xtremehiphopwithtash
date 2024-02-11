@@ -54,7 +54,7 @@ public class BookingResolver {
 	}
 
 	@QueryMapping
-	public Booking getBookingByID(UUID bookingID) {
+	public Booking getBookingByID(@Argument UUID bookingID) {
 		return bookingService.retreiveByID(bookingID);
 	}
 
@@ -86,6 +86,11 @@ public class BookingResolver {
 		return studentService.retreiveByID(booking.getStudentID());
 	}
 
+	@SchemaMapping(typeName = "Query", field = "existsBookingByID")
+	public boolean existsBookingByID(@Argument UUID bookingID) {
+		return bookingService.existsByID(bookingID);
+	}
+
 	@SchemaMapping(typeName = "Query", field = "getBookingReceiptURL")
 	public URL getReceiptURL(Principal principal, @Argument UUID bookingID) {
 		String studentID = auth0JwtService.extractStudentID(principal);
@@ -104,19 +109,19 @@ public class BookingResolver {
 	@MutationMapping
 	public Booking createBooking(
 		@Argument BookingInput input,
-		@Argument String reCaptcha,
+		@Argument String reCaptchaToken,
 		@AuthenticationPrincipal Jwt jwt,
 		GraphQLContext graphQlContext,
 		Principal principal
 	) {
 		String remoteAddress = remoteAddressService.getRemoteAddress(graphQlContext);
 
-		reCaptchaService.validate(reCaptcha, remoteAddress);
+		reCaptchaService.validate(reCaptchaToken, remoteAddress);
 
 		String studentID = auth0JwtService.extractStudentID(principal);
 		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
 
-		return bookingService.create(input, studentID, null, isAdministrator);
+		return bookingService.create(input, null, studentID, null, isAdministrator);
 	}
 
 	@MutationMapping
@@ -146,6 +151,19 @@ public class BookingResolver {
 		boolean isAdministrator = auth0JwtService.isAdministrator(jwt);
 
 		bookingService.cancelByID(bookingID, studentID, reCaptcha, isAdministrator);
+
+		return bookingID;
+	}
+
+	@MutationMapping
+	public UUID confirmBooking(@Argument UUID bookingID, @AuthenticationPrincipal Jwt jwt, Principal principal) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		Booking booking = bookingService.retreiveByID(bookingID);
+
+		bookingService.validateBookingIsStudents(studentID, booking);
+
+		bookingService.confirm(bookingID);
 
 		return bookingID;
 	}

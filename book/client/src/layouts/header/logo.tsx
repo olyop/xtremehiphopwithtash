@@ -17,7 +17,7 @@ const HeaderLogo: FC<Props> = ({ onMenuClose, onAccountClose }) => {
 				src="/images/full-logo.png"
 				alt="Xtreme Hip-Hop with Tash"
 				title="Xtreme Hip-Hop with Tash"
-				className="h-[35px] w-[100px] tiny:h-[42px] tiny:w-[120px] sm:h-[56px] sm:w-[160px]"
+				className="h-[35px] w-[100px] sm:h-[56px] sm:w-[160px]"
 			/>
 		</Link>
 	);
