@@ -55,7 +55,7 @@ const AdminTrends: FC = () => {
 	return (
 		<div className="flex flex-col items-start gap-4">
 			<h2 className="text-2xl">Trends</h2>
-			<div className="flex gap-2 w-full">
+			<div className="flex flex-col sm:flex-row gap-2 w-full">
 				<Input
 					id="startTime"
 					name="Start Date"

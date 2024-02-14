@@ -1,0 +1,23 @@
+query getStudentDetails($studentID: String!) {
+	getStudentByID(studentID: $studentID) {
+		studentID
+		bookingsTotal
+		bookings {
+			bookingID
+			notes
+			createdAt
+			bookingQuantity
+			equipmentQuantity
+			paymentMethod
+			cost
+			isCheckedIn
+			isCancelled
+			session {
+				sessionID
+				title
+				startTime
+				endTime
+			}
+		}
+	}
+}

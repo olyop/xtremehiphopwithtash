@@ -76,7 +76,7 @@ const PaymentCoupon: FC<Props> = ({ bookingInput, onApplyCoupon }) => {
 	return (
 		<Fragment>
 			<div className="flex flex-col gap-2">
-				<p className="text-2xl">Coupon</p>
+				<h2 className="text-2xl">Coupon</h2>
 				<Button
 					className="self-start"
 					onClick={handleOpenModal}

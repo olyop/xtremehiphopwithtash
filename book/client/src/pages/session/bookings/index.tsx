@@ -1,8 +1,13 @@
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import { FC, Fragment, createElement, useEffect } from "react";
 
-import SessionPageBooking from "../../../components/booking";
-import { Booking, GetSessionBookingsQuery, GetSessionBookingsQueryVariables, Session } from "../../../generated-types";
+import Booking from "../../../components/booking";
+import {
+	Booking as BookingType,
+	GetSessionBookingsQuery,
+	GetSessionBookingsQueryVariables,
+	Session,
+} from "../../../generated-types";
 import { currencyDollarsFormatter } from "../../../helpers/intl";
 import { centsToDollars } from "../../../utils";
 import GET_SESSION_BOOKINGS from "./get-session-bookings.graphql";
@@ -28,11 +33,13 @@ const SessionBookings: FC<Props> = ({ session, onBookingUpdated }) => {
 	return (
 		<div className="shadow-2xl rounded">
 			<h3 className="text-xl p-2 border-b">Bookings</h3>
-			{bookingsResult.data?.getSessionByID.gross && (
-				<p className="text-sm p-2">
-					Gross: {currencyDollarsFormatter.format(centsToDollars(bookingsResult.data.getSessionByID.gross))}
-				</p>
-			)}
+			<p className="text-sm p-2">
+				Gross:
+				<Fragment> </Fragment>
+				{bookingsResult.data?.getSessionByID.gross
+					? currencyDollarsFormatter.format(centsToDollars(bookingsResult.data.getSessionByID.gross))
+					: "N/A"}
+			</p>
 			{bookingsResult.data ? (
 				<Fragment>
 					{bookingsResult.data.getSessionByID.bookings === null ? (
@@ -40,14 +47,15 @@ const SessionBookings: FC<Props> = ({ session, onBookingUpdated }) => {
 					) : (
 						<div className="border-t">
 							{bookingsResult.data.getSessionByID.bookings.map(booking => (
-								<SessionPageBooking
+								<Booking
 									isEditing
 									hideReceipt
 									hideDateLabel
 									hideEquipmentFee
 									session={session}
+									isLeftALink={false}
 									key={booking.bookingID}
-									booking={booking as Booking}
+									booking={booking as BookingType}
 									onBookingUpdated={handleRefetch}
 								/>
 							))}

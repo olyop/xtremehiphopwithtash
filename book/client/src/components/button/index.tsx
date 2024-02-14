@@ -20,7 +20,7 @@ const Button: FC<ButtonProps> = ({
 	<button
 		id={id}
 		type={isSubmit ? "submit" : "button"}
-		title={text ?? ariaLabel}
+		title={ariaLabel}
 		disabled={disabled}
 		aria-label={ariaLabel}
 		onClick={onClick}
@@ -50,7 +50,7 @@ export interface ButtonProps {
 	transparent?: boolean;
 	isSubmit?: boolean;
 	leftIcon?: (className: string) => ReactNode;
-	text?: string | undefined;
+	text?: ReactNode | undefined;
 	ariaLabel: string;
 	childrenNode?: ReactNode;
 	rightIcon?: (className: string) => ReactNode;

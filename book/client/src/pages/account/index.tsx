@@ -20,17 +20,12 @@ import {
 	UpdateStudentMutation,
 	UpdateStudentMutationVariables,
 } from "../../generated-types";
+import { createdAtFormatter } from "../../helpers/intl";
 import { useModal } from "../../hooks";
 import Page from "../page";
 import { detailsToInput } from "./details-to-input";
 import GET_ACCOUNT_PAGE from "./get-account-page.graphql";
 import UPDATE_STUDENT from "./update-student.graphql";
-
-const createdAtFormatter = new Intl.DateTimeFormat(undefined, {
-	year: "numeric",
-	month: "long",
-	day: "numeric",
-});
 
 const AccountPage: FC = () => {
 	const navigate = useNavigate();
@@ -71,7 +66,7 @@ const AccountPage: FC = () => {
 	};
 
 	useEffect(() => {
-		if (user?.sub) {
+		if (isAuthenticated && user?.sub) {
 			void getAccountPage();
 		}
 	}, [user]);

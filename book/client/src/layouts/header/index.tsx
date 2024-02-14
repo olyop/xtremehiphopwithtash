@@ -11,22 +11,27 @@ import HeaderMenuButton from "./menu-button";
 
 const Header: FC = () => {
 	const location = useLocation();
-	const [isMenuOpen, openMenu, closeMenu] = useModal();
+	const [isMenuOpen, openMenu, closeMenu] = useModal(undefined, false);
 	const [isAccountOpen, openAccount, closeAccount] = useModal();
 
-	const handleOpenMenu = () => {
+	const handleReset = () => {
+		closeMenu();
 		closeAccount();
+	};
+
+	const handleOpenMenu = () => {
+		handleReset();
 
 		openMenu();
 	};
 
 	const handleOpenAccount = () => {
-		closeMenu();
+		handleReset();
 
 		openAccount();
 	};
 
-	const isPaymentPage = location.pathname.startsWith("/payment");
+	const { pathname } = location;
 
 	return (
 		<Fragment>
@@ -35,17 +40,19 @@ const Header: FC = () => {
 					isMenuOpen || isAccountOpen ? "!z-[150]" : ""
 				}`}
 			>
-				{isPaymentPage ? (
-					<HeaderBackButton />
+				{pathname === "/payment-success" ? null : pathname.startsWith("/session") || pathname === "/payment" ? (
+					<HeaderBackButton onClick={handleReset} />
 				) : (
 					<HeaderMenuButton isMenuOpen={isMenuOpen} onMenuOpen={handleOpenMenu} onMenuClose={closeMenu} />
 				)}
 				<HeaderLogo onMenuClose={closeMenu} onAccountClose={closeAccount} />
-				<HeaderAccountButton
-					isAccountOpen={isAccountOpen}
-					onAccountOpen={handleOpenAccount}
-					onAccountClose={closeAccount}
-				/>
+				{pathname === "/payment" || pathname === "/payment-success" ? null : (
+					<HeaderAccountButton
+						isAccountOpen={isAccountOpen}
+						onAccountOpen={handleOpenAccount}
+						onAccountClose={closeAccount}
+					/>
+				)}
 			</header>
 			<Sidebar isOpen={isMenuOpen} onClose={closeMenu} />
 			<AccountDropdown isOpen={isAccountOpen} onClose={closeAccount} />

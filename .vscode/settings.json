@@ -6,5 +6,6 @@
 		"book/server/bin",
 		"book/server/dist",
 		"book/server/src/main/resources/public"
-	]
+	],
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

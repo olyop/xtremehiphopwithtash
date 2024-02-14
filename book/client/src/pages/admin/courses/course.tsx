@@ -5,7 +5,7 @@ import CourseInput from "../../../components/forms/course-form";
 import { CourseInput as CourseInputType, Course as CourseType } from "../../../generated-types";
 import { currencyDollarsFormatter, listFormatter } from "../../../helpers/intl";
 import { centsToDollars } from "../../../utils";
-import AdminEntity, { OnEditAndUpdate } from "../entity";
+import AdminEntity, { OnAction } from "../entity";
 import { mapCourseToInput } from "../map-entity-to-input";
 
 const Course: FC<Props> = ({
@@ -55,8 +55,8 @@ const Course: FC<Props> = ({
 
 interface Props {
 	course: CourseType;
-	onUpdate: (input: CourseInputType) => OnEditAndUpdate;
-	onDelete: OnEditAndUpdate;
+	onUpdate: (input: CourseInputType) => OnAction;
+	onDelete: OnAction;
 	isUpdating: boolean;
 	isDeleting: boolean;
 	updateModalError: MutationResult["error"] | undefined;

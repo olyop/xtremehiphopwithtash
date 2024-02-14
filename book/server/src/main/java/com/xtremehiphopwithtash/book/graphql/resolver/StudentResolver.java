@@ -10,7 +10,6 @@ import com.xtremehiphopwithtash.book.service.database.student.Student;
 import com.xtremehiphopwithtash.book.service.database.student.StudentService;
 import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import java.security.Principal;
-import java.time.Instant;
 import java.util.List;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -59,10 +58,18 @@ public class StudentResolver {
 	}
 
 	@QueryMapping
-	public Student getStudentByID(Principal principal) {
-		String studentID = auth0JwtService.extractStudentID(principal);
+	public Student getStudentByID(Principal principal, @AuthenticationPrincipal Jwt jwt, @Argument String studentID) {
+		String studentIDValue;
 
-		return studentService.retreiveByID(studentID);
+		if (studentID == null) {
+			studentIDValue = auth0JwtService.extractStudentID(principal);
+		} else {
+			auth0JwtService.validateAdministrator(jwt);
+
+			studentIDValue = studentID;
+		}
+
+		return studentService.retreiveByID(studentIDValue);
 	}
 
 	@SchemaMapping(typeName = "Student", field = "details")

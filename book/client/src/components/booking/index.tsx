@@ -57,25 +57,26 @@ const SessionPageBooking: FC<Props> = ({
 		</Fragment>
 	);
 
+	const text = hideUpdate
+		? booking.session.title
+		: `${determineDetailsFullName(booking.student.details)}${
+				!hideInstagram && booking.student.details.instagramUsername
+					? ` @${booking.student.details.instagramUsername}`
+					: ""
+		  }`;
+
 	return (
 		<Entity
+			text={text}
 			id={booking.bookingID}
 			isLeftALink={isLeftALink}
+			textClassName={hideUpdate ? "flex items-center gap-2" : ""}
 			rightClassName="py-2 pr-3 flex flex-col gap-1 !items-end"
 			leftLink={isLeftALink ? `/session/${session.sessionID}` : undefined}
 			className={`!p-0 ${isSessionInPast ? "bg-gray-100" : ""}`}
-			leftClassName={`p-2 pl-3 grow hover:bg-gray-200 ${
-				isLeftALink ? `${isSessionInPast ? "bg-gray-100" : ""} transition-colors` : ""
+			leftClassName={`p-2 pl-3 grow ${
+				isLeftALink ? `${isSessionInPast ? "bg-gray-100" : "hover:bg-gray-200"} transition-colors` : ""
 			}`}
-			text={
-				hideUpdate
-					? booking.session.title
-					: `${determineDetailsFullName(booking.student.details)}${
-							!hideInstagram && booking.student.details.instagramUsername
-								? ` @${booking.student.details.instagramUsername}`
-								: ""
-					  }`
-			}
 			description={
 				<Fragment>
 					{hideDateLabel || (

@@ -426,6 +426,10 @@ export type QueryGetSessionsInPeriodArgs = {
 	input: GetSessionsInput;
 };
 
+export type QueryGetStudentByIdArgs = {
+	studentID: InputMaybe<Scalars["String"]["input"]>;
+};
+
 export type QuerySearchPlaceByNameArgs = {
 	name: Scalars["String"]["input"];
 };
@@ -963,6 +967,36 @@ export type GetStudentsQuery = {
 			} & { readonly __typename: "Details" };
 		} & { readonly __typename: "Student" }
 	> | null;
+} & { readonly __typename: "Query" };
+
+export type GetStudentDetailsQueryVariables = Exact<{
+	studentID: Scalars["String"]["input"];
+}>;
+
+export type GetStudentDetailsQuery = {
+	readonly getStudentByID: {
+		readonly studentID: string;
+		readonly bookingsTotal: number | null;
+		readonly bookings: ReadonlyArray<
+			{
+				readonly bookingID: string;
+				readonly notes: string | null;
+				readonly createdAt: number;
+				readonly bookingQuantity: number;
+				readonly equipmentQuantity: number | null;
+				readonly paymentMethod: PaymentMethod | null;
+				readonly cost: number | null;
+				readonly isCheckedIn: boolean;
+				readonly isCancelled: boolean;
+				readonly session: {
+					readonly sessionID: string;
+					readonly title: string;
+					readonly startTime: number;
+					readonly endTime: number;
+				} & { readonly __typename: "Session" };
+			} & { readonly __typename: "Booking" }
+		> | null;
+	} & { readonly __typename: "Student" };
 } & { readonly __typename: "Query" };
 
 export type GetTrendsQueryVariables = Exact<{

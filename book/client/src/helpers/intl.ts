@@ -31,6 +31,12 @@ export const timeFormatter = new Intl.DateTimeFormat(undefined, {
 	hourCycle: "h12",
 });
 
+export const createdAtFormatter = new Intl.DateTimeFormat(undefined, {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+});
+
 export const durationFormatter = new Intl.RelativeTimeFormat(undefined, {
 	style: "long",
 });

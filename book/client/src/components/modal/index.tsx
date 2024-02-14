@@ -6,6 +6,10 @@ import { useKeyPress } from "../../hooks";
 import Button from "../button";
 import FormError from "../form-error";
 
+// @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const isMobile = "userAgentData" in navigator ? (navigator.userAgentData.mobile as boolean) : false;
+
 const Modal: FC<PropsWithChildren<ModalProps>> = ({
 	title,
 	titleContent,
@@ -85,8 +89,18 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 						<Button
 							onClick={onClose}
 							ariaLabel={`Close ${title}`}
-							className="absolute -top-4 -right-4"
+							className="absolute -top-4 -right-4 rounded-2xl"
 							leftIcon={c => <XMarkIcon className={c} />}
+							text={
+								isMobile ? (
+									"Close"
+								) : (
+									<div className="flex items-center gap-2">
+										<span>Close</span>
+										<span className="py-0.5 px-1 text-xs rounded border">ESC</span>
+									</div>
+								)
+							}
 						/>
 					)}
 					{!hideTitle && icon && (

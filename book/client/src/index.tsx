@@ -1,7 +1,5 @@
-/// <reference types="vite/client" />
 import { StrictMode, createElement } from "react";
 import { createRoot } from "react-dom/client";
-// import "swiped-events/src/swiped-events.js";
 import { Workbox } from "workbox-window";
 
 import Application from "./application";

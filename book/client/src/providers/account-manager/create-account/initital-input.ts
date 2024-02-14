@@ -1,4 +1,4 @@
-import { DetailsInput } from "../../generated-types";
+import { DetailsInput } from "../../../generated-types";
 
 export const initialInput: DetailsInput = {
 	firstName: "",

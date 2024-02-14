@@ -34,12 +34,12 @@ const PaymentOverview: FC<Props> = ({ session, input, bookingCost }) => (
 			</div>
 		</div>
 		<div className="w-full h-px bg-gray-300" />
-		<div className="w-full">
-			<h5 className="font-bold text-3xl mb-1">Price</h5>
+		<div className="w-full font-mono">
+			<h2 className="text-2xl mb-1">Price</h2>
 			<div
 				className={`grid grid-rows-[1fr,${input.equipmentQuantity ? "1fr" : ""},${input.couponCode ? "1fr" : ""},${
 					input.paymentMethod === PaymentMethod[PaymentMethod.CARD] ? "1fr" : ""
-				},18px,1fr] grid-cols-[3fr,1fr] font-mono text-lg select-none`}
+				},18px,1fr] grid-cols-[3fr,1fr] text-lg select-none`}
 			>
 				<p className="text-sm truncate">
 					{input.bookingQuantity} x Booking{determinePlural(input.bookingQuantity)}

@@ -1,5 +1,6 @@
 import { MutationResult } from "@apollo/client/react/types/types";
 import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
+import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
 import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import TrashSolidIcon from "@heroicons/react/24/solid/TrashIcon";
@@ -21,11 +22,13 @@ const AdminEntity: FC<Props> = ({
 	isDeleting,
 	onEdit,
 	onDelete,
+	viewModalContent,
 	editModalContent,
 	editModalError,
 	deleteModalError,
 	isLargeEditModal = false,
 }) => {
+	const [isViewModalOpen, openViewModal, closeViewModal] = useModal();
 	const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
 	const [isDeleteModalOpen, openDeleteModal, closeDeleteModal] = useModal();
 
@@ -49,6 +52,36 @@ const AdminEntity: FC<Props> = ({
 			description={description}
 			rightContent={
 				<Fragment>
+					{viewModalContent && (
+						<Fragment>
+							<Button
+								transparent
+								text="View"
+								onClick={openViewModal}
+								textClassName="text-xs"
+								ariaLabel={`View ${typeName}`}
+								leftIcon={() => <EyeIcon className="!w-4 !h-4" />}
+							/>
+							<Modal
+								isLarge
+								subTitle={text}
+								title={`View ${typeName}`}
+								icon={className => <EyeIcon className={className} />}
+								isOpen={isViewModalOpen}
+								onClose={closeViewModal}
+								contentClassName="flex flex-col gap-4"
+								children={viewModalContent}
+								buttons={
+									<Button
+										text="Close"
+										ariaLabel="Close"
+										onClick={closeViewModal}
+										leftIcon={className => <XMarkIcon className={className} />}
+									/>
+								}
+							/>
+						</Fragment>
+					)}
 					{onEdit && (
 						<Fragment>
 							<Button
@@ -134,15 +167,16 @@ const AdminEntity: FC<Props> = ({
 	);
 };
 
-export type OnEditAndUpdate = (closeModal: () => void) => Promise<void>;
+export type OnAction = (closeModal: () => void) => Promise<void>;
 
 interface Props extends EntityProps {
 	typeName: string;
 	isLargeEditModal?: boolean;
 	isUpdating?: boolean;
 	isDeleting?: boolean;
-	onEdit?: OnEditAndUpdate;
-	onDelete?: OnEditAndUpdate;
+	onEdit?: OnAction;
+	onDelete?: OnAction;
+	viewModalContent?: ReactNode;
 	editModalContent?: ReactNode;
 	editModalError?: MutationResult["error"] | undefined;
 	deleteModalError?: MutationResult["error"] | undefined;

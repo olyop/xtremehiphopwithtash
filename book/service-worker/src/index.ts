@@ -25,7 +25,7 @@ const run = async () => {
 	});
 
 	offlineFallback({
-		pageFallback: "index.html",
+		pageFallback: "/",
 	});
 };
 

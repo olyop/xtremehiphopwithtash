@@ -1,13 +1,15 @@
-import ArrowSmallLeftIcon from "@heroicons/react/24/outline/ArrowSmallLeftIcon";
+import ArrowSmallLeftIcon from "@heroicons/react/20/solid/ArrowSmallLeftIcon";
 import { FC, createElement } from "react";
 import { useNavigate } from "react-router-dom";
 
 import HeaderButton from "./header-button";
 
-const HeaderBackButton: FC = () => {
+const HeaderBackButton: FC<Props> = ({ onClick }) => {
 	const navigate = useNavigate();
 
 	const handleBack = () => {
+		onClick();
+
 		navigate(-1);
 	};
 
@@ -22,5 +24,9 @@ const HeaderBackButton: FC = () => {
 		/>
 	);
 };
+
+interface Props {
+	onClick: () => void;
+}
 
 export default HeaderBackButton;

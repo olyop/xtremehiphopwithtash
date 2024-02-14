@@ -49,6 +49,9 @@ export default defineConfig(async ({ mode }) => {
 
 	return {
 		plugins: mode === "production" || mode === "staging" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
+		build: {
+			target: "",
+		},
 		server: {
 			https:
 				mode === "development"

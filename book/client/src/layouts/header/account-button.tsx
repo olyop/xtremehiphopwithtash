@@ -1,9 +1,9 @@
 import { useLazyQuery } from "@apollo/client";
 import { useAuth0 } from "@auth0/auth0-react";
-import ArrowLeftStartOnRectangle from "@heroicons/react/20/solid/ArrowLeftStartOnRectangleIcon";
+import UserCircleIcon from "@heroicons/react/24/outline/UserCircleIcon";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import ChevronUpIcon from "@heroicons/react/24/solid/ChevronUpIcon";
-import { FC, createElement, useEffect, useState } from "react";
+import { FC, createElement, useEffect } from "react";
 
 import { GetAccountPageQuery, GetBookingsPageQuery } from "../../generated-types";
 import { Breakpoint, useBreakpoint } from "../../hooks";
@@ -13,9 +13,7 @@ import HeaderButton from "./header-button";
 
 const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccountClose }) => {
 	const breakpoint = useBreakpoint();
-	const { isAuthenticated, loginWithRedirect, user } = useAuth0();
-
-	const [showLoginButton, setShowLoginButton] = useState(false);
+	const { isAuthenticated, user } = useAuth0();
 
 	const [getBookingsPage] = useLazyQuery<GetBookingsPageQuery>(GET_BOOKINGS_PAGE);
 	const [getAccountPage, { data }] = useLazyQuery<GetAccountPageQuery>(GET_ACCOUNT_PAGE);
@@ -28,64 +26,40 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 		}
 	};
 
-	const handleLogin = () => {
-		void loginWithRedirect({
-			authorizationParams: {
-				redirect_uri: window.location.origin,
-			},
-		});
-	};
-
 	useEffect(() => {
-		if (isAuthenticated) {
+		if (isAuthenticated && user) {
 			void getBookingsPage();
 			void getAccountPage();
 		}
-	}, [isAuthenticated]);
-
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			if (!isAuthenticated && user === undefined) {
-				setShowLoginButton(true);
-			}
-		}, 2000);
-
-		return () => {
-			clearTimeout(timeout);
-		};
-	}, []);
+	}, [isAuthenticated, user]);
 
 	return (
 		<div className="flex items-end md:items-center justify-around flex-col-reverse md:flex-row !py-4 gap-1 lg:gap-2 h-header-height">
-			{!showLoginButton && isAuthenticated && user && data && (
-				<HeaderButton
-					ariaLabel="Account Page"
-					className="!border-gray-200"
-					isActive={isAccountOpen}
-					onClick={handleAccountClick}
-					text={(data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8)}
-					leftIcon={className =>
-						breakpoint === Breakpoint.TINY ? null : <img className={className} src={user.picture} alt={user.email} />
-					}
-					rightIcon={className =>
-						breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : isAccountOpen ? (
-							<ChevronUpIcon className={className} />
-						) : (
-							<ChevronDownIcon className={className} />
+			<HeaderButton
+				ariaLabel="Account Page"
+				className="!border-gray-200 hover:!border-gray-300"
+				isActive={isAccountOpen}
+				onClick={handleAccountClick}
+				text={
+					data ? (data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8) : "Account"
+				}
+				leftIcon={className =>
+					user ? (
+						breakpoint === Breakpoint.TINY ? null : (
+							<img className={className} src={user.picture} alt={user.email} />
 						)
-					}
-				/>
-			)}
-			{showLoginButton && !isAuthenticated && (
-				<HeaderButton
-					isActive
-					text="Login"
-					ariaLabel="Login"
-					transparent={false}
-					onClick={handleLogin}
-					leftIcon={className => <ArrowLeftStartOnRectangle className={className} />}
-				/>
-			)}
+					) : (
+						<UserCircleIcon className={className} />
+					)
+				}
+				rightIcon={className =>
+					breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : isAccountOpen ? (
+						<ChevronUpIcon className={className} />
+					) : (
+						<ChevronDownIcon className={className} />
+					)
+				}
+			/>
 		</div>
 	);
 };

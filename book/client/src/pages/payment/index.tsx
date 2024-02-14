@@ -1,8 +1,9 @@
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
-import { FC, Fragment, createElement, useEffect, useState } from "react";
+import { FC, createElement, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+import Error from "../../components/error";
 import FormError from "../../components/form-error";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
 import Loading from "../../components/loading";
@@ -40,7 +41,7 @@ const PaymentPage: FC = () => {
 	);
 
 	const [isPaying, setIsPaying] = useState(false);
-	const [isReCaptchaError, setIsReCaptchaError] = useState(false);
+	const [showTimeoutError, setShowTimeoutError] = useState(false);
 	const [isFetchingPageData, setIsFetchingPageData] = useState(false);
 
 	const [session, setSession] = useState<Session | null>(null);
@@ -93,6 +94,7 @@ const PaymentPage: FC = () => {
 		syncSearchParams("coupon", couponCode);
 		syncSearchParams("equipmentQuantity", equipmentQuantity);
 	};
+
 	const handleApplyCoupon = (couponCode: string) => {
 		setBookingInput(
 			prevState =>
@@ -114,7 +116,7 @@ const PaymentPage: FC = () => {
 	};
 
 	const handleSubmitting = () => {
-		setIsReCaptchaError(false);
+		setShowTimeoutError(false);
 		setIsPaying(true);
 	};
 
@@ -137,7 +139,7 @@ const PaymentPage: FC = () => {
 
 	const handleReCaptchaError = () => {
 		void getReCaptchaToken();
-		setIsReCaptchaError(true);
+		setShowTimeoutError(true);
 		createBookingResult.reset();
 	};
 
@@ -169,8 +171,10 @@ const PaymentPage: FC = () => {
 	}, [createBookingResult.data]);
 
 	useEffect(() => {
-		if (createBookingResult.error) {
+		if (createBookingResult.error && bookingInput) {
 			setIsPaying(false);
+
+			void refetchPageData(bookingInput);
 
 			if (createBookingResult.error.message.includes("reCAPTCHA")) {
 				handleReCaptchaError();
@@ -186,31 +190,25 @@ const PaymentPage: FC = () => {
 		);
 	}
 
-	if (!canBookSession) {
-		return (
-			<div className="h-content-height w-full flex items-center justify-center">
-				<FormError error="This session is no longer available." />
-			</div>
-		);
-	}
+	const showCoupon = bookingCost.bookingCost !== 0 && canBookSession;
+	const showPaymentMethodForm = bookingCost.finalCost !== 0 && canBookSession;
+	const showCardForm = bookingInput.paymentMethod === PaymentMethod.CARD && reCaptchaToken !== null && canBookSession;
+
+	const showCashForm =
+		canBookSession &&
+		(bookingInput.paymentMethod === PaymentMethod.CASH ||
+			bookingInput.paymentMethod === PaymentMethod.COUPON ||
+			bookingCost.finalCost === 0);
 
 	return (
 		<Page className="h-full flex flex-col gap-12 pb-16">
-			<FullscreenSpinner isLoading={isPaying} />
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
-			<EquipmentHireWarning
-				bookingInput={bookingInput}
-				onUpdateEquipmentHire={handleUpdateEquipmentQuantity}
-				session={session}
-			/>
 			<div className="flex flex-col gap-12 px-4 pb-52">
-				{bookingCost.bookingCost !== 0 && (
-					<PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />
-				)}
-				{bookingCost.finalCost !== 0 && (
+				{showCoupon && <PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />}
+				{showPaymentMethodForm && (
 					<PaymentMethodForm setBookingInput={setBookingInput} paymentMethod={bookingInput.paymentMethod} />
 				)}
-				{bookingInput.paymentMethod === PaymentMethod.CARD && reCaptchaToken ? (
+				{showCardForm ? (
 					<PaymentPageStripe
 						bookingInput={bookingInput}
 						onSubmit={handleSubmitting}
@@ -218,20 +216,26 @@ const PaymentPage: FC = () => {
 						reCaptchaToken={reCaptchaToken}
 						isFetchingPageData={isFetchingPageData}
 					/>
-				) : bookingInput.paymentMethod === PaymentMethod.COUPON ||
-				  bookingInput.paymentMethod === PaymentMethod.CASH ||
-				  bookingCost.finalCost === 0 ? (
-					<Fragment>
-						<FormError error={createBookingResult.error} />
-						<PaymentButton
-							onClick={handleCreateBooking}
-							text={reCaptchaError ?? "Book Now"}
-							disabled={isFetchingPageData || reCaptchaToken === null}
-						/>
-					</Fragment>
 				) : null}
-				{isReCaptchaError && <FormError error="Timeout, please try again." />}
+				{showCashForm ? (
+					<PaymentButton
+						onClick={handleCreateBooking}
+						text={reCaptchaError ?? "Book Now"}
+						disabled={isFetchingPageData || reCaptchaToken === null}
+					/>
+				) : null}
+				<FormError error={createBookingResult.error} />
+				{showTimeoutError && <Error errors={["Timeout, please try again."]} />}
+				{!canBookSession && (
+					<Error isBadError errors={["This session is no longer available. Please select another session."]} />
+				)}
 			</div>
+			<FullscreenSpinner isLoading={isPaying} />
+			<EquipmentHireWarning
+				bookingInput={bookingInput}
+				onUpdateEquipmentHire={handleUpdateEquipmentQuantity}
+				session={session}
+			/>
 		</Page>
 	);
 };

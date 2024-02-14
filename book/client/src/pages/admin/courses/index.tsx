@@ -10,7 +10,7 @@ import {
 	MutationUpdateCourseByIdArgs,
 } from "../../../generated-types";
 import { ArrayElement, dollarsToCents } from "../../../utils";
-import { OnEditAndUpdate } from "../entity";
+import { OnAction } from "../entity";
 import Section from "../section";
 import Course from "./course";
 import CreateInstructor from "./create-course";
@@ -26,7 +26,7 @@ const AdminCourses: FC = () => {
 
 	const handleUpdatecourse =
 		({ courseID }: Pick<CourseType, "courseID">) =>
-		(input: CourseInputType): OnEditAndUpdate =>
+		(input: CourseInputType): OnAction =>
 		async onClose => {
 			const course: CourseInputType = {
 				name: input.name,
@@ -55,7 +55,7 @@ const AdminCourses: FC = () => {
 		};
 
 	const handleDeletecourse =
-		({ courseID }: Pick<CourseType, "courseID">): OnEditAndUpdate =>
+		({ courseID }: Pick<CourseType, "courseID">): OnAction =>
 		async onClose => {
 			const result = await deleteCourse({
 				variables: { courseID },

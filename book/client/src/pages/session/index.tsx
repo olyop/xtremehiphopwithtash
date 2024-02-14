@@ -1,7 +1,7 @@
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import InformationCircleIcon from "@heroicons/react/24/solid/InformationCircleIcon";
-import { FC, Fragment, createElement, useContext, useEffect } from "react";
+import { FC, Fragment, createElement, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import CourseChip from "../../components/course-chip";
@@ -41,7 +41,10 @@ const SessionPage: FC = () => {
 	const { sessionID } = useParams<Pick<Session, "sessionID">>();
 	const isAdministrator = useContext(IsAdministratorContext);
 
-	const [getQuery, { data, error, loading, refetch }] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
+	const [hasViewed, setHasViewed] = useState(false);
+	const [pageData, setPageData] = useState<GetSessionPageQuery | null>(null);
+
+	const [getQuery, { data, error, refetch }] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
 		GET_SESSION_PAGE,
 	);
 
@@ -51,6 +54,12 @@ const SessionPage: FC = () => {
 				sessionID,
 			});
 		}
+	};
+
+	const handleViewSession = async (sessionIDArgument: string) => {
+		await viewSession(apollo)(sessionIDArgument);
+
+		setHasViewed(true);
 	};
 
 	useEffect(() => {
@@ -63,7 +72,11 @@ const SessionPage: FC = () => {
 
 	useEffect(() => {
 		if (data && sessionID) {
-			viewSession(apollo, sessionID);
+			if (!hasViewed) {
+				void handleViewSession(sessionID);
+			}
+
+			setPageData(data);
 		}
 	}, [data]);
 
@@ -79,7 +92,7 @@ const SessionPage: FC = () => {
 		);
 	}
 
-	if (loading || !data) {
+	if (!pageData) {
 		return (
 			<div className="h-content-height w-full flex items-center justify-center">
 				<Loading />
@@ -87,7 +100,7 @@ const SessionPage: FC = () => {
 		);
 	}
 
-	const { getSessionByID: session, getClassDescription } = data;
+	const { getSessionByID: session, getClassDescription } = pageData;
 
 	const isInPast = isSessionInPast(session);
 

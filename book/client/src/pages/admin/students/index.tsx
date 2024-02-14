@@ -13,6 +13,8 @@ const AdminStudents: FC = () => {
 	return (
 		<Section<StudentType>
 			title="Students"
+			items={data?.getStudents as StudentType[] | null | undefined}
+			renderItem={student => <Student student={student} key={student.studentID} />}
 			subTitle={
 				data && data.getStudentsTotal && data.getBookingsTotal
 					? `${data.getStudentsTotal} students, ${data.getBookingsTotal} bookings, ${currencyDollarsFormatter.format(
@@ -20,8 +22,6 @@ const AdminStudents: FC = () => {
 					  )} gross`
 					: undefined
 			}
-			items={data?.getStudents as StudentType[] | null | undefined}
-			renderItem={student => <Student student={student} key={student.studentID} />}
 		/>
 	);
 };

@@ -4,7 +4,7 @@ import { FC, createElement, useState } from "react";
 import InstructorInput from "../../../components/forms/instructor-form";
 import { InstructorInput as InstructorInputType, Instructor as InstructorType } from "../../../generated-types";
 import { determineDetailsName } from "../../../helpers/util";
-import AdminEntity, { OnEditAndUpdate } from "../entity";
+import AdminEntity, { OnAction } from "../entity";
 import { mapInstructorToInput } from "../map-entity-to-input";
 
 const Instructor: FC<Props> = ({
@@ -38,8 +38,8 @@ const Instructor: FC<Props> = ({
 
 interface Props {
 	instructor: InstructorType;
-	onUpdate: (input: InstructorInputType) => OnEditAndUpdate;
-	onDelete: OnEditAndUpdate;
+	onUpdate: (input: InstructorInputType) => OnAction;
+	onDelete: OnAction;
 	isUpdating: boolean;
 	isDeleting: boolean;
 	updateModalError: MutationResult["error"];

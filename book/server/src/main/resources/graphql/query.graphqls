@@ -20,7 +20,7 @@ type Query {
 
 	existsBookingByID(bookingID: UUID!): Boolean!
 
-	getStudentByID: Student!
+	getStudentByID(studentID: String): Student!
 	doesStudentExist: Boolean!
 	isStudentAdministator: Boolean!
 	shouldShowInstallPopup: Boolean!

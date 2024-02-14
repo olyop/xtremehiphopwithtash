@@ -12,7 +12,7 @@ import {
 	UpdateLocationMutation,
 } from "../../../generated-types";
 import { ArrayElement } from "../../../utils";
-import { OnEditAndUpdate } from "../entity";
+import { OnAction } from "../entity";
 import Section from "../section";
 import CreateInstructor from "./create-location";
 import DELETE_LOCATION from "./delete-location.graphql";
@@ -28,7 +28,7 @@ const AdminLocations: FC = () => {
 
 	const handleUpdateLocation =
 		({ locationID }: Pick<LocationType, "locationID">) =>
-		(input: LocationInput): OnEditAndUpdate =>
+		(input: LocationInput): OnAction =>
 		async onClose => {
 			const result = await updateLocation({
 				refetchQueries: [GET_LOCATIONS],
@@ -48,7 +48,7 @@ const AdminLocations: FC = () => {
 		};
 
 	const handleDeleteLocation =
-		({ locationID }: Pick<LocationType, "locationID">): OnEditAndUpdate =>
+		({ locationID }: Pick<LocationType, "locationID">): OnAction =>
 		async onClose => {
 			const result = await deleteLocation({
 				variables: { locationID },

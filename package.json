@@ -16,11 +16,11 @@
 	"homepage": "https://github.com/olyop/xtremehiphopwithtash#readme",
 	"volta": {
 		"node": "21.6.1",
-		"npm": "10.4.0"
+		"npm": "10.3.0"
 	},
 	"engines": {
-		"node": "21.2.0",
-		"npm": "10.2.4"
+		"node": "21.6.1",
+		"npm": "10.3.0"
 	},
 	"scripts": {
 		"book-client-deve-run": "cd book/client && npm run deve && cd ../..",
@@ -54,6 +54,7 @@
 		"book-prod-front": "npm run book-prod-build-front && npm run book-prod-deploy-front",
 		"book-stag": "npm run book-stag-build && npm run book-stag-deploy",
 		"book-prod": "npm run book-prod-build && npm run book-prod-deploy",
+		"codegen": "npm run book-client-deve-codegen",
 		"dev": "clear && npm run book-deve",
 		"staging": "clear && npm run book-stag",
 		"production": "clear && npm run book-prod"
@@ -69,7 +70,7 @@
 		"@oly_op/eslint-config": "6.5.7",
 		"@oly_op/eslint-config-graphql": "1.1.0",
 		"@oly_op/eslint-config-react": "4.0.0",
-		"@oly_op/prettier-config": "1.7.9",
+		"@oly_op/prettier-config": "1.7.10",
 		"@oly_op/tsconfig": "1.2.0",
 		"@parcel/watcher": "2.4.0",
 		"concurrently": "8.2.2",

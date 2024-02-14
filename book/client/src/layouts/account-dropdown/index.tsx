@@ -1,15 +1,26 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import ArrowLeftEndOnRectangle from "@heroicons/react/20/solid/ArrowLeftEndOnRectangleIcon";
 import ArrowLeftStartOnRectangle from "@heroicons/react/20/solid/ArrowLeftStartOnRectangleIcon";
-import CalendarIcon from "@heroicons/react/24/outline/CalendarIcon";
-import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import { FC, Fragment, createElement } from "react";
 import { NavLink } from "react-router-dom";
 
 import Button from "../../components/button";
 import Modal from "../../components/modal";
+import AccountDropdownAccountButton from "./account-button";
+import AccountDropdownBookingsButton from "./bookings-button";
 
 const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
-	const { logout } = useAuth0();
+	const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+	const handleLogIn = () => {
+		onClose();
+
+		void loginWithRedirect({
+			authorizationParams: {
+				redirect_uri: window.location.origin,
+			},
+		});
+	};
 
 	const handleLogOut = () => {
 		onClose();
@@ -29,38 +40,34 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 			contentClassName="flex flex-col justify-between h-full !py-4"
 			children={
 				<Fragment>
-					<NavLink to="account" onClick={onClose}>
-						{({ isActive }) => (
-							<Button
-								text="My Account"
-								ariaLabel="My Account"
-								transparent={!isActive}
-								textClassName="!text-md"
-								leftIcon={className => <UserCircleIcon className={`${className} w-7 h-7`} />}
-								className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
-							/>
-						)}
-					</NavLink>
-					<NavLink to="bookings" onClick={onClose}>
-						{({ isActive }) => (
-							<Button
-								text="My Bookings"
-								ariaLabel="My Bookings"
-								transparent={!isActive}
-								textClassName="!text-md"
-								leftIcon={className => <CalendarIcon className={`${className} w-7 h-7`} />}
-								className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
-							/>
-						)}
-					</NavLink>
+					{isAuthenticated ? (
+						<NavLink to="account" onClick={onClose}>
+							{({ isActive }) => <AccountDropdownAccountButton isActive={isActive} />}
+						</NavLink>
+					) : (
+						<AccountDropdownAccountButton isDisabled />
+					)}
+					{isAuthenticated ? (
+						<NavLink to="bookings" onClick={onClose}>
+							{({ isActive }) => <AccountDropdownBookingsButton isActive={isActive} />}
+						</NavLink>
+					) : (
+						<AccountDropdownBookingsButton isDisabled />
+					)}
 					<Button
 						transparent
-						text="Log Out"
-						ariaLabel="Log Out"
-						onClick={handleLogOut}
 						textClassName="!text-md"
-						leftIcon={className => <ArrowLeftStartOnRectangle className={`${className} w-7 h-7`} />}
+						text={isAuthenticated ? "Log Out" : "Log In"}
+						ariaLabel={isAuthenticated ? "Log Out" : "Log In"}
+						onClick={isAuthenticated ? handleLogOut : handleLogIn}
 						className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
+						leftIcon={className =>
+							isAuthenticated ? (
+								<ArrowLeftStartOnRectangle className={`${className} w-7 h-7`} />
+							) : (
+								<ArrowLeftEndOnRectangle className={`${className} w-7 h-7`} />
+							)
+						}
 					/>
 				</Fragment>
 			}

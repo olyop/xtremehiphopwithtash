@@ -12,7 +12,7 @@ import {
 	UpdateInstructorMutation,
 } from "../../../generated-types";
 import { ArrayElement } from "../../../utils";
-import { OnEditAndUpdate } from "../entity";
+import { OnAction } from "../entity";
 import Section from "../section";
 import CreateInstructor from "./create-instructor";
 import DELETE_INSTRUCTOR from "./delete-instructor.graphql";
@@ -28,7 +28,7 @@ const AdminInstructors: FC = () => {
 
 	const handleUpdateInstructor =
 		({ instructorID }: Pick<InstructorType, "instructorID">) =>
-		(input: InstructorInput): OnEditAndUpdate =>
+		(input: InstructorInput): OnAction =>
 		async onClose => {
 			const result = await updateInstructor({
 				refetchQueries: [{ query: GET_INSTRUCTORS }],
@@ -44,7 +44,7 @@ const AdminInstructors: FC = () => {
 		};
 
 	const handleDeleteInstructor =
-		({ instructorID }: Pick<InstructorType, "instructorID">): OnEditAndUpdate =>
+		({ instructorID }: Pick<InstructorType, "instructorID">): OnAction =>
 		async onClose => {
 			const result = await deleteInstructor({
 				variables: { instructorID },

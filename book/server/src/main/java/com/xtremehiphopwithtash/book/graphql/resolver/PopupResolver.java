@@ -39,6 +39,12 @@ public class PopupResolver {
 	public boolean shouldShowInstallPopup(Principal principal) {
 		String studentID = auth0JwtService.extractStudentID(principal);
 
+		boolean studentExists = studentService.existsByID(studentID);
+
+		if (!studentExists) {
+			return false;
+		}
+
 		int numberOfBookings = bookingService.retreiveStudentTotal(studentID);
 		Instant dateOfLastBooking = bookingService.retreiveStudentLastBookingDate(studentID);
 		boolean hasViewedInstallPopup = studentService.retreiveHasViewedInstallPopup(studentID);

@@ -10,6 +10,7 @@ const Entity: FC<EntityProps> = ({
 	leftLink,
 	rightContent,
 	className,
+	textClassName,
 	leftClassName,
 	rightClassName,
 }) => {
@@ -19,7 +20,7 @@ const Entity: FC<EntityProps> = ({
 
 	const textNode = (
 		<Fragment>
-			<p className="text-base">{text}</p>
+			<p className={`text-base ${textClassName ?? ""}`}>{text}</p>
 			<p className="text-xs">{description}</p>
 		</Fragment>
 	);
@@ -54,6 +55,7 @@ export interface EntityProps {
 	leftLink?: string | undefined;
 	rightContent?: ReactNode;
 	className?: string | undefined;
+	textClassName?: string | undefined;
 	leftClassName?: string | undefined;
 	rightClassName?: string | undefined;
 }

@@ -3,7 +3,7 @@ import { FC, createElement, useState } from "react";
 
 import LocationInput from "../../../components/forms/location-form";
 import { LocationInput as LocationInputType, Location as LocationType } from "../../../generated-types";
-import AdminEntity, { OnEditAndUpdate } from "../entity";
+import AdminEntity, { OnAction } from "../entity";
 import { mapLocationToInput } from "../map-entity-to-input";
 
 const Location: FC<Props> = ({
@@ -36,8 +36,8 @@ const Location: FC<Props> = ({
 
 interface Props {
 	location: LocationType;
-	onUpdate: (input: LocationInputType) => OnEditAndUpdate;
-	onDelete: OnEditAndUpdate;
+	onUpdate: (input: LocationInputType) => OnAction;
+	onDelete: OnAction;
 	isUpdating: boolean;
 	isDeleting: boolean;
 	updateModalError: MutationResult["error"];
