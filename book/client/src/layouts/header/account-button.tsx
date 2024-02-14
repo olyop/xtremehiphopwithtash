@@ -33,16 +33,18 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 		}
 	}, [isAuthenticated, user]);
 
+	const text = data
+		? (data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8)
+		: "Account";
+
 	return (
 		<div className="flex items-end md:items-center justify-around flex-col-reverse md:flex-row !py-4 gap-1 lg:gap-2 h-header-height">
 			<HeaderButton
-				ariaLabel="Account Page"
-				className="!border-gray-200 hover:!border-gray-300"
+				text={text}
+				ariaLabel={text}
 				isActive={isAccountOpen}
 				onClick={handleAccountClick}
-				text={
-					data ? (data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8) : "Account"
-				}
+				className="!border-gray-200 hover:!border-gray-300"
 				leftIcon={className =>
 					user ? (
 						breakpoint === Breakpoint.TINY ? null : (

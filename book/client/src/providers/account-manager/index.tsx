@@ -21,9 +21,9 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 
 	const handleCheck = async () => {
 		if (user?.sub) {
-			const { data } = await checkStudent({
-				fetchPolicy: "network-only",
-			});
+			const result = await checkStudent();
+
+			const { data } = result;
 
 			setStudentChecks(
 				data

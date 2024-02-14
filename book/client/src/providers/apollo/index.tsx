@@ -11,9 +11,7 @@ export const Apollo: FC<PropsWithChildren> = ({ children }) => {
 	const [client, setClient] = useState<ApolloClient<unknown> | null>(null);
 
 	const handleCreateClient = async () => {
-		const newClient = await createClient(getAccessTokenSilently);
-
-		setClient(newClient);
+		setClient(await createClient(getAccessTokenSilently));
 	};
 
 	useEffect(() => {

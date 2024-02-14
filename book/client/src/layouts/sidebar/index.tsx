@@ -166,9 +166,32 @@ const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 							</NavLink>
 						)}
 					</nav>
-					<footer className="flex flex-col">
-						<p className="text-xs text-gray-500 p-4">
-							Copyright © {new Date().getFullYear()} Xtreme Hip-Hop with Tash
+					<footer className="flex flex-col gap-4 px-6 py-4">
+						<p className="text-xs text-gray-500">
+							<Fragment>App created by </Fragment>
+							<a
+								href="https://oliverplummer.com.au/"
+								target="_blank"
+								rel="noreferrer"
+								className="text-blue-500 underline"
+							>
+								Oliver Plummer
+							</a>
+							<br />
+							<Fragment>Open source code: </Fragment>
+							<a
+								href="https://github.com/olyop/xtremehiphopwithtash"
+								target="_blank"
+								rel="noreferrer"
+								className="text-blue-500 underline"
+							>
+								GitHub
+							</a>
+						</p>
+						<p>
+							<Fragment>Copyright © {new Date().getFullYear()}</Fragment>
+							<br />
+							<Fragment> Xtreme Hip-Hop with Tash</Fragment>
 						</p>
 					</footer>
 				</Fragment>
