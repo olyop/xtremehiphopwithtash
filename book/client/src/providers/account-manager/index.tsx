@@ -38,14 +38,14 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 	};
 
 	const handleCreateAccount = () => {
-		setStudentChecks(prevState => (prevState ? { ...prevState, doesStudentExist: true } : null));
+		void handleCheck();
 	};
 
 	useEffect(() => {
 		if (isAuthenticated && user && studentChecks === null) {
 			void handleCheck();
 		}
-	}, [isAuthenticated, user, studentChecks, studentChecks?.doesStudentExist]);
+	}, [isAuthenticated, user, studentChecks]);
 
 	const isAuthenticatedAndUser = isAuthenticated && user !== undefined;
 

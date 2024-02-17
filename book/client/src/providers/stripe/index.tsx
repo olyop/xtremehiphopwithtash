@@ -1,10 +1,11 @@
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { FC, PropsWithChildren, createElement } from "react";
+
+import { stripe } from "../../clients/stripe";
 
 const StripeProvider: FC<PropsWithChildren<Props>> = ({ children, clientSecret }) => (
 	<Elements
-		stripe={loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)}
+		stripe={stripe}
 		options={{
 			clientSecret,
 		}}

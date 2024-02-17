@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react/hooks/useQuery";
 import { FC, Fragment, createElement } from "react";
 
 import Booking from "../../../../components/booking";
@@ -74,38 +74,56 @@ const Student: FC<Props> = ({ student }) => {
 				</Fragment>
 			}
 			viewModalContent={
-				<div className="flex flex-col gap-2">
-					<div className="bg-white flex flex-col w-full shadow-lg">
-						{result.data?.getStudentByID.bookings ? (
-							result.data.getStudentByID.bookings.map(booking => (
-								<Booking
-									hideUpdate
-									hideCheckIn
-									isLeftALink
-									hideCallNow
-									hideCancel
-									hideReceipt
-									hideInstagram
-									hideQuantities
-									hideEquipmentFee
-									hideStripePaymentLink
-									key={booking.bookingID}
-									booking={booking as BookingType}
-									session={booking.session as SessionType}
-									onBookingUpdated={handleBookingUpdated}
-								/>
-							))
-						) : (
-							<p className="text-gray-500 p-2">No booking</p>
-						)}
+				result.data ? (
+					<div className="flex flex-col gap-4">
+						<div className="flex flex-col gap-2">
+							<p>
+								<Fragment>Email Address: </Fragment>
+								<span className="text-gray-500">{result.data.getStudentByID.details.emailAddress}</span>
+							</p>
+							<p>
+								<Fragment>Mobile Number: </Fragment>
+								<span className="text-gray-500">{result.data.getStudentByID.details.mobilePhoneNumber}</span>
+							</p>
+							{result.data.getStudentByID.details.instagramUsername && (
+								<p>
+									<Fragment>Instagram Username: </Fragment>
+									<span className="text-gray-500">{result.data.getStudentByID.details.instagramUsername}</span>
+								</p>
+							)}
+							{result.data.getStudentByID.bookings && result.data.getStudentByID.bookings.length > 0 && (
+								<p>
+									<Fragment>Bookings Total: </Fragment>
+									<span className="text-gray-500">{result.data.getStudentByID.bookings.length}</span>
+								</p>
+							)}
+						</div>
+						<div className="bg-white flex flex-col w-full shadow-lg">
+							{result.data.getStudentByID.bookings ? (
+								result.data.getStudentByID.bookings.map(booking => (
+									<Booking
+										hideUpdate
+										hideCheckIn
+										isLeftALink
+										hideCallNow
+										hideReceipt
+										hideInstagram
+										hideQuantities
+										hideEquipmentFee
+										hideStripePaymentLink
+										key={booking.bookingID}
+										booking={booking as BookingType}
+										onBookingUpdated={handleBookingUpdated}
+										session={booking.session as SessionType}
+										cancelModalClassName="!w-[20rem]"
+									/>
+								))
+							) : (
+								<p className="text-gray-500 p-2">No booking</p>
+							)}
+						</div>
 					</div>
-					{result.data?.getStudentByID.bookings && result.data.getStudentByID.bookings.length > 0 && (
-						<p>
-							{result.data.getStudentByID.bookings.length} booking
-							{result.data.getStudentByID.bookings.length === 1 ? "" : "s"}
-						</p>
-					)}
-				</div>
+				) : null
 			}
 		/>
 	);

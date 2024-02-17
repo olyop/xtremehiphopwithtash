@@ -1,11 +1,15 @@
+import { QueryResult } from "@apollo/client/react/types/types";
 import { FC, createElement } from "react";
 
-import LoadingBase from "../../components/loading";
+import PageWithHeaderAndData from "../../pages/page-with-header-and-data";
 
 const Loading: FC = () => (
-	<div className="w-full h-full flex items-center justify-center">
-		<LoadingBase />
-	</div>
+	<PageWithHeaderAndData
+		title="Loading"
+		titleClassName="!border-b-0 text-transparent"
+		queryResult={{ loading: true } as unknown as QueryResult<unknown>}
+		children={() => null}
+	/>
 );
 
 export default Loading;

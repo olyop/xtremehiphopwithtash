@@ -26,10 +26,7 @@ const Entity: FC<EntityProps> = ({
 	);
 
 	return (
-		<div
-			data-id={id}
-			className={`flex items-start justify-between h-full p-2 border-b last:border-b-0 ${className ?? ""}`}
-		>
+		<div data-id={id} className={`flex items-start justify-between p-2 border-b last:border-b-0 ${className ?? ""}`}>
 			{isLeftALink && leftLink ? (
 				<Link className={`flex items-center gap-2 ${leftClassName ?? ""}`} to={leftLink}>
 					{photoNode}

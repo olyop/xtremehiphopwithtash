@@ -12,8 +12,8 @@ const HeaderButton: FC<Props> = ({ isActive, className, leftIcon, rightIcon, ...
 		leftIcon={() => (leftIcon ? leftIcon(leftIconClassName) : undefined)}
 		rightIcon={() => (rightIcon ? rightIcon(rightIconClassName) : undefined)}
 		textClassName="text-xs tiny:text-md"
-		className={`rounded-full border py-2 pl-2 pr-2 tiny:py-2 tiny:!pr-4 !gap-1.5 tiny:!gap-2 !h-auto ${
-			isActive ? "border-gray-200" : "border-transparent"
+		className={`!w-auto rounded-full border py-2 tiny:py-2 pl-2 tiny:pl-3 pr-2 tiny:pr-4 !gap-1.5 tiny:!gap-2 !h-auto hover:border-gray-300 ${
+			isActive ? "!border-gray-300" : "border-transparent"
 		} ${className}`}
 		{...props}
 	/>

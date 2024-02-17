@@ -977,6 +977,12 @@ export type GetStudentDetailsQuery = {
 	readonly getStudentByID: {
 		readonly studentID: string;
 		readonly bookingsTotal: number | null;
+		readonly details: {
+			readonly detailsID: string;
+			readonly mobilePhoneNumber: string;
+			readonly emailAddress: string;
+			readonly instagramUsername: string | null;
+		} & { readonly __typename: "Details" };
 		readonly bookings: ReadonlyArray<
 			{
 				readonly bookingID: string;

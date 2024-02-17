@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import XMarkIcon from "@heroicons/react/24/solid/XMarkIcon";
 import { FC, Fragment, PropsWithChildren, createElement, useEffect, useState } from "react";
 

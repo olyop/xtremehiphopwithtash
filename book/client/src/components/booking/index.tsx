@@ -30,6 +30,7 @@ const SessionPageBooking: FC<Props> = ({
 	hideQuantities = false,
 	hideEquipmentFee = false,
 	hideStripePaymentLink = false,
+	cancelModalClassName,
 }) => {
 	const isSessionInPast = isInPast(new Date(session.endTime));
 
@@ -127,7 +128,14 @@ const SessionPageBooking: FC<Props> = ({
 							onBookingUpdated={onBookingUpdated}
 						/>
 					)}
-					{!hideCancel && <BookingCancel session={session} booking={booking} onBookingUpdated={onBookingUpdated} />}
+					{!hideCancel && (
+						<BookingCancel
+							session={session}
+							booking={booking}
+							onBookingUpdated={onBookingUpdated}
+							modalClassName={cancelModalClassName}
+						/>
+					)}
 					{!hideReceipt && booking.paymentMethod === PaymentMethod.CARD && <BookingReceipt booking={booking} />}
 					{!hideCallNow && !isSessionInPast && <BookingCallNow booking={booking} />}
 					{!hideStripePaymentLink && booking.paymentMethod === PaymentMethod.CARD && booking.paymentIntentID && (
@@ -165,6 +173,7 @@ interface Props {
 	hideEquipmentFee?: boolean;
 	hideStripePaymentLink?: boolean;
 	onBookingUpdated: () => void;
+	cancelModalClassName?: string;
 }
 
 export default SessionPageBooking;

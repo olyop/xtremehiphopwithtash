@@ -32,7 +32,6 @@ export const getSessions =
 		try {
 			const { data, error } = await apollo.query<GetSessionsInPeriodQuery, QueryGetSessionsInPeriodArgs>({
 				query: GET_SESSIONS_IN_PERIOD,
-				fetchPolicy: "network-only",
 				variables: {
 					input: {
 						courseID: null,

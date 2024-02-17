@@ -86,22 +86,22 @@ const AdminEntity: FC<Props> = ({
 						<Fragment>
 							<Button
 								transparent
-								ariaLabel={`Edit ${typeName}`}
 								onClick={openEditModal}
+								ariaLabel={`Edit ${typeName}`}
 								leftIcon={className =>
 									isUpdating ? <ArrowPathIcon className={className} /> : <PencilIcon className={className} />
 								}
 							/>
 							<Modal
-								title={`Edit ${typeName}`}
 								subTitle={text}
-								isLarge={isLargeEditModal}
-								icon={className => <PencilIcon className={className} />}
+								error={editModalError}
 								isOpen={isEditModalOpen}
 								onClose={closeEditModal}
-								contentClassName="flex flex-col gap-4"
+								isLarge={isLargeEditModal}
+								title={`Edit ${typeName}`}
 								children={editModalContent}
-								error={editModalError}
+								contentClassName="flex flex-col gap-4"
+								icon={className => <PencilIcon className={className} />}
 								buttons={
 									<Fragment>
 										<Button
@@ -126,21 +126,21 @@ const AdminEntity: FC<Props> = ({
 						<Fragment>
 							<Button
 								transparent
-								ariaLabel={`Delete ${typeName}`}
 								onClick={openDeleteModal}
+								ariaLabel={`Delete ${typeName}`}
 								leftIcon={className =>
 									isDeleting ? <ArrowPathIcon className={className} /> : <TrashIcon className={className} />
 								}
 							/>
 							<Modal
-								title={`Delete ${typeName}`}
 								subTitle={text}
-								icon={className => <TrashIcon className={className} />}
+								error={deleteModalError}
 								isOpen={isDeleteModalOpen}
 								onClose={closeDeleteModal}
-								contentClassName="flex flex-col gap-2 text"
+								title={`Delete ${typeName}`}
 								children={<p>Are you sure?</p>}
-								error={deleteModalError}
+								contentClassName="flex flex-col gap-2 text"
+								icon={className => <TrashIcon className={className} />}
 								buttons={
 									<Fragment>
 										<Button

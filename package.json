@@ -55,9 +55,11 @@
 		"book-stag": "npm run book-stag-build && npm run book-stag-deploy",
 		"book-prod": "npm run book-prod-build && npm run book-prod-deploy",
 		"codegen": "npm run book-client-deve-codegen",
-		"dev": "clear && npm run book-deve",
+		"development": "clear && npm run book-deve",
 		"staging": "clear && npm run book-stag",
-		"production": "clear && npm run book-prod"
+		"staging-front": "clear && npm run book-stag-front",
+		"production": "clear && npm run book-prod",
+		"production-front": "clear && npm run book-prod-front"
 	},
 	"devDependencies": {
 		"@graphql-codegen/add": "5.0.2",

@@ -1,8 +1,9 @@
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
 import { FC, Fragment, createElement, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import Button from "../../components/button";
 import Loading from "../../components/loading";
@@ -21,31 +22,21 @@ import GET_PAYMENT_SUCCESS_SCREEN from "./get-payment-success-data.graphql";
 import { waitUntilBookingExists } from "./wait-until-booking-exists";
 
 const PaymentSuccessPage: FC = () => {
+	const navigate = useNavigate();
 	const apollo = useApolloClient();
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 
 	const [bookingID, setBookingID] = useState<string | false | null>(null);
 
 	const [getPaymentScreenSuccessData, { data }] = useLazyQuery<QueryData, QueryVars>(GET_PAYMENT_SUCCESS_SCREEN);
 
 	const [confirmBooking] = useMutation<MutationData, MutationVars>(CONFIRM_BOOKING, {
-		refetchQueries: [GET_BOOKINGS_PAGE, GET_ACCOUNT_PAGE],
+		refetchQueries: [{ query: GET_BOOKINGS_PAGE }, { query: GET_ACCOUNT_PAGE }],
 	});
 
 	const bookingIDParam = searchParams.get("bookingID");
 
-	const handleClearSearchParams = () => {
-		if (bookingIDParam) {
-			const newSearchParams = new URLSearchParams();
-			newSearchParams.append("bookingID", bookingIDParam);
-
-			setSearchParams(newSearchParams);
-		}
-	};
-
 	const handleWaitForBooking = async () => {
-		handleClearSearchParams();
-
 		if (bookingIDParam) {
 			const bookingExists = await waitUntilBookingExists(apollo)(bookingIDParam);
 
@@ -65,6 +56,10 @@ const PaymentSuccessPage: FC = () => {
 
 			await getPaymentScreenSuccessData({ variables: { bookingID } });
 		}
+	};
+
+	const handleFinish = () => {
+		navigate("/bookings");
 	};
 
 	useEffect(() => {
@@ -106,6 +101,7 @@ const PaymentSuccessPage: FC = () => {
 						<Button
 							text="Finish"
 							ariaLabel="Finish"
+							onClick={handleFinish}
 							className="!h-14 !shadow-2xl !hover:shadow-3xl rounded-xl gap-4 pr-6"
 							leftIcon={className => <CheckIcon className={`${className} h-7 w-7`} />}
 						/>

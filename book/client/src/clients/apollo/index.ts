@@ -1,17 +1,19 @@
-import { ApolloClient } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
 import { Auth0ContextInterface } from "@auth0/auth0-react";
 
-import { createCache } from "./cache";
+import { cachePersistor, createCache } from "./cache";
 import { createLink } from "./link";
 
-export const createClient = async (getAccessTokenSilently: Auth0ContextInterface["getAccessTokenSilently"]) =>
+export const createApollo = async (auth0: Auth0ContextInterface) =>
 	new ApolloClient({
 		queryDeduplication: false,
 		cache: await createCache(),
-		link: createLink(getAccessTokenSilently),
+		link: createLink(auth0),
 		defaultOptions: {
 			watchQuery: {
 				fetchPolicy: "cache-and-network",
 			},
 		},
 	});
+
+export { cachePersistor };

@@ -1,4 +1,4 @@
-import { ApolloClient } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { BookingTrend, GetBookingTrendsInput, GetTrendsQuery, GetTrendsQueryVariables } from "../../../generated-types";
 import GET_TRENDS from "./get-trends.graphql";

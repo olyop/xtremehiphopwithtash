@@ -55,7 +55,7 @@ const Routes: FC = () => {
 	const routesElement = useRoutes(routes);
 	return (
 		<div
-			className={`h-content-height w-full bg-stone-150 ${
+			className={`h-full w-full ${
 				location.pathname === "/" ? "overflow-hidden" : "overflow-x-hidden overflow-y-scroll"
 			}`}
 		>

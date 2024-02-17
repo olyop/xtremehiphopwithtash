@@ -28,7 +28,9 @@ const checkerOptions: Parameters<typeof checker>[0] = {
 	},
 };
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async options => {
+	const mode = options.mode as "development" | "staging" | "production";
+
 	const environmentVariables = loadEnv(mode, process.cwd(), "");
 
 	process.env = { ...process.env, ...environmentVariables };
@@ -48,9 +50,13 @@ export default defineConfig(async ({ mode }) => {
 	];
 
 	return {
-		plugins: mode === "production" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
+		plugins: mode === "production" || mode === "staging" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
+		define: {
+			__DEV__: JSON.stringify(mode === "development"),
+			"globalThis.__DEV__": JSON.stringify(mode === "development"),
+		},
 		build: {
-			target: "",
+			chunkSizeWarningLimit: 1000,
 		},
 		server: {
 			https:

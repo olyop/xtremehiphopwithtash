@@ -1,6 +1,12 @@
 query getStudentDetails($studentID: String!) {
 	getStudentByID(studentID: $studentID) {
 		studentID
+		details {
+			detailsID
+			mobilePhoneNumber
+			emailAddress
+			instagramUsername
+		}
 		bookingsTotal
 		bookings {
 			bookingID

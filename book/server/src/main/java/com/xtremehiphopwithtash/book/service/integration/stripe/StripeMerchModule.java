@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
@@ -71,15 +72,11 @@ public class StripeMerchModule {
 		}
 	}
 
-	private Comparator<StripeMerchItem> merchItemComparator = new Comparator<StripeMerchItem>() {
-		@Override
-		public int compare(StripeMerchItem merchItem1, StripeMerchItem merchItem2) {
-			return merchItem1.getName().compareTo(merchItem2.getName());
-		}
-	};
-
 	private Predicate<Product> productsFilter = product -> {
-		return product.getActive() && !product.getName().equals("Shipping") && !product.getName().equals("Hoodie");
+		return (
+			product.getActive() &&
+			(product.getMetadata().get("show") != null && product.getMetadata().get("show").equals("true"))
+		);
 	};
 
 	private Function<Product, StripeMerchItem> productToMerchItem = product -> {
@@ -94,6 +91,13 @@ public class StripeMerchModule {
 		merchItem.setSizesAvailable(getSizesAvailable(product));
 
 		return merchItem;
+	};
+
+	private Comparator<StripeMerchItem> merchItemComparator = new Comparator<StripeMerchItem>() {
+		@Override
+		public int compare(StripeMerchItem merchItem1, StripeMerchItem merchItem2) {
+			return merchItem1.getName().compareTo(merchItem2.getName());
+		}
 	};
 
 	private URL getProductImage(Product product) {
@@ -116,11 +120,23 @@ public class StripeMerchModule {
 
 	private int getStock(Product product) {
 		String stock = product.getMetadata().get("stock");
-		return stock == null ? 0 : Integer.valueOf(stock);
+
+		if (stock == null) {
+			return 0;
+		}
+
+		return Integer.valueOf(stock);
 	}
 
 	private String[] getSizesAvailable(Product product) {
 		String sizesAvailable = product.getMetadata().get("sizesAvailable");
-		return sizesAvailable == null ? null : sizesAvailable.split(",");
+
+		if (sizesAvailable == null) {
+			return null;
+		}
+
+		String[] sizesAvailableSplit = sizesAvailable.split(",");
+
+		return Arrays.stream(sizesAvailableSplit).map(String::trim).toArray(String[]::new);
 	}
 }

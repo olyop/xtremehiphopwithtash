@@ -1,6 +1,6 @@
-import { TypePolicies } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache/inmemory/inMemoryCache";
-import { LocalStorageWrapper, persistCache } from "apollo3-cache-persist";
+import { TypePolicies } from "@apollo/client/cache/inmemory/policies";
+import { CachePersistor, LocalStorageWrapper } from "apollo3-cache-persist";
 
 import { readUnixTime } from "./read-unix-time";
 
@@ -94,11 +94,13 @@ const inMemoryCache = new InMemoryCache({
 
 const storageWrapper = new LocalStorageWrapper(window.localStorage);
 
+export const cachePersistor = new CachePersistor({
+	cache: inMemoryCache,
+	storage: storageWrapper,
+});
+
 export const createCache = async () => {
-	await persistCache({
-		cache: inMemoryCache,
-		storage: storageWrapper,
-	});
+	await cachePersistor.restore();
 
 	return inMemoryCache;
 };

@@ -1,34 +1,23 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react/hooks/useLazyQuery";
 import { useAuth0 } from "@auth0/auth0-react";
 import UserCircleIcon from "@heroicons/react/24/outline/UserCircleIcon";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import ChevronUpIcon from "@heroicons/react/24/solid/ChevronUpIcon";
 import { FC, createElement, useEffect } from "react";
 
-import { GetAccountPageQuery, GetBookingsPageQuery } from "../../generated-types";
+import { GetAccountPageQuery } from "../../generated-types";
 import { Breakpoint, useBreakpoint } from "../../hooks";
 import GET_ACCOUNT_PAGE from "../../pages/account/get-account-page.graphql";
-import GET_BOOKINGS_PAGE from "../../pages/bookings/get-bookings-page.graphql";
 import HeaderButton from "./header-button";
 
-const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccountClose }) => {
+const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle }) => {
 	const breakpoint = useBreakpoint();
 	const { isAuthenticated, user } = useAuth0();
 
-	const [getBookingsPage] = useLazyQuery<GetBookingsPageQuery>(GET_BOOKINGS_PAGE);
 	const [getAccountPage, { data }] = useLazyQuery<GetAccountPageQuery>(GET_ACCOUNT_PAGE);
-
-	const handleAccountClick = () => {
-		if (isAccountOpen) {
-			onAccountClose();
-		} else {
-			onAccountOpen();
-		}
-	};
 
 	useEffect(() => {
 		if (isAuthenticated && user) {
-			void getBookingsPage();
 			void getAccountPage();
 		}
 	}, [isAuthenticated, user]);
@@ -42,9 +31,9 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 			<HeaderButton
 				text={text}
 				ariaLabel={text}
-				isActive={isAccountOpen}
-				onClick={handleAccountClick}
-				className="!border-gray-200 hover:!border-gray-300"
+				isActive={isOpen}
+				onClick={onToggle}
+				className="!pl-2 pr-2 sm:pr-4 !border-gray-200"
 				leftIcon={className =>
 					user ? (
 						breakpoint === Breakpoint.TINY ? null : (
@@ -55,7 +44,7 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 					)
 				}
 				rightIcon={className =>
-					breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : isAccountOpen ? (
+					breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL ? null : isOpen ? (
 						<ChevronUpIcon className={className} />
 					) : (
 						<ChevronDownIcon className={className} />
@@ -67,9 +56,8 @@ const HeaderAccountButton: FC<Props> = ({ isAccountOpen, onAccountOpen, onAccoun
 };
 
 interface Props {
-	isAccountOpen: boolean;
-	onAccountOpen: () => void;
-	onAccountClose: () => void;
+	isOpen: boolean;
+	onToggle: () => void;
 }
 
 export default HeaderAccountButton;

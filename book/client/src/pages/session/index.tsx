@@ -5,7 +5,6 @@ import { FC, Fragment, createElement, useContext, useEffect, useState } from "re
 import { useParams } from "react-router-dom";
 
 import CourseChip from "../../components/course-chip";
-import FormError from "../../components/form-error";
 import InstructorsChip from "../../components/instructors-chip";
 import Loading from "../../components/loading";
 import LocationChip from "../../components/location-chip";
@@ -42,9 +41,8 @@ const SessionPage: FC = () => {
 	const isAdministrator = useContext(IsAdministratorContext);
 
 	const [hasViewed, setHasViewed] = useState(false);
-	const [pageData, setPageData] = useState<GetSessionPageQuery | null>(null);
 
-	const [getQuery, { data, error, refetch }] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
+	const [getQuery, { data, refetch }] = useLazyQuery<GetSessionPageQuery, GetSessionPageQueryVariables>(
 		GET_SESSION_PAGE,
 	);
 
@@ -71,12 +69,8 @@ const SessionPage: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		if (data && sessionID) {
-			if (!hasViewed) {
-				void handleViewSession(sessionID);
-			}
-
-			setPageData(data);
+		if (data && sessionID && !hasViewed) {
+			void handleViewSession(sessionID);
 		}
 	}, [data]);
 
@@ -84,15 +78,7 @@ const SessionPage: FC = () => {
 		return <div>Session ID not provided</div>;
 	}
 
-	if (error) {
-		return (
-			<div className="h-content-height w-full p-4">
-				<FormError error={error} />
-			</div>
-		);
-	}
-
-	if (!pageData) {
+	if (!data) {
 		return (
 			<div className="h-content-height w-full flex items-center justify-center">
 				<Loading />
@@ -100,7 +86,7 @@ const SessionPage: FC = () => {
 		);
 	}
 
-	const { getSessionByID: session, getClassDescription } = pageData;
+	const { getSessionByID: session, getClassDescription } = data;
 
 	const isInPast = isSessionInPast(session);
 

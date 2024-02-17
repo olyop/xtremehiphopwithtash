@@ -30,6 +30,7 @@ const determineBackLabel = (breakpoint: Breakpoint) => {
 };
 
 const ScheduleControls: FC<Props> = ({
+	isOffline,
 	isFirstDayToday,
 	isFirstDayInPast,
 	onReset,
@@ -45,6 +46,7 @@ const ScheduleControls: FC<Props> = ({
 				transparent
 				className="!px-2"
 				onClick={onReset}
+				disabled={isOffline}
 				ariaLabel="Reset to today"
 				text={isMobile ? "Today" : undefined}
 				leftIcon={className =>
@@ -64,6 +66,7 @@ const ScheduleControls: FC<Props> = ({
 			<div className="hidden w-full h-px lg:block lg:h-px bg-slate-300" />
 			<div className="grid flex-grow grid-cols-2 grid-rows-1 gap-2 lg:grid-cols-1 lg:grid-rows-2 lg:gap-2">
 				<Button
+					disabled={isOffline}
 					className="px-1.5 gap-3"
 					onClick={onBackOneWeek}
 					textClassName="tracking-widest"
@@ -73,6 +76,7 @@ const ScheduleControls: FC<Props> = ({
 					leftIcon={className => <ChevronUpIcon className={className} />}
 				/>
 				<Button
+					disabled={isOffline}
 					className="px-1.5 gap-3"
 					onClick={onForwardOneWeek}
 					textClassName="tracking-widest"
@@ -87,6 +91,7 @@ const ScheduleControls: FC<Props> = ({
 };
 
 interface Props {
+	isOffline: boolean;
 	onReset: () => void;
 	breakpoint: Breakpoint;
 	onBackOneWeek: () => void;

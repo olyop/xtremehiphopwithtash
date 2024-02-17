@@ -31,27 +31,43 @@ const Header: FC = () => {
 		openAccount();
 	};
 
+	const handleToggleMenu = () => {
+		if (isMenuOpen) {
+			closeMenu();
+		} else {
+			handleOpenMenu();
+		}
+	};
+
+	const handleToggleAccount = () => {
+		if (isAccountOpen) {
+			closeAccount();
+		} else {
+			handleOpenAccount();
+		}
+	};
+
 	const { pathname } = location;
+
+	const isPaymentSuccessPage = pathname === "/payment-success";
+	const isSessionPage = pathname.startsWith("/session");
+	const isPaymentPage = pathname === "/payment";
 
 	return (
 		<Fragment>
 			<header
-				className={`flex items-center px-2 relative justify-between border-b h-header-height bg-white ${
+				className={`flex items-center pl-4 tiny:pl-2 pr-2 relative justify-between border-b h-header-height bg-white ${
 					isMenuOpen || isAccountOpen ? "!z-[150]" : ""
 				}`}
 			>
-				{pathname === "/payment-success" ? null : pathname.startsWith("/session") || pathname === "/payment" ? (
+				{isPaymentSuccessPage ? null : isSessionPage || isPaymentPage ? (
 					<HeaderBackButton onClick={handleReset} />
 				) : (
-					<HeaderMenuButton isMenuOpen={isMenuOpen} onMenuOpen={handleOpenMenu} onMenuClose={closeMenu} />
+					<HeaderMenuButton isOpen={isMenuOpen} onToggle={handleToggleMenu} />
 				)}
 				<HeaderLogo onMenuClose={closeMenu} onAccountClose={closeAccount} />
-				{pathname === "/payment" || pathname === "/payment-success" ? null : (
-					<HeaderAccountButton
-						isAccountOpen={isAccountOpen}
-						onAccountOpen={handleOpenAccount}
-						onAccountClose={closeAccount}
-					/>
+				{isPaymentPage || isPaymentSuccessPage ? null : (
+					<HeaderAccountButton isOpen={isAccountOpen} onToggle={handleToggleAccount} />
 				)}
 			</header>
 			<Sidebar isOpen={isMenuOpen} onClose={closeMenu} />

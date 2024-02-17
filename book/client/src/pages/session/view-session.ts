@@ -1,4 +1,4 @@
-import { ApolloClient } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { ViewSessionMutation, ViewSessionMutationVariables } from "../../generated-types";
 import VIEW_SESSION from "./view-session.graphql";

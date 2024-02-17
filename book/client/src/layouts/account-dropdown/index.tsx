@@ -1,16 +1,32 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import ArrowLeftEndOnRectangle from "@heroicons/react/20/solid/ArrowLeftEndOnRectangleIcon";
 import ArrowLeftStartOnRectangle from "@heroicons/react/20/solid/ArrowLeftStartOnRectangleIcon";
-import { FC, Fragment, createElement } from "react";
+import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
+import { FC, Fragment, createElement, useContext } from "react";
 import { NavLink } from "react-router-dom";
 
+import { cachePersistor } from "../../clients/apollo";
 import Button from "../../components/button";
 import Modal from "../../components/modal";
+import { IsAdministratorContext } from "../../contexts/is-administrator";
 import AccountDropdownAccountButton from "./account-button";
 import AccountDropdownBookingsButton from "./bookings-button";
 
 const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
+	const isAdministrator = useContext(IsAdministratorContext);
 	const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+	const clearCache = async () => {
+		onClose();
+
+		await cachePersistor.purge();
+
+		window.location.reload();
+	};
+
+	const handleClearCache = () => {
+		void clearCache();
+	};
 
 	const handleLogIn = () => {
 		onClose();
@@ -53,6 +69,17 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 						</NavLink>
 					) : (
 						<AccountDropdownBookingsButton isDisabled />
+					)}
+					{isAdministrator && (import.meta.env.MODE === "development" || import.meta.env.MODE === "staging") && (
+						<Button
+							transparent
+							text="Clear Cache"
+							ariaLabel="Clear Cache"
+							textClassName="!text-md"
+							onClick={handleClearCache}
+							leftIcon={className => <TrashIcon className={`${className} w-7 h-7`} />}
+							className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
+						/>
 					)}
 					<Button
 						transparent

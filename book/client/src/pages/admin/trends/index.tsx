@@ -1,4 +1,4 @@
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { FC, createElement, useEffect, useState } from "react";
 
 import Input, { InputOnChange, InputType } from "../../../components/input";

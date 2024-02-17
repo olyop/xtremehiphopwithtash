@@ -1,8 +1,7 @@
-import { ApolloError } from "@apollo/client";
+import { ApolloError } from "@apollo/client/errors";
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { FC, createElement, useEffect, useRef, useState } from "react";
 
-import FormError from "../../components/form-error";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
 import { useBreakpoint, useHasMounted } from "../../hooks";
 import Controls from "./controls";
@@ -19,13 +18,27 @@ const Schedule: FC = () => {
 	const relativeDate = useRef(Date.now());
 
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<ApolloError | null>(null);
+	const [isOffline, setIsOffline] = useState(false);
 
 	const [days, setDays] = useState<DayType[]>(() => {
 		const [startingDate, endingDate] = determineStartAndEndDate(new Date(getStartingTime()), breakpoint);
 
 		return generateDays(breakpoint, startingDate, endingDate, []);
 	});
+
+	const cacheSchedule = (schedule: DayType[]) => {
+		localStorage.setItem("schedule", JSON.stringify(schedule));
+	};
+
+	const retreiveCachedSchedule = () => {
+		const schedule = localStorage.getItem("schedule");
+
+		if (schedule) {
+			return JSON.parse(schedule) as DayType[];
+		} else {
+			return [];
+		}
+	};
 
 	const handleSchedule = async (date: Date) => {
 		setLoading(true);
@@ -36,14 +49,19 @@ const Schedule: FC = () => {
 		const schedule = await generateSchedule(apollo)(unixTime, breakpoint);
 
 		if (schedule instanceof ApolloError) {
-			setError(schedule);
+			setDays(retreiveCachedSchedule());
+
+			setIsOffline(true);
 			setLoading(false);
+
 			return;
-		} else {
-			setError(null);
 		}
 
+		cacheSchedule(schedule);
+
 		setDays(schedule);
+
+		setIsOffline(false);
 		setLoading(false);
 	};
 
@@ -86,17 +104,12 @@ const Schedule: FC = () => {
 	return (
 		<main className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
 			<FullscreenSpinner isLoading={loading} backgroundClassName="!opacity-10" />
-			{error ? (
-				<div className="h-content-height w-full p-4 border-t">
-					<FormError error={error} />
-				</div>
-			) : (
-				<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
-					<WeekDays />
-					<Days days={days} onSessionUpdate={handleSessionsUpdate} />
-				</div>
-			)}
+			<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
+				<WeekDays />
+				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
+			</div>
 			<Controls
+				isOffline={isOffline}
 				breakpoint={breakpoint}
 				onReset={handleResetClick}
 				onBackOneWeek={handleBackOneWeekClick}

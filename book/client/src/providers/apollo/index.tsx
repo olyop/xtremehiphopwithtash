@@ -1,28 +1,28 @@
-import { ApolloClient } from "@apollo/client";
-import { ApolloProvider } from "@apollo/client/react/context/ApolloProvider";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
+import { ApolloProvider as ApolloProviderInternal } from "@apollo/client/react/context/ApolloProvider";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FC, PropsWithChildren, createElement, useEffect, useState } from "react";
 
-import { createClient } from "./client";
+import { createApollo } from "../../clients/apollo";
 
-export const Apollo: FC<PropsWithChildren> = ({ children }) => {
-	const { getAccessTokenSilently } = useAuth0();
+export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
+	const auth0 = useAuth0();
 
-	const [client, setClient] = useState<ApolloClient<unknown> | null>(null);
+	const [apollo, setApollo] = useState<ApolloClient<unknown> | null>(null);
 
-	const handleCreateClient = async () => {
-		setClient(await createClient(getAccessTokenSilently));
+	const handleCreate = async () => {
+		setApollo(await createApollo(auth0));
 	};
 
 	useEffect(() => {
-		if (client === null) {
-			void handleCreateClient();
+		if (apollo === null) {
+			void handleCreate();
 		}
 	}, []);
 
-	if (client === null) {
+	if (apollo === null) {
 		return null;
 	}
 
-	return <ApolloProvider client={client}>{children}</ApolloProvider>;
+	return <ApolloProviderInternal client={apollo}>{children}</ApolloProviderInternal>;
 };

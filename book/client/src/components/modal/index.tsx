@@ -89,7 +89,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 						<Button
 							onClick={onClose}
 							ariaLabel={`Close ${title}`}
-							className="absolute -top-4 -right-4 rounded-2xl"
+							className="absolute -top-4 -right-4 rounded"
 							leftIcon={c => <XMarkIcon className={c} />}
 							text={
 								isMobile ? (
@@ -141,7 +141,7 @@ interface ModalProps {
 	errorClassName?: string;
 	buttons?: ReactNode;
 	className?: string | undefined;
-	modalClassName?: string;
+	modalClassName?: string | undefined;
 	contentClassName?: string;
 	buttonClassName?: string;
 	backgroundClassName?: string;

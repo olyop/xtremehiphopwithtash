@@ -18,7 +18,7 @@ import Button from "../../../button";
 import Modal from "../../../modal";
 import CANCEL_BOOKING from "./cancel-booking.graphql";
 
-const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated }) => {
+const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated, modalClassName }) => {
 	const isAdministrator = useContext(IsAdministratorContext);
 
 	const [reCaptchaToken, reCaptchaError, getReCaptchaToken] = useReCaptcha(
@@ -86,6 +86,7 @@ const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated }) => {
 				title="Cancel Booking"
 				isOpen={isCancelModalOpen}
 				onClose={closeCancelModal}
+				modalClassName={modalClassName}
 				error={cancelBookingResult.error}
 				contentClassName="flex flex-col gap-6"
 				icon={className => <XMarkIcon className={className} />}
@@ -149,6 +150,7 @@ interface Props {
 	session: Session;
 	booking: Booking;
 	onBookingUpdated: () => void;
+	modalClassName?: string | undefined;
 }
 
 type CancelData = CancelBookingMutation;

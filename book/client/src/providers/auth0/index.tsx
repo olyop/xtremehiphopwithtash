@@ -1,8 +1,8 @@
-import { Auth0Provider } from "@auth0/auth0-react";
+import { Auth0Provider as Auth0ProviderInternal } from "@auth0/auth0-react";
 import { FC, PropsWithChildren, createElement } from "react";
 
-const Auth0: FC<PropsWithChildren> = ({ children }) => (
-	<Auth0Provider
+const Auth0Provider: FC<PropsWithChildren> = ({ children }) => (
+	<Auth0ProviderInternal
 		useRefreshTokens
 		children={children}
 		cacheLocation="localstorage"
@@ -16,4 +16,4 @@ const Auth0: FC<PropsWithChildren> = ({ children }) => (
 	/>
 );
 
-export default Auth0;
+export default Auth0Provider;

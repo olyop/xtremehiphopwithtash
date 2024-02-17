@@ -1,24 +1,24 @@
 import { FC, createElement } from "react";
-import { BrowserRouter as ReactRouter } from "react-router-dom";
+import { BrowserRouter as ReactRouterProvider } from "react-router-dom";
 
 import AccountManager from "./providers/account-manager";
-import { Apollo } from "./providers/apollo";
-import Auth0 from "./providers/auth0";
-import ReCaptcha from "./providers/recaptcha";
+import { ApolloProvider } from "./providers/apollo";
+import Auth0Provider from "./providers/auth0";
+import ReCaptchaProvider from "./providers/recaptcha";
 import Routes from "./routes";
 
 const Application: FC = () => (
-	<Auth0>
-		<Apollo>
-			<ReCaptcha>
-				<ReactRouter>
+	<Auth0Provider>
+		<ApolloProvider>
+			<ReCaptchaProvider>
+				<ReactRouterProvider>
 					<AccountManager>
 						<Routes />
 					</AccountManager>
-				</ReactRouter>
-			</ReCaptcha>
-		</Apollo>
-	</Auth0>
+				</ReactRouterProvider>
+			</ReCaptchaProvider>
+		</ApolloProvider>
+	</Auth0Provider>
 );
 
 export default Application;

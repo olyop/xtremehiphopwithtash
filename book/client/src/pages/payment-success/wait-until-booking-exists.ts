@@ -1,4 +1,4 @@
-import { ApolloClient } from "@apollo/client";
+import { ApolloClient } from "@apollo/client/core/ApolloClient";
 
 import { ExistsBookingQuery } from "../../generated-types";
 import EXISTS_BOOKING from "./exists-booking.graphql";
@@ -11,7 +11,11 @@ export const waitUntilBookingExists = (apollo: ApolloClient<unknown>) => async (
 	let bookingExists = false;
 
 	while (checks < MAX_CHECKS && !bookingExists) {
-		const { data } = await apollo.query<ExistsBookingQuery>({ query: EXISTS_BOOKING, variables: { bookingID } });
+		const { data } = await apollo.query<ExistsBookingQuery>({
+			query: EXISTS_BOOKING,
+			fetchPolicy: "network-only",
+			variables: { bookingID },
+		});
 
 		bookingExists = data.existsBookingByID;
 

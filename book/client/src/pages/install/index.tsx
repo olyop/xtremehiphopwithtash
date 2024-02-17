@@ -1,13 +1,12 @@
 import { FC, createElement } from "react";
 
 import InstallPWA from "../../layouts/install-pwa";
-import Page from "../page";
+import PageWithHeader from "../page-with-header";
 
 const InstallPage: FC = () => (
-	<Page className="p-4 flex flex-col gap-16 pb-56">
-		<h1 className="text-3xl pt-2 pb-4 px-8 font-bold text-center md:text-left border-b self-center">How to Install</h1>
+	<PageWithHeader title="How to Install">
 		<InstallPWA />
-	</Page>
+	</PageWithHeader>
 );
 
 export default InstallPage;

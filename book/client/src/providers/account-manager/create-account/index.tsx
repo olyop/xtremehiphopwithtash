@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
 import PaperAirplaneIcon from "@heroicons/react/24/solid/PaperAirplaneIcon";
@@ -85,8 +85,7 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 				disableCloseOnEscape
 				title="Account Setup"
 				backgroundClassName="cursor-default"
-				modalClassName="top-[calc(5rem_+_2rem)]"
-				contentClassName="flex flex-col gap-4 px-4 py-4"
+				contentClassName="flex flex-col gap-4 p-0 sm:p-4"
 				icon={className => <UserCircleIcon className={className} />}
 				children={
 					<Fragment>
