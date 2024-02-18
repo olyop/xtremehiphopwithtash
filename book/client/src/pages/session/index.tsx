@@ -101,7 +101,7 @@ const SessionPage: FC = () => {
 				src={session.course.photo}
 				className="object-cover object-top w-full shadow-lg h-96"
 			/>
-			<div className="flex flex-col gap-8 p-4 justify-items-start">
+			<div className="flex flex-col gap-8 p-4 justify-items-start pb-56">
 				<div className="flex flex-col gap-4">
 					<h1 className="text-3xl font-bold">{session.title}</h1>
 					<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">

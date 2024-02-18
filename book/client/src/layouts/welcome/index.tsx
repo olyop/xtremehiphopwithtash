@@ -15,6 +15,15 @@ const Welcome: FC = () => {
 		});
 	};
 
+	const handleSignup = () => {
+		void loginWithRedirect({
+			authorizationParams: {
+				redirect_uri: window.location.origin,
+				screen_hint: "signup",
+			},
+		});
+	};
+
 	return (
 		<div className="h-full w-full flex flex-col items-center justify-center gap-12">
 			<img src="images/full-logo.png" alt="Xtreme Hip-Hop with Tash" className="w-80" />
@@ -26,13 +35,23 @@ const Welcome: FC = () => {
 					<br /> and you can start booking sessions right away!
 				</p>
 			</div>
-			<div className="flex gap-4">
+			<div className="flex flex-col tiny:flex-row gap-4">
 				<Button
-					ariaLabel="Log In"
-					text="Login / Signup"
+					transparent
+					text="Login"
+					ariaLabel="Login"
 					onClick={handleLogin}
 					textClassName="text-xl"
-					className="!h-16 px-6 shadow-xl hover:shadow-xl rounded-xl gap-4"
+					className="!h-16 px-6 border hover:border-gray-300 rounded-xl gap-4"
+					leftIcon={className => <ArrowLeftEndOnRectangle className={`${className} w-7 h-7`} />}
+				/>
+				<Button
+					transparent
+					text="Signup"
+					ariaLabel="Signup"
+					onClick={handleSignup}
+					textClassName="text-xl"
+					className="!h-16 px-6 border hover:border-gray-300 rounded-xl gap-4"
 					leftIcon={className => <ArrowLeftEndOnRectangle className={`${className} w-7 h-7`} />}
 				/>
 			</div>

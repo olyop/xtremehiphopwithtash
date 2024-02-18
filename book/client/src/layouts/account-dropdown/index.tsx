@@ -1,49 +1,75 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import ArrowLeftEndOnRectangle from "@heroicons/react/20/solid/ArrowLeftEndOnRectangleIcon";
-import ArrowLeftStartOnRectangle from "@heroicons/react/20/solid/ArrowLeftStartOnRectangleIcon";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
-import { FC, Fragment, createElement, useContext } from "react";
+import { FC, Fragment, createElement, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import { cachePersistor } from "../../clients/apollo";
-import Button from "../../components/button";
 import Modal from "../../components/modal";
-import { IsAdministratorContext } from "../../contexts/is-administrator";
-import AccountDropdownAccountButton from "./account-button";
-import AccountDropdownBookingsButton from "./bookings-button";
+import {
+	AccountDropdownAccountButton,
+	AccountDropdownBookingsButton,
+	AccountDropdownLogInOutButton,
+	AccountDropdownResetCacheButton,
+	AccountDropdownSignupButton,
+} from "./buttons";
+import { unregisterServiceWorkers } from "./unregister-service-workers";
 
 const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
-	const isAdministrator = useContext(IsAdministratorContext);
 	const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-	const clearCache = async () => {
-		onClose();
+	const [isResettingCache, setIsResettingCache] = useState(false);
+
+	const resetCache = async () => {
+		setIsResettingCache(true);
+
+		// sleep for 1 second to positively indicate that the cache is being reset
+		await new Promise(resolve => {
+			setTimeout(resolve, 1000);
+		});
 
 		await cachePersistor.purge();
 
-		window.location.reload();
-	};
+		await unregisterServiceWorkers();
 
-	const handleClearCache = () => {
-		void clearCache();
-	};
+		setIsResettingCache(false);
 
-	const handleLogIn = () => {
-		onClose();
-
-		void loginWithRedirect({
-			authorizationParams: {
-				redirect_uri: window.location.origin,
-			},
-		});
-	};
-
-	const handleLogOut = () => {
 		onClose();
 
 		void logout({
 			logoutParams: {
 				returnTo: window.location.origin,
+			},
+		});
+	};
+
+	const handleResetCache = () => {
+		void resetCache();
+	};
+
+	const handleLogInOut = () => {
+		onClose();
+
+		if (isAuthenticated) {
+			void logout({
+				logoutParams: {
+					returnTo: window.location.origin,
+				},
+			});
+		} else {
+			void loginWithRedirect({
+				authorizationParams: {
+					redirect_uri: window.location.origin,
+				},
+			});
+		}
+	};
+
+	const handleSignup = () => {
+		onClose();
+
+		void loginWithRedirect({
+			authorizationParams: {
+				redirect_uri: window.location.origin,
+				screen_hint: "signup",
 			},
 		});
 	};
@@ -70,32 +96,9 @@ const AccountDropdown: FC<Props> = ({ isOpen, onClose }) => {
 					) : (
 						<AccountDropdownBookingsButton isDisabled />
 					)}
-					{isAdministrator && (import.meta.env.MODE === "development" || import.meta.env.MODE === "staging") && (
-						<Button
-							transparent
-							text="Clear Cache"
-							ariaLabel="Clear Cache"
-							textClassName="!text-md"
-							onClick={handleClearCache}
-							leftIcon={className => <TrashIcon className={`${className} w-7 h-7`} />}
-							className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
-						/>
-					)}
-					<Button
-						transparent
-						textClassName="!text-md"
-						text={isAuthenticated ? "Log Out" : "Log In"}
-						ariaLabel={isAuthenticated ? "Log Out" : "Log In"}
-						onClick={isAuthenticated ? handleLogOut : handleLogIn}
-						className="w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem]"
-						leftIcon={className =>
-							isAuthenticated ? (
-								<ArrowLeftStartOnRectangle className={`${className} w-7 h-7`} />
-							) : (
-								<ArrowLeftEndOnRectangle className={`${className} w-7 h-7`} />
-							)
-						}
-					/>
+					<AccountDropdownResetCacheButton isResettingCache={isResettingCache} onClick={handleResetCache} />
+					<AccountDropdownLogInOutButton isAuthenticated={isAuthenticated} onClick={handleLogInOut} />
+					{!isAuthenticated && <AccountDropdownSignupButton onClick={handleSignup} />}
 				</Fragment>
 			}
 		/>

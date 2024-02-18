@@ -39,6 +39,7 @@ export default defineConfig(async options => {
 		visualizer({
 			open: true,
 			gzipSize: true,
+			brotliSize: true,
 		}),
 	];
 

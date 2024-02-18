@@ -1,8 +1,8 @@
 import { StrictMode, createElement } from "react";
 import { createRoot } from "react-dom/client";
-import { Workbox } from "workbox-window";
 
 import Application from "./application";
+import { workbox } from "./clients/workbox";
 import "./index.css";
 
 const rootElement = document.getElementById("Root");
@@ -23,7 +23,5 @@ const children =
 	);
 
 root.render(children);
-
-const workbox = new Workbox("/service-worker.js");
 
 void workbox.register();

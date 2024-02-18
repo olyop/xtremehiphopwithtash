@@ -166,8 +166,8 @@ const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 							</NavLink>
 						)}
 					</nav>
-					<footer className="flex flex-col gap-4 px-6 py-4">
-						<p className="text-xs text-gray-500">
+					<footer className="flex flex-col bg-gray-100">
+						<p className="px-6 py-3 text-xs text-gray-500 border-t border-gray-300">
 							<Fragment>App created by </Fragment>
 							<a
 								href="https://oliverplummer.com.au/"
@@ -178,7 +178,7 @@ const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 								Oliver Plummer
 							</a>
 							<br />
-							<Fragment>Open source code: </Fragment>
+							<Fragment>Source code: </Fragment>
 							<a
 								href="https://github.com/olyop/xtremehiphopwithtash"
 								target="_blank"
@@ -188,10 +188,8 @@ const Sidebar: FC<Props> = ({ isOpen, onClose }) => {
 								GitHub
 							</a>
 						</p>
-						<p>
-							<Fragment>Copyright © {new Date().getFullYear()}</Fragment>
-							<br />
-							<Fragment> Xtreme Hip-Hop with Tash</Fragment>
+						<p className="px-6 py-3 border-t border-gray-300">
+							Copyright © {new Date().getFullYear()} Xtreme Hip-Hop with Tash
 						</p>
 					</footer>
 				</Fragment>

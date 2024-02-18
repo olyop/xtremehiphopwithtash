@@ -19,7 +19,7 @@ const AccountPage: FC = () => {
 			{({ getStudentByID: { details, createdAt } }) => (
 				<Fragment>
 					<h2 className="text-2xl underline">Details</h2>
-					<div className="flex flex-col gap-1">
+					<div className="flex flex-col gap-2 p-2 border rounded">
 						<p>
 							Name:{" "}
 							<span className="text-gray-500">
