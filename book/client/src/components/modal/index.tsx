@@ -89,7 +89,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 						<Button
 							onClick={onClose}
 							ariaLabel={`Close ${title}`}
-							className="absolute -top-4 -right-4 rounded"
+							className="absolute -top-4 -right-4 rounded h-auto py-1 sm:py-2"
 							leftIcon={c => <XMarkIcon className={c} />}
 							text={
 								isMobile ? (

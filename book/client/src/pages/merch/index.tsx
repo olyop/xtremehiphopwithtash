@@ -11,7 +11,7 @@ const MerchPage: FC = () => {
 	return (
 		<PageWithHeaderAndData title="Merch" queryResult={result} titleClassName="uppercase">
 			{({ getMerchItems }) => (
-				<div className="flex flex-col md:flex-row items-center gap-10">
+				<div className="flex flex-col md:flex-row items-center gap-10 px-5">
 					{getMerchItems.map(merchItem => (
 						<MerchItem key={merchItem.merchItemID} merchItem={merchItem as MerchItemType} />
 					))}

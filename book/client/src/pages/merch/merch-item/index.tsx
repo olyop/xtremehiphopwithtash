@@ -1,36 +1,33 @@
 import ShoppingBagIcon from "@heroicons/react/24/outline/ShoppingBagIcon";
 import { FC, Fragment, createElement } from "react";
 
-import Modal from "../../components/modal";
-import { MerchItem as MerchItemType } from "../../generated-types";
-import { currencyDollarsFormatter } from "../../helpers/intl";
-import { useModal } from "../../hooks";
-import { centsToDollars } from "../../utils";
+import Modal from "../../../components/modal";
+import { MerchItem as MerchItemType } from "../../../generated-types";
+import { currencyDollarsFormatter } from "../../../helpers/intl";
+import { useModal } from "../../../hooks";
+import { centsToDollars } from "../../../utils";
+import MerchItemBanner from "./banner";
 
 const MerchItem: FC<Props> = ({ merchItem }) => {
 	const [isOpen, openModal, closeModal] = useModal();
-
-	const outOfStock = merchItem.stock === 0;
 
 	return (
 		<Fragment>
 			<button
 				type="button"
-				disabled={outOfStock}
+				onClick={openModal}
+				disabled={!merchItem.isInStock}
 				data-id={merchItem.merchItemID}
-				onClick={outOfStock ? undefined : openModal}
-				className={`max-w-[30rem] border cursor-pointer rounded-lg select-none ${
-					outOfStock ? "bg-gray-100 opacity-75" : "hover:shadow-lg transition-shadow"
+				className={`max-w-[30rem] group border cursor-pointer rounded-lg select-none overflow-hidden ${
+					merchItem.isInStock ? "hover:shadow-lg transition-shadow" : "bg-gray-100 opacity-75"
 				}`}
 			>
-				<p
-					className={`rounded-t-lg shadow uppercase text-sm font-bold text-white p-0.5 whitespace-nowrap select-none ${
-						outOfStock ? "bg-red-500" : "bg-green-500"
-					}`}
-				>
-					{outOfStock ? "Out of stock" : "In stock"}
-				</p>
-				<img src={merchItem.photo} className="border-b p-2" alt={merchItem.description ?? ""} />
+				<MerchItemBanner merchItem={merchItem} />
+				<img
+					src={merchItem.photo}
+					alt={merchItem.description ?? ""}
+					className="border-b p-2 group-hover:opacity-80 group-focus:opacity-80"
+				/>
 				<div className="px-4 py-3 md:px-5 md:py-4 gap-2 flex flex-col">
 					<h2 className="text-xl font-bold">{merchItem.name}</h2>
 					<p className="text-sm text-gray-500">{merchItem.sizesAvailable?.join(", ") ?? "All Sizes"}</p>
@@ -56,16 +53,17 @@ const MerchItem: FC<Props> = ({ merchItem }) => {
 				contentClassName="flex flex-col gap-6"
 				children={
 					<Fragment>
-						<img src={merchItem.photo} className="border rounded p-4" alt={merchItem.description ?? ""} />
-						<div className="flex flex-col gap-2 items-center">
-							<p>
-								Please email your order quantity and size to
-								<Fragment> </Fragment>
-								<a href="mailto:natashaperkett@gmail.com" className="text-blue-500 hover:underline hover:text-blue-700">
-									natashaperkett@gmail.com
-								</a>
-							</p>
+						<div className="border border-t-0 rounded-lg overflow-hidden">
+							<MerchItemBanner merchItem={merchItem} />
+							<img src={merchItem.photo} alt={merchItem.description ?? ""} className="p-2" />
 						</div>
+						<p>
+							Please email your order quantity and size to
+							<Fragment> </Fragment>
+							<a href="mailto:natashaperkett@gmail.com" className="text-blue-500 hover:underline hover:text-blue-700">
+								natashaperkett@gmail.com
+							</a>
+						</p>
 					</Fragment>
 				}
 			/>

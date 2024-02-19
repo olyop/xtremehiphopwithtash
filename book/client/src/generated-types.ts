@@ -191,12 +191,14 @@ export type LocationInput = {
 export type MerchItem = {
 	readonly __typename: "MerchItem";
 	readonly description: Maybe<Scalars["String"]["output"]>;
+	readonly isInStock: Scalars["Boolean"]["output"];
+	readonly isLowStock: Scalars["Boolean"]["output"];
+	readonly isPreOrder: Scalars["Boolean"]["output"];
 	readonly merchItemID: Scalars["String"]["output"];
 	readonly name: Scalars["String"]["output"];
 	readonly photo: Scalars["URL"]["output"];
 	readonly price: Scalars["PositiveInt"]["output"];
 	readonly sizesAvailable: Maybe<ReadonlyArray<Scalars["String"]["output"]>>;
-	readonly stock: Maybe<Scalars["NonNegativeInt"]["output"]>;
 };
 
 export type Mutation = {
@@ -1052,7 +1054,9 @@ export type GetMerchItemsQuery = {
 			readonly description: string | null;
 			readonly price: number;
 			readonly photo: string;
-			readonly stock: number | null;
+			readonly isInStock: boolean;
+			readonly isLowStock: boolean;
+			readonly isPreOrder: boolean;
 			readonly sizesAvailable: ReadonlyArray<string> | null;
 		} & { readonly __typename: "MerchItem" }
 	>;

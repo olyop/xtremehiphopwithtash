@@ -12,7 +12,7 @@ const PageWithHeader: FC<PropsWithChildren<PageWithHeaderProps>> = ({
 }) => (
 	<Page id={id} className={`flex flex-col gap-10 ${className}`}>
 		<h1
-			className={`text-3xl p-4 pt-8 py-4 font-bold text-center md:text-left border-b self-center ${
+			className={`text-xl tiny:text-3xl pt-10 px-10 pb-4 font-bold text-center md:text-left border-b-2 border-gray-300 self-center ${
 				titleClassName ?? ""
 			}`}
 		>

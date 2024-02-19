@@ -9,7 +9,9 @@ public class StripeMerchItem {
 	private String description;
 	private Integer price;
 	private URL photo;
-	private Integer stock;
+	private boolean isInStock;
+	private boolean isLowStock;
+	private boolean isPreOrder;
 	private String[] sizesAvailable;
 
 	public String getMerchItemID() {
@@ -52,12 +54,28 @@ public class StripeMerchItem {
 		this.photo = photo;
 	}
 
-	public Integer getStock() {
-		return stock;
+	public boolean isInStock() {
+		return isInStock;
 	}
 
-	public void setStock(Integer stock) {
-		this.stock = stock;
+	public void setInStock(boolean isInStock) {
+		this.isInStock = isInStock;
+	}
+
+	public boolean isLowStock() {
+		return isLowStock;
+	}
+
+	public void setIsLowStock(boolean isLowStock) {
+		this.isLowStock = isLowStock;
+	}
+
+	public boolean isPreOrder() {
+		return isPreOrder;
+	}
+
+	public void setIsPreOrder(boolean isPreOrder) {
+		this.isPreOrder = isPreOrder;
 	}
 
 	public String[] getSizesAvailable() {

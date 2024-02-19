@@ -58,7 +58,7 @@ export interface ButtonProps {
 	className?: string | undefined;
 	iconClassName?: string | undefined;
 	textClassName?: string;
-	disabled?: boolean;
+	disabled?: boolean | undefined;
 }
 
 export default Button;

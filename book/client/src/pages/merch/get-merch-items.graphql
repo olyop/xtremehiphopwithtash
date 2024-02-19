@@ -5,7 +5,9 @@ query getMerchItems {
 		description
 		price
 		photo
-		stock
+		isInStock
+		isLowStock
+		isPreOrder
 		sizesAvailable
 	}
 }

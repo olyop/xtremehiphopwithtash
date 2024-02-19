@@ -174,7 +174,9 @@ type MerchItem {
 	description: String
 	price: PositiveInt!
 	photo: URL!
-	stock: NonNegativeInt
+	isInStock: Boolean!
+	isLowStock: Boolean!
+	isPreOrder: Boolean!
 	sizesAvailable: [String!]
 }
 
