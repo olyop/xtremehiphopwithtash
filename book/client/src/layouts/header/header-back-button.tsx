@@ -1,4 +1,4 @@
-import ArrowSmallLeftIcon from "@heroicons/react/20/solid/ArrowSmallLeftIcon";
+import ArrowSmallLeftIcon from "@heroicons/react/24/solid/ArrowSmallLeftIcon";
 import { FC, createElement } from "react";
 import { useNavigate } from "react-router-dom";
 

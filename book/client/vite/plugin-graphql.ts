@@ -1,14 +1,10 @@
 import { Plugin } from "vite";
 
-const getCode = (schema: string) => `import gql from 'graphql-tag';export default gql(${schema});`;
-
-const transform: NonNullable<Plugin["transform"]> = (source: string, id: string) => {
+const transform: Plugin["transform"] = (source: string, id: string) => {
 	if (id.endsWith(".graphql")) {
-		const schema = JSON.stringify(source);
-
 		return {
-			code: getCode(schema),
 			map: null,
+			code: `import gql from 'graphql-tag';export default gql(${JSON.stringify(source)});`,
 		};
 	} else {
 		return null;

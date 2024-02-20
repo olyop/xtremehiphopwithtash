@@ -2,8 +2,8 @@ import { ApolloError } from "@apollo/client/errors";
 import { useApolloClient } from "@apollo/client/react/hooks/useApolloClient";
 import { FC, createElement, useEffect, useRef, useState } from "react";
 
-import FullscreenSpinner from "../../components/fullscreen-spinner";
 import { useBreakpoint, useHasMounted } from "../../hooks";
+import { cacheSchedule, retreiveCachedSchedule } from "./cache";
 import Controls from "./controls";
 import Days from "./days";
 import { determineStartAndEndDate, generateDays, generateDaysWithSessions as generateSchedule } from "./generate";
@@ -21,35 +21,32 @@ const Schedule: FC = () => {
 	const [isOffline, setIsOffline] = useState(false);
 
 	const [days, setDays] = useState<DayType[]>(() => {
+		const daysCached = retreiveCachedSchedule();
+
 		const [startingDate, endingDate] = determineStartAndEndDate(new Date(getStartingTime()), breakpoint);
 
-		return generateDays(breakpoint, startingDate, endingDate, []);
+		return daysCached ?? generateDays(breakpoint, startingDate, endingDate, []);
 	});
 
-	const cacheSchedule = (schedule: DayType[]) => {
-		localStorage.setItem("schedule", JSON.stringify(schedule));
-	};
-
-	const retreiveCachedSchedule = () => {
-		const schedule = localStorage.getItem("schedule");
-
-		if (schedule) {
-			return JSON.parse(schedule) as DayType[];
-		} else {
-			return [];
-		}
-	};
-
 	const handleSchedule = async (date: Date) => {
+		if (loading) {
+			return;
+		}
+
 		setLoading(true);
 
 		const unixTime = date.getTime();
 		relativeDate.current = unixTime;
 		setStartingTime(unixTime);
+
 		const schedule = await generateSchedule(apollo)(unixTime, breakpoint);
 
 		if (schedule instanceof ApolloError) {
-			setDays(retreiveCachedSchedule());
+			const cachedSchedule = retreiveCachedSchedule();
+
+			if (cachedSchedule) {
+				setDays(cachedSchedule);
+			}
 
 			setIsOffline(true);
 			setLoading(false);
@@ -103,12 +100,12 @@ const Schedule: FC = () => {
 
 	return (
 		<main className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
-			<FullscreenSpinner isLoading={loading} backgroundClassName="!opacity-10" />
 			<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
 				<WeekDays />
 				<Days days={days} onSessionUpdate={handleSessionsUpdate} />
 			</div>
 			<Controls
+				isLoading={loading}
 				isOffline={isOffline}
 				breakpoint={breakpoint}
 				onReset={handleResetClick}

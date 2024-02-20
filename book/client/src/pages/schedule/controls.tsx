@@ -30,6 +30,7 @@ const determineBackLabel = (breakpoint: Breakpoint) => {
 };
 
 const ScheduleControls: FC<Props> = ({
+	isLoading,
 	isOffline,
 	isFirstDayToday,
 	isFirstDayInPast,
@@ -38,19 +39,20 @@ const ScheduleControls: FC<Props> = ({
 	onBackOneWeek,
 	onForwardOneWeek,
 }) => {
-	const isMobile =
-		breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL || breakpoint === Breakpoint.MEDIUM;
+	const isMobile = breakpoint !== Breakpoint.LARGE;
+
 	return (
 		<div className="flex flex-row justify-between w-full gap-2 p-2 lg:pl-4 lg:p-4 lg:gap-3 lg:justify-between lg:flex-col">
 			<Button
 				transparent
-				className="!px-2"
 				onClick={onReset}
-				disabled={isOffline}
 				ariaLabel="Reset to today"
-				text={isMobile ? "Today" : undefined}
+				disabled={isOffline || isLoading}
+				className="!px-2 disabled:bg-transparent"
 				leftIcon={className =>
-					isMobile ? (
+					isLoading ? (
+						<ArrowPathIcon className={`${className} animate-spin`} />
+					) : isMobile ? (
 						isFirstDayToday ? (
 							<CheckIcon className={className} />
 						) : isFirstDayInPast ? (
@@ -91,6 +93,7 @@ const ScheduleControls: FC<Props> = ({
 };
 
 interface Props {
+	isLoading: boolean;
 	isOffline: boolean;
 	onReset: () => void;
 	breakpoint: Breakpoint;
