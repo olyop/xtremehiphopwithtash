@@ -1,11 +1,17 @@
 import { FC, createElement } from "react";
 import { Link } from "react-router-dom";
 
+import { Breakpoint, useBreakpoint } from "../../hooks";
+
 const HeaderLogo: FC<Props> = ({ onMenuClose, onAccountClose }) => {
+	const breakpoint = useBreakpoint();
+
 	const handleClick = () => {
 		onMenuClose();
 		onAccountClose();
 	};
+
+	const isSmallLogo = breakpoint === Breakpoint.MEDIUM || breakpoint === Breakpoint.LARGE;
 
 	return (
 		<Link
@@ -17,7 +23,8 @@ const HeaderLogo: FC<Props> = ({ onMenuClose, onAccountClose }) => {
 				src="/images/full-logo.png"
 				alt="Xtreme Hip-Hop with Tash"
 				title="Xtreme Hip-Hop with Tash"
-				className="h-[35px] w-[100px] sm:h-[56px] sm:w-[160px]"
+				width={isSmallLogo ? 160 : 100}
+				height={isSmallLogo ? 56 : 35}
 			/>
 		</Link>
 	);

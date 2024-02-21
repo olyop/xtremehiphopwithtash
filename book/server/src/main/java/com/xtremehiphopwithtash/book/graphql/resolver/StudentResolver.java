@@ -163,18 +163,4 @@ public class StudentResolver {
 
 		return bookingsTotal;
 	}
-
-	@SchemaMapping(typeName = "Student", field = "bookingsTotalPaymentMethodCoupon")
-	public Integer getStudentBookingsTotalPaymentMethodCoupon(Student student) {
-		int bookingsTotal = bookingService.retreiveStudentTotalAndPaymentMethod(
-			student.getStudentID(),
-			PaymentMethod.COUPON
-		);
-
-		if (bookingsTotal == 0) {
-			return null;
-		}
-
-		return bookingsTotal;
-	}
 }

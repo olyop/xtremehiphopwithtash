@@ -21,6 +21,7 @@ import java.security.Principal;
 import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -59,6 +60,11 @@ public class StripeResolver {
 		this.bookingService = bookingService;
 		this.bookingCostService = bookingCostService;
 		this.couponService = couponService;
+	}
+
+	@SchemaMapping
+	public boolean isLiveMode(CreatePaymentIntentResponse response) {
+		return response.isLiveMode();
 	}
 
 	@MutationMapping

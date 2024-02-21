@@ -35,7 +35,7 @@ const UpdateSession: FC<Props> = ({ session, onEdit }) => {
 
 	const handleUpdateSubmit = () => {
 		void updateSession({
-			refetchQueries: [GET_SESSION_PAGE],
+			refetchQueries: [{ query: GET_SESSION_PAGE }],
 			variables: {
 				sessionID: session.sessionID,
 				input: {

@@ -62,6 +62,11 @@ public class SessionResolver {
 		this.sessionValidator = sessionValidator;
 	}
 
+	@SchemaMapping(typeName = "Session", field = "isCancelled")
+	public Boolean getIsCancelled(Session session) {
+		return session.isCancelled();
+	}
+
 	@SchemaMapping(typeName = "Session", field = "course")
 	public Course getCourse(Session session) {
 		return courseService.retreiveByID(session.getCourseID());
@@ -189,13 +194,6 @@ public class SessionResolver {
 	}
 
 	@QueryMapping
-	public List<Session> getSessions(@AuthenticationPrincipal Jwt jwt) {
-		auth0JwtService.validateAdministrator(jwt);
-
-		return sessionService.retreiveAll();
-	}
-
-	@QueryMapping
 	public Session getSessionByID(@Argument UUID sessionID) {
 		return sessionService.retreiveByID(sessionID);
 	}
@@ -205,11 +203,6 @@ public class SessionResolver {
 		sessionValidator.validateGetSessionsInput(input);
 
 		return sessionService.retreiveInTimePeriod(input.startTime(), input.endTime());
-	}
-
-	@QueryMapping
-	public boolean doesSessionExist(@Argument UUID sessionID) {
-		return sessionService.existsByID(sessionID);
 	}
 
 	@QueryMapping

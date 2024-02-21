@@ -31,7 +31,7 @@ const AdminLocations: FC = () => {
 		(input: LocationInput): OnAction =>
 		async onClose => {
 			const result = await updateLocation({
-				refetchQueries: [GET_LOCATIONS],
+				refetchQueries: [{ query: GET_LOCATIONS }],
 				variables: {
 					locationID,
 					input: {
@@ -52,7 +52,7 @@ const AdminLocations: FC = () => {
 		async onClose => {
 			const result = await deleteLocation({
 				variables: { locationID },
-				refetchQueries: [GET_LOCATIONS],
+				refetchQueries: [{ query: GET_LOCATIONS }],
 			});
 
 			if (result.data?.deleteLocationByID) {

@@ -26,7 +26,7 @@ const AddInstructor: FC = () => {
 	const handleSubmit = () => {
 		if (!data) {
 			void createInstructor({
-				refetchQueries: [GET_INSTRUCTORS],
+				refetchQueries: [{ query: GET_INSTRUCTORS }],
 				variables: {
 					input,
 				},

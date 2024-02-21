@@ -92,14 +92,5 @@ public final class SQLColumnNames {
 		"created_at"
 	);
 
-	public static final List<String> REVIEW = List.of(
-		"review_id",
-		"score",
-		"comment",
-		"course_id",
-		"student_id",
-		"created_at"
-	);
-
 	public static final List<String> SESSION_VIEW = List.of("session_id", "student_id", "created_at");
 }

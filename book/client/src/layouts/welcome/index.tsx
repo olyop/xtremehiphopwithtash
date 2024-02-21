@@ -26,7 +26,7 @@ const Welcome: FC = () => {
 
 	return (
 		<div className="h-full w-full flex flex-col items-center justify-center gap-12">
-			<img src="images/full-logo.png" alt="Xtreme Hip-Hop with Tash" className="w-80" />
+			<img src="images/full-logo-small.png" alt="Xtreme Hip-Hop with Tash" width={320} height={126} />
 			<div className="flex flex-col items-center justify-center gap-6 text-center w-72">
 				<h1 className="text-3xl">Welcome!</h1>
 				<p className="text-xl">Please log in or sign up to view the class schedule, merchandise, and book sessions.</p>

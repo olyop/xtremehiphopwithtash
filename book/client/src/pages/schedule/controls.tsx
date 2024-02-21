@@ -1,5 +1,5 @@
+import ExclamationCircleIcon from "@heroicons/react/24/outline/ExclamationCircleIcon";
 import ArrowPathIcon from "@heroicons/react/24/solid/ArrowPathIcon";
-import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import ChevronDoubleDownIcon from "@heroicons/react/24/solid/ChevronDoubleDownIcon";
 import ChevronDoubleUpIcon from "@heroicons/react/24/solid/ChevronDoubleUpIcon";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
@@ -46,15 +46,18 @@ const ScheduleControls: FC<Props> = ({
 			<Button
 				transparent
 				onClick={onReset}
-				ariaLabel="Reset to today"
 				disabled={isOffline || isLoading}
 				className="!px-2 disabled:bg-transparent"
+				ariaLabel={isFirstDayToday ? "Refresh" : "Go to today"}
+				text={isMobile ? (isOffline ? "Offline" : isFirstDayToday ? undefined : "Today") : undefined}
 				leftIcon={className =>
-					isLoading ? (
+					isOffline ? (
+						<ExclamationCircleIcon className={className} />
+					) : isLoading ? (
 						<ArrowPathIcon className={`${className} animate-spin`} />
 					) : isMobile ? (
 						isFirstDayToday ? (
-							<CheckIcon className={className} />
+							<ArrowPathIcon className={className} />
 						) : isFirstDayInPast ? (
 							<ChevronDoubleDownIcon className={className} />
 						) : (

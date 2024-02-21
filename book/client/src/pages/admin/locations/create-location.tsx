@@ -35,7 +35,7 @@ const AddLocation: FC = () => {
 	const handleSubmit = () => {
 		if (!data) {
 			void createLocation({
-				refetchQueries: [GET_LOCATIONS],
+				refetchQueries: [{ query: GET_LOCATIONS }],
 				variables: {
 					input,
 				},

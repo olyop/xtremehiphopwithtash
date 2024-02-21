@@ -1,3 +1,4 @@
+import { useLazyQuery } from "@apollo/client";
 import { useMutation } from "@apollo/client/react/hooks/useMutation";
 import { useAuth0 } from "@auth0/auth0-react";
 import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
@@ -9,7 +10,15 @@ import Button from "../../../components/button";
 import DetailsForm from "../../../components/forms/details-form";
 import FullscreenSpinner from "../../../components/fullscreen-spinner";
 import Modal from "../../../components/modal";
-import { CreateStudentMutation, CreateStudentMutationVariables } from "../../../generated-types";
+import {
+	CreateStudentMutation,
+	CreateStudentMutationVariables,
+	GetAccountPageQuery,
+	GetMerchItemsQuery,
+} from "../../../generated-types";
+import GET_ACCOUNT_PAGE from "../../../pages/account/get-account-page.graphql";
+import GET_BOOKINGS_PAGE from "../../../pages/bookings/get-bookings-page.graphql";
+import GET_MERCH_ITEMS from "../../../pages/merch/get-merch-items.graphql";
 import CREATE_STUDENT from "./create-student.graphql";
 import { initialInput } from "./initital-input";
 
@@ -18,23 +27,37 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 
 	const [detailsInput, setDetailsInput] = useState(initialInput);
 
+	const [getMerchItems, merchItemsResult] = useLazyQuery<GetMerchItemsQuery>(GET_MERCH_ITEMS);
+	const [getAccountPage, accountPageResult] = useLazyQuery<GetAccountPageQuery>(GET_ACCOUNT_PAGE);
+	const [getBookingsPage, bookingsPageResult] = useLazyQuery<GetAccountPageQuery>(GET_BOOKINGS_PAGE);
+
 	const [createAccount, createAccountResult] = useMutation<CreateData, CreateVars>(CREATE_STUDENT);
+
+	const handleCreateAccount = async () => {
+		await createAccount({
+			variables: {
+				input: {
+					...detailsInput,
+					firstName: detailsInput.firstName.trim(),
+					lastName: detailsInput.lastName.trim(),
+					nickName: detailsInput.nickName ? detailsInput.nickName.trim() : null,
+					mobilePhoneNumber: detailsInput.mobilePhoneNumber.trim(),
+					emailAddress: detailsInput.emailAddress.trim(),
+					instagramUsername: detailsInput.instagramUsername ? detailsInput.instagramUsername.trim() : null,
+				},
+			},
+		});
+
+		await getMerchItems();
+		await getAccountPage();
+		await getBookingsPage();
+
+		onCreateAccount();
+	};
 
 	const handleCreateAccountClick = () => {
 		if (!createAccountResult.loading) {
-			void createAccount({
-				variables: {
-					input: {
-						...detailsInput,
-						firstName: detailsInput.firstName.trim(),
-						lastName: detailsInput.lastName.trim(),
-						nickName: detailsInput.nickName ? detailsInput.nickName.trim() : null,
-						mobilePhoneNumber: detailsInput.mobilePhoneNumber.trim(),
-						emailAddress: detailsInput.emailAddress.trim(),
-						instagramUsername: detailsInput.instagramUsername ? detailsInput.instagramUsername.trim() : null,
-					},
-				},
-			});
+			void handleCreateAccount();
 		}
 	};
 
@@ -67,16 +90,13 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 		}
 	}, [user, isAuthenticated]);
 
-	useEffect(() => {
-		if (createAccountResult.data) {
-			onCreateAccount();
-		}
-	}, [createAccountResult.data]);
+	const isLoading =
+		createAccountResult.loading || merchItemsResult.loading || accountPageResult.loading || bookingsPageResult.loading;
 
 	return (
 		<div className="relative w-full h-full">
 			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
-			<FullscreenSpinner isLoading={createAccountResult.loading} className="z-[200]" />
+			<FullscreenSpinner isLoading={isLoading} className="z-[200]" />
 			<Modal
 				isOpen
 				isLarge
@@ -108,7 +128,7 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 						<Button
 							ariaLabel="Create Account"
 							onClick={handleCreateAccountClick}
-							text={createAccountResult.loading ? "Creating..." : "Complete"}
+							text={isLoading ? "Creating..." : "Complete"}
 							rightIcon={className => <PaperAirplaneIcon className={className} />}
 						/>
 						<Button

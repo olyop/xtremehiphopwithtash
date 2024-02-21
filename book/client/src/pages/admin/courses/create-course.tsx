@@ -20,7 +20,7 @@ const AddCourse: FC = () => {
 	const handleSubmit = () => {
 		if (!data) {
 			void createCourse({
-				refetchQueries: [GET_COURSES],
+				refetchQueries: [{ query: GET_COURSES }],
 				variables: {
 					input,
 				},

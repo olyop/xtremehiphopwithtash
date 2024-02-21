@@ -64,10 +64,10 @@
 	"devDependencies": {
 		"@graphql-codegen/add": "5.0.2",
 		"@graphql-codegen/cli": "5.0.2",
-		"@graphql-codegen/client-preset": "4.2.2",
+		"@graphql-codegen/client-preset": "4.2.3",
 		"@graphql-codegen/near-operation-file-preset": "3.0.0",
-		"@graphql-codegen/typescript": "4.0.4",
-		"@graphql-codegen/typescript-resolvers": "4.0.4",
+		"@graphql-codegen/typescript": "4.0.5",
+		"@graphql-codegen/typescript-resolvers": "4.0.5",
 		"@oly_op/cspell-dict": "1.1.5",
 		"@oly_op/eslint-config": "6.5.7",
 		"@oly_op/eslint-config-graphql": "1.1.0",

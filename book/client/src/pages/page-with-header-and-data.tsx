@@ -8,7 +8,7 @@ import PageWithHeader, { PageWithHeaderProps } from "./page-with-header";
 // eslint-disable-next-line @typescript-eslint/comma-dangle
 const PageWithHeaderAndData = <T,>({ queryResult, children, ...pageWithHeaderProps }: Props<T>) => (
 	<PageWithHeader {...pageWithHeaderProps}>
-		{queryResult.data && queryResult.error === undefined ? (
+		{queryResult.data ? (
 			children(queryResult.data)
 		) : queryResult.loading ? (
 			<div className="flex items-center justify-center justify-items-center w-full h-full">

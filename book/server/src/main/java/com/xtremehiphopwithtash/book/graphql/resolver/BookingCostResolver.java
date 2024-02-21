@@ -10,6 +10,7 @@ import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.util.Optional;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -30,6 +31,11 @@ public class BookingCostResolver {
 		this.couponService = couponService;
 		this.sessionValidator = sessionValidator;
 		this.sessionService = sessionService;
+	}
+
+	@SchemaMapping
+	public boolean isFreeFromCoupon(BookingCost bookingCost) {
+		return bookingCost.isFreeFromCoupon();
 	}
 
 	@QueryMapping

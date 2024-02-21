@@ -26,13 +26,6 @@ export type Scalars = {
 	UnixTime: { input: number; output: number };
 };
 
-export type Auth0User = {
-	readonly __typename: "Auth0User";
-	readonly lastLogin: Scalars["UnixTime"]["output"];
-	readonly logins: Scalars["PositiveInt"]["output"];
-	readonly student: Student;
-};
-
 export type Booking = {
 	readonly __typename: "Booking";
 	readonly bookingID: Scalars["UUID"]["output"];
@@ -102,7 +95,6 @@ export type Course = {
 	readonly description: Scalars["String"]["output"];
 	readonly name: Scalars["String"]["output"];
 	readonly photo: Scalars["URL"]["output"];
-	readonly reviews: ReadonlyArray<Review>;
 };
 
 export type CourseInput = {
@@ -353,7 +345,6 @@ export type Query = {
 	readonly decodePlusCode: Coordinates;
 	readonly doesStudentExist: Scalars["Boolean"]["output"];
 	readonly existsBookingByID: Scalars["Boolean"]["output"];
-	readonly getAuth0Users: ReadonlyArray<Auth0User>;
 	readonly getBookingByID: Booking;
 	readonly getBookingCost: BookingCost;
 	readonly getBookingReceiptURL: Scalars["URL"]["output"];
@@ -440,16 +431,6 @@ export type QueryVerifyCouponArgs = {
 	code: Scalars["String"]["input"];
 };
 
-export type Review = {
-	readonly __typename: "Review";
-	readonly comment: Scalars["String"]["output"];
-	readonly course: Course;
-	readonly createdAt: Scalars["Int"]["output"];
-	readonly reviewID: Scalars["UUID"]["output"];
-	readonly score: Scalars["LikertScale"]["output"];
-	readonly student: Student;
-};
-
 export type Session = {
 	readonly __typename: "Session";
 	readonly bookings: Maybe<ReadonlyArray<Booking>>;
@@ -518,8 +499,6 @@ export type Student = {
 	readonly bookingsTotalPaymentMethodFree: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly details: Details;
-	readonly isAdministrator: Scalars["Boolean"]["output"];
-	readonly reviews: ReadonlyArray<Review>;
 	readonly studentID: Scalars["String"]["output"];
 };
 

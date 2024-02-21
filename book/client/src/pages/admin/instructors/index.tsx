@@ -48,7 +48,7 @@ const AdminInstructors: FC = () => {
 		async onClose => {
 			const result = await deleteInstructor({
 				variables: { instructorID },
-				refetchQueries: [GET_INSTRUCTORS],
+				refetchQueries: [{ query: GET_INSTRUCTORS }],
 			});
 
 			if (result.data?.deleteInstructorByID) {

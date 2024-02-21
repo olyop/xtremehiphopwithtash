@@ -43,7 +43,7 @@ const AdminCourses: FC = () => {
 			};
 
 			const result = await updateCourse({
-				refetchQueries: [GET_COURSES],
+				refetchQueries: [{ query: GET_COURSES }],
 				variables: {
 					courseID,
 					input: course,
@@ -60,7 +60,7 @@ const AdminCourses: FC = () => {
 		async onClose => {
 			const result = await deleteCourse({
 				variables: { courseID },
-				refetchQueries: [GET_COURSES],
+				refetchQueries: [{ query: GET_COURSES }],
 			});
 
 			if (result.data?.deleteCourseByID) {

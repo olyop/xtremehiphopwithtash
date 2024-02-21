@@ -16,14 +16,12 @@ type Student {
 	studentID: String!
 
 	details: Details!
-	isAdministrator: Boolean!
 
 	bookings: [Booking!]
 	bookingsTotal: PositiveInt
 	bookingsTotalPaymentMethodFree: PositiveInt
 	bookingsTotalPaymentMethodCard: PositiveInt
 	bookingsTotalPaymentMethodCash: PositiveInt
-	reviews: [Review!]!
 
 	createdAt: UnixTime!
 }
@@ -73,7 +71,6 @@ type Course {
 	defaultEquipmentAvailable: PositiveInt
 
 	defaultInstructors: [Instructor!]!
-	reviews: [Review!]!
 
 	createdAt: UnixTime!
 }
@@ -149,18 +146,6 @@ type BookingCost {
 	finalCost: NonNegativeInt!
 }
 
-type Review {
-	reviewID: UUID!
-
-	score: LikertScale!
-	comment: String!
-
-	course: Course!
-	student: Student!
-
-	createdAt: Int!
-}
-
 type CreatePaymentIntentResponse {
 	clientSecret: String!
 	bookingID: UUID!
@@ -187,12 +172,6 @@ type SessionView {
 	hasCancelled: Boolean!
 
 	createdAt: UnixTime!
-}
-
-type Auth0User {
-	student: Student!
-	logins: PositiveInt!
-	lastLogin: UnixTime!
 }
 
 type BookingTrend {

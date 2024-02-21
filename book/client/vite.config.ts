@@ -57,7 +57,13 @@ export default defineConfig(async options => {
 			"globalThis.__DEV__": JSON.stringify(mode === "development"),
 		},
 		build: {
+			sourcemap: true,
 			chunkSizeWarningLimit: 1000,
+			terserOptions: {
+				format: {
+					comments: false,
+				},
+			},
 		},
 		server: {
 			https:

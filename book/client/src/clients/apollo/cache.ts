@@ -70,14 +70,6 @@ const typePolicies: TypePolicies = {
 			},
 		},
 	},
-	Review: {
-		keyFields: ["reviewID"],
-		fields: {
-			createdAt: {
-				read: readUnixTime,
-			},
-		},
-	},
 	BookingTrend: {
 		keyFields: ["unixDay"],
 		fields: {
