@@ -72,7 +72,7 @@
 		"@oly_op/eslint-config": "6.5.7",
 		"@oly_op/eslint-config-graphql": "1.1.0",
 		"@oly_op/eslint-config-react": "4.0.0",
-		"@oly_op/prettier-config": "1.7.10",
+		"@oly_op/prettier-config": "1.7.11",
 		"@oly_op/tsconfig": "1.2.0",
 		"@parcel/watcher": "2.4.0",
 		"concurrently": "8.2.2",

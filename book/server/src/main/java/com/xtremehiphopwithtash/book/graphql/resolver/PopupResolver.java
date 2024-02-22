@@ -21,8 +21,8 @@ public class PopupResolver {
 	private final int MINIMUM_SECONDS_SINCE_LAST_BOOKING;
 
 	public PopupResolver(
-		@Value("${popups.install.minimum-number-of-bookings}") int minimumNumberOfBookings,
-		@Value("${popups.install.minimum-hours-since-last-booking}") int minimumHoursSinceLastBooking,
+		@Value("${popup.install.minimum-number-of-bookings}") int minimumNumberOfBookings,
+		@Value("${popup.install.minimum-hours-since-last-booking}") int minimumHoursSinceLastBooking,
 		StudentService studentService,
 		BookingService bookingService,
 		Auth0JwtService auth0JwtService
@@ -45,15 +45,27 @@ public class PopupResolver {
 			return false;
 		}
 
-		int numberOfBookings = bookingService.retreiveStudentTotal(studentID);
-		Instant dateOfLastBooking = bookingService.retreiveStudentLastBookingDate(studentID);
 		boolean hasViewedInstallPopup = studentService.retreiveHasViewedInstallPopup(studentID);
 
-		return (
-			numberOfBookings >= MINIMUM_NUMBER_OF_BOOKINGS &&
-			Instant.now().isAfter(dateOfLastBooking.plusSeconds(MINIMUM_SECONDS_SINCE_LAST_BOOKING)) &&
-			!hasViewedInstallPopup
-		);
+		if (hasViewedInstallPopup) {
+			return false;
+		}
+
+		int numberOfBookings = bookingService.retreiveStudentTotal(studentID);
+
+		if (numberOfBookings < MINIMUM_NUMBER_OF_BOOKINGS) {
+			return false;
+		}
+
+		Instant now = Instant.now();
+		Instant dateOfLastBooking = bookingService.retreiveStudentLastBookingDate(studentID);
+		Instant dateOfLastBookingPlusMinimum = dateOfLastBooking.plusSeconds(MINIMUM_SECONDS_SINCE_LAST_BOOKING);
+
+		if (dateOfLastBookingPlusMinimum.isBefore(now)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@MutationMapping

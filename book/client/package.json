@@ -26,7 +26,7 @@
 		"@googlemaps/react-wrapper": "1.1.35",
 		"@heroicons/react": "2.1.1",
 		"@stripe/react-stripe-js": "2.5.0",
-		"@stripe/stripe-js": "3.0.4",
+		"@stripe/stripe-js": "3.0.5",
 		"apollo3-cache-persist": "0.14.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
@@ -50,6 +50,7 @@
 		"vite": "5.1.4",
 		"vite-plugin-checker": "0.6.4",
 		"vite-plugin-eslint": "1.8.1",
+		"vite-plugin-html": "3.2.2",
 		"vite-plugin-mkcert": "1.17.3",
 		"vite-plugin-proxy-middleware": "1.0.2",
 		"workbox-window": "7.0.0"

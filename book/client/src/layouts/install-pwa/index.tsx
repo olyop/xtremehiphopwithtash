@@ -45,7 +45,7 @@ const InstallPWA: FC<Props> = ({ renderCloseButton }) => {
 				<ul>
 					<li>1. Faster load times</li>
 					<li>2. Offline support</li>
-					<li>3. Native app feel</li>
+					<li>3. Native app look & feel</li>
 				</ul>
 			</div>
 			{renderCloseButton ? renderCloseButton() : null}
@@ -53,8 +53,8 @@ const InstallPWA: FC<Props> = ({ renderCloseButton }) => {
 				{isIOS && (
 					<p className="w-64">
 						<i>
-							Safari has now added support for <b>Progressive Web Apps</b>, so you can install it on your iOS device as
-							a native app.
+							Safari has recently added support for <b>Progressive Web Apps</b>, so you can install it on your iOS
+							device as a native app.
 						</i>
 					</p>
 				)}

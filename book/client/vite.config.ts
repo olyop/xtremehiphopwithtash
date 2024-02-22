@@ -4,54 +4,30 @@ import react from "@vitejs/plugin-react-swc";
 import { visualizer } from "rollup-plugin-visualizer";
 import { PluginOption, defineConfig, loadEnv } from "vite";
 import checker from "vite-plugin-checker";
+import { createHtmlPlugin } from "vite-plugin-html";
 
-import { determineContentSecurityPolicy } from "./vite/determine-content-security-policy";
-import { VitePluginGraphql as gql } from "./vite/plugin-graphql";
-import { VitePluginHtml as htmlVariables } from "./vite/plugin-html-variables";
-
-const checkerOptions: Parameters<typeof checker>[0] = {
-	terminal: false,
-	typescript: {
-		tsconfigPath: "./tsconfig.json",
-	},
-	eslint: {
-		lintCommand: "eslint './src/**/*.{ts,tsx}' --parser-options='{\"project\": \"./tsconfig.json\"}'",
-		dev: {
-			overrideConfig: {
-				overrideConfig: {
-					parserOptions: {
-						project: "./tsconfig.json",
-					},
-				},
-			},
-		},
-	},
-};
+import { checkerPluginOptions, createHtmlPluginOptions, visualizerPluginOptions } from "./vite/plugin-options";
+import { Mode } from "./vite/types";
+import { gql } from "./vite/vite-plugin-graphql";
 
 export default defineConfig(async options => {
-	const mode = options.mode as "development" | "staging" | "production";
+	const mode = options.mode as Mode;
 
 	const environmentVariables = loadEnv(mode, process.cwd(), "");
 
 	process.env = { ...process.env, ...environmentVariables };
 
-	const productionPlugins: PluginOption[] = [
-		visualizer({
-			open: true,
-			gzipSize: true,
-			brotliSize: true,
-		}),
-	];
-
-	const commonPlugins: PluginOption[] = [
+	const basePlugins: PluginOption[] = [
 		react(),
 		gql(),
-		checker(checkerOptions),
-		htmlVariables({ "VITE_CONTENT_SECURITY_POLICY": determineContentSecurityPolicy(mode) }),
+		createHtmlPlugin(createHtmlPluginOptions(mode)),
+		checker(checkerPluginOptions),
 	];
 
+	const productionPlugins: PluginOption[] = [...basePlugins, visualizer(visualizerPluginOptions)];
+
 	return {
-		plugins: mode === "production" || mode === "staging" ? [...commonPlugins, ...productionPlugins] : commonPlugins,
+		plugins: mode === "production" || mode === "staging" ? productionPlugins : basePlugins,
 		define: {
 			__DEV__: JSON.stringify(mode === "development"),
 			"globalThis.__DEV__": JSON.stringify(mode === "development"),
@@ -71,7 +47,7 @@ export default defineConfig(async options => {
 					? {
 							cert: await readFile(process.env["TLS_CERT_PATH"]!),
 							key: await readFile(process.env["TLS_KEY_PATH"]!),
-					  }
+						}
 					: undefined,
 		},
 	};
