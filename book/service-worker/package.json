@@ -1,8 +1,8 @@
 {
 	"private": true,
-	"name": "xtremehiphopwithtash",
+	"name": "xtremehiphopwithtash-worker",
 	"version": "1.0.0",
-	"description": "",
+	"description": "xtremehiphopwithtash-worker",
 	"type": "module",
 	"repository": {
 		"type": "git",
@@ -16,17 +16,19 @@
 	},
 	"homepage": "https://github.com/olyop/xtremehiphopwithtash#readme",
 	"volta": {
-		"node": "21.2.0",
-		"npm": "10.2.4"
+		"node": "21.6.1",
+		"npm": "10.3.0"
 	},
 	"engines": {
-		"node": "21.2.0",
-		"npm": "10.2.4"
+		"node": "21.6.1",
+		"npm": "10.3.0"
 	},
 	"scripts": {
-		"deve": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:development --watch",
-		"stag": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production",
-		"prod": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production"
+		"base": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+		"development": "npm run base -- --environment NODE_ENV:development --watch",
+		"development-build": "npm run base -- --environment NODE_ENV:development",
+		"staging": "npm run base -- --environment NODE_ENV:production",
+		"production": "npm run base -- --environment NODE_ENV:production"
 	},
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "15.2.3",

@@ -31,7 +31,7 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 							doesStudentExist: data.doesStudentExist,
 							isStudentAdministator: data.isStudentAdministator,
 							shouldShowInstallPopup: data.shouldShowInstallPopup,
-					  }
+						}
 					: null,
 			);
 		}
@@ -51,7 +51,7 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 
 	return isAuthenticatedAndUser ? (
 		studentChecks === null ? (
-			<Container>
+			<Container shouldFetchAccount={false}>
 				<Loading />
 			</Container>
 		) : studentChecks.doesStudentExist ? (
@@ -63,16 +63,16 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 				</IsAdministratorContext.Provider>
 			</IsCreatingAccountContext.Provider>
 		) : (
-			<Container>
+			<Container shouldFetchAccount={false}>
 				<CreateAccount onCreateAccount={handleCreateAccount} />
 			</Container>
 		)
 	) : isLoading ? (
-		<Container>
+		<Container shouldFetchAccount={false}>
 			<Loading />
 		</Container>
 	) : (
-		<Container>
+		<Container shouldFetchAccount={false}>
 			<Welcome />
 		</Container>
 	);

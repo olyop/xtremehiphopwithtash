@@ -6,6 +6,7 @@ import com.google.maps.TextSearchRequest;
 import com.google.maps.model.PlacesSearchResponse;
 import com.google.maps.model.PlacesSearchResult;
 import com.google.openlocationcode.OpenLocationCode;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ public class GoogleMapsService {
 
 			return new GoogleMapsPlace(result.formattedAddress, olc.getCode(), coordinates);
 		} catch (Exception e) {
-			return null;
+			throw new ResolverException(e.getMessage());
 		}
 	}
 }

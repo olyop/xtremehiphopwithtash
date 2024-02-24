@@ -11,14 +11,14 @@ import { Breakpoint, useBreakpoint } from "../../hooks";
 import GET_ACCOUNT_PAGE from "../../pages/account/get-account-page.graphql";
 import HeaderButton from "./header-button";
 
-const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle }) => {
+const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle, shouldFetchAccount }) => {
 	const breakpoint = useBreakpoint();
 	const { isAuthenticated, user } = useAuth0();
 
 	const [getAccountPage, { data }] = useLazyQuery<GetAccountPageQuery>(GET_ACCOUNT_PAGE);
 
 	useEffect(() => {
-		if (isAuthenticated && user) {
+		if (isAuthenticated && user && shouldFetchAccount) {
 			void getAccountPage();
 		}
 	}, [isAuthenticated, user]);
@@ -27,8 +27,8 @@ const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle }) => {
 		isOpen && (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL)
 			? "Close"
 			: data
-			  ? (data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8)
-			  : "Account";
+				? (data.getStudentByID.details.nickName ?? data.getStudentByID.details.firstName).slice(0, 8)
+				: "Account";
 
 	const leftIcon = (className: string) =>
 		isOpen && (breakpoint === Breakpoint.TINY || breakpoint === Breakpoint.SMALL) ? (
@@ -66,6 +66,7 @@ const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle }) => {
 interface Props {
 	isOpen: boolean;
 	onToggle: () => void;
+	shouldFetchAccount: boolean;
 }
 
 export default HeaderAccountButton;

@@ -25,6 +25,7 @@ import { initialInput } from "./initital-input";
 const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 	const { isAuthenticated, logout, user } = useAuth0();
 
+	const [isLoading, setIsLoading] = useState(false);
 	const [detailsInput, setDetailsInput] = useState(initialInput);
 
 	const [getMerchItems, merchItemsResult] = useLazyQuery<GetMerchItemsQuery>(GET_MERCH_ITEMS);
@@ -34,6 +35,8 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 	const [createAccount, createAccountResult] = useMutation<CreateData, CreateVars>(CREATE_STUDENT);
 
 	const handleCreateAccount = async () => {
+		setIsLoading(true);
+
 		await createAccount({
 			variables: {
 				input: {
@@ -48,9 +51,29 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 			},
 		});
 
-		await getMerchItems();
+		const images = [
+			"/images/instagram.png",
+			"/images/facebook.png",
+			"/pwa/install-helper-ios.png",
+			"/pwa/install-helper-android.png",
+		];
+
+		for await (const image of images) {
+			await fetch(new URL(image, window.location.origin));
+		}
+
+		const { data } = await getMerchItems();
+
+		if (data) {
+			for await (const merchItem of data.getMerchItems) {
+				await fetch(merchItem.photo);
+			}
+		}
+
 		await getAccountPage();
 		await getBookingsPage();
+
+		setIsLoading(false);
 
 		onCreateAccount();
 	};
@@ -90,13 +113,17 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 		}
 	}, [user, isAuthenticated]);
 
-	const isLoading =
-		createAccountResult.loading || merchItemsResult.loading || accountPageResult.loading || bookingsPageResult.loading;
+	const showSpinner =
+		isLoading ||
+		createAccountResult.loading ||
+		merchItemsResult.loading ||
+		accountPageResult.loading ||
+		bookingsPageResult.loading;
 
 	return (
 		<div className="relative w-full h-full">
 			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
-			<FullscreenSpinner isLoading={isLoading} className="z-[200]" />
+			<FullscreenSpinner isLoading={showSpinner} className="z-[200]" />
 			<Modal
 				isOpen
 				isLarge
@@ -128,7 +155,7 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 						<Button
 							ariaLabel="Create Account"
 							onClick={handleCreateAccountClick}
-							text={isLoading ? "Creating..." : "Complete"}
+							text={showSpinner ? "Creating..." : "Complete"}
 							rightIcon={className => <PaperAirplaneIcon className={className} />}
 						/>
 						<Button

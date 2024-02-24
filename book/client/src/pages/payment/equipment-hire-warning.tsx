@@ -83,16 +83,16 @@ const EquipmentHireWarning: FC<Props> = ({ session, bookingInput, onUpdateEquipm
 			buttons={
 				<Fragment>
 					<Button
-						text={showEquipmentHireInput ? "Done" : "I do, yes"}
+						text={showEquipmentHireInput ? "Done" : "No, I need to hire"}
+						ariaLabel={showEquipmentHireInput ? "Done" : "No, I need to hire"}
 						rightIcon={className => <ArrowRightIcon className={className} />}
-						ariaLabel={showEquipmentHireInput ? "Done" : "I need to hire a step"}
 						onClick={showEquipmentHireInput ? handleSubmitEquipmentHired : handleShowEquipmentHireInput}
 					/>
 					<Button
 						transparent
+						text={showEquipmentHireInput ? "Cancel" : "Yes, I am BYO"}
+						ariaLabel={showEquipmentHireInput ? "Cancel" : "Yes, I am BYO"}
 						leftIcon={className => <XMarkIcon className={className} />}
-						ariaLabel={showEquipmentHireInput ? "Cancel" : "I do not need to hire a step"}
-						text={showEquipmentHireInput ? "Cancel" : "No"}
 						onClick={closeEquipmentHireWarning}
 					/>
 				</Fragment>

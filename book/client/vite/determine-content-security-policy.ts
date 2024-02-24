@@ -25,8 +25,9 @@ export const determineContentSecurityPolicy = (mode: string) => {
 				isProduction
 					? "https://api.xtremehiphopwithtash.com"
 					: isStaging
-					  ? "https://api.development.xtremehiphopwithtash.com"
-					  : "http://localhost:8080",
+						? "https://api.development.xtremehiphopwithtash.com"
+						: "http://localhost:8080",
+				isProduction ? "https://xtremehiphopwithtash.com" : "https://development.xtremehiphopwithtash.com",
 				isProduction ? "https://xtremehiphopwithtash.au.auth0.com" : "https://xtremehiphopwithtash-dev.au.auth0.com",
 			],
 			fontSrc: ["'self'", "https://*.gstatic.com"],

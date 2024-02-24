@@ -5,10 +5,10 @@
 	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
-		"deve": "vite --mode development",
 		"lint": "eslint --ext .ts,.tsx --parser-options '{\"project\": \"./tsconfig.json\"}' src",
 		"tsc": "tsc --noEmit",
 		"build": "vite build",
+		"development": "vite --mode development",
 		"staging": "npm run build -- --mode staging",
 		"production": "npm run build -- --mode production"
 	},

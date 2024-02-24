@@ -9,7 +9,7 @@ import HeaderBackButton from "./header-back-button";
 import HeaderLogo from "./logo";
 import HeaderMenuButton from "./menu-button";
 
-const Header: FC = () => {
+const Header: FC<Props> = ({ shouldFetchAccount }) => {
 	const location = useLocation();
 	const [isMenuOpen, openMenu, closeMenu] = useModal(undefined, false);
 	const [isAccountOpen, openAccount, closeAccount] = useModal();
@@ -67,7 +67,11 @@ const Header: FC = () => {
 				)}
 				<HeaderLogo onMenuClose={closeMenu} onAccountClose={closeAccount} />
 				{isPaymentPage || isPaymentSuccessPage ? null : (
-					<HeaderAccountButton isOpen={isAccountOpen} onToggle={handleToggleAccount} />
+					<HeaderAccountButton
+						isOpen={isAccountOpen}
+						onToggle={handleToggleAccount}
+						shouldFetchAccount={shouldFetchAccount}
+					/>
 				)}
 			</header>
 			<Sidebar isOpen={isMenuOpen} onClose={closeMenu} />
@@ -75,5 +79,9 @@ const Header: FC = () => {
 		</Fragment>
 	);
 };
+
+interface Props {
+	shouldFetchAccount: boolean;
+}
 
 export default Header;
