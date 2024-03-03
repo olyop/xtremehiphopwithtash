@@ -4,11 +4,11 @@ import { FC, createElement } from "react";
 
 const Error: FC<Props> = ({ errors, isBadError = false }) => (
 	<div
-		className={`rounded border px-4 py-3 flex flex-col gap-2 ${
+		className={`flex flex-col gap-2 rounded border px-4 py-3 ${
 			isBadError ? " border-red-500 bg-red-50" : " border-orange-500 bg-orange-50"
 		}`}
 	>
-		<div className="flex gap-2 ml-[-0.2rem] items-center">
+		<div className="ml-[-0.2rem] flex items-center gap-2">
 			{isBadError ? (
 				<ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
 			) : (

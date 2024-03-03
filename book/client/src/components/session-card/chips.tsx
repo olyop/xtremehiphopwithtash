@@ -11,7 +11,7 @@ const SessionCardChips: FC<Props> = ({ session }) => {
 	const isAdministrator = useContext(IsAdministratorContext);
 
 	return (
-		<div className="absolute flex items-end gap-1 right-1.5 -top-[0.2rem] z-10">
+		<div className="absolute -top-[0.2rem] right-1.5 z-10 flex items-end gap-1">
 			{session.isCancelled ? (
 				<SessionCardChip text="Cancelled" colorClassName="bg-red-500" />
 			) : (

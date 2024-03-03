@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, createElement } from "react";
 
 const Page: FC<PropsWithChildren<PageProps>> = ({ id, className, children }) => (
-	<main data-id={id} className={`w-full lg:w-[60rem] lg:mx-auto ${className ?? ""}`}>
+	<main data-id={id} className={`w-full lg:mx-auto lg:w-[60rem] ${className ?? ""}`}>
 		{children}
 	</main>
 );

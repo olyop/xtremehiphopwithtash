@@ -1,5 +1,10 @@
 package com.xtremehiphopwithtash.book.service.integration.stripe;
 
+import com.xtremehiphopwithtash.book.service.integration.stripe.module.StripeCustomerModule;
+import com.xtremehiphopwithtash.book.service.integration.stripe.module.StripeHealthCheckModule;
+import com.xtremehiphopwithtash.book.service.integration.stripe.module.StripePaymentIntentModule;
+import com.xtremehiphopwithtash.book.service.integration.stripe.module.StripeWebhookModule;
+import com.xtremehiphopwithtash.book.service.integration.stripe.module.merch.StripeMerchModule;
 import org.springframework.stereotype.Service;
 
 @Service

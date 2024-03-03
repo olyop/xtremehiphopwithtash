@@ -45,14 +45,14 @@ const AdminClassDescription: FC = () => {
 		<div className="flex flex-col items-stretch gap-3">
 			<h2 className="text-2xl">Description</h2>
 			{classDescription ? (
-				<div className="flex flex-col gap-2 items-stretch">
+				<div className="flex flex-col items-stretch gap-2">
 					<Input
 						id="classDescription"
 						value={classDescription}
 						onChange={handleClassDescriptionChange}
 						type={InputType.TEXTAREA}
 						name="Description"
-						className="!bg-white shadow !h-36"
+						className="!h-36 !bg-white shadow"
 						placeHolder="Please enter"
 					/>
 					<Button

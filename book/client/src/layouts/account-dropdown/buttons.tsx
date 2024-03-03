@@ -13,7 +13,7 @@ const AccountDropdownButton: FC<ButtonProps> = ({ leftIcon, rightIcon, className
 	<Button
 		{...props}
 		leftIcon={iconClassName => (leftIcon ? leftIcon(`${iconClassName} w-7 h-7`) : undefined)}
-		className={`w-full !justify-start !rounded-none !shadow-none pl-6 !h-[3rem] disabled:opacity-50 disabled:bg-transparent ${className}`}
+		className={`!h-[3rem] w-full !justify-start !rounded-none pl-6 !shadow-none disabled:bg-transparent disabled:opacity-50 ${className}`}
 	/>
 );
 

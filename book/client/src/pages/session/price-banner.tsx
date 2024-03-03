@@ -11,9 +11,9 @@ const SessionPriceBanner: FC<Props> = ({ session }) => {
 	return (
 		<div className={`flex items-center gap-2 px-4 py-2 ${isFree ? "bg-green-500" : "bg-gray-700"} shadow-2xl`}>
 			{isFree ? (
-				<CheckCircleIcon className="w-6 h-6 text-white" />
+				<CheckCircleIcon className="size-6 text-white" />
 			) : (
-				<InformationCircleIcon className="w-6 h-6 text-white" />
+				<InformationCircleIcon className="size-6 text-white" />
 			)}
 			<p className="pb-0.5 text-xl font-bold text-white">
 				{isFree ? "Free session" : `Price: ${currencyDollarsFormatter.format(centsToDollars(session.price))}`}

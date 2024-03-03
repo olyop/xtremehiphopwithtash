@@ -10,7 +10,7 @@ const PaymentButton: FC<Props> = ({ text, disabled, onClick }) => (
 		textClassName="!text-xl"
 		onClick={onClick}
 		disabled={disabled}
-		className="!h-14 shadow-xl hover:shadow-xl rounded-xl"
+		className="!h-14 rounded-xl shadow-xl hover:shadow-xl"
 		leftIcon={className => <CalendarIcon className={`${className} h-7 w-7`} />}
 	/>
 );

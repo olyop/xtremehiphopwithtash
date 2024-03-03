@@ -68,7 +68,7 @@ const CreateSession: FC<Props> = ({ day, onSubmit }) => {
 			<Button
 				transparent
 				ariaLabel="Add new session"
-				className="!w-5 !h-5 !p-1"
+				className="!h-5 !w-5 !p-1"
 				leftIcon={className => <PlusIcon className={className} />}
 				onClick={openModal}
 			/>

@@ -72,7 +72,7 @@ const LocationChip: FC<Props> = ({ location }) => {
 				children={
 					<Fragment>
 						<div className="flex flex-col items-start gap-1.5">
-							<div className="flex gap-1 items-center">
+							<div className="flex items-center gap-1">
 								<p className="whitespace-nowrap">
 									Plus Code: <span className="text-gray-500">{location.plusCode}</span>
 								</p>
@@ -86,12 +86,12 @@ const LocationChip: FC<Props> = ({ location }) => {
 								}}
 							/>
 						</div>
-						<div className="flex gap-1 items-center">
+						<div className="flex items-center gap-1">
 							<p className="text-sm">{location.address}</p>
 							<CopyButton ariaLabel="Copy Address" text={location.address} buttonDimension={6} iconDimension={4} />
 						</div>
 						<div className="flex flex-col items-start gap-4">
-							<div className="w-full overflow-hidden bg-gray-100 rounded h-[22rem]">
+							<div className="h-[22rem] w-full overflow-hidden rounded bg-gray-100">
 								<GoogleMaps>
 									<Map
 										zoom={15}
@@ -106,7 +106,7 @@ const LocationChip: FC<Props> = ({ location }) => {
 											mapTypeIds: ["satellite", "roadmap"],
 											position: 5,
 										}}
-										className="w-full h-full"
+										className="h-full w-full"
 										mapTypeId="roadmap"
 										center={{ lat, lng }}
 									>

@@ -43,7 +43,7 @@ public class GoogleMapsService {
 
 			return new GoogleMapsPlace(result.formattedAddress, olc.getCode(), coordinates);
 		} catch (Exception e) {
-			throw new ResolverException(e.getMessage());
+			throw new ResolverException(e);
 		}
 	}
 }

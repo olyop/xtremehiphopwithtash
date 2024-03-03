@@ -16,17 +16,17 @@ const ShareButton: FC<Props> = ({ text }) => {
 			onClick={handleShare}
 			textClassName="!text-xl"
 			ariaLabel={`Copy '${text}' to clipboard`}
-			className="!h-16 px-6 shadow-xl hover:shadow-xl rounded-xl gap-4"
+			className="!h-16 gap-4 rounded-xl px-6 shadow-xl hover:shadow-xl"
 			text={
 				hasShared === null
 					? "Share"
 					: hasShared
-					  ? hasCopiedShared
+						? hasCopiedShared
 							? hasError
 								? "Error"
 								: "Copied!"
 							: "Shared!"
-					  : "Sharing"
+						: "Sharing"
 			}
 			leftIcon={className =>
 				hasShared === null ? (

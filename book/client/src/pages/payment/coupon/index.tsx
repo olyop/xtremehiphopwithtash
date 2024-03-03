@@ -108,7 +108,7 @@ const PaymentCoupon: FC<Props> = ({ bookingInput, onApplyCoupon }) => {
 								note={validationMessage === true ? "Valid" : validationMessage}
 							/>
 							{bookingInput.bookingQuantity > 1 && (
-								<div className="px-4 py-3 border border-yellow-500 rounded bg-yellow-50 flex gap-2">
+								<div className="flex gap-2 rounded border border-yellow-500 bg-yellow-50 px-4 py-3">
 									<InformationCircleIcon className="h-6 w-6" />
 									<p>Please note coupons only apply for a single booking.</p>
 								</div>

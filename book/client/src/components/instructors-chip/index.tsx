@@ -8,7 +8,7 @@ const InstructorsChip: FC<Props> = ({ className, instructors, showFullName = fal
 		{instructors.map((instructor, index) => (
 			<Fragment key={instructor.instructorID}>
 				{index > 0 && (
-					<span className="mb-0.5 mx-[0.4rem] text-gray-500">{index === instructors.length - 1 ? "and" : ","}</span>
+					<span className="mx-[0.4rem] mb-0.5 text-gray-500">{index === instructors.length - 1 ? "and" : ","}</span>
 				)}
 				<InstructorChip instructor={instructor} showFullName={showFullName} />
 			</Fragment>

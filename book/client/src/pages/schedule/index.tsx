@@ -23,9 +23,9 @@ const Schedule: FC = () => {
 	const [days, setDays] = useState<DayType[]>(() => {
 		const daysCached = retreiveCachedSchedule();
 
-		const [startingDate, endingDate] = determineStartAndEndDate(new Date(getStartingTime()), breakpoint);
+		const [startingDate] = determineStartAndEndDate(new Date(getStartingTime()), breakpoint);
 
-		return daysCached ?? generateDays(breakpoint, startingDate, endingDate, []);
+		return daysCached ?? generateDays(breakpoint, startingDate, []);
 	});
 
 	const handleSchedule = async (date: Date) => {
@@ -99,7 +99,7 @@ const Schedule: FC = () => {
 	}, []);
 
 	return (
-		<main className="h-full flex flex-col-reverse lg:grid lg:grid-rows-[1fr,_3.25rem] lg:items-start lg:grid-cols-[1fr_4.2rem]">
+		<main className="flex h-full flex-col-reverse lg:grid lg:grid-cols-[1fr_4.2rem] lg:grid-rows-[1fr,_3.25rem] lg:items-start">
 			<div className="lg:grid lg:grid-rows-[2.25rem,_auto]">
 				<WeekDays />
 				<Days days={days} onSessionUpdate={handleSessionsUpdate} />

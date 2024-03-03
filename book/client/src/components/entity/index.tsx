@@ -15,7 +15,7 @@ const Entity: FC<EntityProps> = ({
 	rightClassName,
 }) => {
 	const photoNode = photo && (
-		<img src={photo} alt={text?.toString()} className="w-8 h-8 rounded-full shadow-md select-none" />
+		<img src={photo} alt={text?.toString()} className="h-8 w-8 select-none rounded-full shadow-md" />
 	);
 
 	const textNode = (
@@ -26,7 +26,7 @@ const Entity: FC<EntityProps> = ({
 	);
 
 	return (
-		<div data-id={id} className={`flex items-start justify-between p-2 border-b last:border-b-0 ${className ?? ""}`}>
+		<div data-id={id} className={`flex items-start justify-between border-b p-2 last:border-b-0 ${className ?? ""}`}>
 			{isLeftALink && leftLink ? (
 				<Link className={`flex items-center gap-2 ${leftClassName ?? ""}`} to={leftLink}>
 					{photoNode}

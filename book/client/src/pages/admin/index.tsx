@@ -14,7 +14,7 @@ const AdminPage: FC = () => {
 	const isAdministrator = useContext(IsAdministratorContext);
 
 	if (!isAdministrator) {
-		return <p className="text-lg text-gray-500 p-4">You are not an administrator.</p>;
+		return <p className="p-4 text-lg text-gray-500">You are not an administrator.</p>;
 	}
 
 	return (

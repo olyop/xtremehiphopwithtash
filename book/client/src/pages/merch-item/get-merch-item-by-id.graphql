@@ -1,0 +1,13 @@
+query getMerchItemByID($merchItemID: String!) {
+	getMerchItemByID(merchItemID: $merchItemID) {
+		merchItemID
+		name
+		description
+		price
+		photo
+		isInStock
+		isLowStock
+		isPreOrder
+		sizesAvailable
+	}
+}

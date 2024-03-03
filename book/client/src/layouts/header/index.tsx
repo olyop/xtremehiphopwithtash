@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { FC, Fragment, createElement } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -11,6 +12,7 @@ import HeaderMenuButton from "./menu-button";
 
 const Header: FC<Props> = ({ shouldFetchAccount }) => {
 	const location = useLocation();
+	const { isAuthenticated } = useAuth0();
 	const [isMenuOpen, openMenu, closeMenu] = useModal(undefined, false);
 	const [isAccountOpen, openAccount, closeAccount] = useModal();
 
@@ -52,15 +54,16 @@ const Header: FC<Props> = ({ shouldFetchAccount }) => {
 	const isPaymentSuccessPage = pathname === "/payment-success";
 	const isSessionPage = pathname.startsWith("/session");
 	const isPaymentPage = pathname === "/payment";
+	const isMerchItemPage = pathname.startsWith("/merch/");
 
 	return (
 		<Fragment>
 			<header
-				className={`flex items-center pl-4 tiny:pl-2 pr-2 relative justify-between border-b h-header-height bg-white ${
+				className={`tiny:pl-2 h-header-height relative flex items-center justify-between border-b bg-white pl-4 pr-2 ${
 					isMenuOpen || isAccountOpen ? "!z-[150]" : ""
 				}`}
 			>
-				{isPaymentSuccessPage ? null : isSessionPage || isPaymentPage ? (
+				{isPaymentSuccessPage ? null : isAuthenticated && (isSessionPage || isPaymentPage || isMerchItemPage) ? (
 					<HeaderBackButton onClick={handleReset} />
 				) : (
 					<HeaderMenuButton isOpen={isMenuOpen} onToggle={handleToggleMenu} />

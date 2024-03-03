@@ -73,7 +73,7 @@ const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated, modalCla
 				disabled={!canCancel}
 				onClick={openCancelModal}
 				text={reCaptchaError ?? (booking.isCancelled ? "Cancelled" : "Cancel")}
-				className={`!px-2 !text-xs !h-7 ${canCancel ? "" : "hover:bg-transparent select-none"}`}
+				className={`!h-7 !px-2 !text-xs ${canCancel ? "" : "select-none hover:bg-transparent"}`}
 				leftIcon={className =>
 					booking.isCancelled ? (
 						<MinusIcon className={`!h-4 !w-4 ${className}}`} />
@@ -93,7 +93,7 @@ const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated, modalCla
 				children={
 					booking.paymentMethod === PaymentMethod.CARD ? (
 						<Fragment>
-							<div className="p-4 border rounded bg-gray-100 flex flex-col gap-2">
+							<div className="flex flex-col gap-2 rounded border bg-gray-100 p-4">
 								<p className="text-gray-500">Cancellation Terms - CARD</p>
 								<div className="flex flex-col gap-2">
 									<p>
@@ -113,7 +113,7 @@ const BookingCancel: FC<Props> = ({ session, booking, onBookingUpdated, modalCla
 						</Fragment>
 					) : (
 						<Fragment>
-							<div className="p-4 border rounded bg-gray-100 flex flex-col gap-2">
+							<div className="flex flex-col gap-2 rounded border bg-gray-100 p-4">
 								<p className="text-gray-500">Cancellation Terms - CASH</p>
 								<p>You can cancel your booking within 3 hours of your scheduled class.</p>
 							</div>

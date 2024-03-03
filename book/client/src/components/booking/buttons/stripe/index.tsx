@@ -14,7 +14,7 @@ const BookingStripe: FC<Props> = ({ booking }) => (
 			transparent
 			text="Stripe"
 			ariaLabel="Open In Stripe"
-			className="!px-2 !text-xs !h-7"
+			className="!h-7 !px-2 !text-xs"
 			leftIcon={className => <CurrencyDollarIcon className={`!h-4 !w-4 ${className}}`} />}
 		/>
 	</a>

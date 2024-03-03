@@ -4,6 +4,10 @@ public class ResolverException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
+	public ResolverException(Throwable cause) {
+		super(cause);
+	}
+
 	public ResolverException(String message) {
 		super(message);
 	}

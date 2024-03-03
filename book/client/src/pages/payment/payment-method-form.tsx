@@ -59,7 +59,7 @@ const PaymentMethodForm: FC<Props> = ({ paymentMethod, setBookingInput }) => {
 	return (
 		<div className="flex flex-col gap-2">
 			<h2 className="text-2xl">Payment Method</h2>
-			<div className="border rounded-lg bg-white shadow-md">
+			<div className="rounded-lg border bg-white shadow-md">
 				<div
 					role="button"
 					tabIndex={1}
@@ -77,7 +77,7 @@ const PaymentMethodForm: FC<Props> = ({ paymentMethod, setBookingInput }) => {
 						className="pointer-events-none items-center gap-4"
 					/>
 				</div>
-				<div className="w-full h-px bg-gray-200" />
+				<div className="h-px w-full bg-gray-200" />
 				<div
 					role="button"
 					tabIndex={2}

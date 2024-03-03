@@ -37,9 +37,8 @@ public class StorageController {
 
 		try {
 			url = imageStorageService.upload(file.getBytes(), isLandscape);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to upload file");
+		} catch (IOException ioe) {
+			throw new RuntimeException("Failed to upload file", ioe);
 		}
 
 		return url.toString();

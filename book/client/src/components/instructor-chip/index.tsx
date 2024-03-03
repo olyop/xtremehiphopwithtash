@@ -38,25 +38,25 @@ const InstructorChip: FC<Props> = ({ instructor, showFullName }) => {
 						<img
 							alt="Instructor"
 							src={instructor.photo}
-							className="object-cover w-48 h-48 rounded-full shadow-xl select-none"
+							className="h-48 w-48 select-none rounded-full object-cover shadow-xl"
 						/>
 						<div className="flex flex-col items-center gap-6">
-							<div className="flex flex-col gap-1 items-center">
+							<div className="flex flex-col items-center gap-1">
 								<h2 className="text-2xl">
 									{instructor.details.firstName}
 									<Fragment> </Fragment>
 									{instructor.details.lastName}
 								</h2>
-								<h3 className="text-gray-500 text-lg">({instructor.details.nickName})</h3>
+								<h3 className="text-lg text-gray-500">({instructor.details.nickName})</h3>
 							</div>
 							<div className="flex flex-col items-center">
 								<p className="text-gray-500">Contact Number</p>
-								<div className="flex gap-2 items-center ml-7">
+								<div className="ml-7 flex items-center gap-2">
 									<p>{instructor.details.mobilePhoneNumber}</p>
 									<CopyButton ariaLabel="Copy Mobile Number" text={instructor.details.mobilePhoneNumber} />
 								</div>
 							</div>
-							<div className="flex gap-2 flex-col items-center">
+							<div className="flex flex-col items-center gap-2">
 								<a href="https://ig.me/m/xtremehiphopwithtash" target="_blank" rel="noreferrer">
 									<Button
 										text="Instagram"

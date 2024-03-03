@@ -19,7 +19,7 @@ const SidebarButton: FC<ButtonProps> = ({ className, leftIcon, disabled, ...prop
 		disabled={disabled}
 		textClassName="!text-md"
 		leftIcon={iconClassName => (leftIcon ? leftIcon(`${iconClassName} w-7 h-7`) : undefined)}
-		className={`w-full !justify-start !rounded-none px-6 gap-4 !shadow-none !h-[3rem] disabled:opacity-50 disabled:bg-transparent ${className}`}
+		className={`!h-[3rem] w-full !justify-start gap-4 !rounded-none px-6 !shadow-none disabled:bg-transparent disabled:opacity-50 ${className}`}
 	/>
 );
 
@@ -89,12 +89,12 @@ export const SidebarShareButton: FC = () => {
 				hasShared === null
 					? "Share Website"
 					: hasShared
-					  ? hasCopiedShared
+						? hasCopiedShared
 							? hasError
 								? "Error"
 								: "Copied!"
 							: "Shared!"
-					  : "Sharing"
+						: "Sharing"
 			}
 			leftIcon={className =>
 				hasShared === null ? (

@@ -9,6 +9,7 @@ import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
 import com.xtremehiphopwithtash.book.service.integration.googlemaps.GoogleMapsCoordinates;
 import com.xtremehiphopwithtash.book.service.integration.googlemaps.GoogleMapsPlace;
 import com.xtremehiphopwithtash.book.service.integration.googlemaps.GoogleMapsService;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -96,7 +97,7 @@ public class LocationResolver {
 			CodeArea decode = olc.decode();
 			return new GoogleMapsCoordinates(decode.getCenterLatitude(), decode.getCenterLongitude());
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Invalid plus code: " + plusCode);
+			throw new ResolverException("Invalid plus code: " + plusCode);
 		}
 	}
 }

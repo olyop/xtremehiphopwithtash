@@ -19,7 +19,7 @@ const AdminStudents: FC = () => {
 				data && data.getStudentsTotal && data.getBookingsTotal
 					? `${data.getStudentsTotal} students, ${data.getBookingsTotal} bookings, ${currencyDollarsFormatter.format(
 							centsToDollars(data.getGrossTotal ?? 0),
-					  )} gross`
+						)} gross`
 					: undefined
 			}
 		/>

@@ -15,12 +15,12 @@
 	},
 	"homepage": "https://github.com/olyop/xtremehiphopwithtash#readme",
 	"volta": {
-		"node": "21.6.1",
-		"npm": "10.3.0"
+		"node": "21.6.2",
+		"npm": "10.4.0"
 	},
 	"engines": {
-		"node": "21.6.1",
-		"npm": "10.3.0"
+		"node": "21.6.2",
+		"npm": "10.4.0"
 	},
 	"scripts": {
 		"book-client-deve-codegen": "graphql-codegen-esm -w",
@@ -66,17 +66,17 @@
 	"devDependencies": {
 		"@graphql-codegen/add": "5.0.2",
 		"@graphql-codegen/cli": "5.0.2",
-		"@graphql-codegen/client-preset": "4.2.3",
+		"@graphql-codegen/client-preset": "4.2.4",
 		"@graphql-codegen/near-operation-file-preset": "3.0.0",
-		"@graphql-codegen/typescript": "4.0.5",
-		"@graphql-codegen/typescript-resolvers": "4.0.5",
-		"@oly_op/cspell-dict": "1.1.5",
-		"@oly_op/eslint-config": "6.5.7",
+		"@graphql-codegen/typescript": "4.0.6",
+		"@graphql-codegen/typescript-resolvers": "4.0.6",
+		"@oly_op/cspell-dict": "1.1.10",
+		"@oly_op/eslint-config": "6.7.20",
 		"@oly_op/eslint-config-graphql": "1.1.0",
-		"@oly_op/eslint-config-react": "4.0.0",
-		"@oly_op/prettier-config": "1.7.12",
-		"@oly_op/tsconfig": "1.2.0",
-		"@parcel/watcher": "2.4.0",
+		"@oly_op/eslint-config-react": "4.3.5",
+		"@oly_op/prettier-config": "1.8.2",
+		"@oly_op/tsconfig": "1.2.1",
+		"@parcel/watcher": "2.4.1",
 		"concurrently": "8.2.2",
 		"copy-and-watch": "0.1.6",
 		"cross-env": "7.0.3",

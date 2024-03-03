@@ -121,8 +121,8 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 		bookingsPageResult.loading;
 
 	return (
-		<div className="relative w-full h-full">
-			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="object-cover w-full h-full" />
+		<div className="relative h-full w-full">
+			<img src="/images/jumbotron.jpg" alt="Xtreme Hip-Hop with Tash" className="h-full w-full object-cover" />
 			<FullscreenSpinner isLoading={showSpinner} className="z-[200]" />
 			<Modal
 				isOpen
@@ -136,8 +136,8 @@ const CreateAccount: FC<Props> = ({ onCreateAccount }) => {
 				icon={className => <UserCircleIcon className={className} />}
 				children={
 					<Fragment>
-						<h2 className="text-xl font-bold text-center">You&apos;re nearly there!!</h2>
-						<h2 className="text-lg text-center">
+						<h2 className="text-center text-xl font-bold">You&apos;re nearly there!!</h2>
+						<h2 className="text-center text-lg">
 							Please complete this form
 							<br />
 							to create your account :)

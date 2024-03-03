@@ -38,8 +38,8 @@ const CancelSession: FC<Props> = ({ session }) => {
 				transparent
 				text="Cancel"
 				ariaLabel="Cancel"
-				className="!px-2 !gap-1"
 				onClick={openModal}
+				className="!gap-1 !px-2"
 				leftIcon={className => <XMarkIcon className={className} />}
 			/>
 			<Modal

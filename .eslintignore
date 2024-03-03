@@ -1,2 +1,7 @@
+book/client/dist
+book/client/public/service-worker.js
+book/client/public/swiped-events.min.js
+
 book/server
+
 book/schema

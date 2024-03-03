@@ -58,7 +58,7 @@ const EquipmentHireWarning: FC<Props> = ({ session, bookingInput, onUpdateEquipm
 			children={
 				<Fragment>
 					{showEquipmentHireInput ? (
-						<div className="flex gap-4 flex-col">
+						<div className="flex flex-col gap-4">
 							<Input
 								id="equipmentQuantity"
 								name="Step Hire"

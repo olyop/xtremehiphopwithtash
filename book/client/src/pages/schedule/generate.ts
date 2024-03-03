@@ -53,12 +53,7 @@ const determineNumberOfDays = (breakpoint: Breakpoint) => {
 	}
 };
 
-export const generateDays = (
-	breakpoint: Breakpoint,
-	startingDate: Date,
-	endingDate: Date,
-	sessions: Session[],
-): Day[] => {
+export const generateDays = (breakpoint: Breakpoint, startingDate: Date, sessions: Session[]): Day[] => {
 	const days: Day[] = [];
 
 	const numberOfDays = determineNumberOfDays(breakpoint);
@@ -96,5 +91,5 @@ export const generateDaysWithSessions =
 			return sessions;
 		}
 
-		return generateDays(breakpoint, startingDate, endingDate, sessions);
+		return generateDays(breakpoint, startingDate, sessions);
 	};

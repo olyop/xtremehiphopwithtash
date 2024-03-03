@@ -81,20 +81,20 @@ export const determineInputType = (type: InputType): HTMLInputTypeAttribute =>
 	type === InputType.TEXT
 		? "text"
 		: type === InputType.INTEGER || type === InputType.PRICE
-		  ? "number"
-		  : type === InputType.URL
-		    ? "url"
-		    : type === InputType.DATE
-		      ? "datetime-local"
-		      : type === InputType.TIME
-		        ? "time"
-		        : type === InputType.CHECKBOX
-		          ? "checkbox"
-		          : type === InputType.MOBILE
-		            ? "tel"
-		            : type === InputType.IMAGE
-		              ? "file"
-		              : "text";
+			? "number"
+			: type === InputType.URL
+				? "url"
+				: type === InputType.DATE
+					? "datetime-local"
+					: type === InputType.TIME
+						? "time"
+						: type === InputType.CHECKBOX
+							? "checkbox"
+							: type === InputType.MOBILE
+								? "tel"
+								: type === InputType.IMAGE
+									? "file"
+									: "text";
 
 export const mapListToChips = <T>(
 	list: readonly string[],

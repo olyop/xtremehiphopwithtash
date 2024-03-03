@@ -49,7 +49,7 @@ const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle, shouldFetchAccount }
 		);
 
 	return (
-		<div className="flex items-end md:items-center justify-around flex-col-reverse md:flex-row !py-4 gap-1 lg:gap-2 h-header-height">
+		<div className="h-header-height flex flex-col-reverse items-end justify-around gap-1 !py-4 md:flex-row md:items-center lg:gap-2">
 			<HeaderButton
 				text={text}
 				ariaLabel={text}
@@ -57,7 +57,7 @@ const HeaderAccountButton: FC<Props> = ({ isOpen, onToggle, shouldFetchAccount }
 				onClick={onToggle}
 				leftIcon={leftIcon}
 				rightIcon={rightIcon}
-				className="!pl-2 pr-2 sm:pr-4 !border-gray-200"
+				className="!border-gray-200 !pl-2 pr-2 sm:pr-4"
 			/>
 		</div>
 	);

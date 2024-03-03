@@ -1,16 +1,17 @@
-package com.xtremehiphopwithtash.book.service.integration.stripe;
+package com.xtremehiphopwithtash.book.service.integration.stripe.module;
 
 import com.stripe.exception.StripeException;
 import com.stripe.param.CustomerListParams;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeClient;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StripeHealthCheckModule {
 
-	private final StripeClientCustom stripeClient;
+	private final StripeClient stripeClient;
 
-	StripeHealthCheckModule(StripeClientCustom stripeClient) {
+	StripeHealthCheckModule(StripeClient stripeClient) {
 		this.stripeClient = stripeClient;
 	}
 
@@ -18,7 +19,7 @@ public class StripeHealthCheckModule {
 
 	public String check() {
 		try {
-			stripeClient.client().customers().list(healthCheckParams);
+			stripeClient.customers().list(healthCheckParams);
 			return "OK";
 		} catch (StripeException se) {
 			throw new ResolverException("Unable to connect to Stripe", se);

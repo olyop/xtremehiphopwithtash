@@ -60,7 +60,7 @@ const AdminEntity: FC<Props> = ({
 								onClick={openViewModal}
 								textClassName="text-xs"
 								ariaLabel={`View ${typeName}`}
-								leftIcon={() => <EyeIcon className="!w-4 !h-4" />}
+								leftIcon={() => <EyeIcon className="!h-4 !w-4" />}
 							/>
 							<Modal
 								isLarge

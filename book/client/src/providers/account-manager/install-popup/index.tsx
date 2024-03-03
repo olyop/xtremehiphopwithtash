@@ -74,7 +74,7 @@ const InstallPopup: FC<PropsWithChildren<Props>> = ({ shouldShowInstallPopup, ch
 								onClick={handleCloseModal}
 								ariaLabel="Never show this again"
 								leftIcon={() => <XMarkIcon className="h-6 w-6" />}
-								className="px-6 rounded-xl gap-4 !h-auto py-3 border"
+								className="!h-auto gap-4 rounded-xl border px-6 py-3"
 								text={loading ? "Confirming..." : canClose ? "Never show this again" : "Please wait..."}
 							/>
 						)}

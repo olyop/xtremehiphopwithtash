@@ -47,7 +47,7 @@ const ViewsSession: FC<Props> = ({ session }) => {
 										<div
 											key={view.student.studentID}
 											data-id={view.student.studentID}
-											className="p-2 border-b last:border-none flex justify-between"
+											className="flex justify-between border-b p-2 last:border-none"
 										>
 											<div className="flex flex-row items-center gap-2">
 												{determineSessionViewIcon(view as SessionView)}

@@ -80,7 +80,7 @@ const SessionPage: FC = () => {
 
 	if (!data) {
 		return (
-			<div className="h-content-height w-full flex items-center justify-center">
+			<div className="h-content-height flex w-full items-center justify-center">
 				<Loading />
 			</div>
 		);
@@ -99,39 +99,39 @@ const SessionPage: FC = () => {
 			<img
 				alt={session.course.name}
 				src={session.course.photo}
-				className="object-cover object-top w-full shadow-lg h-96"
+				className="h-96 w-full object-cover object-top shadow-lg"
 			/>
-			<div className="flex flex-col gap-8 p-4 justify-items-start pb-56">
+			<div className="flex flex-col justify-items-start gap-8 p-4 pb-56">
 				<div className="flex flex-col gap-4">
 					<h1 className="text-3xl font-bold">{session.title}</h1>
-					<div className="grid grid-cols-[min-content,auto] grid-rows-2 gap-2 items-center justify-items-start">
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">class</p>
+					<div className="grid grid-cols-[min-content,auto] grid-rows-2 items-center justify-items-start gap-2">
+						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">class</p>
 						<XtremeHipHopChip />
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">session</p>
+						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">session</p>
 						<CourseChip course={session.course as Course} />
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">with</p>
+						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">with</p>
 						<InstructorsChip instructors={session.instructors as Instructor[]} />
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">at</p>
+						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">at</p>
 						<LocationChip location={session.location as Location} />
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">on</p>
+						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">on</p>
 						<p className="text-l pl-0.5">{determineSessionDateLabel(session, true, true)}</p>
-						<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">from</p>
+						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">from</p>
 						<p>
 							<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
 						</p>
 						{isAdministrator && (
 							<Fragment>
-								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">spots</p>
+								<p className="text-l justify-self-end pr-2 leading-none text-gray-500">spots</p>
 								<p>
 									{session.capacityBooked ?? 0} / {session.capacityAvailable}
 								</p>
-								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">steps</p>
+								<p className="text-l justify-self-end pr-2 leading-none text-gray-500">steps</p>
 								<p>
 									{session.equipmentAvailable
 										? `${session.equipmentHired ?? 0} / ${session.equipmentAvailable}`
 										: "No steps available"}
 								</p>
-								<p className="pr-2 leading-none text-gray-500 text-l justify-self-end">views</p>
+								<p className="text-l justify-self-end pr-2 leading-none text-gray-500">views</p>
 								<ViewsSession session={session as Session} />
 							</Fragment>
 						)}
@@ -139,7 +139,7 @@ const SessionPage: FC = () => {
 				</div>
 				<SessionButtons session={session as Session} isInPast={isInPast} />
 				{isAdministrator && (
-					<div className="flex items-start self-start border rounded p-2">
+					<div className="flex items-start self-start rounded border p-2">
 						<UpdateSession session={session as Session} onEdit={handleRefetch} />
 						{!isInPast && (
 							<Fragment>
@@ -150,8 +150,8 @@ const SessionPage: FC = () => {
 					</div>
 				)}
 				{session.notes && (
-					<div className="rounded border px-4 py-3 flex flex-col gap-2 border-yellow-500 bg-yellow-50">
-						<div className="flex gap-2 ml-[-0.2rem] items-center">
+					<div className="flex flex-col gap-2 rounded border border-yellow-500 bg-yellow-50 px-4 py-3">
+						<div className="ml-[-0.2rem] flex items-center gap-2">
 							<InformationCircleIcon className="h-5 w-5" />
 							<p>Notice</p>
 						</div>

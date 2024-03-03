@@ -14,10 +14,10 @@ const BookingQuantities: FC<Props> = ({
 	const maxBookingQuantity = isEditing
 		? bookingQuantity
 		: session.capacityRemaining
-		  ? session.capacityRemaining > 5
+			? session.capacityRemaining > 5
 				? 5
 				: 5 - (5 - session.capacityRemaining)
-		  : 0;
+			: 0;
 
 	const bookingQuantitySelectOptions: SelectOption[] = Array.from({
 		length: maxBookingQuantity,

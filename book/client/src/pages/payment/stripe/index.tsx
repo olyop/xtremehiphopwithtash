@@ -53,7 +53,7 @@ const PaymentPageStripe: FC<Props> = ({ isFetchingPageData, reCaptchaToken, book
 
 	if (!clientSecret || !bookingID) {
 		return (
-			<div className="flex py-10 items-center justify-center">
+			<div className="flex items-center justify-center py-10">
 				<Loading />
 			</div>
 		);

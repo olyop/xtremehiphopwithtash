@@ -26,17 +26,17 @@ const Button: FC<ButtonProps> = ({
 		onClick={onClick}
 		className={`${
 			text === undefined && (leftIcon !== undefined || rightIcon !== undefined)
-				? "p-2 rounded-full w-9 h-9"
-				: "px-4 h-9"
-		} font-bold rounded ${
+				? "h-9 w-9 rounded-full p-2"
+				: "h-9 px-4"
+		} rounded font-bold ${
 			transparent
-				? "text-black bg-transparent hover:bg-gray-200"
+				? "bg-transparent text-black hover:bg-gray-200"
 				: disabled
-				  ? "cursor-not-allowed text-gray-500 bg-gray-200 !shadow-none"
-				  : "cursor-pointer text-white bg-primary hover:bg-primary-dark"
-		} text-sm uppercase flex items-center justify-center gap-2 ${transparent ? "" : "shadow-sm"} ${
+					? "cursor-not-allowed bg-gray-200 text-gray-500 !shadow-none"
+					: "bg-primary hover:bg-primary-dark cursor-pointer text-white"
+		} flex items-center justify-center gap-2 text-sm uppercase ${transparent ? "" : "shadow-sm"} ${
 			disabled ? "" : "hover:shadow-md"
-		} select-none transition-all items-center ${className ?? ""}`}
+		} select-none items-center transition-all ${className ?? ""}`}
 	>
 		{leftIcon && leftIcon(`${baseIconClassName} ${iconClassName ?? ""}`)}
 		{text && <span className={textClassName}>{text}</span>}

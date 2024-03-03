@@ -1,6 +1,7 @@
-package com.xtremehiphopwithtash.book.service.integration.stripe;
+package com.xtremehiphopwithtash.book.service.integration.stripe.module.merch;
 
 import java.net.URL;
+import java.time.Instant;
 
 public class StripeMerchItem {
 
@@ -13,6 +14,7 @@ public class StripeMerchItem {
 	private boolean isLowStock;
 	private boolean isPreOrder;
 	private String[] sizesAvailable;
+	private Instant updatedAt;
 
 	public String getMerchItemID() {
 		return merchItemID;
@@ -84,5 +86,13 @@ public class StripeMerchItem {
 
 	public void setSizesAvailable(String[] sizesAvailable) {
 		this.sizesAvailable = sizesAvailable;
+	}
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Instant updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 }

@@ -13,32 +13,32 @@
 		"production": "npm run build -- --mode production"
 	},
 	"volta": {
-		"node": "21.6.1",
-		"npm": "10.3.0"
+		"node": "21.6.2",
+		"npm": "10.4.0"
 	},
 	"engines": {
-		"node": "21.6.1",
-		"npm": "10.3.0"
+		"node": "21.6.2",
+		"npm": "10.4.0"
 	},
 	"dependencies": {
 		"@apollo/client": "3.9.5",
 		"@auth0/auth0-react": "2.2.4",
 		"@googlemaps/react-wrapper": "1.1.35",
 		"@heroicons/react": "2.1.1",
-		"@stripe/react-stripe-js": "2.5.0",
-		"@stripe/stripe-js": "3.0.5",
+		"@stripe/react-stripe-js": "2.5.1",
+		"@stripe/stripe-js": "3.0.6",
 		"apollo3-cache-persist": "0.14.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-google-recaptcha-v3": "1.10.1",
-		"react-router-dom": "6.22.1"
+		"react-router-dom": "6.22.2"
 	},
 	"devDependencies": {
-		"@types/google.maps": "3.55.3",
-		"@types/react": "18.2.57",
+		"@types/google.maps": "3.55.4",
+		"@types/react": "18.2.61",
 		"@types/react-dom": "18.2.19",
 		"@vitejs/plugin-react-swc": "3.6.0",
-		"autoprefixer": "10.4.17",
+		"autoprefixer": "10.4.18",
 		"content-security-policy-builder": "2.1.1",
 		"graphql": "16.8.1",
 		"graphql-tag": "2.12.6",
@@ -51,7 +51,6 @@
 		"vite-plugin-checker": "0.6.4",
 		"vite-plugin-eslint": "1.8.1",
 		"vite-plugin-html": "3.2.2",
-		"vite-plugin-mkcert": "1.17.3",
 		"vite-plugin-proxy-middleware": "1.0.2",
 		"workbox-window": "7.0.0"
 	}

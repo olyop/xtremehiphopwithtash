@@ -16,12 +16,12 @@ const Day: FC<Props> = ({ day, onSessionUpdate }) => {
 	return (
 		<div
 			data-unix={day.unix}
-			className={`bg-white p-1 pt-0.5 transition-colors grid grid-rows-[1.25rem,_1fr] grid-cols-[calc((100vw_/_2)_-_0.5rem)] md:grid-cols-1 ${
+			className={`grid grid-cols-[calc((100vw_/_2)_-_0.5rem)] grid-rows-[1.25rem,_1fr] bg-white p-1 pt-0.5 transition-colors md:grid-cols-1 ${
 				isUnavailable ? "!bg-orange-100" : day.isToday ? "!bg-gray-200" : day.isInPast ? "opacity-60" : ""
 			}`}
 		>
 			<div className="flex justify-between">
-				<p className="text-sm select-none justify-self-center whitespace-nowrap overflow-hidden">{day.label}</p>
+				<p className="select-none justify-self-center overflow-hidden whitespace-nowrap text-sm">{day.label}</p>
 				{isAdministrator && !isUnavailable && (day.isToday || !day.isInPast) && (
 					<CreateSession day={day} onSubmit={onSessionUpdate} />
 				)}
@@ -33,7 +33,7 @@ const Day: FC<Props> = ({ day, onSessionUpdate }) => {
 					))}
 				</div>
 			) : (
-				<p className="text-xs text-gray-500 select-none">{isUnavailable ? "Tash on holidays" : "No sessions"}</p>
+				<p className="select-none text-xs text-gray-500">{isUnavailable ? "Tash on holidays" : "No sessions"}</p>
 			)}
 		</div>
 	);

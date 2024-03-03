@@ -184,7 +184,7 @@ const PaymentPage: FC = () => {
 
 	if (bookingInput === null || bookingCost === null || session === null) {
 		return (
-			<div className="h-content-height w-full flex items-center justify-center">
+			<div className="h-content-height flex w-full items-center justify-center">
 				<Loading />
 			</div>
 		);
@@ -201,7 +201,7 @@ const PaymentPage: FC = () => {
 			bookingCost.finalCost === 0);
 
 	return (
-		<Page className="h-full flex flex-col gap-12 pb-16">
+		<Page className="flex h-full flex-col gap-12 pb-16">
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
 			<div className="flex flex-col gap-12 px-4 pb-52">
 				{showCoupon && <PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />}

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { useAuth0 } from "@auth0/auth0-react";
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon";
 import { ChangeEventHandler, FC, Fragment, ReactNode, createElement, useEffect, useState } from "react";
@@ -28,7 +29,7 @@ const createClassName = (type: InputType, value: InputValue, className: string |
 		type === InputType.IMAGE
 			? `${
 					typeof value === "string" && value.length > 0 ? "!pt-[12rem]" : ""
-			  } file:mr-3 file:bg-primary file:border-none file:text-white file:px-4 file:text-sm file:uppercase file:font-bold file:cursor-pointer file:rounded file:h-10 file:hover:shadow-md file:transition-all file:hover:bg-primary-dark`
+				} file:mr-3 file:bg-primary file:border-none file:text-white file:px-4 file:text-sm file:uppercase file:font-bold file:cursor-pointer file:rounded file:h-10 file:hover:shadow-md file:transition-all file:hover:bg-primary-dark`
 			: ""
 	} ${className ?? ""}`;
 
@@ -154,7 +155,7 @@ const Input: FC<InputProps> = ({
 
 	return (
 		<div
-			className={`relative ${isCheckboxType ? "flex gap-2 flex-row-reverse justify-end" : ""} ${
+			className={`relative ${isCheckboxType ? "flex flex-row-reverse justify-end gap-2" : ""} ${
 				isTextAreaType ? (note ? "h-[8.5rem]" : "h-[7rem]") : hasImageValue ? "h-[16rem]" : ""
 			} ${className ?? ""}`}
 		>
@@ -162,31 +163,31 @@ const Input: FC<InputProps> = ({
 				children={optional ? `${name} (optional)` : name}
 				htmlFor={type === InputType.LIST ? `${id}-select` : id}
 				className={`${
-					isCheckboxType ? "text-base" : "uppercase font-bold text-xs absolute -top-1.5"
-				} cursor-pointer left-3 bg-white z-50 select-none ${disabled ? "text-gray-400" : ""} ${labelClassName ?? ""}`}
+					isCheckboxType ? "text-base" : "absolute -top-1.5 text-xs font-bold uppercase"
+				} left-3 z-50 cursor-pointer select-none bg-white ${disabled ? "text-gray-400" : ""} ${labelClassName ?? ""}`}
 			/>
 			{type === InputType.LIST && items && selectOptions && (
-				<div className="absolute flex items-center gap-1 top-[1.65rem] left-2 -translate-y-1/2 w-1/2 bg-white">
+				<div className="absolute left-2 top-[1.65rem] flex w-1/2 -translate-y-1/2 items-center gap-1 bg-white">
 					{items.map(item => (
 						<Chip key={item.text} chip={item} className="bg-white" />
 					))}
 				</div>
 			)}
 			{type === InputType.PRICE && (value === null || typeof value === "number") && (
-				<p className="absolute top-1/2 -translate-y-1/2 left-3">
+				<p className="absolute left-3 top-1/2 -translate-y-1/2">
 					{value === null ? "Free" : currencyDollarsFormatter.format(value).slice(0, 1)}
 				</p>
 			)}
 			{imageToBeUploaded instanceof File && (
-				<p className="absolute top-1/2 -translate-y-1/2 right-4 p-2 bg-gray-200 rounded-lg">Uploading...</p>
+				<p className="absolute right-4 top-1/2 -translate-y-1/2 rounded-lg bg-gray-200 p-2">Uploading...</p>
 			)}
 			{hasImageValue && !isImageTooLarge && imageToBeUploaded == null && (
 				<img
 					alt={name}
 					src={value}
-					className={`absolute top-4 left-3 ${
+					className={`absolute left-3 top-4 ${
 						isImageLandscape ? "w-[calc(100%_-_1.5rem)]" : "w-[10rem]"
-					} h-[10rem] object-cover rounded shadow-lg`}
+					} h-[10rem] rounded object-cover shadow-lg`}
 				/>
 			)}
 			{type === InputType.LIST && Array.isArray(value) ? (
@@ -219,7 +220,7 @@ const Input: FC<InputProps> = ({
 						)}
 					</select>
 					<ChevronDownIcon
-						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${disabled ? "text-gray-500" : ""}`}
+						className={`absolute right-4 top-1/2 -z-10 h-4 w-4 -translate-y-1/2 ${disabled ? "text-gray-500" : ""}`}
 					/>
 				</Fragment>
 			) : type === InputType.SELECT ? (
@@ -250,7 +251,7 @@ const Input: FC<InputProps> = ({
 						)}
 					</select>
 					<ChevronDownIcon
-						className={`w-4 h-4 absolute -translate-y-1/2 top-1/2 right-4 -z-10 ${disabled ? "text-gray-500" : ""}`}
+						className={`absolute right-4 top-1/2 -z-10 h-4 w-4 -translate-y-1/2 ${disabled ? "text-gray-500" : ""}`}
 					/>
 				</Fragment>
 			) : isTextAreaType ? (
@@ -287,9 +288,9 @@ const Input: FC<InputProps> = ({
 			)}
 			{((note && !isCheckboxType) || isImageTooLarge) && (
 				<p
-					className={`text-gray-500 text-xs md:text-sm px-3 pb-1 ${
+					className={`px-3 pb-1 text-xs text-gray-500 md:text-sm ${
 						noteClassName ?? ""
-					} whitespace-nowrap overflow-hidden overflow-ellipsis`}
+					} overflow-hidden overflow-ellipsis whitespace-nowrap`}
 				>
 					{note || "Image is too large"}
 				</p>

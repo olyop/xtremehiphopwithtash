@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.storage;
 
 import com.xtremehiphopwithtash.book.service.integration.aws.AwsS3Client;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
@@ -72,11 +73,10 @@ public class ImageStorageService {
 			String mimeType = tika.detect(bytes);
 
 			if (!mimeType.startsWith("image/jpeg")) {
-				throw new RuntimeException("File is not a jpeg");
+				throw new ResolverException("File is not a jpeg");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to validate file", e);
+			throw new ResolverException("Failed to validate file", e);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class ImageStorageService {
 
 			return outputStream.toByteArray();
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to resize image", e);
+			throw new ResolverException("Failed to resize image", e);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class ImageStorageService {
 		try {
 			return URI.create(baseUrl + key).toURL();
 		} catch (MalformedURLException e) {
-			throw new RuntimeException("Failed to create URL", e);
+			throw new ResolverException("Failed to create URL", e);
 		}
 	}
 }

@@ -60,7 +60,7 @@ const LocationForm: FC<Props> = ({ input, coordinates, onChange }) => {
 							rel="noreferrer"
 							title="https://plus.codes/map"
 							href={`https://plus.codes/${input.plusCode.length === 0 ? "map" : input.plusCode}`}
-							className="hover:underline flex gap-1 items-center"
+							className="flex items-center gap-1 hover:underline"
 						>
 							<ArrowTopRightOnSquareIcon className="h-4 w-4" />
 							<span>https://plus.codes/map</span>
@@ -68,7 +68,7 @@ const LocationForm: FC<Props> = ({ input, coordinates, onChange }) => {
 					</Fragment>
 				}
 			/>
-			<div className="w-full overflow-hidden bg-gray-100 rounded h-[16rem]">
+			<div className="h-[16rem] w-full overflow-hidden rounded bg-gray-100">
 				<GoogleMaps>
 					{coordinates && (
 						<Map
@@ -85,7 +85,7 @@ const LocationForm: FC<Props> = ({ input, coordinates, onChange }) => {
 								mapTypeIds: ["satellite", "roadmap"],
 								position: 5,
 							}}
-							className="w-full h-full"
+							className="h-full w-full"
 							mapTypeId="roadmap"
 							center={{ lat: coordinates.latitude, lng: coordinates.longitude }}
 						>

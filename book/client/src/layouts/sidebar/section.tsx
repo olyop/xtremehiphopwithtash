@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, createElement } from "react";
 
 const SidebarSecion: FC<PropsWithChildren<Props>> = ({ title, children }) => (
 	<div className="flex flex-col gap-4 border-b pb-4">
-		<h2 className="uppercase px-6">
+		<h2 className="px-6 uppercase">
 			<b>
 				<u>{title}</u>
 			</b>

@@ -9,7 +9,7 @@ const BookingCallNow: FC<Props> = ({ booking }) => (
 		<Button
 			transparent
 			text="Mobile"
-			className="!px-2 !text-xs !h-7"
+			className="!h-7 !px-2 !text-xs"
 			ariaLabel="Call Mobile Phone Number"
 			leftIcon={className => <PhoneIcon className={`!h-4 !w-4 ${className}}`} />}
 		/>

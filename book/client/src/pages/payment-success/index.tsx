@@ -73,14 +73,14 @@ const PaymentSuccessPage: FC = () => {
 	}, [bookingID]);
 
 	return (
-		<main className="p-4 flex flex-col gap-12 items-center justify-center h-full">
+		<main className="flex h-full flex-col items-center justify-center gap-12 p-4">
 			{bookingID === null ? (
 				<Loading />
 			) : bookingID === false ? (
 				<p>Booking not found</p>
 			) : (
 				<Fragment>
-					<div className="flex flex-col gap-4 items-center">
+					<div className="flex flex-col items-center gap-4">
 						<h1 className="text-4xl">Congratulations!</h1>
 						<h2 className="text-xl font-bold">You Have Booked</h2>
 						<p className="text-center">
@@ -91,7 +91,7 @@ const PaymentSuccessPage: FC = () => {
 					{data && (
 						<SessionCard
 							session={data.getBookingByID.session as Session}
-							className="!min-w-[16rem] !h-48 !shadow-xl"
+							className="!h-48 !min-w-[16rem] !shadow-xl"
 							imageClassName="!h-28"
 							disableLink
 							showDate
@@ -102,7 +102,7 @@ const PaymentSuccessPage: FC = () => {
 							text="Finish"
 							ariaLabel="Finish"
 							onClick={handleFinish}
-							className="!h-14 !shadow-2xl !hover:shadow-3xl rounded-xl gap-4 pr-6"
+							className="!hover:shadow-3xl !h-14 gap-4 rounded-xl pr-6 !shadow-2xl"
 							leftIcon={className => <CheckIcon className={`${className} h-7 w-7`} />}
 						/>
 					</Link>

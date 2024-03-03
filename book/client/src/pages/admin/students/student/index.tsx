@@ -98,7 +98,7 @@ const Student: FC<Props> = ({ student }) => {
 								</p>
 							)}
 						</div>
-						<div className="bg-white flex flex-col w-full shadow-lg">
+						<div className="flex w-full flex-col bg-white shadow-lg">
 							{result.data.getStudentByID.bookings ? (
 								result.data.getStudentByID.bookings.map(booking => (
 									<Booking
@@ -119,7 +119,7 @@ const Student: FC<Props> = ({ student }) => {
 									/>
 								))
 							) : (
-								<p className="text-gray-500 p-2">No booking</p>
+								<p className="p-2 text-gray-500">No booking</p>
 							)}
 						</div>
 					</div>

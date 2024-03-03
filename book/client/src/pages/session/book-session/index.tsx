@@ -57,12 +57,12 @@ const BookSession: FC<Props> = ({ session, isSessionInPast }) => {
 	const bookButtonText = session.isCancelled
 		? "Cancelled"
 		: isSessionInPast
-		  ? isSessionInProgress(session)
+			? isSessionInProgress(session)
 				? "In Progress"
 				: "Elapsed"
-		  : session.isCapacityRemaining
-		    ? "Book"
-		    : "Fully Booked";
+			: session.isCapacityRemaining
+				? "Book"
+				: "Fully Booked";
 
 	return (
 		<Fragment>
@@ -72,8 +72,8 @@ const BookSession: FC<Props> = ({ session, isSessionInPast }) => {
 				text={bookButtonText}
 				onClick={handleBookClick}
 				ariaLabel={bookButtonText}
-				className="!h-16 px-6 shadow-xl hover:shadow-xl rounded-xl gap-4"
-				leftIcon={className => <CalendarIcon className={`${className} h-8 w-8`} />}
+				className="!h-16 gap-4 rounded-xl px-6 shadow-xl hover:shadow-xl"
+				leftIcon={className => <CalendarIcon className={`${className} size-8`} />}
 			/>
 			<Modal
 				isLarge
@@ -87,7 +87,7 @@ const BookSession: FC<Props> = ({ session, isSessionInPast }) => {
 				icon={className => <CalendarIcon className={className} />}
 				children={
 					<Fragment>
-						<SessionCard session={session} disableLink className="!h-36 shadow-none mb-2" imageClassName="!h-20" />
+						<SessionCard session={session} disableLink className="mb-2 !h-36 shadow-none" imageClassName="!h-20" />
 						<BookingForm session={session} input={input} onChange={setInput} />
 					</Fragment>
 				}

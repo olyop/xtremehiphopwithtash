@@ -5,7 +5,7 @@ const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Satur
 const WeekDays: FC = () => (
 	<div className="hidden h-9 grid-cols-7 bg-slate-500 lg:grid">
 		{dayNames.map(day => (
-			<p key={day} className="p-2 text-sm font-bold text-center text-white uppercase">
+			<p key={day} className="p-2 text-center text-sm font-bold uppercase text-white">
 				{day}
 			</p>
 		))}

@@ -68,20 +68,20 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 	return (
 		<div
 			data-test={isLarge}
-			className={`inset-0 w-screen h-screen fixed z-[100] transition-opacity overflow-hidden ${
-				isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+			className={`fixed inset-0 z-[100] h-screen w-screen overflow-hidden transition-opacity ${
+				isOpen ? "visible opacity-100" : "invisible opacity-0"
 			} ${className ?? ""}`}
 		>
 			<div
 				aria-hidden
 				onClick={disableCloseOnEscape ? undefined : onClose}
-				className={`inset-0 cursor-pointer absolute z-[110] bg-gray-900 transition-opacity ${
-					isOpen ? "opacity-50 visible" : "opacity-0 invisible"
+				className={`absolute inset-0 z-[110] cursor-pointer bg-gray-900 transition-opacity ${
+					isOpen ? "visible opacity-50" : "invisible opacity-0"
 				} ${backgroundClassName ?? ""}`}
 			/>
 			{isOpen && (
 				<div
-					className={`flex gap-4 flex-col shadow-lg rounded-md p-4 top-8 md:top-1/2 left-1/2 z-[120] absolute md:w-booking-modal lg:w-booking-modal w-[calc(100vw_-_3rem)] max-h-[calc(100vh_-_5rem)] -translate-x-1/2 md:-translate-y-1/2 bg-white ${
+					className={`md:w-booking-modal lg:w-booking-modal absolute left-1/2 top-8 z-[120] flex max-h-[calc(100vh_-_5rem)] w-[calc(100vw_-_3rem)] -translate-x-1/2 flex-col gap-4 rounded-md bg-white p-4 shadow-lg md:top-1/2 md:-translate-y-1/2 ${
 						modalClassName ?? ""
 					}`}
 				>
@@ -89,7 +89,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 						<Button
 							onClick={onClose}
 							ariaLabel={`Close ${title}`}
-							className="absolute -top-4 -right-4 rounded h-auto py-1 sm:py-2"
+							className="absolute -right-4 -top-4 h-auto rounded py-1 sm:py-2"
 							leftIcon={c => <XMarkIcon className={c} />}
 							text={
 								isMobile ? (
@@ -97,7 +97,7 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 								) : (
 									<div className="flex items-center gap-2">
 										<span>Close</span>
-										<span className="py-0.5 px-1 text-xs rounded border">ESC</span>
+										<span className="rounded border px-1 py-0.5 text-xs">ESC</span>
 									</div>
 								)
 							}
@@ -105,9 +105,9 @@ const Modal: FC<PropsWithChildren<ModalProps>> = ({
 					)}
 					{!hideTitle && icon && (
 						<div
-							className={`flex gap-2 -mt-1 ${subTitle === undefined ? "items-center" : "items-start"} ${
+							className={`-mt-1 flex gap-2 ${subTitle === undefined ? "items-center" : "items-start"} ${
 								centerTitle ? "justify-center" : "justify-start"
-							} pb-2 border-b border-b-gray-200`}
+							} border-b border-b-gray-200 pb-2`}
 						>
 							{icon(`h-5 w-5 ${subTitle === undefined ? "mt-0.5" : "mt-1.5"} select-none`)}
 							<div className="flex flex-col gap-1">

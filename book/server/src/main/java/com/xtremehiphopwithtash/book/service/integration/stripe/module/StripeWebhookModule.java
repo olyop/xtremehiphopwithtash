@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.integration.stripe;
+package com.xtremehiphopwithtash.book.service.integration.stripe.module;
 
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
@@ -21,8 +21,7 @@ public class StripeWebhookModule {
 		try {
 			return Webhook.constructEvent(payload, signature, webhookSecret);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ResolutionException("Unable to parse webhook payload");
+			throw new ResolutionException("Unable to parse webhook payload", e);
 		}
 	}
 

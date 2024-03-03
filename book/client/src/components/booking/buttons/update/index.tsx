@@ -55,7 +55,7 @@ const BookingUpdate: FC<Props> = ({
 				transparent
 				text="Edit"
 				onClick={openUpdateModal}
-				className="!px-2 !text-xs !h-7"
+				className="!h-7 !px-2 !text-xs"
 				ariaLabel="Edit booking"
 				leftIcon={className => <PencilIcon className={`!h-4 !w-4 ${className}}`} />}
 			/>

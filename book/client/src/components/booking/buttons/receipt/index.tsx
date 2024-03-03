@@ -35,7 +35,7 @@ const BookingReceipt: FC<Props> = ({ booking }) => {
 				transparent
 				text="Receipt"
 				onClick={openModal}
-				className="!px-2 !text-xs !h-7"
+				className="!h-7 !px-2 !text-xs"
 				ariaLabel="View Booking Receipt"
 				leftIcon={className => <DocumentTextIcon className={`!h-4 !w-4 ${className}}`} />}
 			/>

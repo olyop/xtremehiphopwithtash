@@ -10,33 +10,33 @@ const SessionCard: FC<Props> = ({ session, className, imageClassName, disableLin
 	const content = (
 		<div
 			data-id={session.sessionID}
-			className={`group/session relative grid transition-all bg-white border border-gray-300 rounded-lg grid-rows-[1fr,3fr] items-stretch h-[6.3rem] ${
+			className={`group/session relative grid h-[6.3rem] grid-rows-[1fr,3fr] items-stretch rounded-lg border border-gray-300 bg-white transition-all ${
 				disableLink ? "" : "cursor-pointer"
 			} shadow-lg ${className ?? ""}`}
 		>
 			<div
-				className={`absolute inset-0 z-10 invisible transition-opacity bg-gray-400 rounded-lg opacity-0 ${
-					disableLink ? "" : "group-hover/session:opacity-30 group-hover/session:visible"
+				className={`invisible absolute inset-0 z-10 rounded-lg bg-gray-400 opacity-0 transition-opacity ${
+					disableLink ? "" : "group-hover/session:visible group-hover/session:opacity-30"
 				}`}
 			/>
 			<SessionCardChips session={session} />
 			<img
 				src={session.course.photo}
 				alt={session.course.name}
-				className={`block object-cover object-top w-full h-[2.5rem] rounded-t-lg select-none ${imageClassName ?? ""}`}
+				className={`block h-[2.5rem] w-full select-none rounded-t-lg object-cover object-top ${imageClassName ?? ""}`}
 			/>
-			<div className="flex flex-col px-2 pb-1 pt-0.5 justify-between overflow-hidden">
-				<h3 className="font-bold text-[0.9rem] whitespace-nowrap">{session.title}</h3>
-				<p className="text-xs font-medium whitespace-nowrap">
+			<div className="flex flex-col justify-between overflow-hidden px-2 pb-1 pt-0.5">
+				<h3 className="whitespace-nowrap text-[0.9rem] font-bold">{session.title}</h3>
+				<p className="whitespace-nowrap text-xs font-medium">
 					<span className="text-gray-500">at </span>
 					{session.location.name}
 				</p>
-				<p className="text-xs whitespace-nowrap">
+				<p className="whitespace-nowrap text-xs">
 					<span className="text-gray-500">from </span>
 					<SessionStartTime startTime={session.startTime} endTime={session.endTime} />
 				</p>
 				{showDate && (
-					<p className="text-xs whitespace-nowrap">
+					<p className="whitespace-nowrap text-xs">
 						<span className="text-gray-500">on </span>
 						{determineSessionDateLabel(session, true, true)}
 					</p>

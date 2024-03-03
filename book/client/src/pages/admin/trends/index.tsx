@@ -55,7 +55,7 @@ const AdminTrends: FC = () => {
 	return (
 		<div className="flex flex-col items-start gap-4">
 			<h2 className="text-2xl">Trends</h2>
-			<div className="flex flex-col sm:flex-row gap-2 w-full">
+			<div className="flex w-full flex-col gap-2 sm:flex-row">
 				<Input
 					id="startTime"
 					name="Start Date"
@@ -73,11 +73,11 @@ const AdminTrends: FC = () => {
 					onChange={handleEndTimeChange}
 				/>
 			</div>
-			<div className="bg-white shadow-md w-full flex flex-row-reverse items-end p-4 rounded-2xl gap-1 overflow-x-scroll">
+			<div className="flex w-full flex-row-reverse items-end gap-1 overflow-x-scroll rounded-2xl bg-white p-4 shadow-md">
 				{bookingTrends.map(({ bookings, unixDay }) => (
 					<div key={unixDay} className="flex flex-col gap-2">
 						<p
-							className="text-xs font-mono"
+							className="font-mono text-xs"
 							style={{
 								textOrientation: "upright",
 								writingMode: "vertical-rl",
@@ -87,9 +87,9 @@ const AdminTrends: FC = () => {
 						>
 							{bookings}
 						</p>
-						<div style={{ height: `${bookings * 20}px` }} className="w-full bg-primary rounded-sm" />
+						<div style={{ height: `${bookings * 20}px` }} className="bg-primary w-full rounded-sm" />
 						<p
-							className="text-xs font-mono"
+							className="font-mono text-xs"
 							style={{ textOrientation: "upright", writingMode: "vertical-rl", letterSpacing: "-4px" }}
 						>
 							{convertUnixDayToDDMM(unixDay)}

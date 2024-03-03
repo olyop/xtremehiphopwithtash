@@ -38,14 +38,14 @@ const SessionPageBooking: FC<Props> = ({
 		booking.paymentMethod === null
 			? "FREE session"
 			: booking.paymentMethod === PaymentMethod.COUPON
-			  ? "Paid in full with COUPON"
-			  : booking.paymentMethod === PaymentMethod.CASH && booking.cost
-			    ? `${isSessionInPast ? "Paid" : "Will pay"} ${currencyDollarsFormatter.format(
+				? "Paid in full with COUPON"
+				: booking.paymentMethod === PaymentMethod.CASH && booking.cost
+					? `${isSessionInPast ? "Paid" : "Will pay"} ${currencyDollarsFormatter.format(
 							centsToDollars(booking.cost),
-			      )} in CASH`
-			    : booking.paymentMethod === PaymentMethod.CARD && booking.cost
-			      ? `Paid ${currencyDollarsFormatter.format(centsToDollars(booking.cost))} with CARD`
-			      : "Unknown payment method";
+						)} in CASH`
+					: booking.paymentMethod === PaymentMethod.CARD && booking.cost
+						? `Paid ${currencyDollarsFormatter.format(centsToDollars(booking.cost))} with CARD`
+						: "Unknown payment method";
 
 	const sessionDateAndTimeLabel = (
 		<Fragment>
@@ -64,7 +64,7 @@ const SessionPageBooking: FC<Props> = ({
 				!hideInstagram && booking.student.details.instagramUsername
 					? ` @${booking.student.details.instagramUsername}`
 					: ""
-		  }`;
+			}`;
 
 	return (
 		<Entity

@@ -3,16 +3,14 @@ package com.xtremehiphopwithtash.book.service.integration.auth0;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.client.mgmt.filter.ClientFilter;
-import com.auth0.client.mgmt.filter.UserFilter;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.TokenHolder;
 import com.auth0.json.mgmt.client.ClientsPage;
 import com.auth0.json.mgmt.users.User;
 import com.auth0.net.Response;
-import com.xtremehiphopwithtash.book.other.Auth0User;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +45,8 @@ public class Auth0ManagementService {
 
 		try {
 			response = authApi.requestToken(audience).execute();
-		} catch (Auth0Exception e) {
-			throw new RuntimeException(e);
+		} catch (Auth0Exception a0e) {
+			throw new RuntimeException(a0e);
 		}
 
 		tokenHolder = response.getBody();
@@ -79,8 +77,8 @@ public class Auth0ManagementService {
 	public ClientsPage listApplications() {
 		try {
 			return instance().clients().list(new ClientFilter()).execute().getBody();
-		} catch (Auth0Exception e) {
-			throw new RuntimeException(e);
+		} catch (Auth0Exception a0e) {
+			throw new ResolverException(a0e);
 		}
 	}
 
@@ -90,34 +88,8 @@ public class Auth0ManagementService {
 			user.setEmail(newEmailAddress);
 
 			instance().users().update(userId, user).execute();
-		} catch (Auth0Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private Auth0User mapUser(User user) {
-		Auth0User auth0User = new Auth0User();
-
-		auth0User.setStudentID(user.getId());
-		auth0User.setLastLogin(user.getLastLogin().toInstant());
-		auth0User.setLogins(user.getLoginsCount());
-
-		return auth0User;
-	}
-
-	public List<Auth0User> getUsers() {
-		try {
-			return instance()
-				.users()
-				.list(new UserFilter())
-				.execute()
-				.getBody()
-				.getItems()
-				.stream()
-				.map(this::mapUser)
-				.toList();
-		} catch (Auth0Exception e) {
-			throw new RuntimeException(e);
+		} catch (Auth0Exception a0e) {
+			throw new ResolverException(a0e);
 		}
 	}
 }

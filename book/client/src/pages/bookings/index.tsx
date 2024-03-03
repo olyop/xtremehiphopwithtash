@@ -17,7 +17,7 @@ const BookingsPage: FC = () => {
 		<PageWithHeaderAndData title="My Bookings" queryResult={queryResult} contentClassName="flex flex-col gap-2">
 			{({ getStudentByID }) => (
 				<Fragment>
-					<div className="bg-white flex flex-col w-full shadow-lg">
+					<div className="flex w-full flex-col bg-white shadow-lg">
 						{getStudentByID.bookings ? (
 							getStudentByID.bookings.map(booking => (
 								<Booking
@@ -36,7 +36,7 @@ const BookingsPage: FC = () => {
 								/>
 							))
 						) : (
-							<p className="text-gray-500 p-2">No booking</p>
+							<p className="p-2 text-gray-500">No booking</p>
 						)}
 					</div>
 					{getStudentByID.bookings && getStudentByID.bookings.length > 0 && (

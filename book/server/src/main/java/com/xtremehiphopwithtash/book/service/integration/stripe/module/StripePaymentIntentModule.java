@@ -1,4 +1,4 @@
-package com.xtremehiphopwithtash.book.service.integration.stripe;
+package com.xtremehiphopwithtash.book.service.integration.stripe.module;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.stripe.exception.StripeException;
@@ -11,6 +11,7 @@ import com.stripe.param.PaymentIntentUpdateParams;
 import com.xtremehiphopwithtash.book.graphql.input.BookingInput;
 import com.xtremehiphopwithtash.book.other.CreatePaymentIntentResponse;
 import com.xtremehiphopwithtash.book.other.ObjectMapperCustom;
+import com.xtremehiphopwithtash.book.service.integration.stripe.StripeClient;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StripePaymentIntentModule {
 
-	private final StripeClientCustom stripeClient;
+	private final StripeClient stripeClient;
 	private final ObjectMapperCustom objectMapper;
 
 	private final String currency;
@@ -35,7 +36,7 @@ public class StripePaymentIntentModule {
 
 	StripePaymentIntentModule(
 		@Value("${stripe.currency}") String currency,
-		StripeClientCustom stripeClient,
+		StripeClient stripeClient,
 		ObjectMapperCustom objectMapper
 	) {
 		this.stripeClient = stripeClient;
@@ -71,7 +72,7 @@ public class StripePaymentIntentModule {
 				.putAllMetadata(metadata)
 				.build();
 
-			PaymentIntent paymentIntent = stripeClient.client().paymentIntents().create(params);
+			PaymentIntent paymentIntent = stripeClient.paymentIntents().create(params);
 
 			CreatePaymentIntentResponse response = new CreatePaymentIntentResponse();
 			response.setClientSecret(paymentIntent.getClientSecret());
@@ -80,27 +81,25 @@ public class StripePaymentIntentModule {
 
 			return response;
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ResolverException("Unable to create payment intent");
+			throw new ResolverException("Unable to create payment intent", e);
 		}
 	}
 
 	public URL retrieveChargeReceiptURL(String paymentIntentID) {
 		try {
-			PaymentIntent paymentIntent = stripeClient.client().paymentIntents().retrieve(paymentIntentID);
+			PaymentIntent paymentIntent = stripeClient.paymentIntents().retrieve(paymentIntentID);
 
-			Charge charge = stripeClient.client().charges().retrieve(paymentIntent.getLatestCharge());
+			Charge charge = stripeClient.charges().retrieve(paymentIntent.getLatestCharge());
 
 			if (charge == null) {
 				throw new ResolverException("Unable to retrieve charge");
 			}
 
 			return URI.create(charge.getReceiptUrl()).toURL();
-		} catch (StripeException e) {
-			e.printStackTrace();
-			throw new ResolverException("Unable to retrieve charge");
+		} catch (StripeException se) {
+			throw new ResolverException("Unable to retrieve charge", se);
 		} catch (MalformedURLException mue) {
-			throw new ResolverException("Unable to parse charge receipt URL");
+			throw new ResolverException("Unable to parse charge receipt URL", mue);
 		}
 	}
 
@@ -111,14 +110,14 @@ public class StripePaymentIntentModule {
 	private Consumer<String> updatePaymentIntentDescription(String description) {
 		return paymentIntentID -> {
 			try {
-				PaymentIntent paymentIntent = stripeClient.client().paymentIntents().retrieve(paymentIntentID);
+				PaymentIntent paymentIntent = stripeClient.paymentIntents().retrieve(paymentIntentID);
 
 				PaymentIntentUpdateParams paymentIntentParams = PaymentIntentUpdateParams
 					.builder()
 					.setDescription(description)
 					.build();
 
-				Charge charge = stripeClient.client().charges().retrieve(paymentIntent.getLatestCharge());
+				Charge charge = stripeClient.charges().retrieve(paymentIntent.getLatestCharge());
 
 				if (charge == null) {
 					throw new ResolverException("Unable to retrieve charge");
@@ -133,28 +132,25 @@ public class StripePaymentIntentModule {
 					.forEach(params -> {
 						try {
 							if (params instanceof PaymentIntentUpdateParams) {
-								stripeClient.client().paymentIntents().update(paymentIntentID, (PaymentIntentUpdateParams) params);
+								stripeClient.paymentIntents().update(paymentIntentID, (PaymentIntentUpdateParams) params);
 							} else {
-								stripeClient.client().charges().update(charge.getId(), (ChargeUpdateParams) params);
+								stripeClient.charges().update(charge.getId(), (ChargeUpdateParams) params);
 							}
 						} catch (StripeException se) {
-							se.printStackTrace();
-							throw new ResolverException("Unable to update invoice description");
+							throw new ResolverException("Unable to update invoice description", se);
 						}
 					});
 			} catch (Exception e) {
-				e.printStackTrace();
-				throw new ResolverException("Unable to update invoice description");
+				throw new ResolverException("Unable to update invoice description", e);
 			}
 		};
 	}
 
 	private void validateCustomerExists(String stripeCustomerID) {
 		try {
-			stripeClient.client().customers().retrieve(stripeCustomerID);
+			stripeClient.customers().retrieve(stripeCustomerID);
 		} catch (StripeException se) {
-			se.printStackTrace();
-			throw new ResolverException("Customer does not exist");
+			throw new ResolverException("Customer does not exist", se);
 		}
 	}
 

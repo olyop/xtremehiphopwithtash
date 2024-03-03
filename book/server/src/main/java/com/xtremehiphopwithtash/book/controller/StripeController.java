@@ -92,16 +92,16 @@ public class StripeController {
 	private BookingInput parseBookingInput(String bookingInputJson) {
 		try {
 			return objectMapperCustom.instance().readValue(bookingInputJson, BookingInput.class);
-		} catch (JsonProcessingException e) {
-			throw new ResolverException("Unable to parse booking input");
+		} catch (JsonProcessingException jpe) {
+			throw new ResolverException("Unable to parse booking input", jpe);
 		}
 	}
 
 	private UUID parseBookingID(String bookingIDJson) {
 		try {
 			return UUID.fromString(bookingIDJson);
-		} catch (IllegalArgumentException e) {
-			throw new ResolverException("Unable to parse booking ID");
+		} catch (IllegalArgumentException iae) {
+			throw new ResolverException("Unable to parse booking ID", iae);
 		}
 	}
 }

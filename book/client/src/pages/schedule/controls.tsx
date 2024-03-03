@@ -42,7 +42,7 @@ const ScheduleControls: FC<Props> = ({
 	const isMobile = breakpoint !== Breakpoint.LARGE;
 
 	return (
-		<div className="flex flex-row justify-between w-full gap-2 p-2 lg:pl-4 lg:p-4 lg:gap-3 lg:justify-between lg:flex-col">
+		<div className="flex w-full flex-row justify-between gap-2 p-2 lg:flex-col lg:justify-between lg:gap-3 lg:p-4 lg:pl-4">
 			<Button
 				transparent
 				onClick={onReset}
@@ -68,11 +68,11 @@ const ScheduleControls: FC<Props> = ({
 					)
 				}
 			/>
-			<div className="hidden w-full h-px lg:block lg:h-px bg-slate-300" />
+			<div className="hidden h-px w-full bg-slate-300 lg:block lg:h-px" />
 			<div className="grid flex-grow grid-cols-2 grid-rows-1 gap-2 lg:grid-cols-1 lg:grid-rows-2 lg:gap-2">
 				<Button
 					disabled={isOffline}
-					className="px-1.5 gap-3"
+					className="gap-3 px-1.5"
 					onClick={onBackOneWeek}
 					textClassName="tracking-widest"
 					transparent={breakpoint === Breakpoint.LARGE}
@@ -82,7 +82,7 @@ const ScheduleControls: FC<Props> = ({
 				/>
 				<Button
 					disabled={isOffline}
-					className="px-1.5 gap-3"
+					className="gap-3 px-1.5"
 					onClick={onForwardOneWeek}
 					textClassName="tracking-widest"
 					transparent={breakpoint === Breakpoint.LARGE}

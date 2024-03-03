@@ -6,6 +6,7 @@ import AdminPage from "./pages/admin";
 import BookingsPage from "./pages/bookings";
 import InstallPage from "./pages/install";
 import MerchPage from "./pages/merch";
+import MerchItemPage from "./pages/merch-item";
 import PaymentPage from "./pages/payment";
 import PaymentSuccessPage from "./pages/payment-success";
 import Schedule from "./pages/schedule";
@@ -35,6 +36,10 @@ const routes: RouteObject[] = [
 	{
 		path: "merch",
 		element: <MerchPage />,
+	},
+	{
+		path: "merch/:merchItemID",
+		element: <MerchItemPage />,
 	},
 	{
 		path: "install",

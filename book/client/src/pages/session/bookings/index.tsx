@@ -31,9 +31,9 @@ const SessionBookings: FC<Props> = ({ session, onBookingUpdated }) => {
 	}, []);
 
 	return (
-		<div className="shadow-2xl rounded">
-			<h3 className="text-xl p-2 border-b">Bookings</h3>
-			<p className="text-sm p-2">
+		<div className="rounded shadow-2xl">
+			<h3 className="border-b p-2 text-xl">Bookings</h3>
+			<p className="p-2 text-sm">
 				Gross:
 				<Fragment> </Fragment>
 				{bookingsResult.data?.getSessionByID.gross
@@ -43,7 +43,7 @@ const SessionBookings: FC<Props> = ({ session, onBookingUpdated }) => {
 			{bookingsResult.data ? (
 				<Fragment>
 					{bookingsResult.data.getSessionByID.bookings === null ? (
-						<p className="p-2 border-t">No bookings yet</p>
+						<p className="border-t p-2">No bookings yet</p>
 					) : (
 						<div className="border-t">
 							{bookingsResult.data.getSessionByID.bookings.map(booking => (

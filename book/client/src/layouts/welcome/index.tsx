@@ -25,9 +25,9 @@ const Welcome: FC = () => {
 	};
 
 	return (
-		<div className="h-full w-full flex flex-col items-center justify-center gap-12">
-			<img src="images/full-logo-small.png" alt="Xtreme Hip-Hop with Tash" width={320} height={126} />
-			<div className="flex flex-col items-center justify-center gap-6 text-center w-72">
+		<div className="flex h-full w-full flex-col items-center justify-center gap-12">
+			<img src="/images/full-logo-small.png" alt="Xtreme Hip-Hop with Tash" width={320} height={126} />
+			<div className="flex w-72 flex-col items-center justify-center gap-6 text-center">
 				<h1 className="text-3xl">Welcome!</h1>
 				<p className="text-xl">Please log in or sign up to view the class schedule, merchandise, and book sessions.</p>
 				<p className="text-gray-500">
@@ -35,15 +35,15 @@ const Welcome: FC = () => {
 					<br /> and you can start booking sessions right away!
 				</p>
 			</div>
-			<div className="flex flex-col tiny:flex-row gap-4">
+			<div className="tiny:flex-row flex flex-col gap-4">
 				<Button
 					transparent
 					text="Login"
 					ariaLabel="Login"
 					onClick={handleLogin}
 					textClassName="text-xl"
-					className="!h-16 px-6 border hover:border-gray-300 rounded-xl gap-4"
-					leftIcon={className => <ArrowLeftEndOnRectangle className={`${className} w-7 h-7`} />}
+					className="!h-16 gap-4 rounded-xl border px-6 hover:border-gray-300"
+					leftIcon={className => <ArrowLeftEndOnRectangle className={`${className} h-7 w-7`} />}
 				/>
 				<Button
 					transparent
@@ -51,8 +51,8 @@ const Welcome: FC = () => {
 					ariaLabel="Signup"
 					onClick={handleSignup}
 					textClassName="text-xl"
-					className="!h-16 px-6 border hover:border-gray-300 rounded-xl gap-4"
-					leftIcon={className => <ArrowLeftEndOnRectangle className={`${className} w-7 h-7`} />}
+					className="!h-16 gap-4 rounded-xl border px-6 hover:border-gray-300"
+					leftIcon={className => <ArrowLeftEndOnRectangle className={`${className} h-7 w-7`} />}
 				/>
 			</div>
 		</div>

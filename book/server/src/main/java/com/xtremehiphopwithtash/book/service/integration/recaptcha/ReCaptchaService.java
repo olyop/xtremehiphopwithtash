@@ -1,6 +1,7 @@
 package com.xtremehiphopwithtash.book.service.integration.recaptcha;
 
 import com.xtremehiphopwithtash.book.other.ObjectMapperCustom;
+import com.xtremehiphopwithtash.book.service.validator.ResolverException;
 import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -49,7 +50,7 @@ public class ReCaptchaService {
 		try {
 			verifyResponse = retreiveResponse(token, remoteAddress);
 		} catch (Exception e) {
-			throw new ReCaptchaError("Error verify response");
+			throw new ResolverException("Error verify response", e);
 		}
 
 		validateVerifyResponse(verifyResponse);

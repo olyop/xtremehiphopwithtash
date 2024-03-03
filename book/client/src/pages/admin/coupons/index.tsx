@@ -71,7 +71,7 @@ const AdminCoupons: FC = () => {
 				contentClassName="flex flex-col gap-2"
 				children={
 					<Fragment>
-						<p className="text-sm mb-2">Generates a one-time code that will discount the booking fee.</p>
+						<p className="mb-2 text-sm">Generates a one-time code that will discount the booking fee.</p>
 						<Input
 							id="discount"
 							name="Discount"
@@ -83,10 +83,10 @@ const AdminCoupons: FC = () => {
 						/>
 						{coupons && (
 							<Fragment>
-								<div className="flex flex-col p-1 border">
+								<div className="flex flex-col border p-1">
 									{coupons.map((code, index) => (
-										<div key={code[0]} className="flex gap-2 items-center">
-											<p className="text-green-500 text-xl font-mono">
+										<div key={code[0]} className="flex items-center gap-2">
+											<p className="font-mono text-xl text-green-500">
 												{index + 1}. {code[0]} ({code[1]}%)
 											</p>
 											<CopyButton ariaLabel="Copy referral code" text={code[0]} />

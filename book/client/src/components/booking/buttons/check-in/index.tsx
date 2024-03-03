@@ -38,7 +38,7 @@ const BookingCheckIn: FC<Props> = ({ booking, paymentDescription, onBookingUpdat
 			<Button
 				onClick={openCheckInModal}
 				text={booking.isCheckedIn ? "Checked In" : "Check In"}
-				className={`!px-2 !text-xs !h-7 text-white whitespace-nowrap ${
+				className={`!h-7 whitespace-nowrap !px-2 !text-xs text-white ${
 					booking.isCheckedIn ? "!bg-green-600" : "!bg-orange-500"
 				}`}
 				ariaLabel={booking.isCheckedIn ? "Un-check In" : "Check In"}

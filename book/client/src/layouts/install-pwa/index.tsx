@@ -7,9 +7,9 @@ const InstallPWA: FC<Props> = ({ renderCloseButton }) => {
 
 	return (
 		<div className="flex flex-col items-center gap-12 text-center">
-			<h1 className="text-2xl leading-relaxed select-none">
+			<h1 className="select-none text-2xl leading-relaxed">
 				<b>
-					<span className="bg-apple-store-get-blue text-white p-1 rounded-full px-4 pb-[5px] shadow-md">Get</span> the
+					<span className="bg-apple-store-get-blue rounded-full p-1 px-4 pb-[5px] text-white shadow-md">Get</span> the
 					app for <br /> a <u>better experience!</u>
 				</b>
 			</h1>

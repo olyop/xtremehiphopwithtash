@@ -17,7 +17,7 @@ const HeaderLogo: FC<Props> = ({ onMenuClose, onAccountClose }) => {
 		<Link
 			to="/"
 			onClick={handleClick}
-			className="absolute top-1/2 left-1/2 h-header-height -translate-y-1/2 -translate-x-1/2 p-3 flex items-center hover:opacity-60 focus:opacity-60 transition-opacity"
+			className="h-header-height absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center p-3 transition-opacity hover:opacity-60 focus:opacity-60"
 		>
 			<img
 				src="/images/full-logo.png"

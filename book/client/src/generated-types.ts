@@ -359,6 +359,7 @@ export type Query = {
 	readonly getInstructors: Maybe<ReadonlyArray<Instructor>>;
 	readonly getLocationByID: Location;
 	readonly getLocations: Maybe<ReadonlyArray<Location>>;
+	readonly getMerchItemByID: MerchItem;
 	readonly getMerchItems: ReadonlyArray<MerchItem>;
 	readonly getSessionByID: Session;
 	readonly getSessionsInPeriod: ReadonlyArray<Session>;
@@ -409,6 +410,10 @@ export type QueryGetInstructorByIdArgs = {
 
 export type QueryGetLocationByIdArgs = {
 	locationID: Scalars["UUID"]["input"];
+};
+
+export type QueryGetMerchItemByIdArgs = {
+	merchItemID: Scalars["String"]["input"];
 };
 
 export type QueryGetSessionByIdArgs = {
@@ -1021,6 +1026,24 @@ export type GetBookingsPageQuery = {
 			} & { readonly __typename: "Booking" }
 		> | null;
 	} & { readonly __typename: "Student" };
+} & { readonly __typename: "Query" };
+
+export type GetMerchItemByIdQueryVariables = Exact<{
+	merchItemID: Scalars["String"]["input"];
+}>;
+
+export type GetMerchItemByIdQuery = {
+	readonly getMerchItemByID: {
+		readonly merchItemID: string;
+		readonly name: string;
+		readonly description: string | null;
+		readonly price: number;
+		readonly photo: string;
+		readonly isInStock: boolean;
+		readonly isLowStock: boolean;
+		readonly isPreOrder: boolean;
+		readonly sizesAvailable: ReadonlyArray<string> | null;
+	} & { readonly __typename: "MerchItem" };
 } & { readonly __typename: "Query" };
 
 export type GetMerchItemsQueryVariables = Exact<{ [key: string]: never }>;

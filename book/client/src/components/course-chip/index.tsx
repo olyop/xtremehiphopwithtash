@@ -31,10 +31,10 @@ const CourseChip: FC<Props> = ({ course }) => {
 						<img
 							alt={course.name}
 							src={course.photo}
-							className="object-cover object-top w-full h-56 rounded-md shadow-xl select-none"
+							className="h-56 w-full select-none rounded-md object-cover object-top shadow-xl"
 						/>
-						<h1 className="text-2xl text-center">{course.name}</h1>
-						<p className="text-gray-500 text-center">{course.description}</p>
+						<h1 className="text-center text-2xl">{course.name}</h1>
+						<p className="text-center text-gray-500">{course.description}</p>
 					</Fragment>
 				}
 			/>
