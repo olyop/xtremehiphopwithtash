@@ -6,7 +6,7 @@ import { isDateInBetweenRange } from "../../helpers/date";
 import CreateSession from "./create-session";
 import { Day as DayType } from "./types";
 
-const hardcodedUnavailableDayRange = [new Date("2023-10-26T00:00:00"), new Date("2023-10-30T00:00:00")] as const;
+const hardcodedUnavailableDayRange = [new Date("2024-04-24T00:00:00"), new Date("2024-05-09T00:00:00")] as const;
 
 const Day: FC<Props> = ({ day, onSessionUpdate }) => {
 	const isAdministrator = useContext(IsAdministratorContext);
@@ -33,7 +33,7 @@ const Day: FC<Props> = ({ day, onSessionUpdate }) => {
 					))}
 				</div>
 			) : (
-				<p className="select-none text-xs text-gray-500">{isUnavailable ? "Tash on holidays" : "No sessions"}</p>
+				<p className="select-none text-xs text-gray-500">{isUnavailable ? "Tashy overseas" : "No sessions"}</p>
 			)}
 		</div>
 	);

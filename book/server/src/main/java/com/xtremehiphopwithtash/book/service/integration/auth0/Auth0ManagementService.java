@@ -3,6 +3,7 @@ package com.xtremehiphopwithtash.book.service.integration.auth0;
 import com.auth0.client.auth.AuthAPI;
 import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.client.mgmt.filter.ClientFilter;
+import com.auth0.client.mgmt.filter.UserFilter;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.TokenHolder;
 import com.auth0.json.mgmt.client.ClientsPage;
@@ -88,6 +89,14 @@ public class Auth0ManagementService {
 			user.setEmail(newEmailAddress);
 
 			instance().users().update(userId, user).execute();
+		} catch (Auth0Exception a0e) {
+			throw new ResolverException(a0e);
+		}
+	}
+
+	public User getUser(String userId) {
+		try {
+			return instance().users().get(userId, new UserFilter()).execute().getBody();
 		} catch (Auth0Exception a0e) {
 			throw new ResolverException(a0e);
 		}

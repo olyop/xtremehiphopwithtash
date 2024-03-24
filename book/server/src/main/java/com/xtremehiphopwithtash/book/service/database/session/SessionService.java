@@ -5,6 +5,7 @@ import com.xtremehiphopwithtash.book.service.database.location.Location;
 import com.xtremehiphopwithtash.book.service.database.location.LocationService;
 import com.xtremehiphopwithtash.book.service.database.session.instructor.SessionInstructor;
 import com.xtremehiphopwithtash.book.service.database.session.instructor.SessionInstructorDAO;
+import com.xtremehiphopwithtash.book.service.database.sessionview.SessionViewDAO;
 import com.xtremehiphopwithtash.book.service.helpers.EntityServiceInter;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.time.Instant;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class SessionService implements EntityServiceInter<Session, SessionInput, UUID> {
 
 	private final SessionDAO sessionDAO;
+	private final SessionViewDAO sessionViewDAO;
 	private final SessionInstructorDAO sessionInstructorDAO;
 	private final SessionValidator validator;
 	private final SessionInputMapper sessionInputMapper;
@@ -27,12 +29,14 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 
 	public SessionService(
 		SessionDAO sessionDAO,
+		SessionViewDAO sessionViewDAO,
 		SessionInstructorDAO sessionInstructorDAO,
 		SessionValidator validator,
 		SessionInputMapper sessionInputMapper,
 		LocationService locationService
 	) {
 		this.sessionDAO = sessionDAO;
+		this.sessionViewDAO = sessionViewDAO;
 		this.sessionInstructorDAO = sessionInstructorDAO;
 		this.validator = validator;
 		this.sessionInputMapper = sessionInputMapper;
@@ -90,6 +94,7 @@ public class SessionService implements EntityServiceInter<Session, SessionInput,
 		validator.validateDelete(sessionID);
 
 		sessionInstructorDAO.deleteBySessionID(sessionID);
+		sessionViewDAO.deleteBySessionID(sessionID);
 		sessionDAO.deleteByID(sessionID);
 
 		return sessionID;

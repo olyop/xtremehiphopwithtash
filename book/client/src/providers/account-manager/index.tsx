@@ -29,7 +29,7 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 				data
 					? {
 							doesStudentExist: data.doesStudentExist,
-							isStudentAdministator: data.isStudentAdministator,
+							isStudentAdministrator: data.isStudentAdministrator,
 							shouldShowInstallPopup: data.shouldShowInstallPopup,
 						}
 					: null,
@@ -56,7 +56,7 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 			</Container>
 		) : studentChecks.doesStudentExist ? (
 			<IsCreatingAccountContext.Provider value={studentChecks.doesStudentExist}>
-				<IsAdministratorContext.Provider value={studentChecks.isStudentAdministator}>
+				<IsAdministratorContext.Provider value={studentChecks.isStudentAdministrator}>
 					<InstallPopup shouldShowInstallPopup={studentChecks.shouldShowInstallPopup}>
 						<Container>{children}</Container>
 					</InstallPopup>
@@ -79,7 +79,7 @@ const AccountManager: FC<PropsWithChildren> = ({ children }) => {
 };
 
 interface StudentChecks {
-	isStudentAdministator: boolean;
+	isStudentAdministrator: boolean;
 	doesStudentExist: boolean;
 	shouldShowInstallPopup: boolean;
 }

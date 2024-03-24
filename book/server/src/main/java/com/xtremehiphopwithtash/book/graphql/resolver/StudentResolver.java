@@ -99,7 +99,7 @@ public class StudentResolver {
 	}
 
 	@QueryMapping
-	public boolean isStudentAdministator(Principal principal, @AuthenticationPrincipal Jwt jwt) {
+	public boolean isStudentAdministrator(Principal principal, @AuthenticationPrincipal Jwt jwt) {
 		String studentID = auth0JwtService.extractStudentID(principal);
 
 		if (!studentService.existsByID(studentID)) {

@@ -1,5 +1,5 @@
 query checkStudent {
 	doesStudentExist
-	isStudentAdministator
+	isStudentAdministrator
 	shouldShowInstallPopup
 }

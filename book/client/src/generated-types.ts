@@ -366,7 +366,7 @@ export type Query = {
 	readonly getStudentByID: Student;
 	readonly getStudents: Maybe<ReadonlyArray<Student>>;
 	readonly getStudentsTotal: Maybe<Scalars["NonNegativeInt"]["output"]>;
-	readonly isStudentAdministator: Scalars["Boolean"]["output"];
+	readonly isStudentAdministrator: Scalars["Boolean"]["output"];
 	readonly searchPlaceByName: Maybe<Place>;
 	readonly shouldShowInstallPopup: Scalars["Boolean"]["output"];
 	readonly verifyCoupon: Maybe<Scalars["String"]["output"]>;
@@ -457,6 +457,7 @@ export type Session = {
 	readonly isEquipmentRemaining: Scalars["Boolean"]["output"];
 	readonly location: Location;
 	readonly notes: Maybe<Scalars["String"]["output"]>;
+	readonly people: Maybe<ReadonlyArray<Scalars["String"]["output"]>>;
 	readonly price: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly sessionID: Scalars["UUID"]["output"];
 	readonly startTime: Scalars["UnixTime"]["output"];
@@ -1362,7 +1363,7 @@ export type CheckStudentQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CheckStudentQuery = {
 	readonly doesStudentExist: boolean;
-	readonly isStudentAdministator: boolean;
+	readonly isStudentAdministrator: boolean;
 	readonly shouldShowInstallPopup: boolean;
 } & { readonly __typename: "Query" };
 

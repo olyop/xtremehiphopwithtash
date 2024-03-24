@@ -1,11 +1,11 @@
 {
 	"import": ["@oly_op/cspell-dict/cspell-ext.json"],
-	"ignorePaths": ["cspell-dict.txt", "book/client/.env*"],
-	"dictionaries": ["custom-words"],
+	"ignorePaths": ["cspell-dictionary..txt", "book/client/.env*"],
+	"dictionaries": ["xtremehiphopwithtash"],
 	"dictionaryDefinitions": [
 		{
-			"name": "custom-words",
-			"path": "./cspell-dict.txt"
+			"name": "xtremehiphopwithtash",
+			"path": "./cspell-dictionary.txt"
 		}
 	]
 }

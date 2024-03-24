@@ -1,8 +1,8 @@
 import { StrictMode, createElement } from "react";
 import { createRoot } from "react-dom/client";
+import { Workbox } from "workbox-window";
 
 import Application from "./application";
-import { workbox } from "./clients/workbox";
 import "./index.css";
 
 const rootElement = document.getElementById("Root");
@@ -22,6 +22,16 @@ const children =
 		</StrictMode>
 	);
 
-root.render(children);
+try {
+	root.render(children);
+} catch (error) {
+	const message = error instanceof Error ? error.message : "Unknown error";
 
-void workbox.register();
+	rootElement.innerHTML = message;
+}
+
+if ("serviceWorker" in navigator) {
+	const workbox = new Workbox("/service-worker.js");
+
+	void workbox.register();
+}

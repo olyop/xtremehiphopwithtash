@@ -21,4 +21,6 @@ public class SessionViewQuery {
 	final String SELECT_COUNT_BY_SESSION_ID = sqlUtil.read("select-count-by-session-id");
 
 	final String SELECT_BY_SESSION_ID = sqlUtil.read("select-by-session-id");
+
+	final String DELETE_BY_SESSION_ID = sqlUtil.read("delete-by-session-id");
 }

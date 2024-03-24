@@ -61,7 +61,8 @@
 		"staging": "clear && npm run book-stag",
 		"staging-front": "clear && npm run book-stag-front",
 		"production": "clear && npm run book-prod",
-		"production-front": "clear && npm run book-prod-front"
+		"production-front": "clear && npm run book-prod-front",
+		"upgrade-gradle-dependencies": "cd book/server && gradle updateVers"
 	},
 	"devDependencies": {
 		"@graphql-codegen/add": "5.0.2",

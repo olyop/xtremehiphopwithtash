@@ -16,6 +16,7 @@ import com.xtremehiphopwithtash.book.service.database.session.SessionService;
 import com.xtremehiphopwithtash.book.service.database.sessionview.SessionView;
 import com.xtremehiphopwithtash.book.service.database.sessionview.SessionViewService;
 import com.xtremehiphopwithtash.book.service.integration.auth0.Auth0JwtService;
+import com.xtremehiphopwithtash.book.service.peopleservice.PeopleService;
 import com.xtremehiphopwithtash.book.service.validator.SessionValidator;
 import java.security.Principal;
 import java.util.List;
@@ -39,6 +40,7 @@ public class SessionResolver {
 	private final InstructorService instructorService;
 	private final BookingService bookingService;
 	private final Auth0JwtService auth0JwtService;
+	private final PeopleService peopleService;
 	private final SessionValidator sessionValidator;
 
 	public SessionResolver(
@@ -49,6 +51,7 @@ public class SessionResolver {
 		InstructorService instructorService,
 		BookingService bookingService,
 		Auth0JwtService auth0JwtService,
+		PeopleService peopleService,
 		SessionValidator sessionValidator
 	) {
 		this.sessionService = sessionService;
@@ -59,6 +62,7 @@ public class SessionResolver {
 		this.instructorService = instructorService;
 		this.bookingService = bookingService;
 		this.auth0JwtService = auth0JwtService;
+		this.peopleService = peopleService;
 		this.sessionValidator = sessionValidator;
 	}
 
@@ -282,5 +286,10 @@ public class SessionResolver {
 		sessionViewService.save(sessionID, studentID);
 
 		return true;
+	}
+
+	@SchemaMapping(typeName = "Session", field = "people")
+	public List<String> getPeople(Session session) {
+		return peopleService.retrievePeopleBySessionID(session.getSessionID());
 	}
 }

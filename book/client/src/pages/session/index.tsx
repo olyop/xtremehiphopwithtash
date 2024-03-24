@@ -29,6 +29,7 @@ import SessionCapacityBanner from "./capacity-banner";
 import DeleteSession from "./delete-session";
 import GET_SESSION_PAGE from "./get-session-page.graphql";
 import { isSessionInPast } from "./helpers";
+// import SessionPeople from "./people";
 import SessionPriceBanner from "./price-banner";
 import UpdateSession from "./update-session";
 import { viewSession } from "./view-session";
@@ -103,7 +104,10 @@ const SessionPage: FC = () => {
 			/>
 			<div className="flex flex-col justify-items-start gap-8 p-4 pb-56">
 				<div className="flex flex-col gap-4">
-					<h1 className="text-3xl font-bold">{session.title}</h1>
+					<div className="flex flex-col items-start justify-start gap-2">
+						<h1 className="text-3xl font-bold">{session.title}</h1>
+						{/* {session.people && <SessionPeople people={session.people} />} */}
+					</div>
 					<div className="grid grid-cols-[min-content,auto] grid-rows-2 items-center justify-items-start gap-2">
 						<p className="text-l justify-self-end pr-2 leading-none text-gray-500">class</p>
 						<XtremeHipHopChip />

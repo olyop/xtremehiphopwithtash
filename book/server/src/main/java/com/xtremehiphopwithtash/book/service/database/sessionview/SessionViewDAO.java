@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class SessionViewDAO {
+public class SessionViewDAO {
 
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 	private final SessionViewQuery query;
@@ -69,5 +69,14 @@ class SessionViewDAO {
 		paramSource.addValue("sessionID", sessionID);
 
 		return jdbcTemplate.query(sql, paramSource, rowMapper);
+	}
+
+	public void deleteBySessionID(UUID sessionID) {
+		String sql = query.DELETE_BY_SESSION_ID;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("sessionID", sessionID);
+
+		jdbcTemplate.update(sql, paramSource);
 	}
 }
