@@ -10,5 +10,6 @@ public record BookingInput(
 	Integer bookingQuantity,
 	Optional<Integer> equipmentQuantity,
 	Optional<PaymentMethod> paymentMethod,
-	Optional<String> couponCode
+	Optional<String> couponCode,
+	Boolean hasSignedWaiver
 ) {}

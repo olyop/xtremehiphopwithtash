@@ -8,6 +8,7 @@ public class Student extends BaseModel {
 	private String studentID;
 	private UUID detailsID;
 	private String stripeCustomerID;
+	private Boolean hasSignedWaiver;
 
 	public Student() {}
 
@@ -33,5 +34,13 @@ public class Student extends BaseModel {
 
 	public void setStripeCustomerID(String stripeCustomerID) {
 		this.stripeCustomerID = stripeCustomerID;
+	}
+
+	public Boolean getHasSignedWaiver() {
+		return hasSignedWaiver;
+	}
+
+	public void setHasSignedWaiver(Boolean hasSignedWaiver) {
+		this.hasSignedWaiver = hasSignedWaiver;
 	}
 }

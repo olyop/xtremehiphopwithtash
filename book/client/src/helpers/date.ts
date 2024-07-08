@@ -87,10 +87,3 @@ export const isInPast = (date: Date): boolean => {
 
 export const isDateInBetweenRange = (date: number, range: readonly [startDate: Date, endDate: Date]) =>
 	date >= range[0].getTime() && date <= range[1].getTime();
-
-export const calculateNumberOfDaysBetweenRange = (startTime: Date, endTime: Date): number => {
-	const start = getStartOfDay(startTime);
-	const end = getStartOfDay(endTime);
-	const diff = end.getTime() - start.getTime();
-	return diff / (1000 * 60 * 60 * 24);
-};

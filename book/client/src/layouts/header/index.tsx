@@ -55,6 +55,7 @@ const Header: FC<Props> = ({ shouldFetchAccount }) => {
 	const isSessionPage = pathname.startsWith("/session");
 	const isPaymentPage = pathname === "/payment";
 	const isMerchItemPage = pathname.startsWith("/merch/");
+	const isWaiverPage = pathname === "/waiver";
 
 	return (
 		<Fragment>
@@ -63,7 +64,8 @@ const Header: FC<Props> = ({ shouldFetchAccount }) => {
 					isMenuOpen || isAccountOpen ? "!z-[150]" : ""
 				}`}
 			>
-				{isPaymentSuccessPage ? null : isAuthenticated && (isSessionPage || isPaymentPage || isMerchItemPage) ? (
+				{isPaymentSuccessPage ? null : isAuthenticated &&
+				  (isSessionPage || isPaymentPage || isMerchItemPage || isWaiverPage) ? (
 					<HeaderBackButton onClick={handleReset} />
 				) : (
 					<HeaderMenuButton isOpen={isMenuOpen} onToggle={handleToggleMenu} />

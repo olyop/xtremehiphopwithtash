@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS student (
 	details_id UUID NOT NULL,
 	stripe_customer_id VARCHAR(255) NOT NULL,
 	has_viewed_install_pop_up BOOLEAN NOT NULL DEFAULT FALSE,
+	has_signed_waiver BOOLEAN NOT NULL DEFAULT FALSE,
 
 	created_at INTEGER NOT NULL DEFAULT get_now(),
 

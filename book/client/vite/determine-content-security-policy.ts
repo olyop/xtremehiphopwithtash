@@ -44,6 +44,7 @@ export const determineContentSecurityPolicy = (mode: string) => {
 				"'self'",
 				"data:",
 				"https://*.gravatar.com",
+				"https://*.auth0.com",
 				"https://*.wp.com",
 				"https://*.googleapis.com",
 				"https://*.gstatic.com",

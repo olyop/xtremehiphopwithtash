@@ -59,6 +59,7 @@ input BookingInput {
 	equipmentQuantity: PositiveInt
 	paymentMethod: PaymentMethod
 	couponCode: String
+	hasSignedWaiver: Boolean
 }
 
 input GetBookingTrendsInput {

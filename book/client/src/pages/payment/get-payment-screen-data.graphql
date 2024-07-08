@@ -35,4 +35,5 @@ query getPaymentScreenData($sessionID: UUID!, $bookingInput: BookingInput!) {
 		finalCost
 	}
 	getCanBookSession(bookingInput: $bookingInput)
+	hasSignedWaiver
 }

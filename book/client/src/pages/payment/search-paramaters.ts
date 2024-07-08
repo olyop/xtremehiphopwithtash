@@ -32,7 +32,7 @@ const verifyPaymenMethodParam = (value: string | null, required: boolean) => {
 };
 
 export const createSyncSearchParams =
-	(setSearchParams: SetURLSearchParams) => (key: string, value: string | number | null | undefined) => {
+	(setSearchParams: SetURLSearchParams) => (key: string, value: string | number | boolean | null | undefined) => {
 		setSearchParams(
 			prevSearchParams => {
 				if (value) {
@@ -62,6 +62,7 @@ export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): Bo
 	const bookingQuantityParam = searchParams.get("bookingQuantity");
 	const equipmentQuantityParam = searchParams.get("equipmentQuantity");
 	const paymentMethodParam = searchParams.get("paymentMethod");
+	const hasSignedWaiver = searchParams.get("hasSignedWaiver");
 
 	if (
 		sessionIDParam &&
@@ -84,6 +85,7 @@ export const mapSearchParamsToBookingInput = (searchParams: URLSearchParams): Bo
 			equipmentQuantity: equipmentQuantityParam ? Number.parseInt(equipmentQuantityParam) : null,
 			couponCode: couponParam,
 			paymentMethod: paymentMethodParam ? (paymentMethodParam as PaymentMethod) : null,
+			hasSignedWaiver: hasSignedWaiver === null ? null : hasSignedWaiver === "true",
 		};
 	} else {
 		return null;

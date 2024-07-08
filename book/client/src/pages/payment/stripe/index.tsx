@@ -14,7 +14,14 @@ import StripeProvider from "../../../providers/stripe";
 import CardForm from "./card-form";
 import CREATE_PAYMENT_INTENT from "./create-payment-intent.graphql";
 
-const PaymentPageStripe: FC<Props> = ({ isFetchingPageData, reCaptchaToken, bookingInput, onSubmit, onSubmitted }) => {
+const PaymentPageStripe: FC<Props> = ({
+	isFetchingPageData,
+	reCaptchaToken,
+	bookingInput,
+	onSubmit,
+	onSubmitted,
+	hasSignedWaiver,
+}) => {
 	const paymentMethodRef = useRef<PaymentMethod | null>(null);
 
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -68,8 +75,9 @@ const PaymentPageStripe: FC<Props> = ({ isFetchingPageData, reCaptchaToken, book
 			{!isLiveMode && <Error errors={["Test Mode - Your card will not be charged"]} />}
 			<CardForm
 				bookingID={bookingID}
-				onSubmitted={onSubmitted}
 				onSubmit={onSubmit}
+				onSubmitted={onSubmitted}
+				hasSignedWaiver={hasSignedWaiver}
 				isFetchingPageData={isFetchingPageData}
 			/>
 		</StripeProvider>
@@ -79,6 +87,7 @@ const PaymentPageStripe: FC<Props> = ({ isFetchingPageData, reCaptchaToken, book
 interface Props {
 	isFetchingPageData: boolean;
 	reCaptchaToken: string;
+	hasSignedWaiver: boolean;
 	onSubmit: () => void;
 	bookingInput: BookingInput;
 	onSubmitted: () => void;

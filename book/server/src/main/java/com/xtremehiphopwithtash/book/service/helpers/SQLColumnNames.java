@@ -63,7 +63,13 @@ public final class SQLColumnNames {
 
 	public static final List<String> SESSION_INSTRUCTOR = List.of("session_id", "index", "instructor_id", "created_at");
 
-	public static final List<String> STUDENT = List.of("student_id", "details_id", "stripe_customer_id", "created_at");
+	public static final List<String> STUDENT = List.of(
+		"student_id",
+		"details_id",
+		"stripe_customer_id",
+		"has_signed_waiver",
+		"created_at"
+	);
 
 	public static final List<String> BOOKING = List.of(
 		"booking_id",

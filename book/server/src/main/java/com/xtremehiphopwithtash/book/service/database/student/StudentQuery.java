@@ -23,5 +23,9 @@ class StudentQuery {
 
 	final String SELECT_HAS_VIEWED_INSTALL_POPUP = sqlUtil.read("select-has-viewed-install-pop-up");
 
-	public String UPDATE_HAS_VIEWED_INSTALL_POPUP = sqlUtil.read("update-has-viewed-install-pop-up");
+	final String UPDATE_HAS_VIEWED_INSTALL_POPUP = sqlUtil.read("update-has-viewed-install-pop-up");
+
+	final String SELECT_HAS_SIGNED_WAIVER = sqlUtil.read("select-has-signed-waiver");
+
+	final String UPDATE_HAS_SIGNED_WAIVER = sqlUtil.read("update-has-signed-waiver");
 }

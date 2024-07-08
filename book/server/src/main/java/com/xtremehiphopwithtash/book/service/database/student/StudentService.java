@@ -109,4 +109,16 @@ public class StudentService implements StudentServiceInter<Student, DetailsInput
 
 		return studentDAO.updateHasViewedInstallPopup(studentID);
 	}
+
+	public boolean hasSignedWaiver(String studentID) {
+		validator.validateID(studentID);
+
+		return studentDAO.selectHasSignedWaiver(studentID);
+	}
+
+	public void signWaiver(String studentID) {
+		validator.validateID(studentID);
+
+		studentDAO.updateHasSignedWaiver(studentID);
+	}
 }

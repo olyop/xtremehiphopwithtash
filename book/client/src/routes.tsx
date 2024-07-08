@@ -11,6 +11,7 @@ import PaymentPage from "./pages/payment";
 import PaymentSuccessPage from "./pages/payment-success";
 import Schedule from "./pages/schedule";
 import SessionPage from "./pages/session";
+import WaiverPage from "./pages/waiver/waiver";
 
 const routes: RouteObject[] = [
 	{
@@ -52,6 +53,10 @@ const routes: RouteObject[] = [
 	{
 		path: "payment-success",
 		element: <PaymentSuccessPage />,
+	},
+	{
+		path: "waiver",
+		element: <WaiverPage />,
 	},
 ];
 

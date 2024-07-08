@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client/react/hooks/useQuery";
+import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 import { FC, Fragment, createElement } from "react";
 
 import Booking from "../../../../components/booking";
@@ -28,6 +29,9 @@ const Student: FC<Props> = ({ student }) => {
 			typeName={student.__typename}
 			text={
 				<Fragment>
+					{student.hasSignedWaiver && (
+						<CheckCircleIcon className="mb-2 mr-1 inline-block size-4 text-green-500" title="Has signed waiver" />
+					)}
 					{student.details.firstName} {student.details.lastName}
 					<span> </span>
 					{student.details.nickName && <span className="text-gray-500">({student.details.nickName})</span>}

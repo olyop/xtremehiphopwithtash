@@ -7,7 +7,7 @@ import FormError from "../../../components/form-error";
 import { createPaymentSuccessUrl } from "../create-payment-success-url";
 import PaymentButton from "../payment-button";
 
-const CardForm: FC<Props> = ({ bookingID, onSubmit, onSubmitted, isFetchingPageData }) => {
+const CardForm: FC<Props> = ({ bookingID, onSubmit, onSubmitted, isFetchingPageData, hasSignedWaiver }) => {
 	const stripe = useStripe();
 	const elements = useElements();
 
@@ -77,7 +77,11 @@ const CardForm: FC<Props> = ({ bookingID, onSubmit, onSubmitted, isFetchingPageD
 			<PaymentElement onReady={handleCardFormLoad} onChange={handlePaymentElementChange} />
 			<FormError error={formError} />
 			{hasCardFormLoaded && (
-				<PaymentButton text="Pay Now" onClick={handleSubmit} disabled={isFetchingPageData || !isCardFormComplete} />
+				<PaymentButton
+					text="Pay Now"
+					onClick={handleSubmit}
+					disabled={isFetchingPageData || !isCardFormComplete || !hasSignedWaiver}
+				/>
 			)}
 		</div>
 	);
@@ -88,6 +92,7 @@ interface Props {
 	onSubmit: () => void;
 	onSubmitted: () => void;
 	isFetchingPageData: boolean;
+	hasSignedWaiver: boolean;
 }
 
 export default CardForm;

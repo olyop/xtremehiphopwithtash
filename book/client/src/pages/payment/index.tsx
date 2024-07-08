@@ -7,6 +7,7 @@ import Error from "../../components/error";
 import FormError from "../../components/form-error";
 import FullscreenSpinner from "../../components/fullscreen-spinner";
 import Loading from "../../components/loading";
+import Waiver from "../../components/waiver/waiver";
 import {
 	BookingCost,
 	BookingInput,
@@ -66,22 +67,21 @@ const PaymentPage: FC = () => {
 				},
 			});
 
-			const { getSessionByID, getBookingCost, getCanBookSession } = data;
+			const { getSessionByID, getBookingCost, getCanBookSession, hasSignedWaiver } = data;
 
-			const bookingInputData = {
+			setSession(getSessionByID as Session);
+			setCanBookSession(getCanBookSession);
+			setBookingCost(getBookingCost);
+			setBookingInput({
 				...input,
+				hasSignedWaiver: input.hasSignedWaiver === null ? hasSignedWaiver : input.hasSignedWaiver,
 				paymentMethod:
 					getBookingCost.cost === 0
 						? getBookingCost.isFreeFromCoupon
 							? PaymentMethod.COUPON
 							: null
 						: input.paymentMethod,
-			};
-
-			setSession(getSessionByID as Session);
-			setCanBookSession(getCanBookSession);
-			setBookingCost(getBookingCost);
-			setBookingInput(bookingInputData);
+			});
 		} finally {
 			setIsFetchingPageData(false);
 		}
@@ -93,6 +93,7 @@ const PaymentPage: FC = () => {
 		syncSearchParams("paymentMethod", paymentMethod);
 		syncSearchParams("coupon", couponCode);
 		syncSearchParams("equipmentQuantity", equipmentQuantity);
+		syncSearchParams("hasSignedWaiver", bookingInput?.hasSignedWaiver);
 	};
 
 	const handleApplyCoupon = (couponCode: string) => {
@@ -101,6 +102,16 @@ const PaymentPage: FC = () => {
 				prevState && {
 					...prevState,
 					couponCode,
+				},
+		);
+	};
+
+	const handleToggleHasSignedWaiver = () => {
+		setBookingInput(
+			prevState =>
+				prevState && {
+					...prevState,
+					hasSignedWaiver: !prevState.hasSignedWaiver,
 				},
 		);
 	};
@@ -157,7 +168,12 @@ const PaymentPage: FC = () => {
 				void refetchPageData(input);
 			}
 		}
-	}, [bookingInput?.couponCode, bookingInput?.paymentMethod, bookingInput?.equipmentQuantity]);
+	}, [
+		bookingInput?.couponCode,
+		bookingInput?.paymentMethod,
+		bookingInput?.equipmentQuantity,
+		bookingInput?.hasSignedWaiver,
+	]);
 
 	useEffect(() => {
 		if (createBookingResult.data) {
@@ -205,23 +221,28 @@ const PaymentPage: FC = () => {
 			<PaymentOverview session={session} input={bookingInput} bookingCost={bookingCost} />
 			<div className="flex flex-col gap-12 px-4 pb-52">
 				{showCoupon && <PaymentCoupon bookingInput={bookingInput} onApplyCoupon={handleApplyCoupon} />}
-				{showPaymentMethodForm && (
+				<div className="flex flex-col gap-2">
+					<h2 className="text-2xl">Waiver</h2>
+					<Waiver hasSigned={bookingInput.hasSignedWaiver ?? false} toggleHasSigned={handleToggleHasSignedWaiver} />
+				</div>
+				{showPaymentMethodForm && bookingInput.hasSignedWaiver === true && (
 					<PaymentMethodForm setBookingInput={setBookingInput} paymentMethod={bookingInput.paymentMethod} />
 				)}
-				{showCardForm ? (
+				{showCardForm && bookingInput.hasSignedWaiver === true ? (
 					<PaymentPageStripe
 						bookingInput={bookingInput}
 						onSubmit={handleSubmitting}
 						onSubmitted={handleSubmitted}
 						reCaptchaToken={reCaptchaToken}
 						isFetchingPageData={isFetchingPageData}
+						hasSignedWaiver={bookingInput.hasSignedWaiver ?? false}
 					/>
 				) : null}
-				{showCashForm ? (
+				{showCashForm && bookingInput.hasSignedWaiver === true ? (
 					<PaymentButton
 						onClick={handleCreateBooking}
 						text={reCaptchaError ?? "Book Now"}
-						disabled={isFetchingPageData || reCaptchaToken === null}
+						disabled={isFetchingPageData || reCaptchaToken === null || !bookingInput.hasSignedWaiver}
 					/>
 				) : null}
 				<FormError error={createBookingResult.error} />

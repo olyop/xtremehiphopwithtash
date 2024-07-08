@@ -2,6 +2,7 @@ query getStudents {
 	getStudents {
 		studentID
 		bookingsTotal
+		hasSignedWaiver
 		bookingsTotalPaymentMethodFree
 		bookingsTotalPaymentMethodCard
 		bookingsTotalPaymentMethodCash

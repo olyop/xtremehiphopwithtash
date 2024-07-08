@@ -75,4 +75,20 @@ public class StudentDAO implements EntityBaseDAO<Student, String> {
 
 		return jdbcTemplate.update(sql, paramSource) == 1;
 	}
+
+	public boolean selectHasSignedWaiver(String studentID) {
+		String sql = query.SELECT_HAS_SIGNED_WAIVER;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		return jdbcTemplate.queryForObject(sql, paramSource, Boolean.class);
+	}
+
+	public void updateHasSignedWaiver(String studentID) {
+		String sql = query.UPDATE_HAS_SIGNED_WAIVER;
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource("studentID", studentID);
+
+		jdbcTemplate.update(sql, paramSource);
+	}
 }

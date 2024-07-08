@@ -8,6 +8,7 @@ import com.xtremehiphopwithtash.book.service.bookingcost.BookingCostService;
 import com.xtremehiphopwithtash.book.service.database.coupon.CouponService;
 import com.xtremehiphopwithtash.book.service.database.session.Session;
 import com.xtremehiphopwithtash.book.service.database.session.SessionService;
+import com.xtremehiphopwithtash.book.service.database.student.StudentService;
 import com.xtremehiphopwithtash.book.service.integration.stripe.StripeService;
 import com.xtremehiphopwithtash.book.service.validator.CommonValidator;
 import com.xtremehiphopwithtash.book.service.validator.ResolverException;
@@ -26,6 +27,7 @@ public class BookingService {
 	private final BookingDAO bookingDAO;
 	private final BookingCostService bookingCostService;
 	private final SessionService sessionService;
+	private final StudentService studentService;
 	private final CouponService couponService;
 	private final StripeService stripeService;
 
@@ -40,6 +42,7 @@ public class BookingService {
 		BookingDAO bookingDAO,
 		BookingCostService bookingCostService,
 		SessionService sessionService,
+		StudentService studentService,
 		CouponService couponService,
 		BookingInputMapper bookingInputMapper,
 		StudentValidator studentValidator,
@@ -50,6 +53,7 @@ public class BookingService {
 		this.bookingDAO = bookingDAO;
 		this.bookingCostService = bookingCostService;
 		this.sessionService = sessionService;
+		this.studentService = studentService;
 		this.couponService = couponService;
 		this.bookingInputMapper = bookingInputMapper;
 		this.studentValidator = studentValidator;
@@ -65,6 +69,8 @@ public class BookingService {
 		PaymentIntent paymentIntent,
 		boolean isAdministrator
 	) {
+		System.out.println(input);
+
 		studentValidator.validateID(studentID);
 		validateCreate(input, studentID);
 
@@ -96,6 +102,8 @@ public class BookingService {
 		if (input.couponCode().isPresent()) {
 			couponService.use(input.couponCode().get(), studentID, savedBooking.getBookingID());
 		}
+
+		studentService.signWaiver(studentID);
 
 		return savedBooking;
 	}
@@ -189,6 +197,7 @@ public class BookingService {
 		commonValidator.validateNonZeroInteger(input.bookingQuantity(), "Booking quantity");
 		commonValidator.validateNonZeroInteger(input.equipmentQuantity(), "Equipment quantity");
 		validateQuantities(input);
+		validateWaiver(input.hasSignedWaiver());
 	}
 
 	private void validateSession(UUID sessionID) {
@@ -205,6 +214,12 @@ public class BookingService {
 			if (input.equipmentQuantity().get() > input.bookingQuantity()) {
 				throw new ResolverException("Equipment quantity cannot be greater than booking quantity");
 			}
+		}
+	}
+
+	private void validateWaiver(boolean hasSignedWaiver) {
+		if (!hasSignedWaiver) {
+			throw new ResolverException("Waiver must be signed");
 		}
 	}
 

@@ -39,4 +39,6 @@ type Query {
 	getBookingTrends(input: GetBookingTrendsInput!): [BookingTrend!]!
 
 	getCanBookSession(bookingInput: BookingInput!): Boolean!
+
+	hasSignedWaiver: Boolean!
 }

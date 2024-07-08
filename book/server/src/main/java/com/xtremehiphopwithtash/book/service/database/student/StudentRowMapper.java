@@ -23,6 +23,7 @@ class StudentRowMapper implements RowMapper<Student> {
 
 		s.setDetailsID(mapRowUtil.mapUUID(rs, "details_id"));
 		s.setStripeCustomerID(rs.getString("stripe_customer_id"));
+		s.setHasSignedWaiver(rs.getBoolean("has_signed_waiver"));
 
 		s.setCreatedAt(mapRowUtil.mapInstant(rs, "created_at"));
 

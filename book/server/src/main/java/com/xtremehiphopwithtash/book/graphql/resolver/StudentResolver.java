@@ -163,4 +163,11 @@ public class StudentResolver {
 
 		return bookingsTotal;
 	}
+
+	@SchemaMapping(typeName = "Query", field = "hasSignedWaiver")
+	public boolean getStudentHasSignedWaiver(Principal principal) {
+		String studentID = auth0JwtService.extractStudentID(principal);
+
+		return studentService.hasSignedWaiver(studentID);
+	}
 }

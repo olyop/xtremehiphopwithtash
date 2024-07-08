@@ -64,6 +64,7 @@ export type BookingInput = {
 	readonly bookingQuantity: Scalars["PositiveInt"]["input"];
 	readonly couponCode: InputMaybe<Scalars["String"]["input"]>;
 	readonly equipmentQuantity: InputMaybe<Scalars["PositiveInt"]["input"]>;
+	readonly hasSignedWaiver: InputMaybe<Scalars["Boolean"]["input"]>;
 	readonly notes: InputMaybe<Scalars["String"]["input"]>;
 	readonly paymentMethod: InputMaybe<PaymentMethod>;
 	readonly sessionID: Scalars["UUID"]["input"];
@@ -366,6 +367,7 @@ export type Query = {
 	readonly getStudentByID: Student;
 	readonly getStudents: Maybe<ReadonlyArray<Student>>;
 	readonly getStudentsTotal: Maybe<Scalars["NonNegativeInt"]["output"]>;
+	readonly hasSignedWaiver: Scalars["Boolean"]["output"];
 	readonly isStudentAdministrator: Scalars["Boolean"]["output"];
 	readonly searchPlaceByName: Maybe<Place>;
 	readonly shouldShowInstallPopup: Scalars["Boolean"]["output"];
@@ -505,6 +507,7 @@ export type Student = {
 	readonly bookingsTotalPaymentMethodFree: Maybe<Scalars["PositiveInt"]["output"]>;
 	readonly createdAt: Scalars["UnixTime"]["output"];
 	readonly details: Details;
+	readonly hasSignedWaiver: Scalars["Boolean"]["output"];
 	readonly studentID: Scalars["String"]["output"];
 };
 
@@ -940,6 +943,7 @@ export type GetStudentsQuery = {
 		{
 			readonly studentID: string;
 			readonly bookingsTotal: number | null;
+			readonly hasSignedWaiver: boolean;
 			readonly bookingsTotalPaymentMethodFree: number | null;
 			readonly bookingsTotalPaymentMethodCard: number | null;
 			readonly bookingsTotalPaymentMethodCash: number | null;
@@ -1126,6 +1130,7 @@ export type GetPaymentScreenDataQueryVariables = Exact<{
 
 export type GetPaymentScreenDataQuery = {
 	readonly getCanBookSession: boolean;
+	readonly hasSignedWaiver: boolean;
 	readonly getSessionByID: {
 		readonly sessionID: string;
 		readonly title: string;

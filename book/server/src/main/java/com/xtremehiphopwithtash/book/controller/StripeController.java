@@ -44,6 +44,7 @@ public class StripeController {
 	@PostMapping("/webhook")
 	public void handleWebHook(@RequestHeader("Stripe-Signature") String signature, @RequestBody String payload) {
 		Event event = stripeService.webhook().constructPaymentEvent(payload, signature);
+
 		StripeObject stripeObject = stripeService.webhook().constructObject(event);
 
 		if (event.getType().equals("payment_intent.succeeded")) {
